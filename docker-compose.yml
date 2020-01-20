@@ -18,7 +18,6 @@ services:
       - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/elasticsearch/config/pki/ca.cert.pem
       - ./docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - data01:/usr/share/elasticsearch/data
-      - temp01:/var/tmp/elasticsearch
     networks:
       - elastic
   elas02:
@@ -37,7 +36,6 @@ services:
       - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/elasticsearch/config/pki/ca.cert.pem
       - ./docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - data02:/usr/share/elasticsearch/data
-      - temp02:/var/tmp/elasticsearch
     networks:
       - elastic
   elas03:
@@ -58,22 +56,15 @@ services:
       - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/elasticsearch/config/pki/ca.cert.pem
       - ./docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - data03:/usr/share/elasticsearch/data
-      - temp03:/var/tmp/elasticsearch
     networks:
       - elastic
 
 volumes:
   data01:
     driver: local
-  temp01:
-    driver: local
   data02:
     driver: local
-  temp02:
-    driver: local
   data03:
-    driver: local
-  temp03:
     driver: local
 
 networks:
