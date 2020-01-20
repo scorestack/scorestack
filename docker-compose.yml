@@ -1,0 +1,81 @@
+---
+version: '3'
+
+services:
+  elas01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    container_name: elas01
+    env_file: docker/elasticsearch.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65535
+      nproc: 4096
+    volumes:
+      - ./docker/build-certs/pki/intermediate/certs/elas01.cert.pem:/usr/share/elasticsearch/config/pki/elas.cert.pem
+      - ./docker/build-certs/pki/intermediate/private/elas01.key.pem:/usr/share/elasticsearch/config/pki/elas.key.pem
+      - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/elasticsearch/config/pki/ca.cert.pem
+      - ./docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - data01:/usr/share/elasticsearch/data
+      - temp01:/var/tmp/elasticsearch
+    networks:
+      - elastic
+  elas02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    container_name: elas02
+    env_file: docker/elasticsearch.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65535
+      nproc: 4096
+    volumes:
+      - ./docker/build-certs/pki/intermediate/certs/elas02.cert.pem:/usr/share/elasticsearch/config/pki/elas.cert.pem
+      - ./docker/build-certs/pki/intermediate/private/elas02.key.pem:/usr/share/elasticsearch/config/pki/elas.key.pem
+      - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/elasticsearch/config/pki/ca.cert.pem
+      - ./docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - data02:/usr/share/elasticsearch/data
+      - temp02:/var/tmp/elasticsearch
+    networks:
+      - elastic
+  elas03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    container_name: elas03
+    env_file: docker/elasticsearch.env
+    environment:
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65535
+      nproc: 4096
+    volumes:
+      - ./docker/build-certs/pki/intermediate/certs/elas03.cert.pem:/usr/share/elasticsearch/config/pki/elas.cert.pem
+      - ./docker/build-certs/pki/intermediate/private/elas03.key.pem:/usr/share/elasticsearch/config/pki/elas.key.pem
+      - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/elasticsearch/config/pki/ca.cert.pem
+      - ./docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - data03:/usr/share/elasticsearch/data
+      - temp03:/var/tmp/elasticsearch
+    networks:
+      - elastic
+
+volumes:
+  data01:
+    driver: local
+  temp01:
+    driver: local
+  data02:
+    driver: local
+  temp02:
+    driver: local
+  data03:
+    driver: local
+  temp03:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge

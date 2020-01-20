@@ -1,0 +1,13 @@
+---
+version: '3'
+
+services:
+  build-certs:
+    build: ./
+    image: build-certs:latest
+    entrypoint:
+      - /app/certs.sh
+    volumes:
+      - ./:/app
+    working_dir: /app
+    user: '1000:0'
