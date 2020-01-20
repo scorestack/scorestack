@@ -15,11 +15,11 @@ cluster.initial_master_nodes:
 bootstrap.memory_lock: true
 
 xpack.monitoring.enabled: true
-xpack.collection.enabled: true
+xpack.monitoring.collection.enabled: true
 
 xpack.security.enabled: true
 
-xpack.authc.realms.native.native1.order: 0
+xpack.security.authc.realms.native.native1.order: 0
 
 xpack.security.http.ssl.enabled: true
 xpack.security.http.ssl.key: /usr/share/elasticsearch/config/pki/elas.key.pem
