@@ -51,7 +51,7 @@ do
     -key intermediate/private/elas$num.key.pem \
     -out intermediate/csr/elas$num.csr.pem \
     -subj "/C=US/ST=NewYork/O=ScoreStack/OU=ScoreStack/CN=Elasticsearch $num"
-  yes y | openssl ca -notext -md sha256 -extensions elastic_cert \
+  yes y | openssl ca -notext -md sha256 \
     -config intermediate/openssl.conf \
     -in intermediate/csr/elas$num.csr.pem \
     -out intermediate/certs/elas$num.cert.pem

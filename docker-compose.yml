@@ -20,6 +20,8 @@ services:
       - data01:/usr/share/elasticsearch/data
     networks:
       - elastic
+    ports:
+      - 9200:9200
   elas02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     container_name: elas02
