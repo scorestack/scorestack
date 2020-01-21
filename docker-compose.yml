@@ -91,7 +91,7 @@ services:
     ports:
       - 5601:5601
     environment:
-      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
     volumes:
       - ./docker/build-certs/pki/intermediate/certs/localhost.cert.pem:/usr/share/kibana/config/pki/kiba.cert.pem
       - ./docker/build-certs/pki/intermediate/private/localhost.key.pem:/usr/share/kibana/config/pki/kiba.key.pem
