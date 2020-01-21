@@ -7,6 +7,7 @@ services:
     container_name: elas01
     env_file: docker/elasticsearch.env
     environment:
+      - node.name=elas01
       - discovery.seed_hosts=elas02,elas03
     ulimits:
       memlock:
@@ -29,6 +30,7 @@ services:
     container_name: elas02
     env_file: docker/elasticsearch.env
     environment:
+      - node.name=elas02
       - discovery.seed_hosts=elas01,elas03
     ulimits:
       memlock:
@@ -49,6 +51,7 @@ services:
     container_name: elas03
     env_file: docker/elasticsearch.env
     environment:
+      - node.name=elas03
       - discovery.seed_hosts=elas02,elas03
     ulimits:
       memlock:
