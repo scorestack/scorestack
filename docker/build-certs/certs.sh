@@ -50,7 +50,7 @@ do
   openssl req -config intermediate/openssl.conf -new -sha256 \
     -key intermediate/private/elas$num.key.pem \
     -out intermediate/csr/elas$num.csr.pem \
-    -subj "/C=US/ST=NewYork/O=ScoreStack/OU=ScoreStack/CN=Elasticsearch $num"
+    -subj "/C=US/ST=NewYork/O=ScoreStack/OU=ScoreStack/CN=elas$num"
   yes y | openssl ca -notext -md sha256 \
     -config intermediate/openssl.conf \
     -in intermediate/csr/elas$num.csr.pem \
