@@ -4,10 +4,6 @@
 cluster.name: scorestack
 
 network.host: 0.0.0.0
-discovery.seed_hosts:
-  - elas01
-  - elas02
-  - elas03
 cluster.initial_master_nodes:
   - elas01
   - elas02

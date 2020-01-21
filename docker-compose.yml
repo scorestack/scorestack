@@ -6,6 +6,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     container_name: elas01
     env_file: docker/elasticsearch.env
+    environment:
+      - discovery.seed_hosts=elas02,elas03
     ulimits:
       memlock:
         soft: -1
@@ -26,6 +28,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     container_name: elas02
     env_file: docker/elasticsearch.env
+    environment:
+      - discovery.seed_hosts=elas01,elas03
     ulimits:
       memlock:
         soft: -1
@@ -45,7 +49,7 @@ services:
     container_name: elas03
     env_file: docker/elasticsearch.env
     environment:
-      - bootstrap.memory_lock=true
+      - discovery.seed_hosts=elas02,elas03
     ulimits:
       memlock:
         soft: -1
