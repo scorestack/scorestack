@@ -15,3 +15,7 @@ logstash_system_pass=$(echo ${NEW_PASSWDS} | grep logstash_system | awk '{print 
 beats_system_pass=$(echo ${NEW_PASSWDS} | grep beats_system | awk '{print $NF}')
 remote_monitoring_user_pass=$(echo ${NEW_PASSWDS} | grep remote_monitoring_user | awk '{print $NF}')
 elastic_pass=$(echo ${NEW_PASSWDS} | grep elastic | awk '{print $NF}')
+
+cat >> .env << EOF
+ELASTICSEARCH_PASSWORD=${kibana_pass}
+EOF
