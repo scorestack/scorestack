@@ -42,21 +42,22 @@ yes y | openssl ca -config openssl.conf -extensions v3_intermediate_ca -days 365
 openssl verify -CAfile certs/ca.cert.pem intermediate/certs/intermediate.cert.pem
 cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
 
-# Create and sign elasticsearch certificates
-for num in 01 02 03
+# Create and sign certificates
+for name in elas01 elas02 elas03 localhost
 do
   openssl ecparam -genkey -noout -name prime256v1 \
-    -out intermediate/private/elas$num.key.pem
+    -out intermediate/private/$name.key.pem
   openssl req -config intermediate/openssl.conf -new -sha256 \
-    -key intermediate/private/elas$num.key.pem \
-    -out intermediate/csr/elas$num.csr.pem \
-    -subj "/C=US/ST=NewYork/O=ScoreStack/OU=ScoreStack/CN=elas$num"
+    -key intermediate/private/$name.key.pem \
+    -out intermediate/csr/$name.csr.pem \
+    -subj "/C=US/ST=NewYork/O=ScoreStack/OU=ScoreStack/CN=$name"
   yes y | openssl ca -notext -md sha256 \
     -config intermediate/openssl.conf \
-    -in intermediate/csr/elas$num.csr.pem \
-    -out intermediate/certs/elas$num.cert.pem
+    -in intermediate/csr/$name.csr.pem \
+    -out intermediate/certs/$name.cert.pem
 done
 openssl verify -CAfile intermediate/certs/ca-chain.cert.pem \
     intermediate/certs/elas01.cert.pem \
     intermediate/certs/elas02.cert.pem \
-    intermediate/certs/elas03.cert.pem
+    intermediate/certs/elas03.cert.pem \
+    intermediate/certs/localhost.cert.pem
