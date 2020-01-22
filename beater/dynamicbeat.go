@@ -104,7 +104,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			document := gjson.Get(read(resp.Body), "_source").Map()
 
 			// Get any template variables for the check
-			var attributes map[string]string
+			attributes := make(map[string]string)
 			id := document["id"].String()
 			for _, indexType := range []string{"admin", "user"} {
 				// Generate attribute index name
@@ -144,7 +144,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 				AdminName: attributes["AdminName"],
 				TeamName:  attributes["TeamName"],
 			}
-			var templatedDefinition map[string]string
+			templatedDefinition := make(map[string]string)
 			for key, val := range document["definition"].Map() {
 				valTemplate := template.Must(template.New(key).Parse(val.String()))
 				var buf bytes.Buffer
