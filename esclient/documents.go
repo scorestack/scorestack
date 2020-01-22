@@ -16,7 +16,7 @@ func GetAllDocuments(c *elasticsearch.Client, i string) ([]map[string]gjson.Resu
 		return nil, fmt.Errorf("Error searching for documents for index %s: %s", i, err)
 	}
 	defer resp.Body.Close()
-	docs := gjson.Get(read(resp.Body), "hits.hits#.source").Array()
+	docs := gjson.Get(read(resp.Body), "hits.hits.#._source").Array()
 
 	// Unpack results
 	out := make([]map[string]gjson.Result, 0)
