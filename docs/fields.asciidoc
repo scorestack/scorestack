@@ -255,6 +255,18 @@ required: True
 
 --
 
+*`hits`*::
++
+--
+Temporary, pls ignore.
+
+
+type: long
+
+required: True
+
+--
+
 [[exported-fields-ecs]]
 == ECS fields
 

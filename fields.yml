@@ -2952,3 +2952,8 @@
       required: true
       description: >
         PLEASE UPDATE DOCUMENTATION
+    - name: hits
+      type: long
+      required: true
+      description: >
+        Temporary, pls ignore.
