@@ -47,6 +47,12 @@ func RunChecks(client beat.Client, defs common.CheckDefinitions) {
 		switch chk["type"].String() {
 		case "noop":
 			go noop.Run(chkInfo)
+		default:
+			// We didn't start a goroutine, so the WaitGroup counter needs to be decremented.
+			// If this wasn't here, wg.Wait() would hang forever if there was a check with an unknown type.
+			// This also allows us to have only one wg.Add(1) at the beginning of the switch/case.
+			// Otherwise, we would have to add a wg.Add(1) to each case.
+			wg.Done()
 		}
 
 		// Wait for checks to finish
