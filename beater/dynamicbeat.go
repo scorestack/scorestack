@@ -148,7 +148,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			for key, val := range document["definition"].Map() {
 				valTemplate := template.Must(template.New(key).Parse(val.String()))
 				var buf bytes.Buffer
-				if err := valTemplate.Execute(&buf, templateAttributes); err == nil {
+				if err := valTemplate.Execute(&buf, templateAttributes); err != nil {
 					return fmt.Errorf("Error parsing template for key %s: %s", key, err)
 				}
 				templatedDefinition[key] = buf.String()
