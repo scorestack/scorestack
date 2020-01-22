@@ -127,9 +127,10 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 					return fmt.Errorf("Error reading attribute document %s: %s", id, err)
 				}
 				defer resp.Body.Close()
+				attributeDocument := gjson.Get(read(resp.Body), "_source").Map()
 
 				// Read attributes from document
-				for key, val := range gjson.Get(read(resp.Body), "*").Map() {
+				for key, val := range attributeDocument {
 					if _, present := attributes[key]; !present {
 						attributes[key] = val.String()
 					}
