@@ -51,6 +51,7 @@ func RunChecks(client beat.Client, defs common.CheckDefinitions) {
 
 		// Wait for checks to finish
 		wg.Wait()
+		close(queue)
 		for result := range queue {
 			// Publish check results
 			event := beat.Event{
