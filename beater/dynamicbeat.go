@@ -7,8 +7,6 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"strings"
-	"text/template"
 	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
@@ -16,6 +14,7 @@ import (
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/go-elasticsearch"
 
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/config"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/esclient"
 )
@@ -73,76 +72,18 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 		return err
 	}
 
+	defs, err := esclient.UpdateCheckDefinitions(bt.es, "checks") // TODO: make check index a config
+	if err != nil {
+		return err
+	}
+
 	ticker := time.NewTicker(bt.config.Period)
 	for {
 		select {
 		case <-bt.done:
 			return nil
 		case <-ticker.C:
-		}
-
-		// Get list of checks
-		checks, err := esclient.GetAllDocuments(bt.es, "checks") // TODO: factor out checks index
-		if err != nil {
-			return err
-		}
-
-		// Iterate over each check
-		for _, check := range checks {
-			// Get any template variables for the check
-			attribs := make(map[string]string)
-			id := check["id"].String()
-			for _, perm := range []string{"admin", "user"} {
-				// Generate attribute index name
-				idx := strings.Join([]string{"attrib_", perm, "_", id}, "")
-
-				// Get attribute document
-				docs, err := esclient.GetAllDocuments(bt.es, idx)
-				if err != nil {
-					return err
-				}
-				attrib := docs[0]
-
-				// Read attributes from document
-				for k, v := range attrib {
-					if _, pres := attribs[k]; !pres {
-						attribs[k] = v.String()
-					}
-				}
-			}
-
-			// Template out any mapping values
-			type NoopAttributes struct {
-				AdminName, TeamName string
-			}
-			templAttribs := NoopAttributes{
-				AdminName: attribs["AdminName"],
-				TeamName:  attribs["TeamName"],
-			}
-			def := make(map[string]string)
-			for k, v := range check["definition"].Map() {
-				templ := template.Must(template.New(k).Parse(v.String()))
-				var buf bytes.Buffer
-				if err := templ.Execute(&buf, templAttribs); err != nil {
-					return fmt.Errorf("Error parsing template for key %s: %s", k, err)
-				}
-				def[k] = buf.String()
-			}
-
-			// Send message
-			event := beat.Event{
-				Timestamp: time.Now(),
-				Fields: common.MapStr{
-					"type": b.Info.Name,
-					"message": strings.Join([]string{
-						def["static"],
-						def["admin"],
-						def["team"],
-					}, " - "),
-				},
-			}
-			bt.client.Publish(event)
-			logp.Info("Event sent")
+			checks.RunChecks(bt.client, defs)
 		}
 	}
 }
