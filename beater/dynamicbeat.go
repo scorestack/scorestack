@@ -101,11 +101,11 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 				return fmt.Errorf("Error getting check %s: %s", checkID.String(), err)
 			}
 			defer resp.Body.Close()
-			respBody = read(resp.Body)
+			document := gjson.Get(read(resp.Body), "_source").Map()
 
 			// Get any template variables for the check
 			var attributes map[string]string
-			id := gjson.Get(respBody, "id").String()
+			id := document["id"].String()
 			for _, indexType := range []string{"admin", "user"} {
 				// Generate attribute index name
 				indexName := strings.Join([]string{"attrib_", indexType, "_", id}, "")
@@ -145,7 +145,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 				TeamName:  attributes["TeamName"],
 			}
 			var templatedDefinition map[string]string
-			for key, val := range gjson.Get(respBody, "definition").Map() {
+			for key, val := range document["definition"].Map() {
 				valTemplate := template.Must(template.New(key).Parse(val.String()))
 				var buf bytes.Buffer
 				if err := valTemplate.Execute(&buf, templateAttributes); err == nil {
