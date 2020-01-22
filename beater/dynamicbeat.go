@@ -1,6 +1,7 @@
 package beater
 
 import (
+	"bytes"
 	"crypto/tls"
 	"fmt"
 	"net"
@@ -11,16 +12,17 @@ import (
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/go-elasticsearch"
+	"github.com/tidwall/gjson"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/config"
 )
 
 // Dynamicbeat configuration.
 type Dynamicbeat struct {
-	done     chan struct{}
-	config   config.Config
-	client   beat.Client
-	esClient *elasticsearch.Client
+	done   chan struct{}
+	config config.Config
+	client beat.Client
+	es     *elasticsearch.Client
 }
 
 // New creates an instance of dynamicbeat.
@@ -40,7 +42,8 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 			ResponseHeaderTimeout: time.Second,
 			DialContext:           (&net.Dialer{Timeout: time.Second}).DialContext,
 			TLSClientConfig: &tls.Config{
-				MinVersion: tls.VersionTLS11,
+				MinVersion:         tls.VersionTLS11,
+				InsecureSkipVerify: !c.CheckSource.VerifyCerts, // TODO: not this
 			},
 		},
 	}
@@ -50,9 +53,9 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	}
 
 	bt := &Dynamicbeat{
-		done:     make(chan struct{}),
-		config:   c,
-		esClient: esClient,
+		done:   make(chan struct{}),
+		config: c,
+		es:     esClient,
 	}
 	return bt, nil
 }
@@ -76,11 +79,25 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 		case <-ticker.C:
 		}
 
+		resp, err := bt.es.Search(
+			bt.es.Search.WithIndex("checks"),
+			bt.es.Search.WithStoredFields("_id"),
+		)
+		if err != nil {
+			return fmt.Errorf("Error getting check IDs: %s", err)
+		}
+		defer resp.Body.Close()
+		var byteReader bytes.Buffer
+		byteReader.ReadFrom(resp.Body)
+		respBody := byteReader.String()
+		hits := gjson.Get(respBody, "hits.total.value").Num
+
 		event := beat.Event{
 			Timestamp: time.Now(),
 			Fields: common.MapStr{
 				"type":    b.Info.Name,
 				"counter": counter,
+				"hits":    hits,
 			},
 		}
 		bt.client.Publish(event)
