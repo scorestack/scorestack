@@ -62,6 +62,7 @@ func RunChecks(client beat.Client, defs common.CheckDefinitions) {
 					"name":       result.Name,
 					"check_type": result.CheckType,
 					"passed":     result.Passed,
+					"message":    result.Message,
 					"details":    result.Details,
 				},
 			}
