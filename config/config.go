@@ -6,9 +6,19 @@ package config
 import "time"
 
 type Config struct {
-	Period time.Duration `config:"period"`
+	Period      time.Duration     `config:"period"`
+	CheckSource CheckSourceConfig `config:"check_source"`
+}
+
+type CheckSourceConfig struct {
+	Hosts    []string `config:"hosts"`
+	Username string   `config:"username"`
+	Password string   `config:"password"`
 }
 
 var DefaultConfig = Config{
 	Period: 1 * time.Second,
+	CheckSource: CheckSourceConfig{
+		Hosts: []string{"http://localhost:9200"},
+	},
 }

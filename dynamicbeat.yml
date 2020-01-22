@@ -6,6 +6,15 @@ dynamicbeat:
   # Defines how often an event is sent to the output
   period: 1s
 
+  # Where check definitions will be read from
+  check_source:
+    # List of Elasticsearch hosts to query
+    hosts:
+      - "http://localhost:9200"
+    
+    # Credentials used by this beat to read check definitions
+    #username:
+    #password:
 #================================ General =====================================
 
 # The name of the shipper that publishes the network data. It can be used to group
