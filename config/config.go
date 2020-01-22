@@ -11,14 +11,18 @@ type Config struct {
 }
 
 type CheckSourceConfig struct {
-	Hosts    []string `config:"hosts"`
-	Username string   `config:"username"`
-	Password string   `config:"password"`
+	Hosts       []string `config:"hosts"`
+	Username    string   `config:"username"`
+	Password    string   `config:"password"`
+	VerifyCerts bool     `config:"verify_certs"`
 }
 
 var DefaultConfig = Config{
 	Period: 1 * time.Second,
 	CheckSource: CheckSourceConfig{
-		Hosts: []string{"http://localhost:9200"},
+		Hosts:       []string{"http://localhost:9200"},
+		Username:    "dynamicbeat",
+		Password:    "changeme",
+		VerifyCerts: true,
 	},
 }

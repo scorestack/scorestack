@@ -13,5 +13,8 @@ dynamicbeat:
       - "http://localhost:9200"
     
     # Credentials used by this beat to read check definitions
-    #username:
-    #password:
+    #username: dynamicbeat
+    #password: changeme
+
+    # Whether to verify SSL/TLS certificates, if HTTPS is used
+    #verify_certs: true
