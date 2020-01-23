@@ -21,6 +21,9 @@ dynamicbeat:
 
     # Whether to verify SSL/TLS certificates, if HTTPS is used
     #verify_certs: true
+
+    # The index that check definitions will be read from
+    #index: checks
 #================================ General =====================================
 
 # The name of the shipper that publishes the network data. It can be used to group

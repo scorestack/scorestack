@@ -16,6 +16,7 @@ type CheckSourceConfig struct {
 	Username    string   `config:"username"`
 	Password    string   `config:"password"`
 	VerifyCerts bool     `config:"verify_certs"`
+	Index       string   `config:"index"`
 }
 
 var DefaultConfig = Config{
@@ -26,5 +27,6 @@ var DefaultConfig = Config{
 		Username:    "dynamicbeat",
 		Password:    "changeme",
 		VerifyCerts: true,
+		Index:       "checks",
 	},
 }

@@ -81,7 +81,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 	go publishEvents(bt.client, pubQueue, published)
 
 	// Get initial check definitions
-	defs, err := esclient.UpdateCheckDefinitions(bt.es, "checks") // TODO: make check index a config
+	defs, err := esclient.UpdateCheckDefinitions(bt.es, bt.config.CheckSource.Index)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			return nil
 		case <-updateTicker.C:
 			// Update the check definitions
-			defs, err = esclient.UpdateCheckDefinitions(bt.es, "checks") // TODO: make check index a config
+			defs, err = esclient.UpdateCheckDefinitions(bt.es, bt.config.CheckSource.Index)
 			if err != nil {
 				return err
 			}
