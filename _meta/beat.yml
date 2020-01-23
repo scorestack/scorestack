@@ -3,5 +3,24 @@
 ############################# Dynamicbeat ######################################
 
 dynamicbeat:
-  # Defines how often an event is sent to the output
+  # Defines how often checks will be executed
   period: 1s
+
+  # Defines how often check definitions and attributes will be read from elasticsearch
+  update_period: 1m
+
+  # Where check definitions will be read from
+  check_source:
+    # List of Elasticsearch hosts to query
+    hosts:
+      - "http://localhost:9200"
+    
+    # Credentials used by this beat to read check definitions
+    #username: dynamicbeat
+    #password: changeme
+
+    # Whether to verify SSL/TLS certificates, if HTTPS is used
+    #verify_certs: true
+
+    # The index that check definitions will be read from
+    #index: checks

@@ -243,15 +243,75 @@ type: object
 None
 
 
-*`counter`*::
+*`id`*::
 +
 --
-PLEASE UPDATE DOCUMENTATION
+TODO: docs
 
 
-type: long
+type: keyword
 
 required: True
+
+--
+
+*`name`*::
++
+--
+TODO: docs
+
+
+type: keyword
+
+required: True
+
+--
+
+*`check_type`*::
++
+--
+TODO: docs
+
+
+type: keyword
+
+required: True
+
+--
+
+*`passed`*::
++
+--
+TODO: docs
+
+
+type: boolean
+
+required: True
+
+--
+
+*`message`*::
++
+--
+TODO: docs
+
+
+type: text
+
+required: True
+
+--
+
+*`details`*::
++
+--
+TODO: docs
+
+
+type: object
+
+required: False
 
 --
 
