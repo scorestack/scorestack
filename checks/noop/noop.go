@@ -30,9 +30,5 @@ func Run(chk common.Check) {
 		Details:   chk.Definition,
 	}
 
-	// Asynchronously send results back through the channel
-	select {
-	case chk.Output <- result:
-	default:
-	}
+	chk.Output <- result
 }

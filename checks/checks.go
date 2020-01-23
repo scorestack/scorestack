@@ -7,16 +7,21 @@ import (
 
 	"github.com/elastic/beats/libbeat/beat"
 	beatcommon "github.com/elastic/beats/libbeat/common"
-	"github.com/elastic/beats/libbeat/logp"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/noop"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(client beat.Client, defs common.CheckDefinitions) {
+func RunChecks(defPass chan common.CheckDefinitions, wg sync.WaitGroup, pubQueue chan<- beat.Event) {
+	defer wg.Done()
+
+	// Recieve definitions from channel
+	defs := <-defPass
+
+	// Prepare event queue
 	queue := make(chan common.CheckResult, len(defs.Checks))
-	var wg sync.WaitGroup
+	var events sync.WaitGroup
 
 	// Iterate over each check
 	for _, chk := range defs.Checks {
@@ -38,42 +43,44 @@ func RunChecks(client beat.Client, defs common.CheckDefinitions) {
 			ID:         chk["id"].String(),
 			Name:       chk["name"].String(),
 			Definition: def,
-			WaitGroup:  &wg,
+			WaitGroup:  &events,
 			Output:     queue,
 		}
 
 		// Start check goroutine
-		wg.Add(1)
+		events.Add(1)
 		switch chk["type"].String() {
 		case "noop":
 			go noop.Run(chkInfo)
 		default:
 			// We didn't start a goroutine, so the WaitGroup counter needs to be decremented.
-			// If this wasn't here, wg.Wait() would hang forever if there was a check with an unknown type.
-			// This also allows us to have only one wg.Add(1) at the beginning of the switch/case.
-			// Otherwise, we would have to add a wg.Add(1) to each case.
-			wg.Done()
+			// If this wasn't here, events.Wait() would hang forever if there was a check with an unknown type.
+			// This also allows us to have only one events.Add(1) at the beginning of the switch/case.
+			// Otherwise, we would have to add a events.Add(1) to each case.
+			events.Done()
 		}
 
-		// Wait for checks to finish
-		wg.Wait()
-		close(queue)
-		for result := range queue {
-			// Publish check results
-			event := beat.Event{
-				Timestamp: result.Timestamp,
-				Fields: beatcommon.MapStr{
-					"type":       "dynamicbeat",
-					"id":         result.ID,
-					"name":       result.Name,
-					"check_type": result.CheckType,
-					"passed":     result.Passed,
-					"message":    result.Message,
-					"details":    result.Details,
-				},
-			}
-			client.Publish(event)
-			logp.Info("Event sent")
+	}
+	// Send definitions back through channel
+	defPass <- defs
+
+	// Wait for checks to finish
+	events.Wait()
+	close(queue)
+	for result := range queue {
+		// Publish check results
+		event := beat.Event{
+			Timestamp: result.Timestamp,
+			Fields: beatcommon.MapStr{
+				"type":       "dynamicbeat",
+				"id":         result.ID,
+				"name":       result.Name,
+				"check_type": result.CheckType,
+				"passed":     result.Passed,
+				"message":    result.Message,
+				"details":    result.Details,
+			},
 		}
+		pubQueue <- event
 	}
 }
