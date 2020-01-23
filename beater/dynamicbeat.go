@@ -103,14 +103,14 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			<-published
 			close(published)
 			return nil
-		case <-ticker.C:
+		case <-updateTicker.C:
 			// Update the check definitions
 			defs, err = esclient.UpdateCheckDefinitions(bt.es, "checks") // TODO: make check index a config
 			if err != nil {
 				return err
 			}
 			logp.Info("Updated check definitions")
-		case <-updateTicker.C:
+		case <-ticker.C:
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
 			defPass := make(chan common.CheckDefinitions)
 
