@@ -13,7 +13,7 @@ import (
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(defPass chan common.CheckDefinitions, wg sync.WaitGroup, pubQueue chan<- beat.Event) {
+func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueue chan<- beat.Event) {
 	defer wg.Done()
 
 	// Recieve definitions from channel
