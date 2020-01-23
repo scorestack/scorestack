@@ -3,8 +3,11 @@
 ############################# Dynamicbeat ######################################
 
 dynamicbeat:
-  # Defines how often an event is sent to the output
+  # Defines how often checks will be executed
   period: 1s
+
+  # Defines how often check definitions and attributes will be read from elasticsearch
+  update_period: 1m
 
   # Where check definitions will be read from
   check_source:

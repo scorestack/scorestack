@@ -6,8 +6,9 @@ package config
 import "time"
 
 type Config struct {
-	Period      time.Duration     `config:"period"`
-	CheckSource CheckSourceConfig `config:"check_source"`
+	Period       time.Duration     `config:"period"`
+	UpdatePeriod time.Duration     `config:"update_period"`
+	CheckSource  CheckSourceConfig `config:"check_source"`
 }
 
 type CheckSourceConfig struct {
@@ -18,7 +19,8 @@ type CheckSourceConfig struct {
 }
 
 var DefaultConfig = Config{
-	Period: 1 * time.Second,
+	Period:       1 * time.Second,
+	UpdatePeriod: 1 * time.Minute,
 	CheckSource: CheckSourceConfig{
 		Hosts:       []string{"http://localhost:9200"},
 		Username:    "dynamicbeat",

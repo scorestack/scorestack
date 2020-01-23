@@ -88,6 +88,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 
 	// Start running checks
 	ticker := time.NewTicker(bt.config.Period)
+	updateTicker := time.NewTicker(bt.config.UpdatePeriod)
 	var wg sync.WaitGroup
 	for {
 		select {
@@ -103,6 +104,13 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			close(published)
 			return nil
 		case <-ticker.C:
+			// Update the check definitions
+			defs, err = esclient.UpdateCheckDefinitions(bt.es, "checks") // TODO: make check index a config
+			if err != nil {
+				return err
+			}
+			logp.Info("Updated check definitions")
+		case <-updateTicker.C:
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
 			defPass := make(chan common.CheckDefinitions)
 
@@ -116,6 +124,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			// Wait until we get the definitions back before we start the next course of checks
 			defs = <-defPass
 			close(defPass)
+			logp.Info("Started series of checks")
 		}
 	}
 }
