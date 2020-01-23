@@ -92,17 +92,28 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 	for {
 		select {
 		case <-bt.done:
+			// Wait for all checks.RunChecks goroutines to exit
 			wg.Wait()
+
+			// Close the event publishing queue so the publishEvents goroutine will exit
 			close(pubQueue)
+
+			// Wait for all events to be published
 			<-published
 			close(published)
 			return nil
 		case <-ticker.C:
-			//checks.RunChecks(bt.client, defs)
+			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
 			defPass := make(chan common.CheckDefinitions)
+
+			// Start the goroutine
 			wg.Add(1)
 			go checks.RunChecks(defPass, &wg, pubQueue)
+
+			// Give it the check definitions
 			defPass <- defs
+
+			// Wait until we get the definitions back before we start the next course of checks
 			defs = <-defPass
 			close(defPass)
 		}
