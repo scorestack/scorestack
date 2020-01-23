@@ -103,7 +103,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			wg.Add(1)
 			go checks.RunChecks(defPass, &wg, pubQueue)
 			defPass <- defs
-			defs := <-defPass
+			defs = <-defPass
 			close(defPass)
 		}
 	}
