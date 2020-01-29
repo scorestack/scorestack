@@ -1,6 +1,7 @@
 package http
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -37,6 +38,11 @@ func Run(chk common.Check) {
 	}
 	client := &http.Client{
 		Jar: cookieJar,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: chk.Definition["verify"] == "false",
+			},
+		},
 	}
 
 	// Construct URL
