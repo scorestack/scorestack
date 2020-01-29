@@ -9,6 +9,7 @@ import (
 	beatcommon "github.com/elastic/beats/libbeat/common"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/http"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/noop"
 )
 
@@ -52,6 +53,8 @@ func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 		switch chk["type"].String() {
 		case "noop":
 			go noop.Run(chkInfo)
+		case "http":
+			go http.Run(chkInfo)
 		default:
 			// We didn't start a goroutine, so the WaitGroup counter needs to be decremented.
 			// If this wasn't here, events.Wait() would hang forever if there was a check with an unknown type.
