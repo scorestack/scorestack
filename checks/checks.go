@@ -26,26 +26,43 @@ func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 
 	// Iterate over each check
 	for _, chk := range defs.Checks {
-		// Unpack definition
-		packedDef := chk["definition"].Map()
-		def := make(map[string]string)
-		for k, v := range packedDef {
-			// Render template string in value, if any
-			templ := template.Must(template.New(k).Parse(v.String()))
-			var buf bytes.Buffer
-			if err := templ.Execute(&buf, defs.Attributes[chk["id"].String()]); err != nil {
-				// TODO: pass error back through channel
+		// The definition can be an array, so we assume it is an array. If the
+		// definition is just a map, then this will return an array of length 1
+		// containing that map.
+		packedList := chk["definition"].Array()
+
+		// Unpack each item in the definition array
+		unpackedDef := make([]map[string]string, 0)
+		for _, packedDef := range packedList {
+
+			// Template out the contents of the definition
+			def := make(map[string]string)
+			packedMap := packedDef.Map()
+			for k, v := range packedMap {
+				// Render template string in value, if any
+				templ := template.Must(template.New(k).Parse(v.String()))
+				var buf bytes.Buffer
+				if err := templ.Execute(&buf, defs.Attributes[chk["id"].String()]); err != nil {
+					// TODO: pass error back through channel
+				}
+				def[k] = buf.String()
 			}
-			def[k] = buf.String()
+			unpackedDef = append(unpackedDef, def)
 		}
 
 		// Construct Check struct
 		chkInfo := common.Check{
-			ID:         chk["id"].String(),
-			Name:       chk["name"].String(),
-			Definition: def,
-			WaitGroup:  &events,
-			Output:     queue,
+			ID:        chk["id"].String(),
+			Name:      chk["name"].String(),
+			WaitGroup: &events,
+			Output:    queue,
+		}
+
+		// Add definitions to correct attribute in Check struct
+		if len(unpackedDef) > 1 {
+			chkInfo.DefinitionList = unpackedDef
+		} else {
+			chkInfo.Definition = unpackedDef[0]
 		}
 
 		// Start check goroutine

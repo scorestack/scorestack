@@ -20,11 +20,12 @@ type CheckResult struct {
 
 // Check : Information about a check to be run.
 type Check struct {
-	ID         string
-	Name       string
-	Definition map[string]string
-	WaitGroup  *sync.WaitGroup
-	Output     chan<- CheckResult
+	ID             string
+	Name           string
+	Definition     map[string]string
+	DefinitionList []map[string]string
+	WaitGroup      *sync.WaitGroup
+	Output         chan<- CheckResult
 }
 
 // CheckDefinitions : Intermediate storage of check definitions and attributes
