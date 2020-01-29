@@ -136,7 +136,7 @@ func request(client *http.Client, def map[string]string) (bool, *string, error) 
 			return false, nil, fmt.Errorf("Error compiling regex string %s : %s", contentMatch, err)
 		}
 		if !regex.Match(body) {
-			return false, nil, fmt.Errorf("Recieved bad response body: %s", body)
+			return false, nil, fmt.Errorf("recieved bad response body")
 		}
 		matchStr = fmt.Sprintf("%s", regex.Find(body))
 	}
