@@ -73,6 +73,7 @@ func Run(chk common.Check) {
 	if lastMatch != nil {
 		details["matched_content"] = *lastMatch
 	}
+	result.Details = details
 
 	chk.Output <- result
 }
@@ -96,9 +97,9 @@ func request(client *http.Client, def map[string]string) (bool, *string, error) 
 
 	// Add headers
 	if gjson.Valid(def["headers"]) {
-		headers := gjson.Get(def["headers"], "*").Map()
+		headers := gjson.Parse(def["headers"]).Map()
 		for k, v := range headers {
-			req.Header.Set(k, v.String())
+			req.Header[k] = []string{v.String()}
 		}
 	}
 
