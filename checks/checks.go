@@ -104,8 +104,13 @@ func unpackDefs(check map[string]gjson.Result, attribs map[string]map[string]str
 			// Render template string in value, if any
 			templ := template.Must(template.New(k).Parse(v.String()))
 			var buf bytes.Buffer
-			templ.Execute(&buf, attribs[check["id"].String()])
-			def[k] = buf.String()
+			err := templ.Execute(&buf, attribs[check["id"].String()])
+			if err != nil {
+				// If there was an error parsing the template, use the original string
+				def[k] = v.String()
+			} else {
+				def[k] = buf.String()
+			}
 		}
 		unpackedDefs = append(unpackedDefs, def)
 	}
