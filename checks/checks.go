@@ -38,7 +38,7 @@ func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 		}
 
 		// Add definitions to correct attribute in Check struct
-		if len(defs) > 1 {
+		if chk["definition"].IsArray() {
 			chkInfo.DefinitionList = defs
 		} else {
 			chkInfo.Definition = defs[0]
