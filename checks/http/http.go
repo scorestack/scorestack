@@ -3,8 +3,10 @@ package http
 import (
 	"crypto/tls"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -46,7 +48,7 @@ func Run(chk common.Check) {
 	}
 
 	// Save the last returned match string
-	var lastMatch string
+	var lastMatch *string
 
 	// Make each request in the list
 	for _, def := range chk.DefinitionList {
@@ -55,25 +57,27 @@ func Run(chk common.Check) {
 		// Process request results
 		result.Passed = pass
 		if err != nil {
-			result.Message = err
+			result.Message = fmt.Sprintf("%s", err)
 		}
 		if match != nil {
 			lastMatch = match
 		}
 
 		// If this request failed, don't continue on to the next request
-		if !pass { break }
+		if !pass {
+			break
+		}
 	}
 
-	details = make(map[string]string)
+	details := make(map[string]string)
 	if lastMatch != nil {
-		details["matched_content"] = lastMatch
+		details["matched_content"] = *lastMatch
 	}
 
 	chk.Output <- result
 }
 
-func request(client *http.Client, def map[string]string) (bool, string, error) {
+func request(client *http.Client, def map[string]string) (bool, *string, error) {
 	// Construct URL
 	var schema string
 	if def["https"] == "true" {
@@ -101,7 +105,7 @@ func request(client *http.Client, def map[string]string) (bool, string, error) {
 	// Send request
 	resp, err := client.Do(req)
 	if err != nil {
-		return false, fmt.Errorf("Error making request: %s")
+		return false, nil, fmt.Errorf("Error making request: %s", err)
 	}
 	defer resp.Body.Close()
 
@@ -109,34 +113,33 @@ func request(client *http.Client, def map[string]string) (bool, string, error) {
 	if code, ok := def["code"]; ok {
 		codeInt, err := strconv.Atoi(code)
 		if err != nil {
-			return false, fmt.Errorf("Status code must be int: %s", code)
+			return false, nil, fmt.Errorf("Status code must be int: %s", code)
 		}
 		if resp.StatusCode != codeInt {
-			return false, fmt.Errorf("Recieved bad status code: %d", resp.StatusCode)
+			return false, nil, fmt.Errorf("Recieved bad status code: %d", resp.StatusCode)
 		}
 	}
 
 	// Check body content
 	var matchStr string
-	if content_match, ok := def["content_match"] {
+	if contentMatch, ok := def["content_match"]; ok {
 		// Read response body
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return false, fmt.Errorf("Recieved error when reading response body: %s", err)
+			return false, nil, fmt.Errorf("Recieved error when reading response body: %s", err)
 		}
-		
+
 		// Check if body matches regex
-		regex, err := regexp.Compile(content_match)
+		regex, err := regexp.Compile(contentMatch)
 		if err != nil {
-			return false, fmt.Errorf("Error compiling regex string %s : %s", content_match, err)
+			return false, nil, fmt.Errorf("Error compiling regex string %s : %s", contentMatch, err)
 		}
-		if !regex.MatchString(body) {
-			return false, fmt.Errorf("Recieved bad response body: %s", body)
-		} else {
-			matchStr = regex.FindString(body)
+		if !regex.Match(body) {
+			return false, nil, fmt.Errorf("Recieved bad response body: %s", body)
 		}
+		matchStr = fmt.Sprintf("%s", regex.Find(body))
 	}
 
 	// If we've reached this point, then the check succeeded
-	return true, matchStr, nil
+	return true, &matchStr, nil
 }
