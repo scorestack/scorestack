@@ -7,8 +7,10 @@ import (
 
 	"github.com/elastic/beats/libbeat/beat"
 	beatcommon "github.com/elastic/beats/libbeat/common"
+	"github.com/tidwall/gjson"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/http"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/noop"
 )
 
@@ -25,26 +27,21 @@ func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 
 	// Iterate over each check
 	for _, chk := range defs.Checks {
-		// Unpack definition
-		packedDef := chk["definition"].Map()
-		def := make(map[string]string)
-		for k, v := range packedDef {
-			// Render template string in value, if any
-			templ := template.Must(template.New(k).Parse(v.String()))
-			var buf bytes.Buffer
-			if err := templ.Execute(&buf, defs.Attributes[chk["id"].String()]); err != nil {
-				// TODO: pass error back through channel
-			}
-			def[k] = buf.String()
-		}
+		defs := unpackDefs(chk, defs.Attributes)
 
 		// Construct Check struct
 		chkInfo := common.Check{
-			ID:         chk["id"].String(),
-			Name:       chk["name"].String(),
-			Definition: def,
-			WaitGroup:  &events,
-			Output:     queue,
+			ID:        chk["id"].String(),
+			Name:      chk["name"].String(),
+			WaitGroup: &events,
+			Output:    queue,
+		}
+
+		// Add definitions to correct attribute in Check struct
+		if chk["definition"].IsArray() {
+			chkInfo.DefinitionList = defs
+		} else {
+			chkInfo.Definition = defs[0]
 		}
 
 		// Start check goroutine
@@ -52,6 +49,8 @@ func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 		switch chk["type"].String() {
 		case "noop":
 			go noop.Run(chkInfo)
+		case "http":
+			go http.Run(chkInfo)
 		default:
 			// We didn't start a goroutine, so the WaitGroup counter needs to be decremented.
 			// If this wasn't here, events.Wait() would hang forever if there was a check with an unknown type.
@@ -83,4 +82,38 @@ func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 		}
 		pubQueue <- event
 	}
+}
+
+func unpackDefs(check map[string]gjson.Result, attribs map[string]map[string]string) []map[string]string {
+	// The definition can be an array, so we assume it is an array.
+	// If the definition is just a map, create an array of length 1 with it.
+	var packedDefs []gjson.Result
+	if check["definition"].IsArray() {
+		packedDefs = check["definition"].Array()
+	} else {
+		packedDefs = []gjson.Result{check["definition"]}
+	}
+
+	// Unpack each definition
+	unpackedDefs := make([]map[string]string, 0)
+	for _, packedDef := range packedDefs {
+		// Template out the contents of the definition
+		def := make(map[string]string)
+		packedMap := packedDef.Map()
+		for k, v := range packedMap {
+			// Render template string in value, if any
+			templ := template.Must(template.New(k).Parse(v.String()))
+			var buf bytes.Buffer
+			err := templ.Execute(&buf, attribs[check["id"].String()])
+			if err != nil {
+				// If there was an error parsing the template, use the original string
+				def[k] = v.String()
+			} else {
+				def[k] = buf.String()
+			}
+		}
+		unpackedDefs = append(unpackedDefs, def)
+	}
+
+	return unpackedDefs
 }
