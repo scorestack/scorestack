@@ -13,9 +13,9 @@ import (
 type Definition struct {
 	ID     string // a unique identifier for this check
 	Name   string // a human-readable title for this check
-	Admin  string // contains an attribute that only admins can modify
-	User   string // contains an attribute that users can modify
-	Static string // contains no attributes
+	Admin  string // (required) contains an attribute that only admins can modify
+	User   string // (required) contains an attribute that users can modify
+	Static string // (required) contains no attributes
 }
 
 // Run a single instance of the check.
@@ -47,5 +47,32 @@ func (d Definition) Init(id string, name string, def []byte) error {
 	d.Name = name
 
 	// Unpack definition json
-	return json.Unmarshal(def, &d)
+	err := json.Unmarshal(def, &d)
+	if err != nil {
+		return err
+	}
+
+	// Make sure required fields are defined
+	missingFields := make([]string, 0)
+	if d.Admin == "" {
+		missingFields = append(missingFields, "Admin")
+	}
+
+	if d.User == "" {
+		missingFields = append(missingFields, "User")
+	}
+
+	if d.Static == "" {
+		missingFields = append(missingFields, "Static")
+	}
+
+	// Error on only the first missing field, if there are any
+	if len(missingFields) > 0 {
+		return schema.ValidationError{
+			ID:    d.ID,
+			Type:  "noop",
+			Field: missingFields[0],
+		}
+	}
+	return nil
 }
