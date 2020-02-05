@@ -7,7 +7,6 @@ import (
 
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
-	"github.com/tidwall/gjson"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/http"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/noop"
@@ -15,19 +14,19 @@ import (
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(defPass chan schema.CheckDefinitions, wg *sync.WaitGroup, pubQueue chan<- beat.Event) {
+func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan<- beat.Event) {
 	defer wg.Done()
 
 	// Recieve definitions from channel
 	defs := <-defPass
 
 	// Prepare event queue
-	queue := make(chan schema.CheckResult, len(defs.Checks))
+	queue := make(chan schema.CheckResult, len(defs))
 	var events sync.WaitGroup
 
 	// Iterate over each check
-	for _, chk := range defs.Checks {
-		defs := unpackDefs(chk, defs.Attributes)
+	for _, def := range defs {
+		check := unpackDef(def)
 
 		// Construct Check struct
 		chkInfo := schema.Check{
@@ -84,36 +83,30 @@ func RunChecks(defPass chan schema.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 	}
 }
 
-func unpackDefs(check map[string]gjson.Result, attribs map[string]map[string]string) []map[string]string {
-	// The definition can be an array, so we assume it is an array.
-	// If the definition is just a map, create an array of length 1 with it.
-	var packedDefs []gjson.Result
-	if check["definition"].IsArray() {
-		packedDefs = check["definition"].Array()
+func unpackDef(c schema.CheckDef) schema.Check {
+	// Render any template strings in the definition
+	var renderedJSON []byte
+	templ := template.Must(template.New("definition").Parse(string(c.Definition)))
+	var buf bytes.Buffer
+	err := templ.Execute(&buf, c.Attribs)
+	if err != nil {
+		// If there was an error parsing the template, use the original string
+		renderedJSON = c.Definition
 	} else {
-		packedDefs = []gjson.Result{check["definition"]}
+		renderedJSON = buf.Bytes()
 	}
 
-	// Unpack each definition
-	unpackedDefs := make([]map[string]string, 0)
-	for _, packedDef := range packedDefs {
-		// Template out the contents of the definition
-		def := make(map[string]string)
-		packedMap := packedDef.Map()
-		for k, v := range packedMap {
-			// Render template string in value, if any
-			templ := template.Must(template.New(k).Parse(v.String()))
-			var buf bytes.Buffer
-			err := templ.Execute(&buf, attribs[check["id"].String()])
-			if err != nil {
-				// If there was an error parsing the template, use the original string
-				def[k] = v.String()
-			} else {
-				def[k] = buf.String()
-			}
-		}
-		unpackedDefs = append(unpackedDefs, def)
+	// Create a Definition from the rendered JSON string
+	var def schema.Check
+	switch c.Type {
+	case "noop":
+		def = noop.Definition{}
+		def.Init(c.ID, c.Name, renderedJSON)
+	case "http":
+		def = http.Definition{}
+		def.Init(c.ID, c.Name, renderedJSON)
+	default:
 	}
 
-	return unpackedDefs
+	return def
 }

@@ -28,11 +28,19 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckDef, erro
 		// We can assume that the JSON can be unmarshalled, because the JSON
 		// was created with json.Marshal()
 		_ = json.Unmarshal(check, &checkMap)
+
+		// Re-encode definition to JSON string
+		def, err := json.Marshal(checkMap["definition"])
+		if err != nil {
+			return nil, fmt.Errorf("Error encoding definition as JSON: %s", err)
+		}
+
 		result := schema.CheckDef{
-			ID:      checkMap["id"].(string),
-			Name:    checkMap["name"].(string),
-			Type:    checkMap["type"].(string),
-			Attribs: make(map[string]string),
+			ID:         checkMap["id"].(string),
+			Name:       checkMap["name"].(string),
+			Type:       checkMap["type"].(string),
+			Definition: def,
+			Attribs:    make(map[string]string),
 		}
 
 		// Get any template variables for the check
