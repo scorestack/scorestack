@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/tidwall/gjson"
@@ -41,33 +42,30 @@ type Request struct {
 	SaveMatchedContent bool              // (optional, default false) whether the matched content should be returned in the CheckResult
 }
 
-// Run : Execute the check
-func Run(chk schema.Check) {
-	defer chk.WaitGroup.Done()
+// Run a single instance of the check.
+func (d Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+	defer wg.Done()
 
 	// Set up result
 	result := schema.CheckResult{
-		Timestamp: time.Now(), // TODO: track how long each check takes
-		ID:        chk.ID,
-		Name:      chk.Name,
+		Timestamp: time.Now(),
+		ID:        d.ID,
+		Name:      d.Name,
 		CheckType: "http",
-		Passed:    false,
-		Message:   "",
-		Details:   nil,
 	}
 
 	// Configure HTTP client
 	cookieJar, err := cookiejar.New(nil)
 	if err != nil {
 		result.Message = "Could not create CookieJar"
-		chk.Output <- result
+		out <- result
 		return
 	}
 	client := &http.Client{
 		Jar: cookieJar,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: chk.DefinitionList[0]["verify"] == "false", // TODO: document this
+				InsecureSkipVerify: !d.Verify,
 			},
 		},
 	}
@@ -76,8 +74,8 @@ func Run(chk schema.Check) {
 	var lastMatch *string
 
 	// Make each request in the list
-	for _, def := range chk.DefinitionList {
-		pass, match, err := request(client, def)
+	for _, r := range d.Requests {
+		pass, match, err := request(client, r)
 
 		// Process request results
 		result.Passed = pass
@@ -100,7 +98,7 @@ func Run(chk schema.Check) {
 	}
 	result.Details = details
 
-	chk.Output <- result
+	out <- result
 }
 
 func request(client *http.Client, def map[string]string) (bool, *string, error) {
