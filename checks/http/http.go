@@ -19,8 +19,14 @@ import (
 
 // The Definition configures the behavior of an HTTP check.
 type Definition struct {
-	ID                 string            // a unique identifier for this check
-	Name               string            // a human-readable title for this check
+	ID       string    // a unique identifier for this check
+	Name     string    // a human-readable title for this check
+	Verify   bool      // (optional, default false) whether HTTPS certs should be validated
+	Requests []Request // a list of requests to make
+}
+
+// A Request represents a single HTTP request to make.
+type Request struct {
 	Host               string            // (required) IP or FQDN of the HTTP server
 	Path               string            // (required) path to request - see RFC3986, section 3.3
 	HTTPS              bool              // (optional, default false) if HTTPS is to be used
@@ -28,7 +34,6 @@ type Definition struct {
 	Method             string            // (optional, default `GET`) HTTP method to use
 	Headers            map[string]string // (optional, default empty) name-value pairs of header fields to add/override
 	Body               string            // (optional, default empty) the request body
-	Verify             bool              // (optional, default false) whether HTTPS certs should be verified
 	MatchCode          bool              // (optional, default false) whether the response code must match a defined value for the check to pass
 	Code               uint16            // (optional, default 200) the response status code to match
 	MatchContent       bool              // (optional, default false) whether the response body must match a defined regex for the check to pass
@@ -178,30 +183,34 @@ func (d Definition) Init(id string, name string, def []byte) error {
 		return err
 	}
 
-	// Set nonzero default values
-	d.Port = 80
-	d.Method = "GET"
-	d.Headers = make(map[string]string)
-	d.Code = 200
-	d.ContentRegex = ".*"
+	// Finish initializing each request
+	for _, r := range d.Requests {
+		// Set nonzero default values
+		r.Port = 80
+		r.Method = "GET"
+		r.Headers = make(map[string]string)
+		r.Code = 200
+		r.ContentRegex = ".*"
 
-	// Make sure required fields are defined
-	missingFields := make([]string, 0)
-	if d.Host == "" {
-		missingFields = append(missingFields, "Host")
-	}
+		// Make sure required fields are defined
+		missingFields := make([]string, 0)
+		if r.Host == "" {
+			missingFields = append(missingFields, "Host")
+		}
 
-	if d.Path == "" {
-		missingFields = append(missingFields, "Path")
-	}
+		if r.Path == "" {
+			missingFields = append(missingFields, "Path")
+		}
 
-	// Error on only the first missing field, if there are any
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.ID,
-			Type:  "http",
-			Field: missingFields[0],
+		// Error on only the first missing field, if there are any
+		if len(missingFields) > 0 {
+			return schema.ValidationError{
+				ID:    d.ID,
+				Type:  "http",
+				Field: missingFields[0],
+			}
 		}
 	}
+
 	return nil
 }
