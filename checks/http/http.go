@@ -2,6 +2,7 @@ package http
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -15,6 +16,25 @@ import (
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
+
+// The Definition configures the behavior of an HTTP check.
+type Definition struct {
+	ID                 string            // a unique identifier for this check
+	Name               string            // a human-readable title for this check
+	Host               string            // (required) IP or FQDN of the HTTP server
+	Path               string            // (required) path to request - see RFC3986, section 3.3
+	HTTPS              bool              // (optional, default false) if HTTPS is to be used
+	Port               uint16            // (optional, default 80) TCP port number the HTTP server is listening on
+	Method             string            // (optional, default `GET`) HTTP method to use
+	Headers            map[string]string // (optional, default empty) name-value pairs of header fields to add/override
+	Body               string            // (optional, default empty) the request body
+	Verify             bool              // (optional, default false) whether HTTPS certs should be verified
+	MatchCode          bool              // (optional, default false) whether the response code must match a defined value for the check to pass
+	Code               uint16            // (optional, default 200) the response status code to match
+	MatchContent       bool              // (optional, default false) whether the response body must match a defined regex for the check to pass
+	ContentRegex       string            // (optional, default `.*`) regex for the response body to match
+	SaveMatchedContent bool              // (optional, default false) whether the matched content should be returned in the CheckResult
+}
 
 // Run : Execute the check
 func Run(chk schema.Check) {
@@ -143,4 +163,45 @@ func request(client *http.Client, def map[string]string) (bool, *string, error) 
 
 	// If we've reached this point, then the check succeeded
 	return true, &matchStr, nil
+}
+
+// Init the check using a known ID and name. The rest of the check fields will
+// be filled in by parsing a JSON string representing the check definition.
+func (d Definition) Init(id string, name string, def []byte) error {
+	// Set ID and name attributes
+	d.ID = id
+	d.Name = name
+
+	// Unpack definition json
+	err := json.Unmarshal(def, &d)
+	if err != nil {
+		return err
+	}
+
+	// Set nonzero default values
+	d.Port = 80
+	d.Method = "GET"
+	d.Headers = make(map[string]string)
+	d.Code = 200
+	d.ContentRegex = ".*"
+
+	// Make sure required fields are defined
+	missingFields := make([]string, 0)
+	if d.Host == "" {
+		missingFields = append(missingFields, "Host")
+	}
+
+	if d.Path == "" {
+		missingFields = append(missingFields, "Path")
+	}
+
+	// Error on only the first missing field, if there are any
+	if len(missingFields) > 0 {
+		return schema.ValidationError{
+			ID:    d.ID,
+			Type:  "http",
+			Field: missingFields[0],
+		}
+	}
+	return nil
 }
