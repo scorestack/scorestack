@@ -30,7 +30,7 @@ func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan
 
 		// Start check goroutine
 		events.Add(1)
-		check.Run(wg, queue)
+		check.Run(&events, queue)
 	}
 	// Send definitions back through channel
 	defPass <- defs
