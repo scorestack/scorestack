@@ -8,12 +8,9 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"regexp"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/tidwall/gjson"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
@@ -36,7 +33,7 @@ type Request struct {
 	Headers            map[string]string // (optional, default empty) name-value pairs of header fields to add/override
 	Body               string            // (optional, default empty) the request body
 	MatchCode          bool              // (optional, default false) whether the response code must match a defined value for the check to pass
-	Code               uint16            // (optional, default 200) the response status code to match
+	Code               int               // (optional, default 200) the response status code to match
 	MatchContent       bool              // (optional, default false) whether the response body must match a defined regex for the check to pass
 	ContentRegex       string            // (optional, default `.*`) regex for the response body to match
 	SaveMatchedContent bool              // (optional, default false) whether the matched content should be returned in the CheckResult
@@ -101,29 +98,22 @@ func (d Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	out <- result
 }
 
-func request(client *http.Client, def map[string]string) (bool, *string, error) {
+func request(client *http.Client, r Request) (bool, *string, error) {
 	// Construct URL
 	var schema string
-	if def["https"] == "true" {
+	if r.HTTPS {
 		schema = "https"
 	} else {
 		schema = "http"
 	}
-	port := ""
-	if portStr, ok := def["port"]; ok {
-		port = fmt.Sprintf(":%s", portStr)
-	}
-	url := fmt.Sprintf("%s://%s%s%s", schema, def["host"], port, def["path"])
+	url := fmt.Sprintf("%s://%s:%d%s", schema, r.Host, r.Port, r.Path)
 
 	// Construct request
-	req, err := http.NewRequest(def["method"], url, strings.NewReader(def["body"]))
+	req, err := http.NewRequest(r.Method, url, strings.NewReader(r.Body))
 
 	// Add headers
-	if gjson.Valid(def["headers"]) {
-		headers := gjson.Parse(def["headers"]).Map()
-		for k, v := range headers {
-			req.Header[k] = []string{v.String()}
-		}
+	for k, v := range r.Headers {
+		req.Header[k] = []string{v}
 	}
 
 	// Send request
@@ -134,19 +124,13 @@ func request(client *http.Client, def map[string]string) (bool, *string, error) 
 	defer resp.Body.Close()
 
 	// Check status code
-	if code, ok := def["code"]; ok {
-		codeInt, err := strconv.Atoi(code)
-		if err != nil {
-			return false, nil, fmt.Errorf("Status code must be int: %s", code)
-		}
-		if resp.StatusCode != codeInt {
-			return false, nil, fmt.Errorf("Recieved bad status code: %d", resp.StatusCode)
-		}
+	if r.MatchCode && resp.StatusCode != r.Code {
+		return false, nil, fmt.Errorf("Recieved bad status code: %d", resp.StatusCode)
 	}
 
 	// Check body content
 	var matchStr string
-	if contentMatch, ok := def["content_match"]; ok {
+	if r.MatchContent {
 		// Read response body
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
@@ -154,9 +138,9 @@ func request(client *http.Client, def map[string]string) (bool, *string, error) 
 		}
 
 		// Check if body matches regex
-		regex, err := regexp.Compile(contentMatch)
+		regex, err := regexp.Compile(r.ContentRegex)
 		if err != nil {
-			return false, nil, fmt.Errorf("Error compiling regex string %s : %s", contentMatch, err)
+			return false, nil, fmt.Errorf("Error compiling regex string %s : %s", r.ContentRegex, err)
 		}
 		if !regex.Match(body) {
 			return false, nil, fmt.Errorf("recieved bad response body")
