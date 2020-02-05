@@ -7,6 +7,11 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+type Check interface {
+	Run(wg *sync.WaitGroup, out chan<- CheckResult)
+	Init(id string, name string, def string) error
+}
+
 // CheckResult : Information about the results of executing a check.
 type CheckResult struct {
 	Timestamp time.Time
