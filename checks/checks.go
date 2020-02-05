@@ -28,36 +28,9 @@ func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan
 	for _, def := range defs {
 		check := unpackDef(def)
 
-		// Construct Check struct
-		chkInfo := schema.Check{
-			ID:        chk["id"].String(),
-			Name:      chk["name"].String(),
-			WaitGroup: &events,
-			Output:    queue,
-		}
-
-		// Add definitions to correct attribute in Check struct
-		if chk["definition"].IsArray() {
-			chkInfo.DefinitionList = defs
-		} else {
-			chkInfo.Definition = defs[0]
-		}
-
 		// Start check goroutine
 		events.Add(1)
-		switch chk["type"].String() {
-		case "noop":
-			go noop.Run(chkInfo)
-		case "http":
-			go http.Run(chkInfo)
-		default:
-			// We didn't start a goroutine, so the WaitGroup counter needs to be decremented.
-			// If this wasn't here, events.Wait() would hang forever if there was a check with an unknown type.
-			// This also allows us to have only one events.Add(1) at the beginning of the switch/case.
-			// Otherwise, we would have to add a events.Add(1) to each case.
-			events.Done()
-		}
-
+		check.Run(wg, queue)
 	}
 	// Send definitions back through channel
 	defPass <- defs

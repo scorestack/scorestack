@@ -81,7 +81,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 	go publishEvents(bt.client, pubQueue, published)
 
 	// Get initial check definitions
-	defs, err := esclient.UpdateCheckDefinitions(bt.es, bt.config.CheckSource.Index)
+	defs, err := esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
 	if err != nil {
 		return err
 	}
@@ -105,14 +105,14 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			return nil
 		case <-updateTicker.C:
 			// Update the check definitions
-			defs, err = esclient.UpdateCheckDefinitions(bt.es, bt.config.CheckSource.Index)
+			defs, err = esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
 			if err != nil {
 				return err
 			}
 			logp.Info("Updated check definitions")
 		case <-ticker.C:
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
-			defPass := make(chan schema.CheckDefinitions)
+			defPass := make(chan []schema.CheckDefs)
 
 			// Start the goroutine
 			wg.Add(1)
