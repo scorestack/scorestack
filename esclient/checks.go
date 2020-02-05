@@ -5,12 +5,12 @@ import (
 
 	"github.com/elastic/go-elasticsearch"
 
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
 
 // UpdateCheckDefinitions : Re-read check definitions and attributes from Elasticsearch.
-func UpdateCheckDefinitions(c *elasticsearch.Client, i string) (common.CheckDefinitions, error) {
-	var result common.CheckDefinitions
+func UpdateCheckDefinitions(c *elasticsearch.Client, i string) (schema.CheckDefinitions, error) {
+	var result schema.CheckDefinitions
 
 	// Get list of checks
 	checks, err := GetAllDocuments(c, i)
@@ -48,7 +48,7 @@ func UpdateCheckDefinitions(c *elasticsearch.Client, i string) (common.CheckDefi
 		allAttribs[id] = attribs
 	}
 
-	result = common.CheckDefinitions{
+	result = schema.CheckDefinitions{
 		Checks:     checks,
 		Attributes: allAttribs,
 	}

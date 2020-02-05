@@ -4,11 +4,11 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
 
 // Run : Execute the check
-func Run(chk common.Check) {
+func Run(chk schema.Check) {
 	defer chk.WaitGroup.Done()
 
 	// Render the message string
@@ -20,7 +20,7 @@ func Run(chk common.Check) {
 		message = append(message, ",")
 	}
 
-	result := common.CheckResult{
+	result := schema.CheckResult{
 		Timestamp: time.Now(),
 		ID:        chk.ID,
 		Name:      chk.Name,

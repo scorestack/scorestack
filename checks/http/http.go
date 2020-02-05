@@ -13,15 +13,15 @@ import (
 
 	"github.com/tidwall/gjson"
 
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
 
 // Run : Execute the check
-func Run(chk common.Check) {
+func Run(chk schema.Check) {
 	defer chk.WaitGroup.Done()
 
 	// Set up result
-	result := common.CheckResult{
+	result := schema.CheckResult{
 		Timestamp: time.Now(), // TODO: track how long each check takes
 		ID:        chk.ID,
 		Name:      chk.Name,

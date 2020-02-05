@@ -6,23 +6,23 @@ import (
 	"sync"
 
 	"github.com/elastic/beats/libbeat/beat"
-	beatcommon "github.com/elastic/beats/libbeat/common"
+	"github.com/elastic/beats/libbeat/common"
 	"github.com/tidwall/gjson"
 
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/http"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/noop"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueue chan<- beat.Event) {
+func RunChecks(defPass chan schema.CheckDefinitions, wg *sync.WaitGroup, pubQueue chan<- beat.Event) {
 	defer wg.Done()
 
 	// Recieve definitions from channel
 	defs := <-defPass
 
 	// Prepare event queue
-	queue := make(chan common.CheckResult, len(defs.Checks))
+	queue := make(chan schema.CheckResult, len(defs.Checks))
 	var events sync.WaitGroup
 
 	// Iterate over each check
@@ -30,7 +30,7 @@ func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 		defs := unpackDefs(chk, defs.Attributes)
 
 		// Construct Check struct
-		chkInfo := common.Check{
+		chkInfo := schema.Check{
 			ID:        chk["id"].String(),
 			Name:      chk["name"].String(),
 			WaitGroup: &events,
@@ -70,7 +70,7 @@ func RunChecks(defPass chan common.CheckDefinitions, wg *sync.WaitGroup, pubQueu
 		// Publish check results
 		event := beat.Event{
 			Timestamp: result.Timestamp,
-			Fields: beatcommon.MapStr{
+			Fields: common.MapStr{
 				"type":       "dynamicbeat",
 				"id":         result.ID,
 				"name":       result.Name,
