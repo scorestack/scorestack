@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 	"sync"
+	"time"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
@@ -22,12 +23,12 @@ func (d Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	result := schema.CheckResult{
-		Timestamp: time.now(),
+		Timestamp: time.Now(),
 		ID:        d.ID,
 		Name:      d.Name,
 		CheckType: "noop",
 		Passed:    true,
-		Message:   strings.Join([]string{d.Admin, d.User, d.Static}),
+		Message:   strings.Join([]string{d.Admin, d.User, d.Static}, "; "),
 		Details: map[string]string{
 			"Admin":  d.Admin,
 			"User":   d.User,
