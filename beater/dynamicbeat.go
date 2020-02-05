@@ -112,7 +112,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			logp.Info("Updated check definitions")
 		case <-ticker.C:
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
-			defPass := make(chan []schema.CheckDefs)
+			defPass := make(chan []schema.CheckDef)
 
 			// Start the goroutine
 			wg.Add(1)
