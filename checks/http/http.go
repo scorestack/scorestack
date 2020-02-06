@@ -40,7 +40,7 @@ type Request struct {
 }
 
 // Run a single instance of the check.
-func (d Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Set up result
@@ -154,7 +154,7 @@ func request(client *http.Client, r Request) (bool, *string, error) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d Definition) Init(id string, name string, def []byte) error {
+func (d *Definition) Init(id string, name string, def []byte) error {
 	// Set ID and name attributes
 	d.ID = id
 	d.Name = name
@@ -164,6 +164,7 @@ func (d Definition) Init(id string, name string, def []byte) error {
 	if err != nil {
 		return err
 	}
+	// TODO: set verify value
 
 	// Finish initializing each request
 	for _, r := range d.Requests {

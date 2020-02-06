@@ -11,15 +11,14 @@ import (
 
 // The Definition configures the behavior of a Noop check.
 type Definition struct {
-	ID     string // a unique identifier for this check
-	Name   string // a human-readable title for this check
-	Admin  string // (required) contains an attribute that only admins can modify
-	User   string // (required) contains an attribute that users can modify
-	Static string // (required) contains no attributes
+	ID      string // a unique identifier for this check
+	Name    string // a human-readable title for this check
+	Dynamic string // (required) contains attributes that can be modified by admins or users
+	Static  string // (required) contains no attributes
 }
 
 // Run a single instance of the check.
-func (d Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	result := schema.CheckResult{
@@ -28,11 +27,10 @@ func (d Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		Name:      d.Name,
 		CheckType: "noop",
 		Passed:    true,
-		Message:   strings.Join([]string{d.Admin, d.User, d.Static}, "; "),
+		Message:   strings.Join([]string{d.Dynamic, d.Static}, "; "),
 		Details: map[string]string{
-			"Admin":  d.Admin,
-			"User":   d.User,
-			"Static": d.Static,
+			"Dynamic": d.Dynamic,
+			"Static":  d.Static,
 		},
 	}
 
@@ -41,25 +39,21 @@ func (d Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d Definition) Init(id string, name string, def []byte) error {
-	// Set ID and name attributes
-	d.ID = id
-	d.Name = name
-
+func (d *Definition) Init(id string, name string, def []byte) error {
 	// Unpack definition json
 	err := json.Unmarshal(def, &d)
 	if err != nil {
 		return err
 	}
 
+	// Set ID and name attributes
+	d.ID = id
+	d.Name = name
+
 	// Make sure required fields are defined
 	missingFields := make([]string, 0)
-	if d.Admin == "" {
-		missingFields = append(missingFields, "Admin")
-	}
-
-	if d.User == "" {
-		missingFields = append(missingFields, "User")
+	if d.Dynamic == "" {
+		missingFields = append(missingFields, "Dynamic")
 	}
 
 	if d.Static == "" {

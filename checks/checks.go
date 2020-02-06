@@ -73,10 +73,10 @@ func unpackDef(c schema.CheckDef) schema.Check {
 	var def schema.Check
 	switch c.Type {
 	case "noop":
-		def = noop.Definition{}
+		def = &noop.Definition{}
 		def.Init(c.ID, c.Name, renderedJSON)
 	case "http":
-		def = http.Definition{}
+		def = &http.Definition{}
 		def.Init(c.ID, c.Name, renderedJSON)
 	default:
 	}
