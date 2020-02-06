@@ -160,7 +160,7 @@ func (d *Definition) Init(id string, name string, def []byte) error {
 	d.Name = name
 
 	// Unpack definition json
-	err := json.Unmarshal(def, &d)
+	err := json.Unmarshal(def, &d.Requests)
 	if err != nil {
 		return err
 	}
