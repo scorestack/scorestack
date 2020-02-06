@@ -2,47 +2,67 @@ package http
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
 	"regexp"
-	"strconv"
 	"strings"
+	"sync"
 	"time"
 
-	"github.com/tidwall/gjson"
-
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
 
-// Run : Execute the check
-func Run(chk common.Check) {
-	defer chk.WaitGroup.Done()
+// The Definition configures the behavior of an HTTP check.
+type Definition struct {
+	ID       string    // a unique identifier for this check
+	Name     string    // a human-readable title for this check
+	Verify   bool      // (optional, default false) whether HTTPS certs should be validated
+	Requests []Request // a list of requests to make
+}
+
+// A Request represents a single HTTP request to make.
+type Request struct {
+	Host               string            // (required) IP or FQDN of the HTTP server
+	Path               string            // (required) path to request - see RFC3986, section 3.3
+	HTTPS              bool              // (optional, default false) if HTTPS is to be used
+	Port               uint16            // (optional, default 80) TCP port number the HTTP server is listening on
+	Method             string            // (optional, default `GET`) HTTP method to use
+	Headers            map[string]string // (optional, default empty) name-value pairs of header fields to add/override
+	Body               string            // (optional, default empty) the request body
+	MatchCode          bool              // (optional, default false) whether the response code must match a defined value for the check to pass
+	Code               int               // (optional, default 200) the response status code to match
+	MatchContent       bool              // (optional, default false) whether the response body must match a defined regex for the check to pass
+	ContentRegex       string            // (optional, default `.*`) regex for the response body to match
+	SaveMatchedContent bool              // (optional, default false) whether the matched content should be returned in the CheckResult
+}
+
+// Run a single instance of the check.
+func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+	defer wg.Done()
 
 	// Set up result
-	result := common.CheckResult{
-		Timestamp: time.Now(), // TODO: track how long each check takes
-		ID:        chk.ID,
-		Name:      chk.Name,
+	result := schema.CheckResult{
+		Timestamp: time.Now(),
+		ID:        d.ID,
+		Name:      d.Name,
 		CheckType: "http",
-		Passed:    false,
-		Message:   "",
-		Details:   nil,
 	}
 
 	// Configure HTTP client
 	cookieJar, err := cookiejar.New(nil)
 	if err != nil {
 		result.Message = "Could not create CookieJar"
-		chk.Output <- result
+		out <- result
 		return
 	}
 	client := &http.Client{
 		Jar: cookieJar,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: chk.DefinitionList[0]["verify"] == "false", // TODO: document this
+				InsecureSkipVerify: !d.Verify,
 			},
 		},
 	}
@@ -51,8 +71,8 @@ func Run(chk common.Check) {
 	var lastMatch *string
 
 	// Make each request in the list
-	for _, def := range chk.DefinitionList {
-		pass, match, err := request(client, def)
+	for _, r := range d.Requests {
+		pass, match, err := request(client, r)
 
 		// Process request results
 		result.Passed = pass
@@ -75,32 +95,25 @@ func Run(chk common.Check) {
 	}
 	result.Details = details
 
-	chk.Output <- result
+	out <- result
 }
 
-func request(client *http.Client, def map[string]string) (bool, *string, error) {
+func request(client *http.Client, r Request) (bool, *string, error) {
 	// Construct URL
 	var schema string
-	if def["https"] == "true" {
+	if r.HTTPS {
 		schema = "https"
 	} else {
 		schema = "http"
 	}
-	port := ""
-	if portStr, ok := def["port"]; ok {
-		port = fmt.Sprintf(":%s", portStr)
-	}
-	url := fmt.Sprintf("%s://%s%s%s", schema, def["host"], port, def["path"])
+	url := fmt.Sprintf("%s://%s:%d%s", schema, r.Host, r.Port, r.Path)
 
 	// Construct request
-	req, err := http.NewRequest(def["method"], url, strings.NewReader(def["body"]))
+	req, err := http.NewRequest(r.Method, url, strings.NewReader(r.Body))
 
 	// Add headers
-	if gjson.Valid(def["headers"]) {
-		headers := gjson.Parse(def["headers"]).Map()
-		for k, v := range headers {
-			req.Header[k] = []string{v.String()}
-		}
+	for k, v := range r.Headers {
+		req.Header[k] = []string{v}
 	}
 
 	// Send request
@@ -111,19 +124,13 @@ func request(client *http.Client, def map[string]string) (bool, *string, error) 
 	defer resp.Body.Close()
 
 	// Check status code
-	if code, ok := def["code"]; ok {
-		codeInt, err := strconv.Atoi(code)
-		if err != nil {
-			return false, nil, fmt.Errorf("Status code must be int: %s", code)
-		}
-		if resp.StatusCode != codeInt {
-			return false, nil, fmt.Errorf("Recieved bad status code: %d", resp.StatusCode)
-		}
+	if r.MatchCode && resp.StatusCode != r.Code {
+		return false, nil, fmt.Errorf("Recieved bad status code: %d", resp.StatusCode)
 	}
 
 	// Check body content
 	var matchStr string
-	if contentMatch, ok := def["content_match"]; ok {
+	if r.MatchContent {
 		// Read response body
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
@@ -131,9 +138,9 @@ func request(client *http.Client, def map[string]string) (bool, *string, error) 
 		}
 
 		// Check if body matches regex
-		regex, err := regexp.Compile(contentMatch)
+		regex, err := regexp.Compile(r.ContentRegex)
 		if err != nil {
-			return false, nil, fmt.Errorf("Error compiling regex string %s : %s", contentMatch, err)
+			return false, nil, fmt.Errorf("Error compiling regex string %s : %s", r.ContentRegex, err)
 		}
 		if !regex.Match(body) {
 			return false, nil, fmt.Errorf("recieved bad response body")
@@ -143,4 +150,50 @@ func request(client *http.Client, def map[string]string) (bool, *string, error) 
 
 	// If we've reached this point, then the check succeeded
 	return true, &matchStr, nil
+}
+
+// Init the check using a known ID and name. The rest of the check fields will
+// be filled in by parsing a JSON string representing the check definition.
+func (d *Definition) Init(id string, name string, def []byte) error {
+	// Set ID and name attributes
+	d.ID = id
+	d.Name = name
+
+	// Unpack definition json
+	err := json.Unmarshal(def, &d.Requests)
+	if err != nil {
+		return err
+	}
+	// TODO: set verify value
+
+	// Finish initializing each request
+	for _, r := range d.Requests {
+		// Set nonzero default values
+		r.Port = 80
+		r.Method = "GET"
+		r.Headers = make(map[string]string)
+		r.Code = 200
+		r.ContentRegex = ".*"
+
+		// Make sure required fields are defined
+		missingFields := make([]string, 0)
+		if r.Host == "" {
+			missingFields = append(missingFields, "Host")
+		}
+
+		if r.Path == "" {
+			missingFields = append(missingFields, "Path")
+		}
+
+		// Error on only the first missing field, if there are any
+		if len(missingFields) > 0 {
+			return schema.ValidationError{
+				ID:    d.ID,
+				Type:  "http",
+				Field: missingFields[0],
+			}
+		}
+	}
+
+	return nil
 }

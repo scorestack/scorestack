@@ -11,12 +11,12 @@ import (
 	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
-	beatcommon "github.com/elastic/beats/libbeat/common"
+	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/go-elasticsearch"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks"
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/common"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/config"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/esclient"
 )
@@ -30,7 +30,7 @@ type Dynamicbeat struct {
 }
 
 // New creates an instance of dynamicbeat.
-func New(b *beat.Beat, cfg *beatcommon.Config) (beat.Beater, error) {
+func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	c := config.DefaultConfig
 	if err := cfg.Unpack(&c); err != nil {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
@@ -81,7 +81,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 	go publishEvents(bt.client, pubQueue, published)
 
 	// Get initial check definitions
-	defs, err := esclient.UpdateCheckDefinitions(bt.es, bt.config.CheckSource.Index)
+	defs, err := esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
 	if err != nil {
 		return err
 	}
@@ -105,14 +105,14 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			return nil
 		case <-updateTicker.C:
 			// Update the check definitions
-			defs, err = esclient.UpdateCheckDefinitions(bt.es, bt.config.CheckSource.Index)
+			defs, err = esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
 			if err != nil {
 				return err
 			}
 			logp.Info("Updated check definitions")
 		case <-ticker.C:
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
-			defPass := make(chan common.CheckDefinitions)
+			defPass := make(chan []schema.CheckDef)
 
 			// Start the goroutine
 			wg.Add(1)
