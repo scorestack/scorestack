@@ -2,7 +2,11 @@ package icmp
 
 import (
 	"encoding/json"
+	"fmt"
 	"sync"
+	"time"
+
+	"github.com/sparrc/go-ping"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
@@ -16,8 +20,42 @@ type Definition struct {
 	Count int    // (opitonal, default=1) The number of ICMP requests to send per check
 }
 
+// Run a single instance of the check
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+	defer wg.Done()
 
+	// Set up result
+	result := schema.CheckResult{
+		Timestamp: time.Now(),
+		ID:        d.ID,
+		Name:      d.Name,
+		CheckType: "icmp",
+	}
+
+	// Create pinger
+	pinger, err := ping.NewPinger(d.IP)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error creating pinger: %s", err)
+		out <- result
+	}
+
+	// Send ping
+	pinger.Count = d.Count
+	pinger.Timeout = 5 * time.Second
+	pinger.Run()
+
+	stats := pinger.Statistics()
+
+	// Check for failure of ICMP
+	if stats.PacketsRecv != d.Count {
+		result.Message = fmt.Sprintf("FAILED: Not all pings made it back! Received %d out of %d", stats.PacketsRecv, stats.PacketsSent)
+		out <- result
+		return
+	}
+
+	// If we make it here the check passes
+	result.Message = fmt.Sprintf("SUCCESS")
+	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
