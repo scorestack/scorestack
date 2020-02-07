@@ -49,12 +49,14 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	// Check for failure of ICMP
 	if stats.PacketsRecv != d.Count {
 		result.Message = fmt.Sprintf("FAILED: Not all pings made it back! Received %d out of %d", stats.PacketsRecv, stats.PacketsSent)
+		result.Passed = false
 		out <- result
 		return
 	}
 
 	// If we make it here the check passes
 	result.Message = fmt.Sprintf("SUCCESS")
+	result.Passed = true
 	out <- result
 }
 
