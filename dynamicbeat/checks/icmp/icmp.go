@@ -8,7 +8,7 @@ import (
 
 	"github.com/sparrc/go-ping"
 
-	"github.com/newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
 // The Definition configures the behavior of the ICMP check

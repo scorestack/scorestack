@@ -8,10 +8,10 @@ import (
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 
-	"github.com/newman/scorestack/dynamicbeat/checks/http"
-	"github.com/newman/scorestack/dynamicbeat/checks/icmp"
-	"github.com/newman/scorestack/dynamicbeat/checks/noop"
-	"github.com/newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/http"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/icmp"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/noop"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.

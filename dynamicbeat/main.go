@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/newman/scorestack/dynamicbeat/cmd"
+	"github.com/s-newman/scorestack/dynamicbeat/cmd"
 
-	_ "github.com/newman/scorestack/dynamicbeat/include"
+	_ "github.com/s-newman/scorestack/dynamicbeat/include"
 )
 
 func main() {

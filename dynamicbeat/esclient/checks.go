@@ -7,7 +7,7 @@ import (
 
 	"github.com/elastic/go-elasticsearch"
 
-	"github.com/newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
 // UpdateCheckDefs will re-read all check definitions from a single index and

@@ -6,7 +6,7 @@ import (
 	"flag"
 	"testing"
 
-	"github.com/newman/scorestack/dynamicbeat/cmd"
+	"github.com/s-newman/scorestack/dynamicbeat/cmd"
 )
 
 var systemTest *bool
