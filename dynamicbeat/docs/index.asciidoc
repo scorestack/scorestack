@@ -1,0 +1,5 @@
+= Dynamicbeat Docs
+
+Welcome to the Dynamicbeat documentation.
+
+
