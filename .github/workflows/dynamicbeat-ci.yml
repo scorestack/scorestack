@@ -5,11 +5,12 @@ on: [push]
 
 env:
   GITHUB_WORKSPACE: '/home/runner/go/src/github.com/s-newman'
+  GOPATH: 'home/runner/go'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd dynamicbeat && go get -v -t -d ./...
+      - run: echo $PWD && cd dynamicbeat && go get -v -t -d ./...
       - run: cd dynamicbeat && make
