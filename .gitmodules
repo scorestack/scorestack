@@ -1,3 +1,0 @@
-[submodule "dynamicbeat"]
-	path = dynamicbeat
-	url = https://gitlab.ritsec.cloud/newman/dynamicbeat
