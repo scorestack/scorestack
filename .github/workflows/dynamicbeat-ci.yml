@@ -23,8 +23,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: 'src/github.com/s-newman/scorestack'
-      - run: |
+      - name: Build dynamicbeat
+        run: |
           cd src/github.com/s-newman/scorestack/dynamicbeat
           go get ./...
           make setup
           mage build
+      - name: Run dynamicbeat
+        run: |
+          cd src/github.com/s-newman/scorestack/dynamicbeat
+          ./dynamicbeat version
