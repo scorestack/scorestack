@@ -9,6 +9,7 @@ import (
 	"github.com/elastic/beats/libbeat/common"
 
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/http"
+	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/icmp"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/noop"
 	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
 )
@@ -77,6 +78,9 @@ func unpackDef(c schema.CheckDef) schema.Check {
 		def.Init(c.ID, c.Name, renderedJSON)
 	case "http":
 		def = &http.Definition{}
+		def.Init(c.ID, c.Name, renderedJSON)
+	case "icmp":
+		def = &icmp.Definition{}
 		def.Init(c.ID, c.Name, renderedJSON)
 	default:
 	}
