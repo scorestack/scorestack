@@ -1,0 +1,8 @@
+{
+    "id": "icmp-example",
+    "name": "Example ICMP check",
+    "type": "icmp",
+    "definition": {
+        "ip": "{{.Host}}"
+    }
+}
