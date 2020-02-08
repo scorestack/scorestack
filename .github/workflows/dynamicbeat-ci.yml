@@ -3,14 +3,28 @@ name: Dynamicbeat CI
 
 on: [push]
 
-env:
-  GITHUB_WORKSPACE: '/home/runner/go/src/github.com/s-newman'
-  GOPATH: 'home/runner/go'
-
 jobs:
   build:
+    env:
+      GOPATH: '/home/runner/work/scorestack/scorestack'
+      PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/runner/work/scorestack/scorestack/bin'
+      VIRTUALENVWRAPPER_PYTHON: '/usr/bin/python2.7'
     runs-on: ubuntu-latest
     steps:
+      - name: Install build dependencies
+        run: |
+          go get -u -d github.com/magefile/mage
+          cd $GOPATH/src/github.com/magefile/mage
+          go run bootstrap.go
+          sudo apt-get install -y virtualenv
+          git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github.com/elastic/go-elasticsearch
+          cd $GOPATH/src/github.com/elastic/go-elasticsearch
+          git checkout v7.5.0
       - uses: actions/checkout@v2
-      - run: echo $PWD && cd dynamicbeat && go get -v -t -d ./...
-      - run: cd dynamicbeat && make
+        with:
+          path: 'src/github.com/s-newman/scorestack'
+      - run: |
+          cd src/github.com/s-newman/scorestack/dynamicbeat
+          go get ./...
+          make setup
+          mage build
