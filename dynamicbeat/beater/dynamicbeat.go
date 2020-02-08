@@ -15,10 +15,10 @@ import (
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/go-elasticsearch"
 
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks"
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
-	"gitlab.ritsec.cloud/newman/dynamicbeat/config"
-	"gitlab.ritsec.cloud/newman/dynamicbeat/esclient"
+	"github.com/newman/scorestack/dynamicbeat/checks"
+	"github.com/newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/newman/scorestack/dynamicbeat/config"
+	"github.com/newman/scorestack/dynamicbeat/esclient"
 )
 
 // Dynamicbeat configuration.

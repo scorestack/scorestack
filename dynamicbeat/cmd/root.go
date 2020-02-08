@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"gitlab.ritsec.cloud/newman/dynamicbeat/beater"
+	"github.com/newman/scorestack/dynamicbeat/beater"
 
 	cmd "github.com/elastic/beats/libbeat/cmd"
 	"github.com/elastic/beats/libbeat/cmd/instance"

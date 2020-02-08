@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.ritsec.cloud/newman/dynamicbeat/checks/schema"
+	"github.com/newman/scorestack/dynamicbeat/checks/schema"
 )
 
 // The Definition configures the behavior of a Noop check.

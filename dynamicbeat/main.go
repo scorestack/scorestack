@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"gitlab.ritsec.cloud/newman/dynamicbeat/cmd"
+	"github.com/newman/scorestack/dynamicbeat/cmd"
 
-	_ "gitlab.ritsec.cloud/newman/dynamicbeat/include"
+	_ "github.com/newman/scorestack/dynamicbeat/include"
 )
 
 func main() {
