@@ -69,6 +69,8 @@ RUN apt-get update \
     && chmod 0440 /etc/sudoers.d/$USERNAME \
     # Add write permission for /go/pkg
     && chmod -R a+w /go/pkg \
+    # Install Vim for writing commit messages
+    && apt-get install -y vim \
     #
     # Clean up
     && apt-get autoremove -y \
