@@ -54,10 +54,12 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckDef, erro
 				return results, err
 			}
 
-			// Decode attribute document
-			err = json.Unmarshal(docs[0], &result.Attribs)
-			if err != nil {
-				return nil, fmt.Errorf("Failed to decode attribute document %s: %s", idx, err)
+			// Decode attribute document, if there is one
+			if len(docs) > 0 {
+				err = json.Unmarshal(docs[0], &result.Attribs)
+				if err != nil {
+					return nil, fmt.Errorf("Failed to decode attribute document %s: %s", idx, err)
+				}
 			}
 		}
 
