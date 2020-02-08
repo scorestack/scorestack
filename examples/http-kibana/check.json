@@ -1,5 +1,5 @@
 {
-    "id": "kibana-example",
+    "id": "http-kibana-example",
     "name": "Example Kibana check",
     "type": "http",
     "definition": [
