@@ -18,7 +18,7 @@ CHECK_HEADERS_DISABLED=true
 .PHONY: setup
 setup: pre-setup git-add
 
-pre-setup: copy-vendor git-init
+pre-setup: copy-vendor
 	$(MAKE) -f $(LIBBEAT_MAKEFILE) mage ES_BEATS=$(ES_BEATS)
 	$(MAKE) -f $(LIBBEAT_MAKEFILE) update BEAT_NAME=$(BEAT_NAME) ES_BEATS=$(ES_BEATS) NO_COLLECT=$(NO_COLLECT)
 
@@ -29,10 +29,6 @@ copy-vendor: vendor-check
 	git archive --remote ${BEAT_GOPATH}/src/github.com/elastic/beats HEAD | tar -x --exclude=x-pack -C vendor/github.com/elastic/beats
 	mkdir -p vendor/github.com/magefile
 	cp -R vendor/github.com/elastic/beats/vendor/github.com/magefile/mage vendor/github.com/magefile
-
-.PHONY: git-init
-git-init:
-	git init
 
 .PHONY: git-add
 git-add:
