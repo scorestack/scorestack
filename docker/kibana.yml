@@ -1,6 +1,4 @@
 ---
-console.enabled: false
-
 csp.strict: true
 
 elasticsearch.hosts:
