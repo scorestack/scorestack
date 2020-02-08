@@ -1,0 +1,30 @@
+{
+    "id": "http-kibana-example",
+    "name": "Example Kibana check",
+    "type": "http",
+    "definition": [
+        {
+            "https": true,
+            "host": "{{.Host}}",
+            "port": 5601,
+            "method": "POST",
+            "path": "/login",
+            "headers": {
+                "Content-Type": "application/json;charset=utf-8"
+            },
+            "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
+            "verify": false,
+            "code": 204
+        },
+        {
+            "https": true,
+            "host": "{{.Host}}",
+            "port": 5601,
+            "method": "GET",
+            "path": "/app/kibana",
+            "verify": false,
+            "code": 200,
+            "content_match": "*<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+        }
+    ]
+}

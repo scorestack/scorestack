@@ -1,0 +1,9 @@
+{
+    "id": "noop-example",
+    "name": "Example noop check",
+    "type": "noop",
+    "definition": {
+        "static": "unchanged",
+        "dynamic": "{{.Priv}}, {{.NonPriv}}"
+    }
+}
