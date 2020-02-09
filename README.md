@@ -9,9 +9,8 @@ you open the project in the provided dev container, run the following commands
 to build the beat:
 
 ```shell
-sudo chown vscode:vscode -R ~/go
 cd dynamicbeat
 make setup
-go get ./...
+go get
 mage build
 ```

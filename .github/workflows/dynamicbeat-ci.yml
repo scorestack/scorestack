@@ -11,23 +11,21 @@ jobs:
       VIRTUALENVWRAPPER_PYTHON: '/usr/bin/python2.7'
     runs-on: ubuntu-latest
     steps:
-      - name: Install build dependencies
-        run: |
-          go get -u -d github.com/magefile/mage
-          cd $GOPATH/src/github.com/magefile/mage
-          go run bootstrap.go
-          sudo apt-get install -y virtualenv
-          git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github.com/elastic/go-elasticsearch
-          cd $GOPATH/src/github.com/elastic/go-elasticsearch
-          git checkout v7.5.0
       - uses: actions/checkout@v2
         with:
           path: 'src/github.com/s-newman/scorestack'
+      - name: Install virtualenv
+        run: sudo apt-get install -y virtualenv
+      - name: Clone go-elasticsearch repository
+        run: |
+          git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github.com/elastic/go-elasticsearch
+          cd $GOPATH/src/github.com/elastic/go-elasticsearch
+          git checkout v7.5.0
       - name: Build dynamicbeat
         run: |
           cd src/github.com/s-newman/scorestack/dynamicbeat
-          go get ./...
           make setup
+          go get
           mage build
       - name: Run dynamicbeat
         run: |
