@@ -70,6 +70,7 @@ RUN apt-get update \
     # Set up non-root user gopath
     && mkdir /home/$USERNAME/go \
     && chown -R $USER_UID:$USER_GID /home/$USERNAME/go \
+    && chmod a+w /home/$USERNAME/go \
     # Install extra packages
     && apt-get install -y vim virtualenv \
     #
