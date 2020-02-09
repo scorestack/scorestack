@@ -1,30 +1,31 @@
 {
-    "id": "http-kibana-example",
-    "name": "Example Kibana check",
-    "type": "http",
-    "definition": [
+    "ID": "http-kibana-example",
+    "Name": "Example Kibana check",
+    "Type": "http",
+    "Definition": [
         {
-            "https": true,
-            "host": "{{.Host}}",
-            "port": 5601,
-            "method": "POST",
-            "path": "/login",
-            "headers": {
+            "Host": "{{.Host}}",
+            "Path": "/login",
+            "HTTPS": true,
+            "Port": 5601,
+            "Method": "POST",
+            "Headers": {
                 "Content-Type": "application/json;charset=utf-8"
             },
-            "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
-            "verify": false,
+            "Body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
+            "MatchCode": true,
             "code": 204
         },
         {
-            "https": true,
-            "host": "{{.Host}}",
-            "port": 5601,
-            "method": "GET",
-            "path": "/app/kibana",
-            "verify": false,
-            "code": 200,
-            "content_match": "*<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+            "Host": "{{.Host}}",
+            "Path": "/app/kibana",
+            "HTTPS": true,
+            "Port": 5601,
+            "Method": "GET",
+            "MatchCode": true,
+            "Code": 200,
+            "MatchContent": true,
+            "ContentRegex": "*<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
         }
     ]
 }
