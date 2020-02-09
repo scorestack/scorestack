@@ -29,7 +29,7 @@
             "matchcode": true,
             "code": 200,
             "matchcontent": true,
-            "contentregex": "*<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+            "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
         }
     ]
 }
