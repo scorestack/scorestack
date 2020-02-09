@@ -4,27 +4,32 @@
     "type": "http",
     "definition": [
         {
-            "https": true,
             "host": "{{.Host}}",
+            "path": "/api/security/v1/login",
+            "https": true,
             "port": 5601,
             "method": "POST",
-            "path": "/login",
             "headers": {
-                "Content-Type": "application/json;charset=utf-8"
+                "Content-Type": "application/json;charset=utf-8",
+                "kbn-xsrf": "true"
             },
             "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
-            "verify": false,
+            "matchcode": true,
             "code": 204
         },
         {
-            "https": true,
             "host": "{{.Host}}",
+            "path": "/app/kibana",
+            "https": true,
             "port": 5601,
             "method": "GET",
-            "path": "/app/kibana",
-            "verify": false,
+            "headers": {
+                "kbn-xsrf": "true"
+            },
+            "matchcode": true,
             "code": 200,
-            "content_match": "*<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+            "matchcontent": true,
+            "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
         }
     ]
 }
