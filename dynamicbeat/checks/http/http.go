@@ -169,11 +169,25 @@ func (d *Definition) Init(id string, name string, def []byte) error {
 	// Finish initializing each request
 	for _, r := range d.Requests {
 		// Set nonzero default values
-		r.Port = 80
-		r.Method = "GET"
-		r.Headers = make(map[string]string)
-		r.Code = 200
-		r.ContentRegex = ".*"
+		if r.Port == 0 {
+			r.Port = 80
+		}
+
+		if r.Method == "" {
+			r.Method = "GET"
+		}
+
+		if r.Headers == nil {
+			r.Headers = make(map[string]string)
+		}
+
+		if r.Code == 0 {
+			r.Code = 200
+		}
+
+		if r.ContentRegex == "" {
+			r.ContentRegex = ".*"
+		}
 
 		// Make sure required fields are defined
 		missingFields := make([]string, 0)
