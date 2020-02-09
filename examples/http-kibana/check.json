@@ -5,7 +5,7 @@
     "definition": [
         {
             "host": "{{.Host}}",
-            "path": "/login",
+            "path": "/api/security/v1/login",
             "https": true,
             "port": 5601,
             "method": "POST",
