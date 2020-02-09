@@ -10,7 +10,8 @@
             "port": 5601,
             "method": "POST",
             "headers": {
-                "Content-Type": "application/json;charset=utf-8"
+                "Content-Type": "application/json;charset=utf-8",
+                "kbn-xsrf": "true"
             },
             "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
             "matchcode": true,
@@ -22,6 +23,9 @@
             "https": true,
             "port": 5601,
             "method": "GET",
+            "headers": {
+                "kbn-xsrf": "true"
+            },
             "matchcode": true,
             "code": 200,
             "matchcontent": true,
