@@ -68,9 +68,9 @@ RUN apt-get update \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME \
     # Set up non-root user gopath
-    && mkdir /home/$USERNAME/go \
+    && mkdir -p /home/$USERNAME/go/src \
     && chown -R $USER_UID:$USER_GID /home/$USERNAME/go \
-    && chmod a+w /home/$USERNAME/go \
+    && chmod a+w /home/$USERNAME/go/src \
     # Install extra packages
     && apt-get install -y vim virtualenv \
     #
