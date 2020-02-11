@@ -14,6 +14,12 @@
       required: true
       description: >
         TODO: docs
+    
+    - name: group
+      type: keyword
+      required: true
+      description: >
+        TODO: docs
 
     - name: check_type
       type: keyword

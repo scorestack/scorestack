@@ -267,6 +267,18 @@ required: True
 
 --
 
+*`group`*::
++
+--
+TODO: docs
+
+
+type: keyword
+
+required: True
+
+--
+
 *`check_type`*::
 +
 --
