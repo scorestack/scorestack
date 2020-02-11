@@ -38,6 +38,10 @@ func (d *Definition) Init(id string, name string, def []byte) error {
 
 	// Check for missing fields
 	missingFields := make([]string, 0)
+	if d.IP == "" {
+		missingFields = append(missingFields, "IP")
+	}
+
 	if d.Username == "" {
 		missingFields = append(missingFields, "Username")
 	}
