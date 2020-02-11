@@ -23,6 +23,16 @@ type Definition struct {
 }
 
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+	defer wg.Done()
+
+	// Set up result
+	result := schema.CheckResult{
+		Timestamp: time.Now(),
+		ID:        d.ID,
+		Name:      d.Name,
+		CheckType: "ssh",
+	}
+
 	// Config SSH client
 	config := &ssh.ClientConfig{
 		User: d.Username,
@@ -30,30 +40,38 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 			ssh.Password(d.Password),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		Timeout:         d.Timeout,
 	}
 
 	// Create the ssh client
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%s", d.IP, d.Port), config)
 	if err != nil {
-		fmt.Printf("%s\n", err)
+		result.Message = fmt.Sprintf("Error creating ssh client: %s", err)
+		out <- result
 		return
 	}
 
 	// Create a session from the connection
 	session, err := client.NewSession()
 	if err != nil {
-		fmt.Printf("%s\n", err)
+		result.Message = fmt.Sprintf("Error creating a ssh session: %s", err)
+		out <- result
+		return
 	}
 	defer session.Close()
 
 	// Run a command
 	output, err := session.CombinedOutput("/usr/bin/woami")
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		result.Message = fmt.Sprintf("Error executing command: %s", err)
+		out <- result
 		return
 	}
 
-	fmt.Printf("OUtput: %s\n", output)
+	// If we made it here the check passes
+	result.Message = fmt.Sprintf("Command %s executed successfully: %s", d.Cmd, output)
+	result.Passed = true
+	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
