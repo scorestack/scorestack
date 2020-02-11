@@ -122,6 +122,8 @@ volumes:
     driver: local
   data04:
     driver: local
+  data05:
+    driver: local
 
 networks:
   elastic:
