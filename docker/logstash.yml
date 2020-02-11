@@ -1,0 +1,3 @@
+---
+path.data: /usr/share/elasticsarch/data
+node.name: logs01

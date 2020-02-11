@@ -43,7 +43,7 @@ openssl verify -CAfile certs/ca.cert.pem intermediate/certs/intermediate.cert.pe
 cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
 
 # Create and sign certificates
-for name in elas01 elas02 elas03 localhost
+for name in elas01 elas02 elas03 logs01 localhost
 do
   openssl ecparam -genkey -noout -name prime256v1 \
     -out intermediate/private/$name.key.pem
