@@ -97,6 +97,8 @@ services:
       - ./docker/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./docker/dynamicbeat-pipeline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
       - data04:/usr/share/logstash/data
+    networks:
+      - elastic
   kiba01:
     image: docker.elastic.co/kibana/kibana:7.5.1
     container_name: kiba01
