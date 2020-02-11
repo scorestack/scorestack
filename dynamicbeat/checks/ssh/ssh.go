@@ -22,7 +22,13 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 }
 
+// Init the check using a known ID and name. The rest of the check fields will
+// be filled in by parsing a JSON string representing the check definition.
 func (d *Definition) Init(id string, name string, def []byte) error {
+
+	// Set ID and Name
+	d.ID = id
+	d.Name = name
 
 	// Unpack JSON definition
 	err := json.Unmarshal(def, &d)
