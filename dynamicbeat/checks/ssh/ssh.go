@@ -22,6 +22,7 @@ type Definition struct {
 	Timeout  time.Duration // (optional, default=5sec) How long to attempt a connection before terminating
 }
 
+// Run a single instance of the check
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
