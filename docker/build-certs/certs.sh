@@ -63,4 +63,4 @@ openssl verify -CAfile intermediate/certs/ca-chain.cert.pem \
     intermediate/certs/localhost.cert.pem
 
 # Convert the logstash key
-openssl pkcs8 -topk8 -nocrypt -in intermediate/private/logs01.key.pem -out intermediate/private/logs01.key.pkcs8
+openssl pkcs8 -topk8 -nocrypt -in intermediate/private/localhost.key.pem -out intermediate/private/localhost.key.pkcs8
