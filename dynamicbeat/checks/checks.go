@@ -49,6 +49,7 @@ func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan
 				"type":       "dynamicbeat",
 				"id":         result.ID,
 				"name":       result.Name,
+				"group":      result.Group,
 				"check_type": result.CheckType,
 				"passed":     result.Passed,
 				"message":    result.Message,
