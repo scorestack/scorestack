@@ -84,3 +84,6 @@ ENV GO111MODULE=auto
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
 
+# Set path envs in here just in case they don't get set externally
+ENV GOPATH=/home/vscode/go
+ENV PATH=${PATH}:${GOPATH}/bin
