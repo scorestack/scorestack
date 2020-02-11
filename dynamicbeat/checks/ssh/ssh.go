@@ -29,4 +29,28 @@ func (d *Definition) Init(id string, name string, def []byte) error {
 	if err != nil {
 		return err
 	}
+
+	// Check for missing fields
+	missingFields := make([]string, 0)
+	if d.Username == "" {
+		missingFields = append(missingFields, "Username")
+	}
+
+	if d.Password == "" {
+		missingFields = append(missingFields, "Password")
+	}
+
+	if d.Cmd == "" {
+		missingFields = append(missingFields, "Cmd")
+	}
+
+	// Error only the first missing field, if there are any
+	if len(missingFields) > 0 {
+		return schema.ValidationError{
+			ID:    d.ID,
+			Type:  "ssh",
+			Field: missingFields[0],
+		}
+	}
+	return nil
 }
