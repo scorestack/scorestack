@@ -12,11 +12,13 @@ NEW_PASSWDS=$(docker exec elas01 /bin/bash -c "bin/elasticsearch-setup-passwords
 kibana_pass=$(echo "${NEW_PASSWDS}" | grep kibana | awk '{print $NF}')
 elastic_pass=$(echo "${NEW_PASSWDS}" | grep elastic | awk '{print $NF}')
 beats_pass=$(echo "${NEW_PASSWDS}" | grep beats_system | awk '{print $NF}')
+logstash_pass=$(openssl rand -hex 20)
 
 # Write kibana password to default environment file
 cat > .env << EOF
 KIBANA_PASSWORD=${kibana_pass}
 BEATS_PASSWORD=${beats_pass}
+LOGSTASH_PASSWORD=${logstash_pass}
 EOF
 
 # Restart kibana to apply password change
@@ -24,6 +26,10 @@ docker-compose up -d --force-recreate kiba01
 
 # Create admin user
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/root' -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"root","email":"root@example.com","roles":["superuser"]}'
+
+# Create logstash user
+curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/role/logstash_writer' -H "Content-Type: application/json" -d '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["logstash-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]'
+curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/logstash_internal' -H "Content-Type: application/json" -d '{"password":"x-pack-test-password","roles":["logstash_writer"],"full_name":"Internal Logstash User"}'
 
 # Set up example checks
 for check in $(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n")

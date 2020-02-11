@@ -90,6 +90,8 @@ services:
     container_name: logs01
     ports:
       - 9600:9600
+    environment:
+      - ELASTICSEARCH_PASSWORD=${LOGSTASH_PASSWORD}
     volumes:
       - ./docker/build-certs/pki/intermediate/certs/logs01.cert.pem:/usr/share/logstash/config/pki/logs.cert.pem
       - ./docker/build-certs/pki/intermediate/private/logs01.key.pem:/usr/share/logstash/config/pki/logs.key.pem
