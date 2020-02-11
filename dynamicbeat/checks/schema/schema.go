@@ -10,7 +10,7 @@ import (
 // single network service.
 type Check interface {
 	Run(wg *sync.WaitGroup, out chan<- CheckResult)
-	Init(id string, name string, def []byte) error
+	Init(id string, name string, group string, def []byte) error
 }
 
 // A CheckDef is an untemplated representation of a check. In this format, the
@@ -19,6 +19,7 @@ type CheckDef struct {
 	ID         string
 	Name       string
 	Type       string
+	Group      string
 	Definition []byte
 	Attribs    map[string]string
 }
@@ -28,6 +29,7 @@ type CheckResult struct {
 	Timestamp time.Time
 	ID        string
 	Name      string
+	Group     string
 	CheckType string
 	Passed    bool
 	Message   string

@@ -16,6 +16,7 @@ import (
 type Definition struct {
 	ID    string // unique identifier for this check
 	Name  string // a human-readable title for this check
+	Group string // the group this check is part of
 	IP    string // (required) IP of the host to run the ICMP check against
 	Count int    // (opitonal, default=1) The number of ICMP requests to send per check
 }
@@ -29,6 +30,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		Timestamp: time.Now(),
 		ID:        d.ID,
 		Name:      d.Name,
+		Group:     d.Group,
 		CheckType: "icmp",
 	}
 
@@ -62,7 +64,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, def []byte) error {
 
 	// Unpack json definition
 	err := json.Unmarshal(def, &d)
@@ -70,14 +72,15 @@ func (d *Definition) Init(id string, name string, def []byte) error {
 		return err
 	}
 
+	// Set generic attributes
+	d.ID = id
+	d.Name = name
+	d.Group = group
+
 	// Check for optional value being set
 	if d.Count <= 0 {
 		d.Count = 1
 	}
-
-	// Set ID and name attributes
-	d.ID = id
-	d.Name = name
 
 	// Make sure required fields are defined
 	missingFields := make([]string, 0)

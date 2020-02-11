@@ -19,6 +19,7 @@ import (
 type Definition struct {
 	ID       string    // a unique identifier for this check
 	Name     string    // a human-readable title for this check
+	Group    string    // the group this check is part of
 	Verify   bool      // (optional, default false) whether HTTPS certs should be validated
 	Requests []Request // a list of requests to make
 }
@@ -48,6 +49,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		Timestamp: time.Now(),
 		ID:        d.ID,
 		Name:      d.Name,
+		Group:     d.Group,
 		CheckType: "http",
 	}
 
@@ -154,10 +156,11 @@ func request(client *http.Client, r Request) (bool, *string, error) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, def []byte) error {
-	// Set ID and name attributes
+func (d *Definition) Init(id string, name string, group string, def []byte) error {
+	// Set generic attributes
 	d.ID = id
 	d.Name = name
+	d.Group = group
 
 	// Unpack definition json
 	err := json.Unmarshal(def, &d.Requests)

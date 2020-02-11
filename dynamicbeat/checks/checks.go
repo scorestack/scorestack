@@ -49,6 +49,7 @@ func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan
 				"type":       "dynamicbeat",
 				"id":         result.ID,
 				"name":       result.Name,
+				"group":      result.Group,
 				"check_type": result.CheckType,
 				"passed":     result.Passed,
 				"message":    result.Message,
@@ -77,19 +78,16 @@ func unpackDef(c schema.CheckDef) schema.Check {
 	switch c.Type {
 	case "noop":
 		def = &noop.Definition{}
-		def.Init(c.ID, c.Name, renderedJSON)
 	case "http":
 		def = &http.Definition{}
-		def.Init(c.ID, c.Name, renderedJSON)
 	case "icmp":
 		def = &icmp.Definition{}
-		def.Init(c.ID, c.Name, renderedJSON)
 	case "ssh":
 		def = &ssh.Definition{}
-		def.Init(c.ID, c.Name, renderedJSON)
 	default:
 		fmt.Printf("Add your definition to the switch case!\n")
 	}
+	def.Init(c.ID, c.Name, c.Group, renderedJSON)
 
 	return def
 }

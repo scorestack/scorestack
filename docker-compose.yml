@@ -85,6 +85,25 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+  logs01:
+    image: docker.elastic.co/logstash/logstash:7.5.1
+    container_name: logs01
+    ports:
+      - 5454:5454
+    environment:
+      - PATH_DATA=/usr/share/logstash/data
+      - ELASTICSEARCH_PASSWORD=${LOGSTASH_USER_PASSWORD}
+      - XPACK_MONITORING_ELASTICSEARCH_HOSTS=https://elas01:9200
+      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${LOGSTASH_SYSTEM_PASSWORD}
+      - XPACK_MONITORING_ELASTICSEARCH_SSL_CERTIFICATE_AUTHORITY=/usr/share/logstash/config/pki/ca.cert.pem
+    volumes:
+      - ./docker/build-certs/pki/intermediate/certs/localhost.cert.pem:/usr/share/logstash/config/pki/logs.cert.pem
+      - ./docker/build-certs/pki/intermediate/private/localhost.key.pkcs8:/usr/share/logstash/config/pki/logs.key.pkcs8
+      - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/logstash/config/pki/ca.cert.pem
+      - ./docker/dynamicbeat-pipeline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
+      - data04:/usr/share/logstash/data
+    networks:
+      - elastic
   kiba01:
     image: docker.elastic.co/kibana/kibana:7.5.1
     container_name: kiba01
@@ -97,7 +116,7 @@ services:
       - ./docker/build-certs/pki/intermediate/private/localhost.key.pem:/usr/share/kibana/config/pki/kiba.key.pem
       - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/kibana/config/pki/ca.cert.pem
       - ./docker/kibana.yml:/usr/share/kibana/config/kibana.yml
-      - data04:/usr/share/kibana/data
+      - data05:/usr/share/kibana/data
     networks:
       - elastic
 
@@ -109,6 +128,8 @@ volumes:
   data03:
     driver: local
   data04:
+    driver: local
+  data05:
     driver: local
 
 networks:

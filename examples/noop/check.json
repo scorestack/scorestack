@@ -2,6 +2,7 @@
     "id": "noop-example",
     "name": "Example noop check",
     "type": "noop",
+    "group": "example",
     "definition": {
         "static": "unchanged",
         "dynamic": "{{.Priv}}, {{.NonPriv}}"

@@ -2,6 +2,7 @@
     "id": "icmp-example",
     "name": "Example ICMP check",
     "type": "icmp",
+    "group": "example",
     "definition": {
         "ip": "{{.Host}}"
     }
