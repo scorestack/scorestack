@@ -43,7 +43,7 @@ openssl verify -CAfile certs/ca.cert.pem intermediate/certs/intermediate.cert.pe
 cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
 
 # Create and sign certificates
-for name in elas01 elas02 elas03 logs01 localhost
+for name in beat elas01 elas02 elas03 logs01 localhost
 do
   openssl ecparam -genkey -noout -name prime256v1 \
     -out intermediate/private/$name.key.pem
@@ -63,4 +63,4 @@ openssl verify -CAfile intermediate/certs/ca-chain.cert.pem \
     intermediate/certs/localhost.cert.pem
 
 # Convert the logstash key
-openssl pkcs8 -in intermediate/private/logs01.key.pem -topk8 -out intermediate/private/logs01.key.pkcs8
+openssl pkcs8 -topk8 -nocrypt -in intermediate/private/logs01.key.pem -out intermediate/private/logs01.key.pkcs8
