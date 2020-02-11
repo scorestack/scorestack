@@ -61,3 +61,6 @@ openssl verify -CAfile intermediate/certs/ca-chain.cert.pem \
     intermediate/certs/elas02.cert.pem \
     intermediate/certs/elas03.cert.pem \
     intermediate/certs/localhost.cert.pem
+
+# Convert the logstash key
+openssl pkcs8 -in intermediate/private/logs01.key.pem -topk8 -out intermediate/private/logs01.key.pkcs8

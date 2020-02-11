@@ -89,16 +89,16 @@ services:
     image: docker.elastic.co/logstash/logstash:7.5.1
     container_name: logs01
     ports:
-      - 9600:9600
+      - 5454:5454
     environment:
       - PATH_DATA=/usr/share/logstash/data
       - ELASTICSEARCH_PASSWORD=${LOGSTASH_USER_PASSWORD}
-      - XPACK_MONITORING_ELASTICSEARCH_HOSTS=https://elas01:9200,https://elas02:9200,https://elas03:9200
+      - XPACK_MONITORING_ELASTICSEARCH_HOSTS=https://elas01:9200
       - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${LOGSTASH_SYSTEM_PASSWORD}
       - XPACK_MONITORING_ELASTICSEARCH_SSL_CERTIFICATE_AUTHORITY=/usr/share/logstash/config/pki/ca.cert.pem
     volumes:
       - ./docker/build-certs/pki/intermediate/certs/logs01.cert.pem:/usr/share/logstash/config/pki/logs.cert.pem
-      - ./docker/build-certs/pki/intermediate/private/logs01.key.pem:/usr/share/logstash/config/pki/logs.key.pem
+      - ./docker/build-certs/pki/intermediate/private/logs01.key.pkcs8:/usr/share/logstash/config/pki/logs.key.pkcs8
       - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/logstash/config/pki/ca.cert.pem
       - ./docker/dynamicbeat-pipeline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
       - data04:/usr/share/logstash/data
