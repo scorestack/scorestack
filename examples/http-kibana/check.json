@@ -2,6 +2,7 @@
     "id": "http-kibana-example",
     "name": "Example Kibana check",
     "type": "http",
+    "group": "example",
     "definition": [
         {
             "host": "{{.Host}}",

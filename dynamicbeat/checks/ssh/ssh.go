@@ -14,9 +14,9 @@ import (
 // The Definition configures the behavior of the SSH check
 // it implements the "check" interface
 type Definition struct {
-	ID           string // unique identifier for this check
+	ID           string // a unique identifier for this check
 	Name         string // a human-readable title for the check
-	Group        string // (required) The group ID
+	Group        string // the group this check is part of
 	IP           string // (required) IP of the host to run the ICMP check against
 	Username     string // (required) The user to login with over ssh
 	Password     string // (required) The password for the user that you wish to login with
@@ -104,17 +104,18 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, def []byte) error {
-
-	// Set ID and Name
-	d.ID = id
-	d.Name = name
+func (d *Definition) Init(id string, name string, group string, def []byte) error {
 
 	// Unpack JSON definition
 	err := json.Unmarshal(def, &d)
 	if err != nil {
 		return err
 	}
+
+	// Set generic values
+	d.ID = id
+	d.Name = name
+	d.Group = group
 
 	// Check for optional Port value
 	if d.Port == "" {

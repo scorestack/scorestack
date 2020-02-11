@@ -1,14 +1,15 @@
 {
-   "id": "ssh-example",
-   "name": "Example SSH Check",
-   "type": "ssh",
-   "definition": {
-       "IP": "{{.IP}}",
-       "Port": "{{.Port}}",
-       "Username": "{{.Username}}",
-       "Password": "{{.Password}}",
-       "Cmd": "{{.Cmd}}",
-       "MatchContent": true,
-       "ContentRegex": "{{.ContentRegex}}"
-   }
+    "id": "ssh-example",
+    "name": "Example SSH Check",
+    "type": "ssh",
+    "group": "example",
+    "definition": {
+        "IP": "{{.IP}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Cmd": "{{.Cmd}}",
+        "MatchContent": true,
+        "ContentRegex": "{{.ContentRegex}}"
+    }
 }
