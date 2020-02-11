@@ -35,6 +35,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		Timestamp: time.Now(),
 		ID:        d.ID,
 		Name:      d.Name,
+		Group:     d.Group,
 		CheckType: "ssh",
 	}
 
