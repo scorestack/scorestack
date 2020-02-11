@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
@@ -11,13 +12,14 @@ import (
 // The Definition configures the behavior of the SSH check
 // it implements the "check" interface
 type Definition struct {
-	ID       string // unique identifier for this check
-	Name     string // a human-readable title for the check
-	IP       string // (required) IP of the host to run the ICMP check against
-	Port     string // (optional, default=22) The port to attempt an ssh connection on
-	Username string // (required) The user to login with over ssh
-	Password string // (required) The password for the user that you wish to login with
-	Cmd      string // (required) The command to execute once ssh connection established
+	ID       string        // unique identifier for this check
+	Name     string        // a human-readable title for the check
+	IP       string        // (required) IP of the host to run the ICMP check against
+	Port     string        // (optional, default=22) The port to attempt an ssh connection on
+	Username string        // (required) The user to login with over ssh
+	Password string        // (required) The password for the user that you wish to login with
+	Cmd      string        // (required) The command to execute once ssh connection established
+	Timeout  time.Duration // (optional, default=5sec) How long to attempt a connection before terminating
 }
 
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
@@ -31,7 +33,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	// Create the ssh client
-	client, err := ssh.Dial("tcp", "localhost:22", config)
+	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%s", d.IP, d.Port), config)
 	if err != nil {
 		fmt.Printf("%s\n", err)
 		return
@@ -69,8 +71,13 @@ func (d *Definition) Init(id string, name string, def []byte) error {
 	}
 
 	// Check for optional Port value
-	if d.Port != "" {
+	if d.Port == "" {
 		d.Port = "22"
+	}
+
+	// Check for optional timeout value
+	if d.Timeout == 0*time.Second {
+		d.Timeout = 5 * time.Second
 	}
 
 	// Check for missing fields
