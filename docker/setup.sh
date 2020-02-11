@@ -1,5 +1,5 @@
 #!/bin/sh
-until curl -kX GET "https://localhost:9200/_cat/notes?v&pretty"
+until curl -kX GET "https://localhost:9200/_cat/nodes?v&pretty"
 do
   sleep 5
 done
