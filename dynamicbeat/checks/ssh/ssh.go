@@ -1,0 +1,32 @@
+package ssh
+
+import (
+	"encoding/json"
+	"sync"
+
+	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+)
+
+// The Definition configures the behavior of the SSH check
+// it implements the "check" interface
+type Definition struct {
+	ID       string // unique identifier for this check
+	Name     string // a human-readable title for the check
+	IP       string // (required) IP of the host to run the ICMP check against
+	Username string // (required) The user to login with over ssh
+	Password string // (required) The password for the user that you wish to login with
+	Cmd      string // (required) The command to execute once ssh connection established
+}
+
+func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+
+}
+
+func (d *Definition) Init(id string, name string, def []byte) error {
+
+	// Unpack JSON definition
+	err := json.Unmarshal(def, &d)
+	if err != nil {
+		return err
+	}
+}
