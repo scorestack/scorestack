@@ -1,0 +1,8 @@
+{
+    "IP": "localhost",
+    "Port": "22",
+    "Username": "root",
+    "Cmd": "id",
+    "MatchContent": true,
+    "ContentRegex": ".*"
+}

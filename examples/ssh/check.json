@@ -1,0 +1,14 @@
+{
+   "id": "ssh-example",
+   "name": "Example SSH Check",
+   "type": "ssh",
+   "definition": {
+       "IP": "{{.IP}}",
+       "Port": "{{.Port}}",
+       "Username": "{{.Username}}",
+       "Password": "{{.Password}}",
+       "Cmd": "{{.Cmd}}",
+       "MatchContent": "{{.MatchContent}}",
+       "ContentRegex": "{{.ContentRegex}}"
+   }
+}
