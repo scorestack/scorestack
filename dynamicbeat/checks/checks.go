@@ -2,6 +2,7 @@ package checks
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"sync"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/s-newman/scorestack/dynamicbeat/checks/icmp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/noop"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/ssh"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
@@ -82,7 +84,11 @@ func unpackDef(c schema.CheckDef) schema.Check {
 	case "icmp":
 		def = &icmp.Definition{}
 		def.Init(c.ID, c.Name, renderedJSON)
+	case "ssh":
+		def = &ssh.Definition{}
+		def.Init(c.ID, c.Name, renderedJSON)
 	default:
+		fmt.Printf("Add your definition to the switch case!\n")
 	}
 
 	return def
