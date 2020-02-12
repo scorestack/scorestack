@@ -79,10 +79,12 @@ export default function (server, dataCluster) {
                 if (req.params["name"] in attribDoc._source) {
                     let newAttrib = {};
                     newAttrib[req.params["name"]] = req.payload["value"];
-                    let resp = await dataCluster.callWithRequest(req, 'create', {
+                    let resp = await dataCluster.callWithRequest(req, 'update', {
                         id: 'attributes',
                         index: attribIndex,
-                        body: Object.assign({}, attribDoc._source, newAttrib),
+                        body: {
+                            "doc": newAttrib,
+                        },
                     });
                     return {
                         "statusCode": 200,
