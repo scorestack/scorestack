@@ -21,7 +21,7 @@ import {
   EuiText,
   EuiButtonIcon,
 } from '@elastic/eui';
-import Attribute from './attribute';
+import { Attribute } from './attribute';
 
 export class Main extends React.Component {
   constructor(props) {
@@ -42,9 +42,9 @@ export class Main extends React.Component {
   }
 
   render() {
-    const attributeItems = Object.keys(this.state.attribs).map((key) => {
+    const attributeItems = Object.keys(this.state.attribs).map((key) =>
       <Attribute id="ssh-example" key={key} value={this.state.attribs[key] || 'Loading...'} client={this.props.httpClient} />
-    })
+    );
     return (
       <EuiPage>
         <EuiPageBody>
