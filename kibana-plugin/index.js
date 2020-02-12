@@ -15,6 +15,7 @@ export default function (kibana) {
         title: 'Check Attributes',
         description: 'A Kibana plugin for viewing and modifying ScoreStack checks and attributes.',
         main: 'plugins/scorestack/app',
+        euiIconType: 'documentEdit',
       },
       styleSheetPaths: [
         resolve(__dirname, 'public/app.scss'),
