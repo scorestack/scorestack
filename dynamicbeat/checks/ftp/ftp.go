@@ -45,9 +45,9 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	// Connect to the ftp server
-	conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.IP, d.Port), ftp.DialWithTimeout(5*time.Second))
+	conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port), ftp.DialWithTimeout(5*time.Second))
 	if err != nil {
-		result.Message = fmt.Sprintf("Connection to %s on port %s failed : %s", d.IP, d.Port, err)
+		result.Message = fmt.Sprintf("Connection to %s on port %s failed : %s", d.Host, d.Port, err)
 		out <- result
 		return
 	}
@@ -136,7 +136,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 
 	// Check for missing fields
 	missingFields := make([]string, 0)
-	if d.IP == "" {
+	if d.Host == "" {
 		missingFields = append(missingFields, "IP")
 	}
 
