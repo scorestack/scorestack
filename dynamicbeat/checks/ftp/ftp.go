@@ -20,7 +20,7 @@ type Definition struct {
 	ID                string // a unique identifier for this check
 	Name              string // a human-readable title for the check
 	Group             string // the group this check is part of
-	IP                string // (required) IP of the host to run the ICMP check against
+	Host              string // (required) IP or hostname of the host to run the ICMP check against
 	Username          string // (required) The user to login with over ssh
 	Password          string // (required) The password for the user that you wish to login with
 	File              string // (required) The path to the file to access during the FTP check
