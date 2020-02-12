@@ -107,6 +107,10 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 // be filled in by parsing a JSON string representing the check definition.
 func (d *Definition) Init(id string, name string, group string, def []byte) error {
 
+	// Explicitly set defaults
+	d.Port = "22"
+	d.ContentRegex = ".*"
+
 	// Unpack JSON definition
 	err := json.Unmarshal(def, &d)
 	if err != nil {
@@ -117,16 +121,6 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	d.ID = id
 	d.Name = name
 	d.Group = group
-
-	// Check for optional Port value
-	if d.Port == "" {
-		d.Port = "22"
-	}
-
-	// Check for optional ContentRegex
-	if d.ContentRegex == "" {
-		d.ContentRegex = ".*"
-	}
 
 	// Check for missing fields
 	missingFields := make([]string, 0)
