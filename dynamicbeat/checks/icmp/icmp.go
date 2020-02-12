@@ -17,7 +17,7 @@ type Definition struct {
 	ID    string // unique identifier for this check
 	Name  string // a human-readable title for this check
 	Group string // the group this check is part of
-	IP    string // (required) IP of the host to run the ICMP check against
+	Host  string // (required) IP or hostname of the host to run the ICMP check against
 	Count int    // (opitonal, default=1) The number of ICMP requests to send per check
 }
 
@@ -35,7 +35,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	// Create pinger
-	pinger, err := ping.NewPinger(d.IP)
+	pinger, err := ping.NewPinger(d.Host)
 	if err != nil {
 		result.Message = fmt.Sprintf("Error creating pinger: %s", err)
 		out <- result
@@ -84,8 +84,8 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 
 	// Make sure required fields are defined
 	missingFields := make([]string, 0)
-	if d.IP == "" {
-		missingFields = append(missingFields, "IP")
+	if d.Host == "" {
+		missingFields = append(missingFields, "Host")
 	}
 
 	// Error only the first missing field, if there are any
