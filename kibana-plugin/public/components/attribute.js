@@ -19,7 +19,7 @@ export class Attribute extends React.Component {
     this.setState({
       isLoading: true,
     });
-    const { httpClient } = this.props.client;
+    const httpClient = this.props.client;
     httpClient.post(`../api/scorestack/attribute/${this.props.id}/${this.props.key}`, JSON.stringify({
       'value': this.state.formValue,
     }, { headers: { 'Content-Type': 'application/json' } })).them((resp) => {
