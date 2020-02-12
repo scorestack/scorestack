@@ -12,7 +12,7 @@ export default function (kibana) {
     name: 'scorestack',
     uiExports: {
       app: {
-        title: 'Scorestack',
+        title: 'Check Attributes',
         description: 'A Kibana plugin for viewing and modifying ScoreStack checks and attributes.',
         main: 'plugins/scorestack/app',
       },
@@ -35,13 +35,11 @@ export default function (kibana) {
         const featureId = 'scorestack';
 
         xpackMainPlugin.registerFeature({
-          id: featureId,
-          name: i18n.translate('scorestack.featureRegistry.featureName', {
-            defaultMessage: 'scorestack',
-          }),
-          navLinkId: featureId,
-          icon: 'questionInCircle',
-          app: [featureId, 'kibana'],
+          id: 'check_attributes',
+          name: 'Check Attributes',
+          navLinkId: 'attributes',
+          icon: 'documentEdit',
+          app: ['check_attributes', 'kibana'],
           catalogue: [],
           privileges: {
             all: {
