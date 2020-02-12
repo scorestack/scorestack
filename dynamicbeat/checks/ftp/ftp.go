@@ -20,8 +20,8 @@ type Definition struct {
 	ID                string // a unique identifier for this check
 	Name              string // a human-readable title for the check
 	Group             string // the group this check is part of
-	Host              string // (required) IP or hostname of the host to run the ICMP check against
-	Username          string // (required) The user to login with over ssh
+	Host              string // (required) IP or hostname of the host to run the FTP check against
+	Username          string // (required) The user to login with over FTP
 	Password          string // (required) The password for the user that you wish to login with
 	File              string // (required) The path to the file to access during the FTP check
 	RegexContentMatch bool   // (optional, default=true) Whether or not to match file content with regex
@@ -121,7 +121,6 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	// Explicitly set default, optional values
 	d.RegexContentMatch = true
 	d.ContentRegex = ".*"
-	d.HashContentMatch = false
 	d.Port = "21"
 
 	// Unpack JSON definition
@@ -150,7 +149,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	}
 
 	if d.File == "" {
-		missingFields = append(missingFields, "Cmd")
+		missingFields = append(missingFields, "File")
 	}
 
 	// Error only the first missing field, if there are any
