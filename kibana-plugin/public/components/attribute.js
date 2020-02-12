@@ -1,6 +1,13 @@
 import React from 'react';
 import {
   EuiFlexGroup,
+  EuiFlexItem,
+  EuiButtonIcon,
+  EuiButton,
+  EuiFormRow,
+  EuiFieldText,
+  EuiPopover,
+  EuiText,
 } from '@elastic/eui';
 
 export class Attribute extends React.Component {
