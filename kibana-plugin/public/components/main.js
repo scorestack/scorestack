@@ -37,13 +37,14 @@ export class Main extends React.Component {
     const { httpClient } = this.props;
     httpClient.get('../api/scorestack/attribute').then((resp) => {
       console.log(resp);
-      this.setState({ attribs: resp.data["ssh-example"] });
+      this.setState({ attribs: resp.data["ssh-example"].attributes });
     });
   }
 
   render() {
+    console.log(Object.keys(this.state.attribs));
     const attributeItems = Object.keys(this.state.attribs).map((key) =>
-      <Attribute id="ssh-example" key={key} value={this.state.attribs[key] || 'Loading...'} client={this.props.httpClient} />
+      <Attribute key={key} id="ssh-example" name={key} value={this.state.attribs[key] || 'Loading...'} client={this.props.httpClient} />
     );
     return (
       <EuiPage>

@@ -27,14 +27,15 @@ export class Attribute extends React.Component {
       isLoading: true,
     });
     const httpClient = this.props.client;
-    httpClient.post(`../api/scorestack/attribute/${this.props.id}/${this.props.key}`, JSON.stringify({
+    httpClient.post(`../api/scorestack/attribute/${this.props.id}/${this.props.name}`, JSON.stringify({
       'value': this.state.formValue,
-    }, { headers: { 'Content-Type': 'application/json' } })).them((resp) => {
+    }, { headers: { 'Content-Type': 'application/json' } })).then((resp) => {
+      console.log(resp);
       this.setState({
         isLoading: false,
+        value: this.state.formValue,
       });
-      this.state.value = this.state.formValue;
-      this.state.formValue = '';
+      this.setState({ formValue: '' });
     });
   }
 
@@ -50,16 +51,21 @@ export class Attribute extends React.Component {
     });
   };
 
-
+  onChange = e => {
+    console.log(e.target.value);
+    this.setState({
+      formValue: e.target.value,
+    });
+  };
 
   render() {
-    const showButton = (<EuiButtonIcon iconType='eye' onclick={this.onShowButtonClick} />);
+    const showButton = (<EuiButtonIcon iconType='eye' onClick={this.onShowButtonClick} />);
     const saveButton = (<EuiButton isLoading={this.state.isLoading} onClick={this.onSaveButtonClick}>Save</EuiButton>)
     return (
       <EuiFlexGroup style={{ maxWidth: 600 }}>
         <EuiFlexItem>;
-          <EuiFormRow label={this.props.key}>
-            <EuiFieldText />
+          <EuiFormRow label={this.props.name}>
+            <EuiFieldText value={this.state.formValue} onChange={this.onChange} />
           </EuiFormRow>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
@@ -70,7 +76,7 @@ export class Attribute extends React.Component {
               button={showButton}
               isOpen={this.state.isShown}
               closePopover={this.hideValue.bind(this)}>
-              <EuiText value={this.state.formValue}>
+              <EuiText>
                 <code>{this.state.value}</code>
               </EuiText>
             </EuiPopover>
