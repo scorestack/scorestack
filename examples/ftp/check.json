@@ -4,7 +4,7 @@
     "type": "ftp",
     "group": "example",
     "definition": {
-        "IP": "{{.IP}}",
+        "Host": "{{.Host}}",
         "Port": "{{.Port}}",
         "Username": "{{.Username}}",
         "Password": "{{.Password}}",
