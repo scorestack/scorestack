@@ -1,0 +1,12 @@
+{
+    "id": "dns-example",
+    "name": "Example dns check",
+    "type": "dns",
+    "group": "example",
+    "definition": {
+        "Server": "{{.Server}}",
+        "Port": "{{.Port}}",
+        "Fqdn": "{{.Fqdn}}",
+        "ExpectedIP": "{{.ExpectedIP}}"
+    }
+}

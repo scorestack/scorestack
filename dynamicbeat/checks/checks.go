@@ -9,6 +9,7 @@ import (
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 
+	"github.com/s-newman/scorestack/dynamicbeat/checks/dns"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ftp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/http"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/icmp"
@@ -85,6 +86,8 @@ func unpackDef(c schema.CheckDef) schema.Check {
 		def = &icmp.Definition{}
 	case "ssh":
 		def = &ssh.Definition{}
+	case "dns":
+		def = &dns.Definition{}
 	case "ftp":
 		def = &ftp.Definition{}
 	default:
