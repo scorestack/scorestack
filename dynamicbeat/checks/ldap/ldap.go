@@ -1,6 +1,7 @@
 package ldap
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"sync"
@@ -35,11 +36,6 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType: "ldap",
 	}
 
-	// Check for LDAP+TLS
-	if d.Ldaps {
-		// TODO:
-	}
-
 	// Normal, default ldap check
 	lconn, err := ldap.Dial("tcp", fmt.Sprintf("%s:%s", d.Fqdn, d.Port))
 	if err != nil {
@@ -48,6 +44,16 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		return
 	}
 	defer lconn.Close()
+
+	// Add TLS if needed
+	if d.Ldaps {
+		err = lconn.StartTLS(&tls.Config{InsecureSkipVerify: true})
+		if err != nil {
+			result.Message = fmt.Sprintf("TLS session creation failed : %s", err)
+			out <- result
+			return
+		}
+	}
 
 	// Attempt to login
 	err = lconn.Bind(d.User, d.Password)
