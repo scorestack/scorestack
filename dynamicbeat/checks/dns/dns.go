@@ -2,8 +2,11 @@ package dns
 
 import (
 	"encoding/json"
+	"fmt"
 	"sync"
+	"time"
 
+	"github.com/miekg/dns"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
@@ -22,7 +25,51 @@ type Definition struct {
 // Run a single instance of the check
 // For now we only support A record querries
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+	defer wg.Done()
 
+	// Setup result
+	result := schema.CheckResult{
+		Timestamp: time.Now(),
+		ID:        d.ID,
+		Name:      d.Name,
+		Group:     d.Group,
+		CheckType: "dns",
+	}
+
+	// Setup for dns query
+	var msg dns.Msg
+	fqdn := dns.Fqdn(d.Fqdn)
+	msg.SetQuestion(fqdn, dns.TypeA)
+
+	// Send the query
+	in, err := dns.Exchange(&msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
+	if err != nil {
+		result.Message = fmt.Sprintf("Problem sending query to %s : %s", d.Server, err)
+		out <- result
+		return
+	}
+
+	// Check if we got any records
+	if len(in.Answer) < 1 {
+		result.Message = fmt.Sprintf("No records received from %s", d.Server)
+		out <- result
+		return
+	}
+
+	// Loop through results and check for correct match
+	for _, answer := range in.Answer {
+		// Check if an answer is an A record and it matches the expected IP
+		if a, ok := answer.(*dns.A); ok && (a.A).String() == d.ExpectedIP {
+			// If we reach here the check succeeds
+			result.Passed = true
+			out <- result
+			return
+		}
+	}
+
+	// If we reach here no records matched expected IP and check fails
+	result.Message = fmt.Sprintf("Incorrect Records Returned")
+	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
