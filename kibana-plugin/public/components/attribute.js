@@ -50,11 +50,11 @@ export class Attribute extends React.Component {
     });
   };
 
-  showButton = (<EuiButtonIcon iconType='eye' onclick={this.onShowButtonClick} />);
 
-  saveButton = (<EuiButton isLoading={this.state.isLoading} onclick={this.onSaveButtonClick}>Save</EuiButton>)
 
   render() {
+    const showButton = (<EuiButtonIcon iconType='eye' onclick={this.onShowButtonClick} />);
+    const saveButton = (<EuiButton isLoading={this.state.isLoading} onClick={this.onSaveButtonClick}>Save</EuiButton>)
     return (
       <EuiFlexGroup style={{ maxWidth: 600 }}>
         <EuiFlexItem>;
@@ -67,7 +67,7 @@ export class Attribute extends React.Component {
             <EuiPopover
               id="showValue"
               ownFocus
-              button={this.showButton}
+              button={showButton}
               isOpen={this.state.isShown}
               closePopover={this.hideValue.bind(this)}>
               <EuiText value={this.state.formValue}>
@@ -78,7 +78,7 @@ export class Attribute extends React.Component {
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiFormRow hasEmptyLabelSpace>
-            {this.saveButton}
+            {saveButton}
           </EuiFormRow>
         </EuiFlexItem>
       </EuiFlexGroup>
