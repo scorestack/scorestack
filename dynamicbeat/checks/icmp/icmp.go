@@ -39,6 +39,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	if err != nil {
 		result.Message = fmt.Sprintf("Error creating pinger: %s", err)
 		out <- result
+		return
 	}
 
 	// Send ping
