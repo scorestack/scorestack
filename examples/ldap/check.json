@@ -1,0 +1,13 @@
+{
+    "id": "ldap-example",
+    "name": "Example LDAP check",
+    "type": "ldap",
+    "group": "example",
+    "definition": {
+        "User": "{{.User}}",
+        "Password": "{{.Password}}",
+        "Fqdn": "{{.Fqdn}}",
+        "Port": "{{.Port}}",
+        "Ldaps": false
+    }
+}
