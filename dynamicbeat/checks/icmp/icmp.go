@@ -67,6 +67,9 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 // be filled in by parsing a JSON string representing the check definition.
 func (d *Definition) Init(id string, name string, group string, def []byte) error {
 
+	// Explicitly set default values
+	d.Count = 1
+
 	// Unpack json definition
 	err := json.Unmarshal(def, &d)
 	if err != nil {
@@ -77,11 +80,6 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	d.ID = id
 	d.Name = name
 	d.Group = group
-
-	// Check for optional value being set
-	if d.Count <= 0 {
-		d.Count = 1
-	}
 
 	// Make sure required fields are defined
 	missingFields := make([]string, 0)
