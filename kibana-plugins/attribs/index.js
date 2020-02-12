@@ -3,8 +3,7 @@ import { existsSync } from 'fs';
 
 import { i18n } from '@kbn/i18n';
 
-import exampleRoute from './server/routes/example';
-import listRoute from './server/routes/list';
+import attributeRoute from './server/routes/attribute';
 
 export default function (kibana) {
   return new kibana.Plugin({
@@ -67,8 +66,7 @@ export default function (kibana) {
       // Add server routes and initialize the plugin here
       const dataCluster = server.plugins.elasticsearch.getCluster('data');
 
-      exampleRoute(server);
-      listRoute(server, dataCluster);
+      attributeRoute(server, dataCluster);
     },
   });
 }
