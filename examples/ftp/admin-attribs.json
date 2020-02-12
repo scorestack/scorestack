@@ -1,5 +1,5 @@
 {
-    "IP": "localhost",
+    "Host": "localhost",
     "Port": "21",
     "Username": "root",
     "File": "/root/test.txt",
