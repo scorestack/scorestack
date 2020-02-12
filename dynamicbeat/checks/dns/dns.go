@@ -7,6 +7,8 @@ import (
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
+// The Definition configures the behavior of the DNS check
+// it implements the "check" interface
 type Definition struct {
 	ID         string // a unique identifier for this check
 	Name       string // a human-readable title for the check
