@@ -3,6 +3,8 @@ package ftp
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"regexp"
 	"sync"
 	"time"
 
@@ -56,8 +58,45 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		return
 	}
 
-	// Retrieve specified file
+	// Retrieve file contents
+	resp, err := conn.Retr(d.File)
+	if err != nil {
+		result.Message = fmt.Sprintf("Could not retrieve file %s : %s", d.File, err)
+		out <- result
+		return
+	}
+	defer resp.Close()
 
+	content, err := ioutil.ReadAll(resp)
+	if err != nil {
+		result.Message = fmt.Sprintf("Could not read file %s contents : %s", d.File, err)
+		out <- result
+		return
+	}
+
+	// Check if we are doing hash matching, non default
+	if d.HashContentMatch {
+		// TODO
+	}
+
+	// Default, regex content matching
+	regex, err := regexp.Compile(d.ContentRegex)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+		out <- result
+		return
+	}
+
+	// Check if content matches regex
+	if !regex.Match(content) {
+		result.Message = fmt.Sprintf("Matching content not found")
+		out <- result
+		return
+	}
+
+	// If we reach here the check is successful
+	result.Passed = true
+	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
