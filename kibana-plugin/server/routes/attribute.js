@@ -57,7 +57,7 @@ export default function (server, dataCluster) {
 
             // Make sure the ID is real
             let attribIndices = await dataCluster.callWithRequest(req, 'indices.get', {
-                index: `attrib_*_${id}`,
+                index: `attrib_*_${req.params["id"]}`,
                 expand_wildcards: 'open',
             });
 
