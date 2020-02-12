@@ -86,6 +86,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 		missingFields = append(missingFields, "Password")
 	}
 
+	// Error only the first missing field, if there are any
 	if len(missingFields) > 0 {
 		return schema.ValidationError{
 			ID:    d.ID,
