@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import { existsSync } from 'fs';
 
+
 import { i18n } from '@kbn/i18n';
 
 import attributeRoute from './server/routes/attribute';
@@ -11,9 +12,9 @@ export default function (kibana) {
     name: 'scorestack',
     uiExports: {
       app: {
-        title: 'ScoreStack',
-        description: 'A Kibana plugin for interacting with ScoreStack checks and attributes.',
-        main: 'plugins/attribs/app',
+        title: 'Scorestack',
+        description: 'A Kibana plugin for viewing and modifying ScoreStack checks and attributes.',
+        main: 'plugins/scorestack/app',
       },
       styleSheetPaths: [
         resolve(__dirname, 'public/app.scss'),
@@ -31,12 +32,12 @@ export default function (kibana) {
     init(server, options) {
       const xpackMainPlugin = server.plugins.xpack_main;
       if (xpackMainPlugin) {
-        const featureId = 'attribs';
+        const featureId = 'scorestack';
 
         xpackMainPlugin.registerFeature({
           id: featureId,
-          name: i18n.translate('attribs.featureRegistry.featureName', {
-            defaultMessage: 'attribs',
+          name: i18n.translate('scorestack.featureRegistry.featureName', {
+            defaultMessage: 'scorestack',
           }),
           navLinkId: featureId,
           icon: 'questionInCircle',

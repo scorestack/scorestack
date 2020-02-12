@@ -22,7 +22,7 @@ export class Main extends React.Component {
        manage state and update your UI than this.
     */
     const { httpClient } = this.props;
-    httpClient.get('../api/attribs/example').then(resp => {
+    httpClient.get('../api/scorestack/example').then((resp) => {
       this.setState({ time: resp.data.time });
     });
   }

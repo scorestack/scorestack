@@ -6,7 +6,7 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import 'ui/autoload/styles';
 import { Main } from './components/main';
 
-const app = uiModules.get('apps/attribs');
+const app = uiModules.get('apps/scorestack');
 
 app.config($locationProvider => {
   $locationProvider.html5Mode({
@@ -21,7 +21,7 @@ function RootController($scope, $element, $http) {
   const domNode = $element[0];
 
   // render react to DOM
-  render(<Main title="attribs" httpClient={$http} />, domNode);
+  render(<Main title="scorestack" httpClient={$http} />, domNode);
 
   // unmount react on controller destroy
   $scope.$on('$destroy', () => {
@@ -29,4 +29,4 @@ function RootController($scope, $element, $http) {
   });
 }
 
-chrome.setRootController('attribs', RootController);
+chrome.setRootController('scorestack', RootController);
