@@ -11,7 +11,7 @@
         "File": "{{.File}}",
         "RegexContentMatch": false,
         "ContentRegex": "{{.ContentRegex}}",
-        "HashContentMatch": true,
+        "HashContentMatch": false,
         "Hash": "{{.Hash}}"
     }
 }
