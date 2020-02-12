@@ -38,7 +38,7 @@ export default function (server, dataCluster) {
                 })
                 checks[checkID]["name"] = checkDoc._source.name;
             }
-            return checks;
+            return h.response(checks).code(200);
         }
     })
 
@@ -48,11 +48,12 @@ export default function (server, dataCluster) {
         handler: async (req, h) => {
             // Make sure value is in request body
             if ("value" in req.payload === false) {
-                return {
+                return h.response({
                     "statusCode": 400,
                     "error": "Bad Request",
                     "message": 'Request body must contain the "value" attribute',
-                }
+                }).code(400)
+
             }
 
             // Make sure the ID is real
@@ -62,11 +63,11 @@ export default function (server, dataCluster) {
             });
 
             if (Object.keys(attribIndices).length === 0) {
-                return {
+                return h.response({
                     "statusCode": 404,
                     "error": "Not Found",
                     "message": `Attributes for check ID "${req.params["id"]}" either don't exist or you do not have access to them`,
-                }
+                }).code(404)
             }
 
             // Check each attribute index for the attribute we are overwriting
@@ -86,18 +87,18 @@ export default function (server, dataCluster) {
                             "doc": newAttrib,
                         },
                     });
-                    return {
+                    return h.response({
                         "statusCode": 200,
-                        "details": resp,
-                    }
+                        "message": "Attribute updated",
+                    }).code(200)
                 }
             }
             // If we fall through to here, the attribute was not found
-            return {
+            return h.response({
                 "statusCode": 404,
                 "error": "Not Found",
                 "message": `Attribute "${req.params["name"]}" for check ID ${req.params["id"]} either doesn't exist or you do not have access to it`,
-            }
+            }).code(404)
         }
     })
 }
