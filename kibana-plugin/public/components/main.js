@@ -29,6 +29,7 @@ export class Main extends React.Component {
 
     this.state = {
       isAttributeShown: false,
+      attribs = {},
     };
   }
 
@@ -42,7 +43,7 @@ export class Main extends React.Component {
 
   render() {
     const attributeItems = Object.keys(this.state.attribs).map((key) => {
-      <Attribute id="ssh-example" key={key} value={this.state.attribs[key]} client={this.props.httpClient} />
+      <Attribute id="ssh-example" key={key} value={this.state.attribs[key] || 'Loading...'} client={this.props.httpClient} />
     })
     return (
       <EuiPage>
