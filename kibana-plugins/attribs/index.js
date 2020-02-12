@@ -4,14 +4,15 @@ import { existsSync } from 'fs';
 import { i18n } from '@kbn/i18n';
 
 import exampleRoute from './server/routes/example';
+import listRoute from './server/routes/list';
 
-export default function(kibana) {
+export default function (kibana) {
   return new kibana.Plugin({
     require: ['elasticsearch'],
     name: 'attribs',
     uiExports: {
       app: {
-        title: 'Attribs',
+        title: 'Attributes',
         description: 'A Kibana plugin for modifying ScoreStack check attributes.',
         main: 'plugins/attribs/app',
       },
@@ -64,7 +65,10 @@ export default function(kibana) {
       }
 
       // Add server routes and initialize the plugin here
+      const dataCluster = server.plugins.elasticsearch.getCluster('data');
+
       exampleRoute(server);
+      listRoute(server, dataCluster);
     },
   });
 }
