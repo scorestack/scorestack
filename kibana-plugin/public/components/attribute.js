@@ -52,7 +52,6 @@ export class Attribute extends React.Component {
   };
 
   onChange = e => {
-    console.log(e.target.value);
     this.setState({
       formValue: e.target.value,
     });
@@ -63,7 +62,7 @@ export class Attribute extends React.Component {
     const saveButton = (<EuiButton isLoading={this.state.isLoading} onClick={this.onSaveButtonClick}>Save</EuiButton>)
     return (
       <EuiFlexGroup style={{ maxWidth: 600 }}>
-        <EuiFlexItem>;
+        <EuiFlexItem>
           <EuiFormRow label={this.props.name}>
             <EuiFieldText value={this.state.formValue} onChange={this.onChange} />
           </EuiFormRow>
