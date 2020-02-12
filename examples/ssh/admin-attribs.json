@@ -1,5 +1,5 @@
 {
-    "IP": "localhost",
+    "Host": "localhost",
     "Port": "22",
     "Username": "root",
     "Cmd": "id",

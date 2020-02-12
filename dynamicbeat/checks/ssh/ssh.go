@@ -17,7 +17,7 @@ type Definition struct {
 	ID           string // a unique identifier for this check
 	Name         string // a human-readable title for the check
 	Group        string // the group this check is part of
-	IP           string // (required) IP of the host to run the ICMP check against
+	Host         string // (required) IP or hostname of the host to run the SSH check against
 	Username     string // (required) The user to login with over ssh
 	Password     string // (required) The password for the user that you wish to login with
 	Cmd          string // (required) The command to execute once ssh connection established
@@ -50,7 +50,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	// Create the ssh client
-	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%s", d.IP, d.Port), config)
+	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), config)
 	if err != nil {
 		result.Message = fmt.Sprintf("Error creating ssh client: %s", err)
 		out <- result
@@ -130,8 +130,8 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 
 	// Check for missing fields
 	missingFields := make([]string, 0)
-	if d.IP == "" {
-		missingFields = append(missingFields, "IP")
+	if d.Host == "" {
+		missingFields = append(missingFields, "Host")
 	}
 
 	if d.Username == "" {
