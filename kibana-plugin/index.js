@@ -8,11 +8,11 @@ import attributeRoute from './server/routes/attribute';
 export default function (kibana) {
   return new kibana.Plugin({
     require: ['elasticsearch'],
-    name: 'attribs',
+    name: 'scorestack',
     uiExports: {
       app: {
-        title: 'Attributes',
-        description: 'A Kibana plugin for modifying ScoreStack check attributes.',
+        title: 'ScoreStack',
+        description: 'A Kibana plugin for interacting with ScoreStack checks and attributes.',
         main: 'plugins/attribs/app',
       },
       styleSheetPaths: [
