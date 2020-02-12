@@ -26,7 +26,7 @@ export default function (server, dataCluster) {
                 if (!"attributes" in checks[checkID]) {
                     checks[checkID] = {};
                 }
-                checks[checkID]["attributes"] = Object.assign(attribDoc._source, checks[checkID]["attributes"]);
+                checks[checkID]["attributes"] = Object.assign(checks[checkID]["attributes"], attribDoc._source);
             }
 
             // Get names for each check
@@ -39,6 +39,63 @@ export default function (server, dataCluster) {
                 checks[checkID]["name"] = checkDoc._source.name;
             }
             return checks;
+        }
+    })
+
+    server.route({
+        path: '/api/scorestack/attribute/{id}/{name}',
+        method: 'POST',
+        handler: async (req, h) => {
+            // Make sure value is in request body
+            if ("value" in req.payload === false) {
+                return {
+                    "statusCode": 400,
+                    "error": "Bad Request",
+                    "message": 'Request body must contain the "value" attribute',
+                }
+            }
+
+            // Make sure the ID is real
+            let attribIndices = await dataCluster.callWithRequest(req, 'indices.get', {
+                index: `attrib_*_${id}`,
+                expand_wildcards: 'open',
+            });
+
+            if (Object.keys(attribIndices).length === 0) {
+                return {
+                    "statusCode": 404,
+                    "error": "Not Found",
+                    "message": `Attributes for check ID "${req.params["id"]}" either don't exist or you do not have access to them`,
+                }
+            }
+
+            // Check each attribute index for the attribute we are overwriting
+            for (let attribIndex of Object.keys(attribIndices)) {
+                let attribDoc = await dataCluster.callWithRequest(req, 'get', {
+                    id: 'attributes',
+                    index: attribIndex,
+                });
+                // If the attribute exists in the document, update the document with the new value
+                if (req.params["name"] in attribDoc._source) {
+                    let newAttrib = {};
+                    newAttrib[req.params["name"]] = req.payload["value"];
+                    let resp = await dataCluster.callWithRequest(req, 'create', {
+                        id: 'attributes',
+                        index: attribIndex,
+                        body: Object.assign({}, attribDoc._source, newAttrib),
+                    });
+                    return {
+                        "statusCode": 200,
+                        "details": resp,
+                    }
+                }
+            }
+            // If we fall through to here, the attribute was not found
+            return {
+                "statusCode": 404,
+                "error": "Not Found",
+                "message": `Attribute "${req.params["name"]}" for check ID ${req.params["id"]} either doesn't exist or you do not have access to it`,
+            }
         }
     })
 }
