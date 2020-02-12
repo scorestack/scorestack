@@ -38,7 +38,7 @@ docker-compose up -d --force-recreate logs01
 for check in $(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
 do
   # Add check definition
-  curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/checks/_doc' -H 'Content-Type: application/json' -d @examples/${check}/check.json
+  curl -k -XPUT -u elastic:${elastic_pass} https://localhost:9200/checks/_doc/${check}-example -H 'Content-Type: application/json' -d @examples/${check}/check.json
 
   # Add admin attributes, if they are defined
   if [ -f examples/${check}/admin-attribs.json ]
