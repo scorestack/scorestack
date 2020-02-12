@@ -29,7 +29,7 @@ export class Main extends React.Component {
 
     this.state = {
       isAttributeShown: false,
-      attribs = {},
+      attribs: {},
     };
   }
 
