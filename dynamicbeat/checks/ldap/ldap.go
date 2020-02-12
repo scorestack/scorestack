@@ -2,9 +2,12 @@ package ldap
 
 import (
 	"encoding/json"
+	"fmt"
 	"sync"
+	"time"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"gopkg.in/ldap.v2"
 )
 
 // The Definition configures the behavior of the SSH check
@@ -22,7 +25,41 @@ type Definition struct {
 
 // Run a single instance of the check
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+	defer wg.Done()
 
+	// Set up result
+	result := schema.CheckResult{
+		Timestamp: time.Now(),
+		ID:        d.ID,
+		Group:     d.Group,
+		CheckType: "ldap",
+	}
+
+	// Check for LDAP+TLS
+	if d.Ldaps {
+		// TODO:
+	}
+
+	// Normal, default ldap check
+	lconn, err := ldap.Dial("tcp", fmt.Sprintf("%s:%s", d.Fqdn, d.Port))
+	if err != nil {
+		result.Message = fmt.Sprintf("Could not dial server %s : %s", d.Fqdn, err)
+		out <- result
+		return
+	}
+	defer lconn.Close()
+
+	// Attempt to login
+	err = lconn.Bind(d.User, d.Password)
+	if err != nil {
+		result.Message = fmt.Sprintf("Failed to login with user %s : %s", d.User, err)
+		out <- result
+		return
+	}
+
+	// If we reached here the check passes
+	result.Passed = true
+	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
