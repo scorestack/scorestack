@@ -1,9 +1,14 @@
 package vnc
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
+	"net"
 	"sync"
+	"time"
 
+	"github.com/kward/go-vnc"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
@@ -18,7 +23,38 @@ type Definition struct {
 
 // Run a single instance of the check
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+	defer wg.Done()
 
+	// Set up result
+	result := schema.CheckResult{
+		Timestamp: time.Now(),
+		ID:        d.ID,
+		Name:      d.Name,
+		Group:     d.Group,
+		CheckType: "vnc",
+	}
+
+	// Dial the vnc server
+	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
+	if err != nil {
+		result.Message = fmt.Sprintf("Connection to vnc server %s failed : %s", d.Host, err)
+		out <- result
+		return
+	}
+
+	// Negotiate connection with the server.
+	client := vnc.NewClientConfig(d.Password)
+	vncSession, err := vnc.Connect(context.Background(), conn, client)
+	if err != nil {
+		result.Message = fmt.Sprintf("Login on server %s failed : %s", d.Host, err)
+		out <- result
+		return
+	}
+	defer vncSession.Close()
+
+	// If we made it here the check passes
+	result.Passed = true
+	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
