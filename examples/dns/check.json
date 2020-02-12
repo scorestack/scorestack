@@ -7,6 +7,6 @@
         "Server": "{{.Server}}",
         "Port": "{{.Port}}",
         "Fqdn": "{{.Fqdn}}",
-        "ExpectedIP": "{{.ExpectedIP}}",
+        "ExpectedIP": "{{.ExpectedIP}}"
     }
 }
