@@ -27,7 +27,7 @@ type Definition struct {
 	RegexContentMatch bool   // (optional, default=true) Whether or not to match file content with regex
 	ContentRegex      string // (optional, default=`.*`) Regex to match if reading a file
 	HashContentMatch  bool   // (optional, default=false) Whether or not to match a hash of the file contents
-	Hash              string // (optional, default="") The hash value to compare the hashed file contents to
+	Hash              string // (optional, default="") The hash digest from sha3-256 to compare the hashed file contents to
 	Port              string // (optional, default=21) The port to attempt an ftp connection on
 }
 
