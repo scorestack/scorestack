@@ -1,6 +1,7 @@
 package ftp
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/jlaffaye/ftp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"golang.org/x/crypto/sha3"
 )
 
 // The Definition configures the behavior of the FTP check
@@ -76,7 +78,20 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 	// Check if we are doing hash matching, non default
 	if d.HashContentMatch {
-		// TODO
+		// Get the file hash
+		digest := sha3.Sum256(content)
+
+		// Check if the digest of the file matches the defined hash
+		if digestString := hex.EncodeToString(digest[:]); digestString != d.Hash {
+			result.Message = fmt.Sprintf("Incorrect hash")
+			out <- result
+			return
+		}
+
+		// If we make it here the check was successful for matching hashes
+		result.Passed = true
+		out <- result
+		return
 	}
 
 	// Default, regex content matching
