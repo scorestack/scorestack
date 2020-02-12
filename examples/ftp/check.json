@@ -1,0 +1,17 @@
+{
+    "id": "ftp-example",
+    "name": "Example FTP Check",
+    "type": "ftp",
+    "group": "example",
+    "definition": {
+        "IP": "{{.IP}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "File": "{{.File}}",
+        "RegexContentMatch": false,
+        "ContentRegex": "{{.*}}",
+        "HashContentMatch": true,
+        "Hash": "{{.Hash}}"
+    }
+}
