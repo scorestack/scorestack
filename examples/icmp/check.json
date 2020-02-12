@@ -4,6 +4,6 @@
     "type": "icmp",
     "group": "example",
     "definition": {
-        "ip": "{{.Host}}"
+        "host": "{{.Host}}"
     }
 }
