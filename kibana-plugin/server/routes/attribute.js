@@ -1,6 +1,6 @@
 export default function (server, dataCluster) {
     server.route({
-        path: '/api/scorestack/attributes',
+        path: '/api/scorestack/attribute',
         method: 'GET',
         handler: async (req, h) => {
             let checks = {};
