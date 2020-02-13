@@ -30,7 +30,6 @@ export class Attribute extends React.Component {
     httpClient.post(`../api/scorestack/attribute/${this.props.id}/${this.props.name}`, JSON.stringify({
       'value': this.state.formValue,
     }, { headers: { 'Content-Type': 'application/json' } })).then((resp) => {
-      console.log(resp);
       this.setState({
         isLoading: false,
         value: this.state.formValue,
