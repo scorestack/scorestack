@@ -21,31 +21,24 @@ import {
   EuiText,
   EuiButtonIcon,
 } from '@elastic/eui';
-import { Attribute } from './attribute';
+import { Check } from './check';
 
 export class Main extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isAttributeShown: false,
-      attribs: {},
-    };
+    this.state = { attributes: {} };
   }
 
   componentDidMount() {
     const { httpClient } = this.props;
     httpClient.get('../api/scorestack/attribute').then((resp) => {
       console.log(resp);
-      this.setState({ attribs: resp.data["ssh-example"].attributes });
+      this.setState({ attributes: resp.data["ssh-example"].attributes });
     });
   }
 
   render() {
-    console.log(Object.keys(this.state.attribs));
-    const attributeItems = Object.keys(this.state.attribs).map((key) =>
-      <Attribute key={key} id="ssh-example" name={key} value={this.state.attribs[key] || 'Loading...'} client={this.props.httpClient} />
-    );
     return (
       <EuiPage>
         <EuiPageBody>
@@ -55,7 +48,7 @@ export class Main extends React.Component {
             </EuiTitle>
           </EuiPageHeader>
           <EuiPageContent>
-            {attributeItems}
+            <Check attribs={this.state.attribs} id="ssh-example" name="Example SSH Check" httpClient={this.props.httpClient} />
           </EuiPageContent>
         </EuiPageBody>
       </EuiPage>
