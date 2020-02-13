@@ -40,10 +40,15 @@ export class Main extends React.Component {
     }
   }
 
+  updateChecks() {
+    httpClient.get('../api/scorestack/attribute').then((resp) => {
+      this.setState({ checks: resp.data });
+    })
+  }
+
   componentDidMount() {
     const { httpClient } = this.props;
     httpClient.get('../api/scorestack/attribute').then((resp) => {
-      console.log(resp);
       this.setState({ checks: resp.data });
       let navItems = []
       let itemId = 0;
@@ -59,6 +64,7 @@ export class Main extends React.Component {
                 attributes={this.state.checks[check].attributes}
                 httpClient={this.props.httpClient} />
             });
+            this.updateChecks();
           },
         });
         itemId++;
