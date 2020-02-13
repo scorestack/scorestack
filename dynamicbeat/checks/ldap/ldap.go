@@ -36,6 +36,9 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType: "ldap",
 	}
 
+	// Set timeout
+	ldap.DefaultTimeout = 5 * time.Second
+
 	// Normal, default ldap check
 	lconn, err := ldap.Dial("tcp", fmt.Sprintf("%s:%s", d.Fqdn, d.Port))
 	if err != nil {
