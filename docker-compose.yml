@@ -117,6 +117,7 @@ services:
       - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/kibana/config/pki/ca.cert.pem
       - ./docker/kibana.yml:/usr/share/kibana/config/kibana.yml
       - data05:/usr/share/kibana/data
+      - plugins:/usr/share/kibana/plugins
     networks:
       - elastic
 
@@ -130,6 +131,8 @@ volumes:
   data04:
     driver: local
   data05:
+    driver: local
+  plugins:
     driver: local
 
 networks:

@@ -23,3 +23,5 @@ server.ssl.key: /usr/share/kibana/config/pki/kiba.key.pem
 server.ssl.certificateAuthorities:
   - /usr/share/kibana/config/pki/ca.cert.pem
 server.ssl.enabled: true
+
+uiSettings.overrides.theme.darkMode: true
