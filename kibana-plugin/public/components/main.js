@@ -32,7 +32,7 @@ export class Main extends React.Component {
 
     this.state = {
       checks: {},
-      currentCheck: <EuiText>Loading...</EuiText>,
+      currentCheck: <EuiText>Click on any of your checks to the left to configure their attributes.</EuiText>,
       navItems: [{
         name: 'Loading...',
         id: 0,
@@ -76,11 +76,6 @@ export class Main extends React.Component {
             items={this.state.navItems} />
         </EuiPageSideBar>
         <EuiPageBody>
-          <EuiPageHeader>
-            <EuiTitle size="l">
-              <h1>Check Attributes</h1>
-            </EuiTitle>
-          </EuiPageHeader>
           <EuiPageContent>
             {this.state.currentCheck}
           </EuiPageContent>
