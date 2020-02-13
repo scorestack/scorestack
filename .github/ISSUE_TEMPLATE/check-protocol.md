@@ -2,7 +2,7 @@
 name: Check protocol
 about: Request a protocol to be supported by Dynamicbeat.
 title: ''
-labels: check protocol, dynamicbeat
+labels: check protocol, dynamicbeat, feature, new
 assignees: ''
 
 ---

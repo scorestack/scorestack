@@ -2,13 +2,13 @@
 name: Feature request
 about: Suggest a new feature for ScoreStack.
 title: ''
-labels: ''
+labels: feature, new
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**What do you want ScoreStack to do that it cannot currently do?**
+A clear and consise description of the feature you would like to be added.
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**How would you like ScoreStack to do that?**
+A clear and concise description of how you would like ScoreStack to implement the feature.

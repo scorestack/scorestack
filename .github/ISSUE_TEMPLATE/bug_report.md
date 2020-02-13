@@ -2,7 +2,7 @@
 name: Bug report
 about: Report an issue with ScoreStack to help improve the project.
 title: ''
-labels: bug
+labels: bug, new
 assignees: ''
 
 ---
@@ -21,4 +21,4 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+_If applicable, add screenshots to help explain your problem._
