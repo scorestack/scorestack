@@ -1,0 +1,11 @@
+{
+    "id": "vnc-example",
+    "name": "Example VNC Check",
+    "type": "vnc",
+    "group": "example",
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Password": "{{.Password}}"
+    }
+}
