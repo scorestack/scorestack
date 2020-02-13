@@ -48,7 +48,7 @@ export class Main extends React.Component {
             </EuiTitle>
           </EuiPageHeader>
           <EuiPageContent>
-            <Check attribs={this.state.attribs} id="ssh-example" name="Example SSH Check" httpClient={this.props.httpClient} />
+            <Check attributes={this.state.attributes} id="ssh-example" name="Example SSH Check" httpClient={this.props.httpClient} />
           </EuiPageContent>
         </EuiPageBody>
       </EuiPage>

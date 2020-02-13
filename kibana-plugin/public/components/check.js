@@ -13,12 +13,12 @@ export class Check extends React.Component {
 	}
 
 	render() {
-		const attributes = Object.keys(this.props.attribs).map((key) =>
+		const attributes = Object.keys(this.props.attributes).map((key) =>
 			<Attribute
 				key={key}
 				id={this.props.id}
 				name={key}
-				value={this.props.attribs[key]}
+				value={this.props.attributes[key]}
 				client={this.props.httpClient} />
 		);
 		return (
