@@ -48,6 +48,9 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 	defer lconn.Close()
 
+	// Set message timeout
+	lconn.SetTimeout(5 * time.Second)
+
 	// Add TLS if needed
 	if d.Ldaps {
 		err = lconn.StartTLS(&tls.Config{InsecureSkipVerify: true})
