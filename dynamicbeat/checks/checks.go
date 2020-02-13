@@ -13,6 +13,7 @@ import (
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ftp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/http"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/icmp"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/ldap"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/noop"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ssh"
@@ -90,6 +91,8 @@ func unpackDef(c schema.CheckDef) schema.Check {
 		def = &dns.Definition{}
 	case "ftp":
 		def = &ftp.Definition{}
+	case "ldap":
+		def = &ldap.Definition{}
 	default:
 		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
 	}
