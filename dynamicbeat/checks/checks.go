@@ -17,6 +17,7 @@ import (
 	"github.com/s-newman/scorestack/dynamicbeat/checks/noop"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ssh"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/vnc"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
@@ -93,6 +94,8 @@ func unpackDef(c schema.CheckDef) schema.Check {
 		def = &ftp.Definition{}
 	case "ldap":
 		def = &ldap.Definition{}
+	case "vnc":
+		def = &vnc.Definition{}
 	default:
 		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
 	}
