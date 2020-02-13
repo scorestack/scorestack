@@ -1,17 +1,15 @@
 package vnc
 
 import (
-	"context"
 	"encoding/json"
-	"fmt"
-	"net"
 	"sync"
 	"time"
 
-	"github.com/kward/go-vnc"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
+// The Definition configures the behavior of the SSH check
+// it implements the "check" interface
 type Definition struct {
 	ID       string // a unique identifier for this check
 	Name     string // a human-readable title for the check
@@ -33,24 +31,6 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		Group:     d.Group,
 		CheckType: "vnc",
 	}
-
-	// Dial the vnc server
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
-	if err != nil {
-		result.Message = fmt.Sprintf("Connection to vnc server %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-
-	// Negotiate connection with the server.
-	client := vnc.NewClientConfig(d.Password)
-	vncSession, err := vnc.Connect(context.Background(), conn, client)
-	if err != nil {
-		result.Message = fmt.Sprintf("Login on server %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-	defer vncSession.Close()
 
 	// If we made it here the check passes
 	result.Passed = true
