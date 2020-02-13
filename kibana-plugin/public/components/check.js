@@ -15,7 +15,7 @@ export class Check extends React.Component {
 	render() {
 		const attributes = Object.keys(this.props.attributes).map((key) =>
 			<Attribute
-				key={key}
+				key={`${key}-${this.props.id}`}
 				id={this.props.id}
 				name={key}
 				value={this.props.attributes[key]}
