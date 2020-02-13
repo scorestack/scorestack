@@ -43,7 +43,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	// Dial the vnc server
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
+	conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), 5*time.Second)
 	if err != nil {
 		result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
 		out <- result
