@@ -72,7 +72,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	// Check if the command errored
-	if bufErr.String() == "" {
+	if bufErr.String() != "" {
 		result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
 		out <- result
 		return
