@@ -73,10 +73,14 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	// Check if we matching content
 	if !d.MatchContent {
 		// If we make it here, no content matching, the check succeeds
+		result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
 		result.Passed = true
 		out <- result
 		return
 	}
+
+	// Keep going if we are matching content
+
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
