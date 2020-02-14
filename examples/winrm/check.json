@@ -1,0 +1,16 @@
+{
+    "id": "winrm-example",
+    "name": "Example WinRM Check",
+    "type": "winrm",
+    "group": "example",
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Cmd": "{{.Cmd}}",
+        "Encrypted": true,
+        "MatchContent": false,
+        "ContentRegex": "{{.ContentRegex}}"
+    }
+}

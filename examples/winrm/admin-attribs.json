@@ -1,0 +1,7 @@
+{
+    "Host": "localhost",
+    "Port": "5986",
+    "Username": "admin",
+    "Cmd": "changeme",
+    "ContentRegex": ".*"
+}
