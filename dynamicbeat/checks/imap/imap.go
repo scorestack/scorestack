@@ -45,11 +45,15 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		Timeout: 5 * time.Second,
 	}
 
+	// Defining these allow the if/else block below
+	var c *client.Client
+	var err error
+
 	// Connect to server with TLS or not
 	if d.Encrypted {
-		c, err := client.DialWithDialerTLS(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port), &tls.Config{})
+		c, err = client.DialWithDialerTLS(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port), &tls.Config{})
 	} else {
-		c, err := client.DialWithDialer(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port))
+		c, err = client.DialWithDialer(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port))
 	}
 	if err != nil {
 		result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
@@ -62,7 +66,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	c.Timeout = 10 * time.Second
 
 	// Login
-	err := c.Login(d.Username, d.Password)
+	err = c.Login(d.Username, d.Password)
 	if err != nil {
 		result.Message = fmt.Sprintf("Login with user %s failed : %s", d.Username, err)
 		out <- result
@@ -71,7 +75,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 	// List mailboxes
 	mailboxes := make(chan *imap.MailboxInfo, 10)
-	err := c.List("", "*", mailboxes)
+	err = c.List("", "*", mailboxes)
 	if err != nil {
 		result.Message = fmt.Sprintf("Listing mailboxes failed : %s", err)
 		out <- result
@@ -82,6 +86,22 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	result.Passed = true
 	out <- result
 }
+
+// func connect(d *Definition, dialer net.Dialer, out chan<- schema.CheckResult, result schema.CheckResult) {
+
+// 	c, err := client.DialWithDialer(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port))
+// 	if err != nil {
+// 		result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
+// 		out <- result
+// 		return
+// 	}
+// 	defer c.Logout() // This is the same as close() for normal conn objects
+
+// }
+
+// func connectSecure(d *Definition) {
+
+// }
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
