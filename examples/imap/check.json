@@ -1,0 +1,13 @@
+{
+    "id": "imap-example",
+    "name": "Example IMAP Check",
+    "type": "imap",
+    "group": "example",
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Encrypted": false
+    }
+}
