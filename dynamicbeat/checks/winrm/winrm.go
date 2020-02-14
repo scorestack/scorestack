@@ -26,7 +26,7 @@ type Definition struct {
 	Encrypted    bool   // (optional, default=true) Use TLS for connection
 	MatchContent bool   // (optional, default=false) Turn this on to match content from the output of the cmd
 	ContentRegex string // (optional, default=`.*`) Regexp for matching output of a command
-	Port         string // (optional, default=5869) Port for WinRM
+	Port         string // (optional, default=5986) Port for WinRM
 }
 
 // Run a single instance of the check
@@ -115,7 +115,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	// Explicitly set defaults
 	d.Encrypted = true
 	d.ContentRegex = ".*"
-	d.Port = "5869"
+	d.Port = "5986"
 
 	// Unpack JSON definition
 	err := json.Unmarshal(def, &d)
