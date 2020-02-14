@@ -1,9 +1,14 @@
 package winrm
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"strconv"
 	"sync"
+	"time"
 
+	"github.com/masterzen/winrm"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
@@ -25,7 +30,53 @@ type Definition struct {
 
 // Run a single instance of the check
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+	defer wg.Done()
 
+	// Set up result
+	result := schema.CheckResult{
+		Timestamp: time.Now(),
+		ID:        d.ID,
+		Name:      d.Name,
+		Group:     d.Group,
+		CheckType: "winrm",
+	}
+
+	// Convert d.Port to int
+	port, err := strconv.Atoi(d.Port)
+	if err != nil {
+		result.Message = fmt.Sprintf("Failed to convert d.Port to int : %s", err)
+		out <- result
+		return
+	}
+
+	// Login to winrm and create client
+	endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
+	client, err := winrm.NewClient(endpoint, d.Username, d.Password)
+	if err != nil {
+		result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
+		out <- result
+		return
+	}
+
+	// Define these for the command output
+	bufOut := new(bytes.Buffer)
+	bufErr := new(bytes.Buffer)
+
+	// Execute a command
+	_, err = client.Run("netstat", bufOut, bufErr)
+	if err != nil {
+		result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
+		out <- result
+		return
+	}
+
+	// Check if we matching content
+	if !d.MatchContent {
+		// If we make it here, no content matching, the check succeeds
+		result.Passed = true
+		out <- result
+		return
+	}
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
