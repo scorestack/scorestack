@@ -87,22 +87,6 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	out <- result
 }
 
-// func connect(d *Definition, dialer net.Dialer, out chan<- schema.CheckResult, result schema.CheckResult) {
-
-// 	c, err := client.DialWithDialer(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port))
-// 	if err != nil {
-// 		result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
-// 		out <- result
-// 		return
-// 	}
-// 	defer c.Logout() // This is the same as close() for normal conn objects
-
-// }
-
-// func connectSecure(d *Definition) {
-
-// }
-
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
 func (d *Definition) Init(id string, name string, group string, def []byte) error {
