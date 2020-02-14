@@ -16,8 +16,8 @@ type Definition struct {
 	Host         string // (required) IP or hostname of the WinRM box
 	Username     string // (required) User to login as
 	Password     string // (required) Password for the user
-	Encrypted    bool   // (optional, default=true) Use TLS for connection
 	Cmd          string // (required) Command that will be executed
+	Encrypted    bool   // (optional, default=true) Use TLS for connection
 	MatchContent bool   // (optional, default=false) Turn this on to match content from the output of the cmd
 	ContentRegex string // (optional, default=`.*`) Regexp for matching output of a command
 	Port         string // (optional, default=5869) Port for WinRM
