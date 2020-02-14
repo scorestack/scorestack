@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strconv"
 	"sync"
 	"time"
@@ -70,7 +71,14 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		return
 	}
 
-	// Check if we matching content
+	// Check if the command errored
+	if bufErr.String() == "" {
+		result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
+		out <- result
+		return
+	}
+
+	// Check if we matching content and the command did not error
 	if !d.MatchContent {
 		// If we make it here, no content matching, the check succeeds
 		result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
@@ -80,7 +88,24 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	// Keep going if we are matching content
+	// Create regexp
+	regex, err := regexp.Compile(d.ContentRegex)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+		out <- result
+		return
+	}
 
+	// Check if the content matches
+	if !regex.Match(bufOut.Bytes()) {
+		result.Message = fmt.Sprintf("Matching content not found")
+		out <- result
+		return
+	}
+
+	// If we reach here the check is successful
+	result.Passed = true
+	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
