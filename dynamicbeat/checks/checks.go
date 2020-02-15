@@ -17,6 +17,7 @@ import (
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ldap"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/noop"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/smtp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ssh"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/vnc"
 )
@@ -99,6 +100,8 @@ func unpackDef(c schema.CheckDef) schema.Check {
 		def = &vnc.Definition{}
 	case "imap":
 		def = &imap.Definition{}
+	case "smtp":
+		def = &smtp.Definition{}
 	default:
 		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
 	}

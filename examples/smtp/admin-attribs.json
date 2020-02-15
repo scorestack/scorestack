@@ -1,0 +1,8 @@
+{
+    "Host": "smtp.example.com",
+    "Username": "user@exmaple.com",
+    "Sender": "user@example.com",
+    "Reciever": "user@example.com",
+    "Body": "Hello from ScoreStack",
+    "Port": "25"
+}

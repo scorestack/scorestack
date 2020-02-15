@@ -1,0 +1,16 @@
+{
+    "id": "smtp-example",
+    "name": "Example SMTP Check",
+    "type": "smtp",
+    "group": "example",
+    "definition": {
+        "Host": "{{.Host}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Sender": "{{.Sender}}",
+        "Reciever": "{{.Reciever}}",
+        "Body": "{{.Body}}",
+        "Encrypted": false,
+        "Port": "{{.Port}}"
+    }
+}
