@@ -3,6 +3,6 @@
     "Username": "user@exmaple.com",
     "Sender": "user@example.com",
     "Reciever": "user@example.com",
-    "Body": "Hello from scoring engine",
+    "Body": "Hello from ScoreStack",
     "Port": "25"
 }
