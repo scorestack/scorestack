@@ -23,7 +23,7 @@ type Definition struct {
 	Password  string // (required) Password for the smtp server
 	Sender    string // (required) Who is sending the email
 	Reciever  string // (required) Who is receiving the email
-	Body      string // (optional, default="Hello from scoring engine") Body of the email
+	Body      string // (optional, default="Hello from ScoreStack") Body of the email
 	Encrypted bool   // (optional, default=false) Whether or not to use TLS
 	Port      string // (optional, default="25") Port of the smtp server
 }
@@ -129,7 +129,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 func (d *Definition) Init(id string, name string, group string, def []byte) error {
 
 	// Explicitly set defaults
-	d.Body = "Hello from scoring engine"
+	d.Body = "Hello from ScoreStack"
 	d.Port = "25"
 
 	// Unpack JSON definition
