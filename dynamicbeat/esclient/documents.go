@@ -26,7 +26,23 @@ type Document struct {
 // GetAllDocuments finds all the documents in an index and returns the JSON
 // strings that represent them.
 func GetAllDocuments(c *elasticsearch.Client, i string) ([][]byte, error) {
-	resp, err := c.Search(c.Search.WithIndex(i))
+	// Check how many documents there are in the index
+	resp, err := c.Count(c.Count.WithIndex(i))
+	if err != nil {
+		return nil, fmt.Errorf("Error getting number of documents in index %s: %s", i, err)
+	}
+	defer resp.Body.Close()
+
+	type countResult struct {
+		Count int
+	}
+	var count countResult
+	err = json.Unmarshal([]byte(read(resp.Body)), &count)
+	if err != nil {
+		return nil, fmt.Errorf("Error decoding count result JSON string: %s", err)
+	}
+
+	resp, err = c.Search(c.Search.WithIndex(i), c.Search.WithSize(count.Count))
 	if err != nil {
 		return nil, fmt.Errorf("Error searching for documents for index %s: %s", i, err)
 	}
