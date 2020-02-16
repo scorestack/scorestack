@@ -3,6 +3,7 @@
     "name": "Example IMAP Check",
     "type": "imap",
     "group": "example",
+    "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",
         "Port": "{{.Port}}",

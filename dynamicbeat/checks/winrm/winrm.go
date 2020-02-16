@@ -16,17 +16,18 @@ import (
 // The Definition configures the behavior of the WinRM check
 // it implements the "check" interface
 type Definition struct {
-	ID           string // a unique identifier for this check
-	Name         string // a human-readable title for the check
-	Group        string // the group this check is part of
-	Host         string // (required) IP or hostname of the WinRM box
-	Username     string // (required) User to login as
-	Password     string // (required) Password for the user
-	Cmd          string // (required) Command that will be executed
-	Encrypted    bool   // (optional, default=true) Use TLS for connection
-	MatchContent bool   // (optional, default=false) Turn this on to match content from the output of the cmd
-	ContentRegex string // (optional, default=`.*`) Regexp for matching output of a command
-	Port         string // (optional, default=5986) Port for WinRM
+	ID           string  // a unique identifier for this check
+	Name         string  // a human-readable title for the check
+	Group        string  // the group this check is part of
+	ScoreWeight  float64 // the weight that this check has relative to others
+	Host         string  // (required) IP or hostname of the WinRM box
+	Username     string  // (required) User to login as
+	Password     string  // (required) Password for the user
+	Cmd          string  // (required) Command that will be executed
+	Encrypted    bool    // (optional, default=true) Use TLS for connection
+	MatchContent bool    // (optional, default=false) Turn this on to match content from the output of the cmd
+	ContentRegex string  // (optional, default=`.*`) Regexp for matching output of a command
+	Port         string  // (optional, default=5986) Port for WinRM
 }
 
 // Run a single instance of the check
@@ -110,7 +111,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
 
 	// Explicitly set defaults
 	d.Encrypted = true
@@ -127,6 +128,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	d.ID = id
 	d.Name = name
 	d.Group = group
+	d.ScoreWeight = scoreWeight
 
 	// Check for missing fields
 	missingFields := make([]string, 0)

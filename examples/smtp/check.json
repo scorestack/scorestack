@@ -3,6 +3,7 @@
     "name": "Example SMTP Check",
     "type": "smtp",
     "group": "example",
+    "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",
         "Username": "{{.Username}}",

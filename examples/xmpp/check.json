@@ -3,6 +3,7 @@
     "name": "Example XMPP Check",
     "type": "xmpp",
     "group": "example",
+    "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",
         "Port": "{{.Port}}",
