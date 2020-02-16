@@ -54,15 +54,15 @@ func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan
 		event := beat.Event{
 			Timestamp: result.Timestamp,
 			Fields: common.MapStr{
-				"type":       "dynamicbeat",
-				"id":         result.ID,
-				"name":       result.Name,
-				"group":      result.Group,
-				"weight":     result.Weight,
-				"check_type": result.CheckType,
-				"passed":     result.Passed,
-				"message":    result.Message,
-				"details":    result.Details,
+				"type":         "dynamicbeat",
+				"id":           result.ID,
+				"name":         result.Name,
+				"group":        result.Group,
+				"score_weight": result.ScoreWeight,
+				"check_type":   result.CheckType,
+				"passed":       result.Passed,
+				"message":      result.Message,
+				"details":      result.Details,
 			},
 		}
 		pubQueue <- event
@@ -112,7 +112,7 @@ func unpackDef(c schema.CheckDef) schema.Check {
 	default:
 		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
 	}
-	def.Init(c.ID, c.Name, c.Group, c.Weight, renderedJSON)
+	def.Init(c.ID, c.Name, c.Group, c.ScoreWeight, renderedJSON)
 
 	return def
 }

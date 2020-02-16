@@ -14,17 +14,17 @@ import (
 // The Definition configures the behavior of the SSH check
 // it implements the "check" interface
 type Definition struct {
-	ID           string // a unique identifier for this check
-	Name         string // a human-readable title for the check
-	Group        string // the group this check is part of
-	Weight       int    // the weight that this check has relative to others
-	Host         string // (required) IP or hostname of the host to run the SSH check against
-	Username     string // (required) The user to login with over ssh
-	Password     string // (required) The password for the user that you wish to login with
-	Cmd          string // (required) The command to execute once ssh connection established
-	MatchContent bool   // (optional, default=false) Whether or not to match content like checking files
-	ContentRegex string // (optional, default=`.*`) Regex to match if reading a file
-	Port         string // (optional, default=22) The port to attempt an ssh connection on
+	ID           string  // a unique identifier for this check
+	Name         string  // a human-readable title for the check
+	Group        string  // the group this check is part of
+	ScoreWeight  float64 // the weight that this check has relative to others
+	Host         string  // (required) IP or hostname of the host to run the SSH check against
+	Username     string  // (required) The user to login with over ssh
+	Password     string  // (required) The password for the user that you wish to login with
+	Cmd          string  // (required) The command to execute once ssh connection established
+	MatchContent bool    // (optional, default=false) Whether or not to match content like checking files
+	ContentRegex string  // (optional, default=`.*`) Regex to match if reading a file
+	Port         string  // (optional, default=22) The port to attempt an ssh connection on
 }
 
 // Run a single instance of the check
@@ -106,7 +106,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, weight int, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
 
 	// Explicitly set defaults
 	d.Port = "22"
@@ -122,7 +122,7 @@ func (d *Definition) Init(id string, name string, group string, weight int, def 
 	d.ID = id
 	d.Name = name
 	d.Group = group
-	d.Weight = weight
+	d.ScoreWeight = scoreWeight
 
 	// Check for missing fields
 	missingFields := make([]string, 0)

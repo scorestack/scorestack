@@ -3,7 +3,7 @@
     "name": "Example noop check",
     "type": "noop",
     "group": "example",
-    "weight": "1",
+    "weight": 1,
     "definition": {
         "static": "unchanged",
         "dynamic": "{{.Priv}}, {{.NonPriv}}"

@@ -17,19 +17,19 @@ import (
 // The Definition configures the behavior of the FTP check
 // it implements the "check" interface
 type Definition struct {
-	ID                string // a unique identifier for this check
-	Name              string // a human-readable title for the check
-	Group             string // the group this check is part of
-	Weight            int    // the weight that this check has relative to others
-	Host              string // (required) IP or hostname of the host to run the FTP check against
-	Username          string // (required) The user to login with over FTP
-	Password          string // (required) The password for the user that you wish to login with
-	File              string // (required) The path to the file to access during the FTP check
-	RegexContentMatch bool   // (optional, default=true) Whether or not to match file content with regex
-	ContentRegex      string // (optional, default=`.*`) Regex to match if reading a file
-	HashContentMatch  bool   // (optional, default=false) Whether or not to match a hash of the file contents
-	Hash              string // (optional, default="") The hash digest from sha3-256 to compare the hashed file contents to
-	Port              string // (optional, default=21) The port to attempt an ftp connection on
+	ID                string  // a unique identifier for this check
+	Name              string  // a human-readable title for the check
+	Group             string  // the group this check is part of
+	ScoreWeight       float64 // the weight that this check has relative to others
+	Host              string  // (required) IP or hostname of the host to run the FTP check against
+	Username          string  // (required) The user to login with over FTP
+	Password          string  // (required) The password for the user that you wish to login with
+	File              string  // (required) The path to the file to access during the FTP check
+	RegexContentMatch bool    // (optional, default=true) Whether or not to match file content with regex
+	ContentRegex      string  // (optional, default=`.*`) Regex to match if reading a file
+	HashContentMatch  bool    // (optional, default=false) Whether or not to match a hash of the file contents
+	Hash              string  // (optional, default="") The hash digest from sha3-256 to compare the hashed file contents to
+	Port              string  // (optional, default=21) The port to attempt an ftp connection on
 }
 
 // Run a single instance of the check
@@ -117,7 +117,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, weight int, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
 
 	// Explicitly set default, optional values
 	d.RegexContentMatch = true
@@ -134,7 +134,7 @@ func (d *Definition) Init(id string, name string, group string, weight int, def 
 	d.ID = id
 	d.Name = name
 	d.Group = group
-	d.Weight = weight
+	d.ScoreWeight = scoreWeight
 
 	// Check for missing fields
 	missingFields := make([]string, 0)

@@ -11,12 +11,12 @@ import (
 
 // The Definition configures the behavior of a Noop check.
 type Definition struct {
-	ID      string // a unique identifier for this check
-	Name    string // a human-readable title for this check
-	Group   string // the group this check is part of
-	Weight  int    // the weight that this check has relative to others
-	Dynamic string // (required) contains attributes that can be modified by admins or users
-	Static  string // (required) contains no attributes
+	ID          string  // a unique identifier for this check
+	Name        string  // a human-readable title for this check
+	Group       string  // the group this check is part of
+	ScoreWeight float64 // the weight that this check has relative to others
+	Dynamic     string  // (required) contains attributes that can be modified by admins or users
+	Static      string  // (required) contains no attributes
 }
 
 // Run a single instance of the check.
@@ -42,7 +42,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, weight int, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
 	// Unpack definition json
 	err := json.Unmarshal(def, &d)
 	if err != nil {
@@ -53,7 +53,7 @@ func (d *Definition) Init(id string, name string, group string, weight int, def 
 	d.ID = id
 	d.Name = name
 	d.Group = group
-	d.Weight = weight
+	d.ScoreWeight = scoreWeight
 
 	// Make sure required fields are defined
 	missingFields := make([]string, 0)
