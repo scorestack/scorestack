@@ -39,64 +39,81 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType: "xmpp",
 	}
 
-	// Create xmpp config
-	config := xmpp.Config{
-		TransportConfiguration: xmpp.TransportConfiguration{
-			Address:        fmt.Sprintf("%s:%s", d.Host, d.Port),
-			TLSConfig:      &tls.Config{InsecureSkipVerify: true},
+	// Create "done" channel for timing out
+	done := make(chan bool)
+
+	// This method for timing out is necessary due to the library not timing out in the case
+	// of auth failures or other connection issues
+	// TODO: Make this timeout method not bad
+	go func() {
+		// Create xmpp config
+		config := xmpp.Config{
+			TransportConfiguration: xmpp.TransportConfiguration{
+				Address:        fmt.Sprintf("%s:%s", d.Host, d.Port),
+				TLSConfig:      &tls.Config{InsecureSkipVerify: true},
+				ConnectTimeout: 5,
+			},
+			Jid:            fmt.Sprintf("%s@%s", d.Username, d.Host),
+			Credential:     xmpp.Password(d.Password),
+			Insecure:       d.Encrypted,
 			ConnectTimeout: 5,
-		},
-		Jid:            fmt.Sprintf("%s@%s", d.Username, d.Host),
-		Credential:     xmpp.Password(d.Password),
-		Insecure:       d.Encrypted,
-		ConnectTimeout: 5,
-	}
+		}
 
-	// Create a client
-	client, err := xmpp.NewClient(config, xmpp.NewRouter(), errorHandler)
-	if err != nil {
-		result.Message = fmt.Sprintf("Creating a xmpp client failed : %s", err)
+		// Create a client
+		client, err := xmpp.NewClient(config, xmpp.NewRouter(), errorHandler)
+		if err != nil {
+			result.Message = fmt.Sprintf("Creating a xmpp client failed : %s", err)
+			out <- result
+			return
+		}
+
+		// Create IQ xmpp message
+		iq, err := stanza.NewIQ(stanza.Attrs{
+			Type: stanza.IQTypeGet,
+			From: d.Host,
+			To:   "localhost",
+			Id:   "ScoreStack-check",
+		})
+		if err != nil {
+			result.Message = fmt.Sprintf("Creating IQ message failed : %s", err)
+			out <- result
+			return
+		}
+
+		// Set Disco as the payload of IQ
+		disco := iq.DiscoInfo()
+		iq.Payload = disco
+
+		// Connect the client
+		err = client.Connect()
+		if err != nil {
+			result.Message = fmt.Sprintf("Connecting to %s failed : %s", d.Host, err)
+			out <- result
+			return
+		}
+		defer client.Disconnect()
+
+		// Send the IQ message
+		err = client.Send(iq)
+		if err != nil {
+			result.Message = fmt.Sprintf("Sending IQ message to %s failed %s", d.Host, err)
+			out <- result
+			return
+		}
+
+		// If we make it here the check should pass
+		done <- true
+	}()
+
+	// Timeout for the above go function check
+	select {
+	case <-done:
+		result.Passed = true
 		out <- result
-		return
-	}
-
-	// Create IQ xmpp message
-	iq, err := stanza.NewIQ(stanza.Attrs{
-		Type: stanza.IQTypeGet,
-		From: d.Host,
-		To:   "localhost",
-		Id:   "ScoreStack-check",
-	})
-	if err != nil {
-		result.Message = fmt.Sprintf("Creating IQ message failed : %s", err)
+	case <-time.After(5 * time.Second):
+		result.Message = fmt.Sprintf("Custom timeout reached. Most likely auth issue")
 		out <- result
-		return
 	}
-
-	// Set Disco as the payload of IQ
-	disco := iq.DiscoInfo()
-	iq.Payload = disco
-
-	// Connect the client
-	err = client.Connect()
-	if err != nil {
-		result.Message = fmt.Sprintf("Connecting to %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-	defer client.Disconnect()
-
-	// Send the IQ message
-	err = client.Send(iq)
-	if err != nil {
-		result.Message = fmt.Sprintf("Sending IQ message to %s failed %s", d.Host, err)
-		out <- result
-		return
-	}
-
-	// If we reach here the check passes
-	result.Passed = true
-	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
