@@ -31,10 +31,11 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 	// Set up result
 	result := schema.CheckResult{
-		Timestamp: time.Now(),
-		ID:        d.ID,
-		Group:     d.Group,
-		CheckType: "ldap",
+		Timestamp:   time.Now(),
+		ID:          d.ID,
+		Group:       d.Group,
+		ScoreWeight: d.ScoreWeight,
+		CheckType:   "ldap",
 	}
 
 	// Set timeout

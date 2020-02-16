@@ -33,11 +33,12 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 	// Set up result
 	result := schema.CheckResult{
-		Timestamp: time.Now(),
-		ID:        d.ID,
-		Name:      d.Name,
-		Group:     d.Group,
-		CheckType: "ssh",
+		Timestamp:   time.Now(),
+		ID:          d.ID,
+		Name:        d.Name,
+		Group:       d.Group,
+		ScoreWeight: d.ScoreWeight,
+		CheckType:   "ssh",
 	}
 
 	// Config SSH client

@@ -24,13 +24,14 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	result := schema.CheckResult{
-		Timestamp: time.Now(),
-		ID:        d.ID,
-		Name:      d.Name,
-		Group:     d.Group,
-		CheckType: "noop",
-		Passed:    true,
-		Message:   strings.Join([]string{d.Dynamic, d.Static}, "; "),
+		Timestamp:   time.Now(),
+		ID:          d.ID,
+		Name:        d.Name,
+		Group:       d.Group,
+		ScoreWeight: d.ScoreWeight,
+		CheckType:   "noop",
+		Passed:      true,
+		Message:     strings.Join([]string{d.Dynamic, d.Static}, "; "),
 		Details: map[string]string{
 			"Dynamic": d.Dynamic,
 			"Static":  d.Static,

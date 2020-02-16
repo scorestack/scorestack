@@ -30,11 +30,12 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 	// Setup result
 	result := schema.CheckResult{
-		Timestamp: time.Now(),
-		ID:        d.ID,
-		Name:      d.Name,
-		Group:     d.Group,
-		CheckType: "dns",
+		Timestamp:   time.Now(),
+		ID:          d.ID,
+		Name:        d.Name,
+		Group:       d.Group,
+		ScoreWeight: d.ScoreWeight,
+		CheckType:   "dns",
 	}
 
 	// Setup for dns query
