@@ -10,7 +10,7 @@ import (
 // single network service.
 type Check interface {
 	Run(wg *sync.WaitGroup, out chan<- CheckResult)
-	Init(id string, name string, group string, def []byte) error
+	Init(id string, name string, group string, weight int, def []byte) error
 }
 
 // A CheckDef is an untemplated representation of a check. In this format, the

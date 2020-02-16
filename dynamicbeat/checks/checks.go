@@ -112,7 +112,7 @@ func unpackDef(c schema.CheckDef) schema.Check {
 	default:
 		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
 	}
-	def.Init(c.ID, c.Name, c.Group, renderedJSON)
+	def.Init(c.ID, c.Name, c.Group, c.Weight, renderedJSON)
 
 	return def
 }
