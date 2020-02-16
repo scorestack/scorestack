@@ -4,7 +4,7 @@
 
 dynamicbeat:
   # Defines how often checks will be executed
-  period: 1s
+  period: 15s
 
   # Defines how often check definitions and attributes will be read from elasticsearch
   update_period: 1m
