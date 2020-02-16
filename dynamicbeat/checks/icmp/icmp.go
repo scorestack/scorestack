@@ -14,11 +14,12 @@ import (
 // The Definition configures the behavior of the ICMP check
 // it implements the "Check" interface
 type Definition struct {
-	ID    string // unique identifier for this check
-	Name  string // a human-readable title for this check
-	Group string // the group this check is part of
-	Host  string // (required) IP or hostname of the host to run the ICMP check against
-	Count int    // (opitonal, default=1) The number of ICMP requests to send per check
+	ID     string // unique identifier for this check
+	Name   string // a human-readable title for this check
+	Group  string // the group this check is part of
+	Weight int    // the weight that this check has relative to others
+	Host   string // (required) IP or hostname of the host to run the ICMP check against
+	Count  int    // (opitonal, default=1) The number of ICMP requests to send per check
 }
 
 // Run a single instance of the check
@@ -65,7 +66,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, weight int, def []byte) error {
 
 	// Explicitly set default values
 	d.Count = 1
@@ -80,6 +81,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	d.ID = id
 	d.Name = name
 	d.Group = group
+	d.Weight = weight
 
 	// Make sure required fields are defined
 	missingFields := make([]string, 0)

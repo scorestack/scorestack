@@ -3,6 +3,7 @@
     "name": "Example ICMP check",
     "type": "icmp",
     "group": "example",
+    "weight": "1",
     "definition": {
         "host": "{{.Host}}"
     }

@@ -17,6 +17,7 @@ type Definition struct {
 	ID       string // a unique identifier for this check
 	Name     string // a human-readable title for the check
 	Group    string // the group this check is part of
+	Weight   int    // the weight that this check has relative to others
 	Host     string // (required) The IP or hostname of the vnc server
 	Port     string // (required) The port for the vnc server
 	Password string // (required) The password for the vnc server
@@ -66,7 +67,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, weight int, def []byte) error {
 
 	// Unpack JSON definition
 	err := json.Unmarshal(def, &d)
@@ -78,6 +79,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	d.ID = id
 	d.Name = name
 	d.Group = group
+	d.Weight = weight
 
 	// Check for missing fields
 	missingFields := make([]string, 0)

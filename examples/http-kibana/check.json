@@ -3,6 +3,7 @@
     "name": "Example Kibana check",
     "type": "http",
     "group": "example",
+    "weight": "1",
     "definition": [
         {
             "host": "{{.Host}}",

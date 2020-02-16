@@ -3,6 +3,7 @@
     "name": "Example dns check",
     "type": "dns",
     "group": "example",
+    "weight": "1",
     "definition": {
         "Server": "{{.Server}}",
         "Port": "{{.Port}}",

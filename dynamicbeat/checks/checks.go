@@ -58,6 +58,7 @@ func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan
 				"id":         result.ID,
 				"name":       result.Name,
 				"group":      result.Group,
+				"weight":     result.Weight,
 				"check_type": result.CheckType,
 				"passed":     result.Passed,
 				"message":    result.Message,

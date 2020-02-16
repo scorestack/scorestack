@@ -20,6 +20,7 @@ type CheckDef struct {
 	Name       string
 	Type       string
 	Group      string
+	Weight     int
 	Definition []byte
 	Attribs    map[string]string
 }
@@ -30,6 +31,7 @@ type CheckResult struct {
 	ID        string
 	Name      string
 	Group     string
+	Weight    int
 	CheckType string
 	Passed    bool
 	Message   string

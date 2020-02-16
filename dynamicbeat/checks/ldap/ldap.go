@@ -17,6 +17,7 @@ type Definition struct {
 	ID       string // a unique identifier for this check
 	Name     string // a human-readable title for the check
 	Group    string // the group this check is part of
+	Weight   int    // the weight that this check has relative to others
 	User     string // (required) The user written in DN syntax
 	Password string // (required) the password for the user
 	Fqdn     string // (required) The Fqdn of the ldap server
@@ -76,7 +77,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, weight int, def []byte) error {
 
 	// Explicitly set default values
 	d.Port = "389"
@@ -91,6 +92,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	d.ID = id
 	d.Name = name
 	d.Group = group
+	d.Weight = weight
 
 	// Check for missing fields
 	missingFields := make([]string, 0)
