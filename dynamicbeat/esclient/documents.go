@@ -9,10 +9,6 @@ import (
 	"github.com/elastic/go-elasticsearch"
 )
 
-type countResult struct {
-	Count int
-}
-
 // The SearchResults struct is used to parse search results from Elasticsearch
 // and pull out the JSON strings of the documents that are returned.
 type SearchResults struct {
@@ -36,6 +32,10 @@ func GetAllDocuments(c *elasticsearch.Client, i string) ([][]byte, error) {
 		return nil, fmt.Errorf("Error getting number of documents in index %s: %s", i, err)
 	}
 	defer resp.Body.Close()
+
+	type countResult struct {
+		Count int
+	}
 	var count countResult
 	err = json.Unmarshal([]byte(read(resp.Body)), &count)
 	if err != nil {
