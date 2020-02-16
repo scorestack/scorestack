@@ -1,10 +1,13 @@
 package xmpp
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"sync"
 	"time"
+
+	"gosrc.io/xmpp/stanza"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"gosrc.io/xmpp"
@@ -39,10 +42,60 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	// Create xmpp config
 	config := xmpp.Config{
 		TransportConfiguration: xmpp.TransportConfiguration{
-			Address: fmt.Sprintf("%s:%s", d.Host, d.Port),
+			Address:   fmt.Sprintf("%s:%s", d.Host, d.Port),
+			TLSConfig: &tls.Config{InsecureSkipVerify: true},
 		},
+		Jid:            fmt.Sprintf("%s@%s", d.Username, d.Host),
+		Credential:     xmpp.Password(d.Password),
+		Insecure:       d.Encrypted,
+		ConnectTimeout: 5,
 	}
 
+	// Create a client
+	client, err := xmpp.NewClient(config, xmpp.NewRouter(), errorHandler)
+	if err != nil {
+		result.Message = fmt.Sprintf("Creating a xmpp client failed : %s", err)
+		out <- result
+		return
+	}
+
+	// Create IQ xmpp message
+	iq, err := stanza.NewIQ(stanza.Attrs{
+		Type: stanza.IQTypeGet,
+		From: d.Host,
+		To:   "localhost",
+		Id:   "ScoreStack-check",
+	})
+	if err != nil {
+		result.Message = fmt.Sprintf("Creating IQ message failed : %s", err)
+		out <- result
+		return
+	}
+
+	// Set Disco as the payload of IQ
+	disco := iq.DiscoInfo()
+	iq.Payload = disco
+
+	// Connect the client
+	err = client.Connect()
+	if err != nil {
+		result.Message = fmt.Sprintf("Connecting to %s failed : %s", d.Host, err)
+		out <- result
+		return
+	}
+	defer client.Disconnect()
+
+	// Send the IQ message
+	err = client.Send(iq)
+	if err != nil {
+		result.Message = fmt.Sprintf("Sending IQ message to %s failed %s", d.Host, err)
+		out <- result
+		return
+	}
+
+	// If we reach here the check passes
+	result.Passed = true
+	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
@@ -87,4 +140,9 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 		}
 	}
 	return nil
+}
+
+// Without this function, the xmpp "client" calls will seg fault
+func errorHandler(err error) {
+	return
 }
