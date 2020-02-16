@@ -3,7 +3,7 @@
     "name": "Example FTP Check",
     "type": "ftp",
     "group": "example",
-    "weight": 1,
+    "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",
         "Port": "{{.Port}}",

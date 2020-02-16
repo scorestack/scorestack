@@ -3,7 +3,7 @@
     "name": "Example SSH Check",
     "type": "ssh",
     "group": "example",
-    "weight": 1,
+    "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",
         "Port": "{{.Port}}",

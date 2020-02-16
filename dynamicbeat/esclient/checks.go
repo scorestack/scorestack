@@ -40,7 +40,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckDef, erro
 			Name:        checkMap["name"].(string),
 			Type:        checkMap["type"].(string),
 			Group:       checkMap["group"].(string),
-			ScoreWeight: checkMap["weight"].(float64),
+			ScoreWeight: checkMap["score_weight"].(float64),
 			Definition:  def,
 			Attribs:     make(map[string]string),
 		}
