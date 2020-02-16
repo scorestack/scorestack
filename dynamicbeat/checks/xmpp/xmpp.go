@@ -42,8 +42,9 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	// Create xmpp config
 	config := xmpp.Config{
 		TransportConfiguration: xmpp.TransportConfiguration{
-			Address:   fmt.Sprintf("%s:%s", d.Host, d.Port),
-			TLSConfig: &tls.Config{InsecureSkipVerify: true},
+			Address:        fmt.Sprintf("%s:%s", d.Host, d.Port),
+			TLSConfig:      &tls.Config{InsecureSkipVerify: true},
+			ConnectTimeout: 5,
 		},
 		Jid:            fmt.Sprintf("%s@%s", d.Username, d.Host),
 		Credential:     xmpp.Password(d.Password),
