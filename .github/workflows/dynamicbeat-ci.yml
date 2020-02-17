@@ -16,6 +16,11 @@ jobs:
           path: 'src/github.com/s-newman/scorestack'
       - name: Install virtualenv
         run: sudo apt-get install -y virtualenv
+      - name: Update golang to latest version
+        run: |
+          git clone https://github.com/udhos/update-golang
+          cd update-golang
+          sudo ./update-golang.sh
       - name: Clone go-elasticsearch repository
         run: |
           git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github.com/elastic/go-elasticsearch
@@ -24,7 +29,7 @@ jobs:
       - name: Build dynamicbeat
         run: |
           go version
-          cd src/github.com/s-newman/scorestack/dynamicbeat
+          cd $GOPATH/src/github.com/s-newman/scorestack/dynamicbeat
           make setup
           go get
           mage build
