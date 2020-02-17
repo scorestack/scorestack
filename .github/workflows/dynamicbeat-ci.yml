@@ -23,6 +23,7 @@ jobs:
           git checkout v7.5.0
       - name: Build dynamicbeat
         run: |
+          go version
           cd src/github.com/s-newman/scorestack/dynamicbeat
           make setup
           go get
