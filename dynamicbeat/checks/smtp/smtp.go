@@ -35,11 +35,12 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 	// Set up result
 	result := schema.CheckResult{
-		Timestamp: time.Now(),
-		ID:        d.ID,
-		Name:      d.Name,
-		Group:     d.Group,
-		CheckType: "smtp",
+		Timestamp:   time.Now(),
+		ID:          d.ID,
+		Name:        d.Name,
+		Group:       d.Group,
+		ScoreWeight: d.ScoreWeight,
+		CheckType:   "smtp",
 	}
 
 	// Create a dialer
