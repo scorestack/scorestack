@@ -60,7 +60,6 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	// If we make it here the check passes
-	result.Message = fmt.Sprintf("SUCCESS")
 	result.Passed = true
 	out <- result
 }

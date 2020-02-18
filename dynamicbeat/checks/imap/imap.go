@@ -65,7 +65,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer c.Logout() // This is the same as close() for normal conn objects
 
 	// Set timeout for commands
-	c.Timeout = 10 * time.Second
+	c.Timeout = 5 * time.Second
 
 	// Login
 	err = c.Login(d.Username, d.Password)

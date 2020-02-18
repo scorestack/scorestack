@@ -11,7 +11,7 @@ import (
 	"gopkg.in/ldap.v2"
 )
 
-// The Definition configures the behavior of the SSH check
+// The Definition configures the behavior of the LDAP check
 // it implements the "check" interface
 type Definition struct {
 	ID          string  // a unique identifier for this check

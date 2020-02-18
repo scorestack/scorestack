@@ -11,7 +11,7 @@ import (
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
-// The Definition configures the behavior of the SSH check
+// The Definition configures the behavior of the VNC check
 // it implements the "check" interface
 type Definition struct {
 	ID          string  // a unique identifier for this check
