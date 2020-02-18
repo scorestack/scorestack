@@ -48,3 +48,7 @@ do
   curl -ku root:changeme https://localhost:5601/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
   curl -kX POST -u root:changeme https://localhost:5601/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"${UUID_A}"}],"includeReferences":true}'
 done
+
+# Clean up
+rm check.tmp.json
+rm tmp-dashboard.json
