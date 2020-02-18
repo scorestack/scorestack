@@ -25,5 +25,6 @@ an instance of dynamicbeat against those checks.
 docker-compose -f docker/build-certs/docker-compose.yml up
 docker-compose up -d
 docker/setup.sh
+docker/add-team.sh example
 dynamicbeat/dynamicbeat -e -d "*" --path.config docker
 ```
