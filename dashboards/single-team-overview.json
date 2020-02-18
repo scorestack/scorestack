@@ -7,7 +7,7 @@
       "updated_at": "2020-02-18T11:41:27.708Z",
       "version": "WzkwLDJd",
       "attributes": {
-        "title": "Overview",
+        "title": "Overview - ${TEAM}",
         "hits": 0,
         "description": "",
         "panelsJSON": "[{\"version\":\"7.5.1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":32,\"i\":\"${UUID_B}\"},\"panelIndex\":\"${UUID_B}\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.5.1\",\"gridData\":{\"x\":0,\"y\":32,\"w\":48,\"h\":13,\"i\":\"${UUID_C}\"},\"panelIndex\":\"${UUID_C}\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"}]",
