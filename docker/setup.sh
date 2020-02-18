@@ -48,6 +48,9 @@ do
   sleep 5
 done
 
+# Add ScoreStack space
+curl -kX POST -u root:changeme https://localhost:5601/api/spaces/space -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","advancedSettings","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
+
 # Add scoreboard dashboard
 UUID_A=$(uuidgen)
 UUID_B=$(uuidgen)
@@ -58,4 +61,4 @@ UUID_F=$(uuidgen)
 cat dashboards/scoreboard.json | sed -e "s/\${UUID_A}/${UUID_A}/g" | sed -e "s/\${UUID_B}/${UUID_B}/g" | sed -e "s/\${UUID_C}/${UUID_C}/g" | sed -e "s/\${UUID_D}/${UUID_D}/g" | sed -e "s/\${UUID_E}/${UUID_E}/g" | sed -e "s/\${UUID_F}/${UUID_F}/g" > tmp-dashboard.json
 curl -ku root:changeme https://localhost:5601/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
 rm tmp-dashboard.json
-
+curl -kX POST -u root:changeme https://localhost:5601/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"${UUID_A}"}],"includeReferences":true}'
