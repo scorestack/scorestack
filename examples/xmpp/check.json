@@ -1,0 +1,13 @@
+{
+    "id": "xmpp-example",
+    "name": "Example XMPP Check",
+    "type": "xmpp",
+    "group": "example",
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Encrypted": true
+    }
+}

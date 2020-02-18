@@ -21,6 +21,7 @@ import (
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ssh"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/vnc"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/winrm"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/xmpp"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
@@ -105,6 +106,8 @@ func unpackDef(c schema.CheckDef) schema.Check {
 		def = &smtp.Definition{}
 	case "winrm":
 		def = &winrm.Definition{}
+	case "xmpp":
+		def = &xmpp.Definition{}
 	default:
 		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
 	}
