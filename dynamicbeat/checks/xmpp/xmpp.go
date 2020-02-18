@@ -42,6 +42,9 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	// Create "done" channel for timing out
 	done := make(chan bool)
 
+	// Create "failed" channel for safely failing
+	failed := make(chan bool)
+
 	// This method for timing out is necessary due to the library not timing out in the case
 	// of auth failures or other connection issues
 	// TODO: Make this timeout method not bad
@@ -63,7 +66,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		client, err := xmpp.NewClient(config, xmpp.NewRouter(), errorHandler)
 		if err != nil {
 			result.Message = fmt.Sprintf("Creating a xmpp client failed : %s", err)
-			out <- result
+			failed <- true
 			return
 		}
 
@@ -76,7 +79,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		})
 		if err != nil {
 			result.Message = fmt.Sprintf("Creating IQ message failed : %s", err)
-			out <- result
+			failed <- true
 			return
 		}
 
@@ -88,7 +91,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		err = client.Connect()
 		if err != nil {
 			result.Message = fmt.Sprintf("Connecting to %s failed : %s", d.Host, err)
-			out <- result
+			failed <- true
 			return
 		}
 		defer client.Disconnect()
@@ -97,7 +100,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		err = client.Send(iq)
 		if err != nil {
 			result.Message = fmt.Sprintf("Sending IQ message to %s failed %s", d.Host, err)
-			out <- result
+			failed <- true
 			return
 		}
 
@@ -106,13 +109,20 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}()
 
 	// Timeout for the above go function check
-	select {
-	case <-done:
-		result.Passed = true
-		out <- result
-	case <-time.After(5 * time.Second):
-		result.Message = fmt.Sprintf("Custom timeout reached. Most likely auth issue")
-		out <- result
+	for {
+		select {
+		case <-done:
+			result.Passed = true
+			out <- result
+			return
+		case <-failed:
+			out <- result
+			return
+		case <-time.After(5 * time.Second):
+			result.Message = fmt.Sprintf("Custom timeout reached. Most likely auth issue")
+			out <- result
+			return
+		}
 	}
 }
 
