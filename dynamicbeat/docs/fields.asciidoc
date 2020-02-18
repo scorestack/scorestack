@@ -279,6 +279,18 @@ required: True
 
 --
 
+*`score_weight`*::
++
+--
+TODO: docs
+
+
+type: integer
+
+required: True
+
+--
+
 *`check_type`*::
 +
 --
