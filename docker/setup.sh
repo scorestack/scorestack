@@ -37,44 +37,13 @@ curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user
 docker-compose up -d --force-recreate kiba01
 docker-compose up -d --force-recreate logs01
 
-# Set up example checks
-for check in $(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
-do
-  # Add check definition
-  curl -k -XPUT -u elastic:${elastic_pass} https://localhost:9200/checks/_doc/${check}-example -H 'Content-Type: application/json' -d @examples/${check}/check.json
-
-  # Add admin attributes, if they are defined
-  if [ -f examples/${check}/admin-attribs.json ]
-  then
-    curl -k -XPUT -u elastic:${elastic_pass} https://localhost:9200/attrib_admin_${check}-example/_doc/attributes -H "Content-Type: application/json" -d @examples/${check}/admin-attribs.json
-  fi
-
-  # Add user attributes, if they are defined
-  if [ -f examples/${check}/user-attribs.json ]
-  then
-    curl -k -XPUT -u elastic:${elastic_pass} https://localhost:9200/attrib_user_${check}-example/_doc/attributes -H "Content-Type: application/json" -d @examples/${check}/user-attribs.json
-  fi
-done
-
 # Wait for kibana to be up
-while [[ "$(curl -sku root:changeme https://localhost:5601/api/status | jq -r .status.overall.state)" != "green" ]]
+while [[ "$(curl -sku root:changeme https://localhost:5601/api/status | jq -r .status.overall.state 2>/dev/null)" != "green" ]]
 do
   echo "Waiting for Kibana to be ready..."
   sleep 5
 done
 
-# Set up dashboards
-UUID_A=$(uuidgen)
-UUID_B=$(uuidgen)
-UUID_C=$(uuidgen)
-UUID_D=$(uuidgen)
-UUID_E=$(uuidgen)
-UUID_F=$(uuidgen)
-TEAM="Example"
-INDEX="results-example*"
-CHECKS=$(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | wc -l)
-cat dashboards/single-team-overview.json | sed -e "s/\${UUID_A}/${UUID_A}/g" | sed -e "s/\${UUID_B}/${UUID_B}/g" | sed -e "s/\${UUID_C}/${UUID_C}/g" | sed -e "s/\${UUID_D}/${UUID_D}/g" | sed -e "s/\${UUID_E}/${UUID_E}/g" | sed -e "s/\${UUID_F}/${UUID_F}/g" | sed -e "s/\${TEAM}/${TEAM}/g" | sed -e "s/\${INDEX}/${INDEX}/g" | sed -e "s/\${CHECKS}/${CHECKS}/g" > tmp-dashboard.json
-curl -ku root:changeme https://localhost:5601/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
 UUID_A=$(uuidgen)
 UUID_B=$(uuidgen)
 UUID_C=$(uuidgen)
