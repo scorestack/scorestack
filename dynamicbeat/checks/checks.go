@@ -8,6 +8,7 @@ import (
 
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
+	"github.com/elastic/beats/libbeat/logp"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/dns"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ftp"
@@ -112,7 +113,10 @@ func unpackDef(c schema.CheckDef) schema.Check {
 	default:
 		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
 	}
-	def.Init(c.ID, c.Name, c.Group, c.ScoreWeight, renderedJSON)
+	err = def.Init(c.ID, c.Name, c.Group, c.ScoreWeight, renderedJSON)
+	if err != nil {
+		logp.Info("%s", err)
+	}
 
 	return def
 }
