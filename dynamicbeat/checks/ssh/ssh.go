@@ -58,6 +58,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		out <- result
 		return
 	}
+	defer client.Close()
 
 	// Create a session from the connection
 	session, err := client.NewSession()
