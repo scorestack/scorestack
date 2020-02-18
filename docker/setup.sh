@@ -56,6 +56,13 @@ do
   fi
 done
 
+# Wait for kibana to be up
+while [[ "$(curl -sku root:changeme https://localhost:5601/api/status | jq -r .status.overall.state)" != "green" ]]
+do
+  echo "Waiting for Kibana to be ready..."
+  sleep 5
+done
+
 # Set up dashboards
 UUID_A=$(uuidgen)
 UUID_B=$(uuidgen)
