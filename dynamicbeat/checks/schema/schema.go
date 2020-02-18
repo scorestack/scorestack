@@ -10,30 +10,32 @@ import (
 // single network service.
 type Check interface {
 	Run(wg *sync.WaitGroup, out chan<- CheckResult)
-	Init(id string, name string, group string, def []byte) error
+	Init(id string, name string, group string, scoreWeight float64, def []byte) error
 }
 
 // A CheckDef is an untemplated representation of a check. In this format, the
 // definition is represented as a JSON string.
 type CheckDef struct {
-	ID         string
-	Name       string
-	Type       string
-	Group      string
-	Definition []byte
-	Attribs    map[string]string
+	ID          string
+	Name        string
+	Type        string
+	Group       string
+	ScoreWeight float64
+	Definition  []byte
+	Attribs     map[string]string
 }
 
 // CheckResult : Information about the results of executing a check.
 type CheckResult struct {
-	Timestamp time.Time
-	ID        string
-	Name      string
-	Group     string
-	CheckType string
-	Passed    bool
-	Message   string
-	Details   map[string]string
+	Timestamp   time.Time
+	ID          string
+	Name        string
+	Group       string
+	ScoreWeight float64
+	CheckType   string
+	Passed      bool
+	Message     string
+	Details     map[string]string
 }
 
 // A ValidationError represents an issue with a check definition.

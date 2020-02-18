@@ -3,6 +3,7 @@
     "name": "Example LDAP check",
     "type": "ldap",
     "group": "example",
+    "score_weight": 1,
     "definition": {
         "User": "{{.User}}",
         "Password": "{{.Password}}",

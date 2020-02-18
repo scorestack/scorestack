@@ -3,6 +3,7 @@
     "name": "Example VNC Check",
     "type": "vnc",
     "group": "example",
+    "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",
         "Port": "{{.Port}}",

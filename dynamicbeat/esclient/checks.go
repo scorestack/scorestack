@@ -36,12 +36,13 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckDef, erro
 		}
 
 		result := schema.CheckDef{
-			ID:         checkMap["id"].(string),
-			Name:       checkMap["name"].(string),
-			Type:       checkMap["type"].(string),
-			Group:      checkMap["group"].(string),
-			Definition: def,
-			Attribs:    make(map[string]string),
+			ID:          checkMap["id"].(string),
+			Name:        checkMap["name"].(string),
+			Type:        checkMap["type"].(string),
+			Group:       checkMap["group"].(string),
+			ScoreWeight: checkMap["score_weight"].(float64),
+			Definition:  def,
+			Attribs:     make(map[string]string),
 		}
 
 		// Get any template variables for the check

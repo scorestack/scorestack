@@ -15,17 +15,18 @@ import (
 // The Definition configures the behavior of the SMTP check
 // it implements the "check" interface
 type Definition struct {
-	ID        string // a unique identifier for this check
-	Name      string // a human-readable title for the check
-	Group     string // the group this check is part of
-	Host      string // (required) IP or hostname of the smtp server
-	Username  string // (required) Username for the smtp server
-	Password  string // (required) Password for the smtp server
-	Sender    string // (required) Who is sending the email
-	Reciever  string // (required) Who is receiving the email
-	Body      string // (optional, default="Hello from ScoreStack") Body of the email
-	Encrypted bool   // (optional, default=false) Whether or not to use TLS
-	Port      string // (optional, default="25") Port of the smtp server
+	ID          string  // a unique identifier for this check
+	Name        string  // a human-readable title for the check
+	Group       string  // the group this check is part of
+	ScoreWeight float64 // the weight that this check has relative to others
+	Host        string  // (required) IP or hostname of the smtp server
+	Username    string  // (required) Username for the smtp server
+	Password    string  // (required) Password for the smtp server
+	Sender      string  // (required) Who is sending the email
+	Reciever    string  // (required) Who is receiving the email
+	Body        string  // (optional, default="Hello from ScoreStack") Body of the email
+	Encrypted   bool    // (optional, default=false) Whether or not to use TLS
+	Port        string  // (optional, default="25") Port of the smtp server
 }
 
 // Run a single instance of the check
@@ -34,11 +35,12 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 	// Set up result
 	result := schema.CheckResult{
-		Timestamp: time.Now(),
-		ID:        d.ID,
-		Name:      d.Name,
-		Group:     d.Group,
-		CheckType: "smtp",
+		Timestamp:   time.Now(),
+		ID:          d.ID,
+		Name:        d.Name,
+		Group:       d.Group,
+		ScoreWeight: d.ScoreWeight,
+		CheckType:   "smtp",
 	}
 
 	// Create a dialer
@@ -126,7 +128,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, def []byte) error {
+func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
 
 	// Explicitly set defaults
 	d.Body = "Hello from ScoreStack"
@@ -142,6 +144,7 @@ func (d *Definition) Init(id string, name string, group string, def []byte) erro
 	d.ID = id
 	d.Name = name
 	d.Group = group
+	d.ScoreWeight = scoreWeight
 
 	// Check for missing fields
 	missingFields := make([]string, 0)
