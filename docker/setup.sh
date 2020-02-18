@@ -48,6 +48,7 @@ do
   sleep 5
 done
 
+# Add scoreboard dashboard
 UUID_A=$(uuidgen)
 UUID_B=$(uuidgen)
 UUID_C=$(uuidgen)
