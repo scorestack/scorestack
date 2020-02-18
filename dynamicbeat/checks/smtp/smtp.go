@@ -79,6 +79,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		return
 	}
 	defer c.Quit()
+	defer c.Close()
 
 	// Login
 	err = c.Auth(auth)
