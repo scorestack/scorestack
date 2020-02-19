@@ -36,9 +36,27 @@ export class Main extends React.Component {
       navItems: [{
         name: 'Loading...',
         id: 0,
-      }]
+      }],
+      selectedItemName: 'Loading...',
     }
   }
+
+  selectItem = name => {
+    this.setState({
+      selectedItemName: name,
+    });
+  };
+
+  createItem = (name, data = {}) => {
+    // NOTE: Duplicate `name` values will cause `id` collisions.
+    return {
+      ...data,
+      id: name,
+      name,
+      isSelected: this.state.selectedItemName === name,
+      onClick: () => this.selectItem(name),
+    };
+  };
 
   componentDidMount() {
     const { httpClient } = this.props;
@@ -46,21 +64,27 @@ export class Main extends React.Component {
       this.setState({ checks: resp.data });
       let navItems = []
       let itemId = 0;
-      for (let check of Object.keys(this.state.checks)) {
-        navItems.push({
-          name: this.state.checks[check].name,
-          id: itemId,
-          onClick: () => {
-            this.setState({
-              currentCheck: <Check
-                id={check}
-                name={this.state.checks[check].name}
-                attributes={this.state.checks[check].attributes}
-                httpClient={this.props.httpClient} />
-            });
-          },
-        });
-        itemId++;
+      for (let group of Object.keys(this.state.checks)) {
+        let subItems = []
+        for (let check of Object.keys(this.state.checks[group])) {
+          subItems.push({
+            name: this.state.checks[group][check].name,
+            id: itemId,
+            onClick: () => {
+              this.setState({
+                curentCheck: <Check
+                  id={check}
+                  name={this.state.checks[group][check].name}
+                  attributes={this.state.checks[group][check].attributes}
+                  httpClient={this.props.httpClient} />
+              });
+            },
+          })
+          itemId++;
+        }
+        navItems.push(this.createItem(group, {
+          items: subItems,
+        }));
       }
       this.setState({ navItems: navItems });
     });
