@@ -37,26 +37,8 @@ export class Main extends React.Component {
         name: 'Loading...',
         id: 0,
       }],
-      selectedItemName: 'Loading...',
     }
   }
-
-  selectItem = name => {
-    this.setState({
-      selectedItemName: name,
-    });
-  };
-
-  createItem = (name, data = {}) => {
-    // NOTE: Duplicate `name` values will cause `id` collisions.
-    return {
-      ...data,
-      id: name,
-      name,
-      isSelected: this.state.selectedItemName === name,
-      onClick: () => this.selectItem(name),
-    };
-  };
 
   componentDidMount() {
     const { httpClient } = this.props;
@@ -72,7 +54,7 @@ export class Main extends React.Component {
             id: itemId,
             onClick: () => {
               this.setState({
-                curentCheck: <Check
+                currentCheck: <Check
                   id={check}
                   name={this.state.checks[group][check].name}
                   attributes={this.state.checks[group][check].attributes}
@@ -82,9 +64,12 @@ export class Main extends React.Component {
           })
           itemId++;
         }
-        navItems.push(this.createItem(group, {
+        navItems.push({
+          name: group,
+          id: itemId,
           items: subItems,
-        }));
+        });
+        itemId++;
       }
       this.setState({ navItems: navItems });
     });
