@@ -77,19 +77,28 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 
 	// Get initial check definitions
 	var defs []schema.CheckDef
+	doubleBreak := false
+	// TODO: Find a better way for looping until we can hit Elasticsearch
 	for {
 		select {
-		// Case for exiting
+		// Case for catching Ctrl+C and gracfully exiting
 		case <-bt.done:
 			return nil
 		default:
+			// Continue looping and sleeping till we can hit Elasticsearch
 			defs, err = esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
 			if err != nil {
 				logp.Info("Failed to reach Elasticsearch. Waiting 5 seconds to try again...")
 				time.Sleep(5 * time.Second)
 			} else {
+				doubleBreak = true
 				break
 			}
+		}
+		// TODO: Find a better way of breaking the for loop if we break from switch
+		// Needed to break out of the for loop
+		if doubleBreak {
+			break
 		}
 	}
 
