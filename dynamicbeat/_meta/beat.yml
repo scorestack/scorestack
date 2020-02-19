@@ -23,4 +23,4 @@ dynamicbeat:
     #verify_certs: true
 
     # The index that check definitions will be read from
-    #index: checks
+    #index: checkdef

@@ -27,6 +27,6 @@ var DefaultConfig = Config{
 		Username:    "dynamicbeat",
 		Password:    "changeme",
 		VerifyCerts: true,
-		Index:       "checks",
+		Index:       "checkdef",
 	},
 }
