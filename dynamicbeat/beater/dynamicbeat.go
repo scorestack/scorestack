@@ -75,16 +75,37 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 		return err
 	}
 
+	// Get initial check definitions
+	var defs []schema.CheckDef
+	doubleBreak := false
+	// TODO: Find a better way for looping until we can hit Elasticsearch
+	for {
+		select {
+		// Case for catching Ctrl+C and gracfully exiting
+		case <-bt.done:
+			return nil
+		default:
+			// Continue looping and sleeping till we can hit Elasticsearch
+			defs, err = esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
+			if err != nil {
+				logp.Info("Failed to reach Elasticsearch. Waiting 5 seconds to try again...")
+				time.Sleep(5 * time.Second)
+			} else {
+				doubleBreak = true
+				break
+			}
+		}
+		// TODO: Find a better way of breaking the for loop if we break from switch
+		// Needed to break out of the for loop
+		if doubleBreak {
+			break
+		}
+	}
+
 	// Start publisher goroutine
 	pubQueue := make(chan beat.Event)
 	published := make(chan uint64)
 	go publishEvents(bt.client, pubQueue, published)
-
-	// Get initial check definitions
-	defs, err := esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
-	if err != nil {
-		return err
-	}
 
 	// Start running checks
 	ticker := time.NewTicker(bt.config.Period)
@@ -105,11 +126,13 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			return nil
 		case <-updateTicker.C:
 			// Update the check definitions
-			defs, err = esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
+			tmpdefs, err := esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
 			if err != nil {
-				return err
+				logp.Info("Failed to update check definitions : %s", err)
+			} else {
+				defs = tmpdefs
+				logp.Info("Updated check definitions")
 			}
-			logp.Info("Updated check definitions")
 		case <-ticker.C:
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
 			defPass := make(chan []schema.CheckDef)
