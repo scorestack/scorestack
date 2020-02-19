@@ -51,6 +51,9 @@ done
 # Add ScoreStack space
 curl -kX POST -u root:changeme https://localhost:5601/api/spaces/space -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","advancedSettings","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
 
+# Add Spectator role
+curl -kX PUT -u root:changeme https://localhost:5601/api/security/role/spectator -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results-all*"],"privileges":["read"]}]},"kibana":[{"base":["read"],"spaces":["scorestack"]}]}'
+
 # Add scoreboard dashboard
 UUID_A=$(uuidgen)
 UUID_B=$(uuidgen)

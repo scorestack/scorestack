@@ -27,8 +27,10 @@ do
   done
 
   # Add team role
+  curl -kX PUT -u root:changeme https://localhost:5601/api/security/role/${TEAM} -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results-'${TEAM}'*"],"privileges":["read"]},{"names":["attrib_user_*-'${TEAM}'"],"privileges":["read","index","view_index_metadata"]}]}}'
 
   # Add team user
+  curl -kX PUT -u root:changeme https://localhost:9200/_security/user/${TEAM} -H 'Content-Type: application/json' -d '{"password":"changeme","roles":["spectator","'${TEAM}'"]}'
 
   # Wait for kibana to be up
   while [[ "$(curl -sku root:changeme https://localhost:5601/api/status | jq -r .status.overall.state 2>/dev/null)" != "green" ]]
