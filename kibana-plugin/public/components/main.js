@@ -1,28 +1,11 @@
 import React from 'react';
 import {
   EuiPage,
-  EuiPageHeader,
-  EuiTitle,
   EuiPageBody,
   EuiPageContent,
   EuiPageSideBar,
   EuiSideNav,
-  EuiSideNavItem,
-  EuiPageContentHeader,
-  EuiPageContentBody,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiFormRow,
-  EuiButton,
-  EuiFieldText,
-  EuiPopover,
-  EuiForm,
-  EuiFieldNumber,
-  EuiRange,
-  EuiSpacer,
-  EuiSwitch,
   EuiText,
-  EuiButtonIcon,
 } from '@elastic/eui';
 import { Check } from './check';
 
@@ -36,7 +19,7 @@ export class Main extends React.Component {
       navItems: [{
         name: 'Loading...',
         id: 0,
-      }]
+      }],
     }
   }
 
@@ -46,19 +29,28 @@ export class Main extends React.Component {
       this.setState({ checks: resp.data });
       let navItems = []
       let itemId = 0;
-      for (let check of Object.keys(this.state.checks)) {
+      for (let group of Object.keys(this.state.checks)) {
+        let subItems = []
+        for (let check of Object.keys(this.state.checks[group])) {
+          subItems.push({
+            name: this.state.checks[group][check].name,
+            id: itemId,
+            onClick: () => {
+              this.setState({
+                currentCheck: <Check
+                  id={check}
+                  name={this.state.checks[group][check].name}
+                  attributes={this.state.checks[group][check].attributes}
+                  httpClient={this.props.httpClient} />
+              });
+            },
+          })
+          itemId++;
+        }
         navItems.push({
-          name: this.state.checks[check].name,
+          name: group,
           id: itemId,
-          onClick: () => {
-            this.setState({
-              currentCheck: <Check
-                id={check}
-                name={this.state.checks[check].name}
-                attributes={this.state.checks[check].attributes}
-                httpClient={this.props.httpClient} />
-            });
-          },
+          items: subItems,
         });
         itemId++;
       }

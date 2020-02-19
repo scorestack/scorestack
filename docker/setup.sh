@@ -24,7 +24,7 @@ LOGSTASH_SYSTEM_PASSWORD=${logstash_system_pass}
 EOF
 
 # Install kibana plugin
-docker exec kiba01 /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin-zip"
+docker exec kiba01 /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin"
 
 # Create admin user
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/root' -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"root","email":"root@example.com","roles":["superuser"]}'

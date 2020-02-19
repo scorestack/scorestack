@@ -14,29 +14,32 @@ export default function (server, dataCluster) {
             // Get attributes for each check
             for (let attribIndex of Object.keys(attribIndices)) {
                 let checkID = attribIndex.split("_").slice(2).join("_");
+                let group = checkID.split("-").slice(-1)
                 let attribDoc = await dataCluster.callWithRequest(req, 'get', {
                     id: 'attributes',
                     index: attribIndex,
                 });
-                if (checkID in checks === false) {
-                    checks[checkID] = {
+                if (group in checks === false) {
+                    checks[group] = {}
+                }
+                if (checkID in checks[group] === false) {
+                    checks[group][checkID] = {
                         "attributes": {},
                     };
                 }
-                if (!"attributes" in checks[checkID]) {
-                    checks[checkID] = {};
-                }
-                checks[checkID]["attributes"] = Object.assign(checks[checkID]["attributes"], attribDoc._source);
+                checks[group][checkID]["attributes"] = Object.assign(checks[group][checkID]["attributes"], attribDoc._source);
             }
 
             // Get names for each check
-            for (let checkID of Object.keys(checks)) {
-                let checkDoc = await dataCluster.callWithRequest(req, 'get', {
-                    id: checkID,
-                    index: 'checks',
-                    _source_includes: 'name',
-                })
-                checks[checkID]["name"] = checkDoc._source.name;
+            for (let group of Object.keys(checks)) {
+                for (let checkID of Object.keys(checks[group])) {
+                    let checkDoc = await dataCluster.callWithRequest(req, 'get', {
+                        id: checkID,
+                        index: 'checks',
+                        _source_includes: 'name',
+                    })
+                    checks[group][checkID]["name"] = checkDoc._source.name;
+                }
             }
             return h.response(checks).code(200);
         }
