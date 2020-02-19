@@ -10,6 +10,8 @@ do
     cat examples/${check}/check.json | jq --arg TEAM "$TEAM" '.group = $TEAM | .id = "\(.id)-\($TEAM)"' > check.tmp.json
     ID=$(cat check.tmp.json | jq -r '.id')
     curl -k -XPUT -u root:changeme https://localhost:9200/checkdef/_doc/${ID} -H 'Content-Type: application/json' -d @check.tmp.json
+    cat check.tmp.json | jq '{id, name, type, group}' > generic-check.tmp.json
+    curl -k -XPUT -u root:changeme https://localhost:9200/checks/_doc/${ID} -H 'Content-Type: application/json' -d @generic-check.tmp.json
 
     # Add admin attributes, if they are defined
     if [ -f examples/${check}/admin-attribs.json ]
@@ -51,4 +53,5 @@ done
 
 # Clean up
 rm check.tmp.json
+rm generic-check.tmp.json
 rm tmp-dashboard.json
