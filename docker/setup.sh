@@ -30,7 +30,7 @@ docker exec kiba01 /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/s
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/root' -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"root","email":"root@example.com","roles":["superuser"]}'
 
 # Add dynamicbeat role and user 
-curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/role/dynamicbeat-role' -H "Content-Type: application/json" -d '{"indices":[{"names":["check*","attrib*"],"privileges":["read"]}]}'
+curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/role/dynamicbeat-role' -H "Content-Type: application/json" -d '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/dynamicbeat' -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"dynamicbeat","email":"dynamicbeat@example.com","roles":["dynamicbeat-role"]}'
 
 # Create logstash user
