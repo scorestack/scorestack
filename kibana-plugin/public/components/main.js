@@ -1,28 +1,11 @@
 import React from 'react';
 import {
   EuiPage,
-  EuiPageHeader,
-  EuiTitle,
   EuiPageBody,
   EuiPageContent,
   EuiPageSideBar,
   EuiSideNav,
-  EuiSideNavItem,
-  EuiPageContentHeader,
-  EuiPageContentBody,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiFormRow,
-  EuiButton,
-  EuiFieldText,
-  EuiPopover,
-  EuiForm,
-  EuiFieldNumber,
-  EuiRange,
-  EuiSpacer,
-  EuiSwitch,
   EuiText,
-  EuiButtonIcon,
 } from '@elastic/eui';
 import { Check } from './check';
 
