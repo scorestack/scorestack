@@ -141,7 +141,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 	// Check for missing fields
 	missingFields := make([]string, 0)
 	if d.Host == "" {
-		missingFields = append(missingFields, "IP")
+		missingFields = append(missingFields, "Host")
 	}
 
 	if d.Username == "" {
