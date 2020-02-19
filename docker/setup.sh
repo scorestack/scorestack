@@ -30,7 +30,7 @@ docker exec kiba01 /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/s
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/root' -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"root","email":"root@example.com","roles":["superuser"]}'
 
 # Add dynamicbeat role and user 
-curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/role/dynamicbeat-role' -H "Content-Type: application/json" -d '{"indices":[{"names":["check*","attrib*"],"privileges":["read"]}]}'
+curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/role/dynamicbeat-role' -H "Content-Type: application/json" -d '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/dynamicbeat' -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"dynamicbeat","email":"dynamicbeat@example.com","roles":["dynamicbeat-role"]}'
 
 # Create logstash user
@@ -48,6 +48,20 @@ do
   sleep 5
 done
 
+# Add ScoreStack space
+curl -kX POST -u root:changeme https://localhost:5601/api/spaces/space -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","advancedSettings","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
+
+# Add base role for common permissions
+curl -kX PUT -u root:changeme https://localhost:5601/api/security/role/common -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results-all*","checks"],"privileges":["read"]}]},"kibana":[{"base":["read"],"spaces":["scorestack"]}]}'
+
+# Add spectator role
+curl -kX PUT -u root:changeme https://localhost:5601/api/security/role/spectator -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results*"],"privileges":["read"]}]}}'
+
+# Add admin roles
+curl -kX PUT -u root:changeme https://localhost:5601/api/security/role/attribute-admin -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["attrib_*"],"privileges":["all"]}]}}'
+curl -kX PUT -u root:changeme https://localhost:5601/api/security/role/check-admin -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["check*"],"privileges":["all"]}]}}'
+
+# Add scoreboard dashboard
 UUID_A=$(uuidgen)
 UUID_B=$(uuidgen)
 UUID_C=$(uuidgen)
@@ -56,5 +70,7 @@ UUID_E=$(uuidgen)
 UUID_F=$(uuidgen)
 cat dashboards/scoreboard.json | sed -e "s/\${UUID_A}/${UUID_A}/g" | sed -e "s/\${UUID_B}/${UUID_B}/g" | sed -e "s/\${UUID_C}/${UUID_C}/g" | sed -e "s/\${UUID_D}/${UUID_D}/g" | sed -e "s/\${UUID_E}/${UUID_E}/g" | sed -e "s/\${UUID_F}/${UUID_F}/g" > tmp-dashboard.json
 curl -ku root:changeme https://localhost:5601/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
-rm tmp-dashboard.json
+curl -kX POST -u root:changeme https://localhost:5601/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"'${UUID_A}'"}],"includeReferences":true}'
 
+# Clean up
+rm tmp-dashboard.json
