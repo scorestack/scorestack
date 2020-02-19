@@ -29,6 +29,10 @@ docker exec kiba01 /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/s
 # Create admin user
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/root' -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"root","email":"root@example.com","roles":["superuser"]}'
 
+# Add dynamicbeat role and user 
+curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/role/dynamicbeat-role' -H "Content-Type: application/json" -d '{"indices":[{"names":["check*","attrib*"],"privileges":["read"]}]}'
+curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/dynamicbeat' -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"dynamicbeat","email":"dynamicbeat@example.com","roles":["dynamicbeat-role"]}'
+
 # Create logstash user
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/role/logstash_writer' -H "Content-Type: application/json" -d '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["results-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]}'
 curl -k -XPOST -u elastic:${elastic_pass} 'https://localhost:9200/_security/user/logstash_internal' -H "Content-Type: application/json" -d '{"password":"'"${logstash_user_pass}"'","roles":["logstash_writer"],"full_name":"Internal Logstash User"}'
@@ -53,3 +57,4 @@ UUID_F=$(uuidgen)
 cat dashboards/scoreboard.json | sed -e "s/\${UUID_A}/${UUID_A}/g" | sed -e "s/\${UUID_B}/${UUID_B}/g" | sed -e "s/\${UUID_C}/${UUID_C}/g" | sed -e "s/\${UUID_D}/${UUID_D}/g" | sed -e "s/\${UUID_E}/${UUID_E}/g" | sed -e "s/\${UUID_F}/${UUID_F}/g" > tmp-dashboard.json
 curl -ku root:changeme https://localhost:5601/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
 rm tmp-dashboard.json
+
