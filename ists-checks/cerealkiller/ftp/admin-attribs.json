@@ -1,8 +1,8 @@
 {
     "Host": "cerealkiller.teamX.ists.io",
     "Port": "21",
-    "Username": "root",
-    "File": "/root/test.txt",
+    "Username": "hannibal",
+    "File": "C:\\duck\\Assets\\Images\\Memes\\wide_shark.png",
     "ContentRegex": ".*",
-    "Hash": "6667dd62e89f23a07798340fc06d1abbab29c84d683266438ad94731c91e2331"
+    "Hash": "9733c06204475b82c76a0c43b6f044376be3ec1c18be9f005755467c05c29ef9"
 }
