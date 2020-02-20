@@ -1,7 +1,7 @@
 {
     "Host": "cerealkiller.teamX.ists.io",
     "Port": "5986",
-    "Username": "admin",
+    "Username": "hannibal",
     "Cmd": "netstat",
     "ContentRegex": ".*"
 }
