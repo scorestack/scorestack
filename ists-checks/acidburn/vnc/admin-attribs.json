@@ -1,4 +1,4 @@
 {
-    "Host": "acidburn.teamx.ists.io",
+    "Host": "acidburn.${TEAM}.ists.io",
     "Port": "5901"
 }

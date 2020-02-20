@@ -1,8 +1,8 @@
 {
-    "id": "icmp-teamX",
+    "id": "icmp-${TEAM}",
     "name": "anarchaos - ICMP check",
     "type": "icmp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "host": "{{.Host}}"

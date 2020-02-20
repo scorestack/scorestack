@@ -1,8 +1,8 @@
 {
-    "id": "http-anarchaos-teamX",
+    "id": "http-anarchaos-${TEAM}",
     "name": "anarchaos - HTTP check",
     "type": "http",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": [
         {

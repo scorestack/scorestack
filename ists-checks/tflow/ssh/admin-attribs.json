@@ -1,5 +1,5 @@
 {
-    "Host": "tflow.teamX.ists.io",
+    "Host": "tflow.${TEAM}.ists.io",
     "Port": "22",
     "Username": "voodoo",
     "Cmd": "id",

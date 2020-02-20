@@ -1,8 +1,8 @@
 {
-    "id": "ssh-kayla-teamX",
+    "id": "ssh-kayla-${TEAM}",
     "name": "kayla - SSH Check",
     "type": "ssh",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

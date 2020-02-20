@@ -1,5 +1,5 @@
 {
-    "Host": "viral.teamX.ists.io",
+    "Host": "viral.${TEAM}.ists.io",
     "Port": "143",
     "Username": "savant"
 }

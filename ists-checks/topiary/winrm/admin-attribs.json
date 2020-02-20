@@ -1,5 +1,5 @@
 {
-    "Host": "topiary.teamX.ists.io",
+    "Host": "topiary.${TEAM}.ists.io",
     "Port": "5986",
     "Username": "rune",
     "Cmd": "netstat",

@@ -1,8 +1,8 @@
 {
-    "id": "icmp-viral-teamX",
+    "id": "icmp-viral-${TEAM}",
     "name": "viral - ICMP check",
     "type": "icmp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "host": "{{.Host}}"

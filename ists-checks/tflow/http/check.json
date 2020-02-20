@@ -1,8 +1,8 @@
 {
-    "id": "http-tflow-teamX",
+    "id": "http-tflow-${TEAM}",
     "name": "tflow - HTTP check",
     "type": "http",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": [
         {

@@ -1,8 +1,8 @@
 {
-    "id": "icmp-zerocool-teamX",
+    "id": "icmp-zerocool-${TEAM}",
     "name": "zerocool - ICMP check",
     "type": "icmp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "host": "{{.Host}}"

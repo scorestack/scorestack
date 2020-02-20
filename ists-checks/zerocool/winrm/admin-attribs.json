@@ -1,5 +1,5 @@
 {
-    "Host": "zerocool.teamX.ists.io",
+    "Host": "zerocool.${TEAM}.ists.io",
     "Port": "5986",
     "Username": "molly",
     "Cmd": "netstat",

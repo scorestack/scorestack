@@ -1,8 +1,8 @@
 {
-    "id": "xmpp-avunit-teamX",
+    "id": "xmpp-avunit-${TEAM}",
     "name": "avunit - XMPP Check",
     "type": "xmpp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

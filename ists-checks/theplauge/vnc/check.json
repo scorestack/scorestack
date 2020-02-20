@@ -1,8 +1,8 @@
 {
-    "id": "vnc-theplauge-teamX",
+    "id": "vnc-theplauge-${TEAM}",
     "name": "theplauge - VNC Check",
     "type": "vnc",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

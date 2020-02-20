@@ -1,8 +1,8 @@
 {
-    "id": "http-kayla-teamX",
+    "id": "http-kayla-${TEAM}",
     "name": "kayla - HTTP check",
     "type": "http",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": [
         {

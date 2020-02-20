@@ -1,5 +1,5 @@
 {
-    "Host": "cerealkiller.teamX.ists.io",
+    "Host": "cerealkiller.${TEAM}.ists.io",
     "Port": "21",
     "Username": "hannibal",
     "File": "C:\\duck\\Assets\\Images\\Memes\\wide_shark.png",

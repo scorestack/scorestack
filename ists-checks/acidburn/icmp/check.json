@@ -1,8 +1,8 @@
 {
-    "id": "icmp-acidburn-teamX",
+    "id": "icmp-acidburn-${TEAM}",
     "name": "acidburn - ICMP check",
     "type": "icmp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "host": "{{.Host}}"

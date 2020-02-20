@@ -1,8 +1,8 @@
 {
-    "id": "winrm-sabu-teamX",
+    "id": "winrm-sabu-${TEAM}",
     "name": "sabu - WinRM Check",
     "type": "winrm",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

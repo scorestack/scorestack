@@ -1,8 +1,8 @@
 {
-    "id": "winrm-viral-teamX",
+    "id": "winrm-viral-${TEAM}",
     "name": "viral - WinRM Check",
     "type": "winrm",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

@@ -1,8 +1,8 @@
 {
-    "id": "http-pwnsauce-teamX",
+    "id": "http-pwnsauce-${TEAM}",
     "name": "pwnsauce - HTTP check",
     "type": "http",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": [
         {

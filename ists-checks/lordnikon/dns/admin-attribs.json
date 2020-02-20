@@ -1,5 +1,5 @@
 {
-    "Server": "lordnikon.teamX.ists.io",
+    "Server": "lordnikon.${TEAM}.ists.io",
     "Port": "53",
     "Fqdn": "example.com",
     "ExpectedIP": "93.184.216.34"

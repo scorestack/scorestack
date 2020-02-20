@@ -1,8 +1,8 @@
 {
-    "id": "winrm-cerealkiller-teamX",
+    "id": "winrm-cerealkiller-${TEAM}",
     "name": "cerealkill - WinRM Check",
     "type": "winrm",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

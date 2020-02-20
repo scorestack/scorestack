@@ -1,8 +1,8 @@
 {
-    "Host": "viral.teamX.ists.io",
-    "Username": "phantom@viral.teamX.ists.io",
-    "Sender": "phantom@viral.teamX.ists.io",
-    "Reciever": "savant@viral.teamX.ists.io",
+    "Host": "viral.${TEAM}.ists.io",
+    "Username": "phantom@viral.${TEAM}.ists.io",
+    "Sender": "phantom@viral.${TEAM}.ists.io",
+    "Reciever": "savant@viral.${TEAM}.ists.io",
     "Body": "Hello from ScoreStack",
     "Port": "25"
 }

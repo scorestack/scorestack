@@ -1,8 +1,8 @@
 {
-    "id": "http-sabu-teamX",
+    "id": "http-sabu-${TEAM}",
     "name": "sabu - HTTP check",
     "type": "http",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": [
         {

@@ -1,5 +1,5 @@
 {
-    "id": "smtp-viral-teamX",
+    "id": "smtp-viral-${TEAM}",
     "name": "viral - SMTP Check",
     "type": "smtp",
     "group": "example",

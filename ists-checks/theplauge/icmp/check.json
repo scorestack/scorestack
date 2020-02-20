@@ -2,7 +2,7 @@
     "id": "icmp-theplauge",
     "name": "theplauge - ICMP check",
     "type": "icmp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "host": "{{.Host}}"

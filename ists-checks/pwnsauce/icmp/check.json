@@ -1,8 +1,8 @@
 {
-    "id": "icmp-pwnsauce-teamX",
+    "id": "icmp-pwnsauce-${TEAM}",
     "name": "pwnsauce - ICMP check",
     "type": "icmp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "host": "{{.Host}}"

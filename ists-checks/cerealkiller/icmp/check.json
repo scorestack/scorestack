@@ -1,8 +1,8 @@
 {
-    "id": "icmp-cerealkiller-teamX",
+    "id": "icmp-cerealkiller-${TEAM}",
     "name": "cerealkill - ICMP check",
     "type": "icmp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "host": "{{.Host}}"

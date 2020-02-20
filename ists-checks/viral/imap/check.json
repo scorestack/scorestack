@@ -1,8 +1,8 @@
 {
-    "id": "imap-viral-teamX",
+    "id": "imap-viral-${TEAM}",
     "name": "viral - IMAP Check",
     "type": "imap",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

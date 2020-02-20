@@ -1,5 +1,5 @@
 {
-    "Host": "avunit.teamX.ists.io",
+    "Host": "avunit.${TEAM}.ists.io",
     "Port": "22",
     "Username": "face",
     "Cmd": "id",

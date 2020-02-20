@@ -1,8 +1,8 @@
 {
-    "id": "ldap-lordnikon-teamX",
+    "id": "ldap-lordnikon-${TEAM}",
     "name": "lordnikon - LDAP check",
     "type": "ldap",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "User": "{{.User}}",

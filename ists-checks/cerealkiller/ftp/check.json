@@ -1,8 +1,8 @@
 {
-    "id": "ftp-cerealkiller-teamX",
+    "id": "ftp-cerealkiller-${TEAM}",
     "name": "cerealkill - FTP Check",
     "type": "ftp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

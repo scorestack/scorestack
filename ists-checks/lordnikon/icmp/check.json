@@ -1,8 +1,8 @@
 {
-    "id": "icmp-lordnikon-teamX",
+    "id": "icmp-lordnikon-${TEAM}",
     "name": "lordnikon - ICMP check",
     "type": "icmp",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "host": "{{.Host}}"

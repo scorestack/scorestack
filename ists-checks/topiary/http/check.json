@@ -1,8 +1,8 @@
 {
-    "id": "http-topiary-teamX",
+    "id": "http-topiary-${TEAM}",
     "name": "topiary - HTTP check",
     "type": "http",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": [
         {

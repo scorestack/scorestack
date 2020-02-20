@@ -1,8 +1,8 @@
 {
-    "id": "ssh-avunit-teamX",
+    "id": "ssh-avunit-${TEAM}",
     "name": "avunit - SSH Check",
     "type": "ssh",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
         "Host": "{{.Host}}",

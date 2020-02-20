@@ -1,8 +1,8 @@
 {
-    "id": "http-viral-teamX",
+    "id": "http-viral-${TEAM}",
     "name": "viral - HTTP check",
     "type": "http",
-    "group": "teamX",
+    "group": "${TEAM}",
     "score_weight": 1,
     "definition": [
         {
