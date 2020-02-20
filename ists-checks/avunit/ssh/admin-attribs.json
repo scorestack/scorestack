@@ -1,7 +1,7 @@
 {
     "Host": "avunit.teamX.ists.io",
     "Port": "22",
-    "Username": "root",
+    "Username": "face",
     "Cmd": "id",
-    "ContentRegex": "root"
+    "ContentRegex": "face"
 }
