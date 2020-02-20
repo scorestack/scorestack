@@ -1,0 +1,12 @@
+{
+    "id": "vnc-teamX",
+    "name": "VNC Check",
+    "type": "vnc",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Password": "{{.Password}}"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "id": "icmp-teamX",
+    "name": "ICMP check",
+    "type": "icmp",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "host": "{{.Host}}"
+    }
+}
