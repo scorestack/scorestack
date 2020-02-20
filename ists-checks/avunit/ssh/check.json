@@ -1,0 +1,16 @@
+{
+    "id": "ssh-teamX",
+    "name": "SSH Check",
+    "type": "ssh",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Cmd": "{{.Cmd}}",
+        "MatchContent": true,
+        "ContentRegex": "{{.ContentRegex}}"
+    }
+}

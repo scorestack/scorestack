@@ -1,0 +1,14 @@
+{
+    "id": "xmpp-teamX",
+    "name": "XMPP Check",
+    "type": "xmpp",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Encrypted": true
+    }
+}
