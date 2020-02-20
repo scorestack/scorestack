@@ -8,8 +8,6 @@ cluster.initial_master_nodes:
   - elas01
   - elas02
   - elas03
-bootstrap.memory_lock: true
-
 xpack.monitoring.enabled: true
 xpack.monitoring.collection.enabled: true
 

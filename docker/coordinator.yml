@@ -8,7 +8,6 @@ discovery.seed_hosts:
 node.master: false
 node.data: false
 node.ingest: false
-bootstrap.memory_lock: true
 xpack.monitoring.enabled: true
 xpack.monitoring.collection.enabled: true
 xpack.security.enabled: true
