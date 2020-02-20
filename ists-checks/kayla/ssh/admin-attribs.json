@@ -1,7 +1,7 @@
 {
     "Host": "kayla.teamX.ists.io",
     "Port": "22",
-    "Username": "root",
+    "Username": "mad",
     "Cmd": "id",
-    "ContentRegex": "root"
+    "ContentRegex": "mad"
 }
