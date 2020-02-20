@@ -1,7 +1,7 @@
 {
     "Host": "zerocool.teamX.ists.io",
     "Port": "5986",
-    "Username": "admin",
+    "Username": "molly",
     "Cmd": "netstat",
     "ContentRegex": ".*"
 }
