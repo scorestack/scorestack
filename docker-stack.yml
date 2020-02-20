@@ -1,21 +1,15 @@
 ---
-version: '3'
+version: '3.5'
 
 services:
   elas01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
-    container_name: elas01
     env_file: docker/elasticsearch.env
+    deploy:
+      endpoint_mode: dnsrr
     environment:
       - node.name=elas01
       - discovery.seed_hosts=elas02,elas03
-      - bootstrap.memory_lock=true
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile: 65535
-      nproc: 4096
     volumes:
       - ./docker/build-certs/pki/intermediate/certs/elas01.cert.pem:/usr/share/elasticsearch/config/pki/elas.cert.pem
       - ./docker/build-certs/pki/intermediate/private/elas01.key.pem:/usr/share/elasticsearch/config/pki/elas.key.pem
@@ -32,18 +26,12 @@ services:
       retries: 5
   elas02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
-    container_name: elas02
     env_file: docker/elasticsearch.env
+    deploy:
+      endpoint_mode: dnsrr
     environment:
       - node.name=elas02
       - discovery.seed_hosts=elas01,elas03
-      - bootstrap.memory_lock=true
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile: 65535
-      nproc: 4096
     volumes:
       - ./docker/build-certs/pki/intermediate/certs/elas02.cert.pem:/usr/share/elasticsearch/config/pki/elas.cert.pem
       - ./docker/build-certs/pki/intermediate/private/elas02.key.pem:/usr/share/elasticsearch/config/pki/elas.key.pem
@@ -60,18 +48,12 @@ services:
       retries: 5
   elas03:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
-    container_name: elas03
     env_file: docker/elasticsearch.env
+    deploy:
+      endpoint_mode: dnsrr
     environment:
       - node.name=elas03
       - discovery.seed_hosts=elas02,elas03
-      - bootstrap.memory_lock=true
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile: 65535
-      nproc: 4096
     volumes:
       - ./docker/build-certs/pki/intermediate/certs/elas03.cert.pem:/usr/share/elasticsearch/config/pki/elas.cert.pem
       - ./docker/build-certs/pki/intermediate/private/elas03.key.pem:/usr/share/elasticsearch/config/pki/elas.key.pem
@@ -88,7 +70,8 @@ services:
       retries: 5
   logs01:
     image: docker.elastic.co/logstash/logstash:7.5.1
-    container_name: logs01
+    deploy:
+      endpoint_mode: dnsrr
     ports:
       - 5454:5454
     environment:
@@ -107,7 +90,8 @@ services:
       - elastic
   kiba01:
     image: docker.elastic.co/kibana/kibana:7.5.1
-    container_name: kiba01
+    deploy:
+      endpoint_mode: dnsrr
     ports:
       - 5601:5601
     environment:
@@ -123,17 +107,9 @@ services:
       - elastic
   coordinator:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
-    container_name: coordinator
     env_file: docker/elasticsearch.env
     environment:
       - node.name=coordinator
-      - bootstrap.memory_lock=true
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile: 65535
-      nproc: 4096
     volumes:
       - ./docker/build-certs/pki/intermediate/certs/coordinator.cert.pem:/usr/share/elasticsearch/config/pki/coordinator.cert.pem
       - ./docker/build-certs/pki/intermediate/private/coordinator.key.pem:/usr/share/elasticsearch/config/pki/coordinator.key.pem
@@ -149,19 +125,48 @@ services:
 volumes:
   data01:
     driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /srv/nfs
   data02:
     driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /srv/nfs
   data03:
     driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /srv/nfs
   data04:
     driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /srv/nfs
   data05:
     driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /srv/nfs
   data06:
     driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /srv/nfs
   plugins:
     driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /srv/nfs
 
 networks:
   elastic:
-    driver: bridge
+    driver: overlay
+    name: elastic
