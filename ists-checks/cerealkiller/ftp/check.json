@@ -1,6 +1,6 @@
 {
     "id": "ftp-cerealkiller-teamX",
-    "name": "FTP Check",
+    "name": "cerealkill - FTP Check",
     "type": "ftp",
     "group": "teamX",
     "score_weight": 1,

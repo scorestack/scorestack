@@ -1,6 +1,6 @@
 {
     "id": "ssh-avunit-teamX",
-    "name": "SSH Check",
+    "name": "avunit - SSH Check",
     "type": "ssh",
     "group": "teamX",
     "score_weight": 1,

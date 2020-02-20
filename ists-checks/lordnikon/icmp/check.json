@@ -1,6 +1,6 @@
 {
     "id": "icmp-lordnikon-teamX",
-    "name": "ICMP check",
+    "name": "lordnikon - ICMP check",
     "type": "icmp",
     "group": "teamX",
     "score_weight": 1,

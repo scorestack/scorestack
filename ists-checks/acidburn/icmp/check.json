@@ -1,6 +1,6 @@
 {
     "id": "icmp-acidburn-teamX",
-    "name": "ICMP check",
+    "name": "acidburn - ICMP check",
     "type": "icmp",
     "group": "teamX",
     "score_weight": 1,
