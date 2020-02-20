@@ -1,0 +1,17 @@
+{
+    "id": "smtp-viral-teamX",
+    "name": "viral - SMTP Check",
+    "type": "smtp",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Sender": "{{.Sender}}",
+        "Reciever": "{{.Reciever}}",
+        "Body": "{{.Body}}",
+        "Encrypted": false,
+        "Port": "{{.Port}}"
+    }
+}

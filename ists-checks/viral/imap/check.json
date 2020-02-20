@@ -1,0 +1,14 @@
+{
+    "id": "imap-viral-teamX",
+    "name": "viral - IMAP Check",
+    "type": "imap",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Encrypted": false
+    }
+}
