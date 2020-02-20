@@ -1,0 +1,14 @@
+{
+    "id": "ldap-lordnikon-teamX",
+    "name": "LDAP check",
+    "type": "ldap",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "User": "{{.User}}",
+        "Password": "{{.Password}}",
+        "Fqdn": "{{.Fqdn}}",
+        "Port": "{{.Port}}",
+        "Ldaps": false
+    }
+}

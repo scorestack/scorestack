@@ -1,0 +1,5 @@
+{
+    "User": "cn=admin,dc=example,dc=org",
+    "Fqdn": "lordnikon.teamX.ists.io",
+    "Port": "389"
+}
