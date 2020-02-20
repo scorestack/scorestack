@@ -1,0 +1,10 @@
+{
+    "id": "icmp-theplauge",
+    "name": "theplauge - ICMP check",
+    "type": "icmp",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "host": "{{.Host}}"
+    }
+}
