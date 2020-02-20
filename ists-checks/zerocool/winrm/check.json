@@ -1,0 +1,17 @@
+{
+    "id": "winrm-viral-teamX",
+    "name": "viral - WinRM Check",
+    "type": "winrm",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Cmd": "{{.Cmd}}",
+        "Encrypted": true,
+        "MatchContent": false,
+        "ContentRegex": "{{.ContentRegex}}"
+    }
+}
