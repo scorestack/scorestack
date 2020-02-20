@@ -1,5 +1,5 @@
 {
-    "id": "icmp-teamX",
+    "id": "icmp-acidburn-teamX",
     "name": "ICMP check",
     "type": "icmp",
     "group": "teamX",
