@@ -1,5 +1,5 @@
 {
-    "id": "icmp-cerealkiller-${TEAM}",
+    "id": "icmp-cerealkiller",
     "name": "cerealkill - ICMP check",
     "type": "icmp",
     "group": "${TEAM}",

@@ -1,5 +1,5 @@
 {
-    "id": "icmp-zerocool-${TEAM}",
+    "id": "icmp-zerocool",
     "name": "zerocool - ICMP check",
     "type": "icmp",
     "group": "${TEAM}",

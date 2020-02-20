@@ -1,5 +1,5 @@
 {
-    "id": "xmpp-avunit-${TEAM}",
+    "id": "xmpp-avunit",
     "name": "avunit - XMPP Check",
     "type": "xmpp",
     "group": "${TEAM}",

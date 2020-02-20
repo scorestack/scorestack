@@ -1,5 +1,5 @@
 {
-    "id": "winrm-topiary-${TEAM}",
+    "id": "winrm-topiary",
     "name": "topiary - WinRM Check",
     "type": "winrm",
     "group": "example",

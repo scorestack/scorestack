@@ -1,5 +1,5 @@
 {
-    "id": "winrm-sabu-${TEAM}",
+    "id": "winrm-sabu",
     "name": "sabu - WinRM Check",
     "type": "winrm",
     "group": "${TEAM}",

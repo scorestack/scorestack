@@ -1,5 +1,5 @@
 {
-    "id": "ssh-avunit-${TEAM}",
+    "id": "ssh-avunit",
     "name": "avunit - SSH Check",
     "type": "ssh",
     "group": "${TEAM}",

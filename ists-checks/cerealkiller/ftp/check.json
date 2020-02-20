@@ -1,5 +1,5 @@
 {
-    "id": "ftp-cerealkiller-${TEAM}",
+    "id": "ftp-cerealkiller",
     "name": "cerealkill - FTP Check",
     "type": "ftp",
     "group": "${TEAM}",

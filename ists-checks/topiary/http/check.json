@@ -1,5 +1,5 @@
 {
-    "id": "http-topiary-${TEAM}",
+    "id": "http-topiary",
     "name": "topiary - HTTP check",
     "type": "http",
     "group": "${TEAM}",

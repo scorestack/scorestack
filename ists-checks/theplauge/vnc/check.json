@@ -1,5 +1,5 @@
 {
-    "id": "vnc-theplauge-${TEAM}",
+    "id": "vnc-theplauge",
     "name": "theplauge - VNC Check",
     "type": "vnc",
     "group": "${TEAM}",

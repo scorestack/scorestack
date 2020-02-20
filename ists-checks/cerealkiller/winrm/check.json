@@ -1,5 +1,5 @@
 {
-    "id": "winrm-cerealkiller-${TEAM}",
+    "id": "winrm-cerealkiller",
     "name": "cerealkill - WinRM Check",
     "type": "winrm",
     "group": "${TEAM}",

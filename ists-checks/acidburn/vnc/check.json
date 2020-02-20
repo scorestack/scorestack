@@ -1,5 +1,5 @@
 {
-    "id": "vnc-acidburn-${TEAM}",
+    "id": "vnc-acidburn",
     "name": "acidburn - VNC Check",
     "type": "vnc",
     "group": "${TEAM}",

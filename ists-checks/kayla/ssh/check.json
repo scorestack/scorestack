@@ -1,5 +1,5 @@
 {
-    "id": "ssh-kayla-${TEAM}",
+    "id": "ssh-kayla",
     "name": "kayla - SSH Check",
     "type": "ssh",
     "group": "${TEAM}",

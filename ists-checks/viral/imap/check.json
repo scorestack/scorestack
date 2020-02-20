@@ -1,5 +1,5 @@
 {
-    "id": "imap-viral-${TEAM}",
+    "id": "imap-viral",
     "name": "viral - IMAP Check",
     "type": "imap",
     "group": "${TEAM}",

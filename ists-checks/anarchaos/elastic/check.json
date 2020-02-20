@@ -1,5 +1,5 @@
 {
-    "id": "http-anarchaos-${TEAM}",
+    "id": "http-anarchaos",
     "name": "anarchaos - HTTP check",
     "type": "http",
     "group": "${TEAM}",

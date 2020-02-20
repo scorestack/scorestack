@@ -1,5 +1,5 @@
 {
-    "id": "dns-lordnikon-${TEAM}",
+    "id": "dns-lordnikon",
     "name": "lordnikon - DNS check",
     "type": "dns",
     "group": "${TEAM}",

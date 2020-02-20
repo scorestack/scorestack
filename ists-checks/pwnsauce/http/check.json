@@ -1,5 +1,5 @@
 {
-    "id": "http-pwnsauce-${TEAM}",
+    "id": "http-pwnsauce",
     "name": "pwnsauce - HTTP check",
     "type": "http",
     "group": "${TEAM}",

@@ -1,5 +1,5 @@
 {
-    "id": "ssh-tflow-${TEAM}",
+    "id": "ssh-tflow",
     "name": "${TEAM} - SSH Check",
     "type": "ssh",
     "group": "${TEAM}",

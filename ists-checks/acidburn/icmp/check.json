@@ -1,5 +1,5 @@
 {
-    "id": "icmp-acidburn-${TEAM}",
+    "id": "icmp-acidburn",
     "name": "acidburn - ICMP check",
     "type": "icmp",
     "group": "${TEAM}",

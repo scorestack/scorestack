@@ -1,5 +1,5 @@
 {
-    "id": "icmp-${TEAM}",
+    "id": "icmp",
     "name": "anarchaos - ICMP check",
     "type": "icmp",
     "group": "${TEAM}",

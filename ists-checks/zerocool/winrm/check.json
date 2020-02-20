@@ -1,5 +1,5 @@
 {
-    "id": "winrm-viral-${TEAM}",
+    "id": "winrm-viral",
     "name": "viral - WinRM Check",
     "type": "winrm",
     "group": "${TEAM}",

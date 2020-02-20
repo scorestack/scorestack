@@ -1,5 +1,5 @@
 {
-    "id": "http-viral-${TEAM}",
+    "id": "http-viral",
     "name": "viral - HTTP check",
     "type": "http",
     "group": "${TEAM}",

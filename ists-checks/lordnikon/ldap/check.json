@@ -1,5 +1,5 @@
 {
-    "id": "ldap-lordnikon-${TEAM}",
+    "id": "ldap-lordnikon",
     "name": "lordnikon - LDAP check",
     "type": "ldap",
     "group": "${TEAM}",
