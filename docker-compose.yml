@@ -29,8 +29,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    ports:
-      - 9200:9200
   elas02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     container_name: elas02
@@ -93,7 +91,7 @@ services:
     environment:
       - PATH_DATA=/usr/share/logstash/data
       - ELASTICSEARCH_PASSWORD=${LOGSTASH_USER_PASSWORD}
-      - XPACK_MONITORING_ELASTICSEARCH_HOSTS=https://elas01:9200
+      - XPACK_MONITORING_ELASTICSEARCH_HOSTS=https://coordinator:9200
       - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${LOGSTASH_SYSTEM_PASSWORD}
       - XPACK_MONITORING_ELASTICSEARCH_SSL_CERTIFICATE_AUTHORITY=/usr/share/logstash/config/pki/ca.cert.pem
     volumes:
@@ -120,6 +118,29 @@ services:
       - plugins:/usr/share/kibana/plugins
     networks:
       - elastic
+  coordinator:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    container_name: coordinator
+    env_file: docker/elasticsearch.env
+    environment:
+      - node.name=coordinator
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65535
+      nproc: 4096
+    volumes:
+      - ./docker/build-certs/pki/intermediate/certs/coordinator.cert.pem:/usr/share/elasticsearch/config/pki/coordinator.cert.pem
+      - ./docker/build-certs/pki/intermediate/private/coordinator.key.pem:/usr/share/elasticsearch/config/pki/coordinator.key.pem
+      - ./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem:/usr/share/elasticsearch/config/pki/ca.cert.pem
+      - ./docker/coordinator.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./docker/elastic-healthcheck.sh:/bin/elastic-healthcheck.sh
+      - data06:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
 
 volumes:
   data01:
@@ -131,6 +152,8 @@ volumes:
   data04:
     driver: local
   data05:
+    driver: local
+  data06:
     driver: local
   plugins:
     driver: local
