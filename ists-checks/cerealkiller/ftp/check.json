@@ -1,0 +1,18 @@
+{
+    "id": "ftp-teamX",
+    "name": "FTP Check",
+    "type": "ftp",
+    "group": "teamX",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "File": "{{.File}}",
+        "RegexContentMatch": false,
+        "ContentRegex": "{{.ContentRegex}}",
+        "HashContentMatch": true,
+        "Hash": "{{.Hash}}"
+    }
+}

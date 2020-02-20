@@ -1,0 +1,8 @@
+{
+    "Host": "cerealkiller.teamX.ists.io",
+    "Port": "21",
+    "Username": "root",
+    "File": "/root/test.txt",
+    "ContentRegex": ".*",
+    "Hash": "6667dd62e89f23a07798340fc06d1abbab29c84d683266438ad94731c91e2331"
+}
