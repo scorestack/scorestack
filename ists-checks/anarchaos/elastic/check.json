@@ -1,6 +1,6 @@
 {
     "id": "http-anarchaos",
-    "name": "anarchaos - HTTP",
+    "name": "anarchaos - Elasticsearch",
     "type": "http",
     "group": "${TEAM}",
     "score_weight": 1,
