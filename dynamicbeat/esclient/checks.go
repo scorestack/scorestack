@@ -64,6 +64,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckDef, erro
 				}
 			}
 		}
+		result.Attribs["SavedValue"] = "{{.SavedValue}}"
 
 		results = append(results, result)
 	}
