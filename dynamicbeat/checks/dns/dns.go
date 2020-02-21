@@ -38,13 +38,18 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType:   "dns",
 	}
 
+	// Create a dns client
+	mydns := dns.Client{
+		Timeout: 5 * time.Second,
+	}
+
 	// Setup for dns query
 	var msg dns.Msg
 	fqdn := dns.Fqdn(d.Fqdn)
 	msg.SetQuestion(fqdn, dns.TypeA)
 
 	// Send the query
-	in, err := dns.Exchange(&msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
+	in, _, err := mydns.Exchange(&msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
 	if err != nil {
 		result.Message = fmt.Sprintf("Problem sending query to %s : %s", d.Server, err)
 		out <- result
