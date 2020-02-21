@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"sync"
+	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
@@ -27,6 +28,7 @@ import (
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
 func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan<- beat.Event) {
+	start := time.Now()
 	defer wg.Done()
 
 	// Recieve definitions from channel
@@ -49,6 +51,7 @@ func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan
 
 	// Wait for checks to finish
 	events.Wait()
+	logp.Info("Checks started at %s have finished", start.Format("15:04:05.000"))
 	close(queue)
 	for result := range queue {
 		// Publish check results
