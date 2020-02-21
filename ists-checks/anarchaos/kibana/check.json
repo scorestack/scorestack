@@ -1,5 +1,5 @@
 {
-    "id": "http-anarchaos",
+    "id": "kibana-anarchaos",
     "name": "anarchaos - Kibana",
     "type": "http",
     "group": "${TEAM}",

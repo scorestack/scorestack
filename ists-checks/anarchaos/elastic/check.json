@@ -1,5 +1,5 @@
 {
-    "id": "http-anarchaos",
+    "id": "elasticsearch-anarchaos",
     "name": "anarchaos - Elasticsearch",
     "type": "http",
     "group": "${TEAM}",
