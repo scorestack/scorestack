@@ -8,17 +8,13 @@
         "requests": [
             {
                 "host": "{{.Host}}",
-                "path": "/api/security/v1/login",
+                "path": "/api/status",
                 "https": true,
                 "port": 5601,
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json;charset=utf-8",
-                    "kbn-xsrf": "true"
-                },
-                "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
+                "method": "GET",
                 "matchcode": true,
-                "code": 204
+                "matchcontent": true,
+                "contentregex": "{\"status\":{\"overall\":{\"state\":\"green\","
             },
             {
                 "host": "{{.Host}}",
@@ -26,11 +22,7 @@
                 "https": true,
                 "port": 5601,
                 "method": "GET",
-                "headers": {
-                    "kbn-xsrf": "true"
-                },
                 "matchcode": true,
-                "code": 200,
                 "matchcontent": true,
                 "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
             }
