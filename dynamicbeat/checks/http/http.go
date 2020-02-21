@@ -159,18 +159,18 @@ func request(client *http.Client, r Request) (bool, *string, error) {
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
 func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
-	// Set generic attributes
-	d.ID = id
-	d.Name = name
-	d.Group = group
-	d.ScoreWeight = scoreWeight
-
 	// Unpack definition json
 	err := json.Unmarshal(def, &d.Requests)
 	if err != nil {
 		return err
 	}
 	// TODO: set verify value
+
+	// Set generic attributes
+	d.ID = id
+	d.Name = name
+	d.Group = group
+	d.ScoreWeight = scoreWeight
 
 	// Finish initializing each request
 	for _, r := range d.Requests {
