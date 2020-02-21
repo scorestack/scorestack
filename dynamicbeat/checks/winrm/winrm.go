@@ -60,6 +60,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		out <- result
 		return
 	}
+	client.Timeout = "5"
 
 	// Define these for the command output
 	bufOut := new(bytes.Buffer)

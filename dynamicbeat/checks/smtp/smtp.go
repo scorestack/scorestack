@@ -70,6 +70,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		out <- result
 		return
 	}
+	defer conn.Close()
 
 	// Create smtp client
 	c, err := smtp.NewClient(conn, d.Host)
