@@ -125,6 +125,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			close(published)
 			return nil
 		case <-updateTicker.C:
+			logp.Info("Updating check definitions")
 			// Update the check definitions
 			tmpdefs, err := esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
 			if err != nil {
@@ -134,6 +135,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 				logp.Info("Updated check definitions")
 			}
 		case <-ticker.C:
+			logp.Info("Starting a series of %d checks", len(defs))
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
 			defPass := make(chan []schema.CheckDef)
 
