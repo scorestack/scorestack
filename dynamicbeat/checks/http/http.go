@@ -17,13 +17,13 @@ import (
 
 // The Definition configures the behavior of an HTTP check.
 type Definition struct {
-	ID                 string    // a unique identifier for this check
-	Name               string    // a human-readable title for this check
-	Group              string    // the group this check is part of
-	ScoreWeight        float64   // the weight that this check has relative to others
-	Verify             bool      // (optional, default false) whether HTTPS certs should be validated
-	SaveMatchedContent bool      // (optional, default false) whether the matched content should be returned in the CheckResult
-	Requests           []Request // a list of requests to make
+	ID                   string    // a unique identifier for this check
+	Name                 string    // a human-readable title for this check
+	Group                string    // the group this check is part of
+	ScoreWeight          float64   // the weight that this check has relative to others
+	Verify               bool      // (optional, default false) whether HTTPS certs should be validated
+	ReportMatchedContent bool      // (optional, default false) whether the matched content should be returned in the CheckResult
+	Requests             []Request // a list of requests to make
 }
 
 // A Request represents a single HTTP request to make.
@@ -94,7 +94,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	}
 
 	details := make(map[string]string)
-	if lastMatch != nil {
+	if d.ReportMatchedContent && lastMatch != nil {
 		details["matched_content"] = *lastMatch
 	}
 	result.Details = details
