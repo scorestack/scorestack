@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"regexp"
 	"strconv"
 	"sync"
@@ -65,26 +66,44 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 
 		// Login to winrm and create client
 		endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
-		// client, err := winrm.NewClient(endpoint, d.Username, d.Password)
 		client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
 		if err != nil {
 			result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
 			failed <- true
 			return
 		}
-		client.Timeout = "5"
+
+		// Create shell
+		shell, err := client.CreateShell()
+		if err != nil {
+			result.Message = fmt.Sprintf("Failed to create shell : %s", err)
+			failed <- true
+			return
+		}
+		defer shell.Close()
+
+		// Setup command to run
+		stdin := bytes.NewBufferString(d.Cmd)
+
+		// Spawn cmd.exe :D
+		var cmdPrompt *winrm.Command
+		cmdPrompt, err = shell.Execute("cmd.exe")
 
 		// Define these for the command output
 		bufOut := new(bytes.Buffer)
 		bufErr := new(bytes.Buffer)
 
 		// Execute a command
-		_, err = client.Run("netstat", bufOut, bufErr)
-		if err != nil {
-			result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
-			failed <- true
-			return
-		}
+		// _, err = client.Run("netstat", bufOut, bufErr)
+		// if err != nil {
+		// 	result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
+		// 	failed <- true
+		// 	return
+		// }
+		go io.Copy(cmdPrompt.Stdin, stdin)
+		go io.Copy(bufOut, cmdPrompt.Stdout)
+		go io.Copy(bufErr, cmdPrompt.Stderr)
+		cmdPrompt.Wait()
 
 		// Check if the command errored
 		if bufErr.String() != "" {
