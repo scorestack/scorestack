@@ -29,6 +29,19 @@ type Definition struct {
 	Port        string  // (optional, default="25") Port of the smtp server
 }
 
+// **************************************************
+type unencryptedAuth struct {
+	smtp.Auth
+}
+
+func (a unencryptedAuth) Start(server *smtp.ServerInfo) (string, []byte, error) {
+	s := *server
+	s.TLS = true
+	return a.Auth.Start(&s)
+}
+
+// **************************************************
+
 // Run a single instance of the check
 func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
@@ -53,8 +66,13 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		InsecureSkipVerify: true,
 	}
 
-	// Set up auth for smtp
-	auth := smtp.PlainAuth("", d.Username, d.Password, d.Host)
+	// ***********************************************
+	// Set up custom auth for bypassing net/smtp protections
+	auth := unencryptedAuth{smtp.PlainAuth("", d.Username, d.Password, d.Host)}
+	// ***********************************************
+
+	// The good way to do auth
+	// auth := smtp.PlainAuth("", d.Username, d.Password, d.Host)
 
 	// Declare these for the below if block
 	var conn net.Conn
