@@ -1,7 +1,9 @@
 package noop
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -20,7 +22,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check.
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	result := schema.CheckResult{
@@ -38,7 +40,24 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		},
 	}
 
-	out <- result
+	// make channel for completing the check or not
+	done := make(chan bool)
+
+	go func() { done <- true }()
+
+	// Watch channels and context for timeout
+	for {
+		select {
+		case <-done:
+			result.Passed = true
+			out <- result
+			return
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
+			out <- result
+			return
+		}
+	}
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
