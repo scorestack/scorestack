@@ -1,12 +1,9 @@
 package winrm
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"regexp"
 	"strconv"
 	"sync"
 	"time"
@@ -71,68 +68,59 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 			return
 		}
 
-		// Create shell
-		shell, err := client.CreateShell()
+		shell := client.NewShell("67A74734-DD32-4F10-89DE-49A060483810")
+		defer shell.Close()
+
+		cmdOut, err := shell.Execute(d.Cmd)
+		defer cmdOut.Close()
+
 		if err != nil {
-			result.Message = fmt.Sprintf("Failed to create shell : %s", err)
+			result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, err)
 			failed <- true
 			return
 		}
-		defer shell.Close()
-
-		// Setup command to run
-		// stdin := bytes.NewBufferString(d.Cmd)
-
-		// Spawn cmd.exe :D
-		var cmdPrompt *winrm.Command
-		cmdPrompt, err = shell.Execute(d.Cmd)
 
 		// Define these for the command output
-		bufOut := new(bytes.Buffer)
-		bufErr := new(bytes.Buffer)
+		// bufOut := new(bytes.Buffer)
+		// bufErr := new(bytes.Buffer)
 
-		// Execute a command
 		// _, err = client.Run("netstat", bufOut, bufErr)
 		// if err != nil {
 		// 	result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
 		// 	failed <- true
 		// 	return
 		// }
-		// go io.Copy(cmdPrompt.Stdin, stdin)
-		go io.Copy(bufOut, cmdPrompt.Stdout)
-		go io.Copy(bufErr, cmdPrompt.Stderr)
-		cmdPrompt.Wait()
 
-		// Check if the command errored
-		if bufErr.String() != "" {
-			result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
-			failed <- true
-			return
-		}
+		// // Check if the command errored
+		// if bufErr.String() != "" {
+		// 	result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
+		// 	failed <- true
+		// 	return
+		// }
 
-		// Check if we matching content and the command did not error
-		if !d.MatchContent {
-			// If we make it here, no content matching, the check succeeds
-			result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
-			done <- true
-			return
-		}
+		// // Check if we matching content and the command did not error
+		// if !d.MatchContent {
+		// 	// If we make it here, no content matching, the check succeeds
+		// 	result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
+		// 	done <- true
+		// 	return
+		// }
 
-		// Keep going if we are matching content
-		// Create regexp
-		regex, err := regexp.Compile(d.ContentRegex)
-		if err != nil {
-			result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
-			failed <- true
-			return
-		}
+		// // Keep going if we are matching content
+		// // Create regexp
+		// regex, err := regexp.Compile(d.ContentRegex)
+		// if err != nil {
+		// 	result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+		// 	failed <- true
+		// 	return
+		// }
 
-		// Check if the content matches
-		if !regex.Match(bufOut.Bytes()) {
-			result.Message = fmt.Sprintf("Matching content not found")
-			failed <- true
-			return
-		}
+		// // Check if the content matches
+		// if !regex.Match(bufOut.Bytes()) {
+		// 	result.Message = fmt.Sprintf("Matching content not found")
+		// 	failed <- true
+		// 	return
+		// }
 
 		// If we reach here the check is successful
 		done <- true
