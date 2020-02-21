@@ -200,7 +200,7 @@ func request(client *http.Client, r Request) (bool, *string, error) {
 // be filled in by parsing a JSON string representing the check definition.
 func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
 	// Unpack definition json
-	err := json.Unmarshal(def, &d.Requests)
+	err := json.Unmarshal(def, &d)
 	if err != nil {
 		return err
 	}
