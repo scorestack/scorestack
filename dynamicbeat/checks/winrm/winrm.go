@@ -52,9 +52,15 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		return
 	}
 
+	// Another timeout for the bois
+	params := winrm.Parameters{
+		Timeout: "5",
+	}
+
 	// Login to winrm and create client
 	endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
-	client, err := winrm.NewClient(endpoint, d.Username, d.Password)
+	// client, err := winrm.NewClient(endpoint, d.Username, d.Password)
+	client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
 	if err != nil {
 		result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
 		out <- result
