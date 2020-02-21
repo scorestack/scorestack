@@ -1,6 +1,7 @@
 package imap
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -29,7 +30,7 @@ type Definition struct {
 
 // Run a single instance of the check
 // We are only supporting the listing of mailboxes as a check currently
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Set up result
@@ -42,51 +43,73 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType:   "imap",
 	}
 
-	// Create a dialer so we can set timeouts
-	dialer := net.Dialer{
-		Timeout: 5 * time.Second,
+	// Make channels for completing the checks or not
+	done := make(chan bool)
+	failed := make(chan bool)
+
+	go func() {
+		// Create a dialer so we can set timeouts
+		dialer := net.Dialer{
+			Timeout: 5 * time.Second,
+		}
+
+		// Defining these allow the if/else block below
+		var c *client.Client
+		var err error
+
+		// Connect to server with TLS or not
+		if d.Encrypted {
+			c, err = client.DialWithDialerTLS(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port), &tls.Config{})
+		} else {
+			c, err = client.DialWithDialer(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port))
+		}
+		if err != nil {
+			result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
+			failed <- true
+			return
+		}
+		defer c.Logout() // This is the same as close() for normal conn objects
+
+		// Set timeout for commands
+		c.Timeout = 5 * time.Second
+
+		// Login
+		err = c.Login(d.Username, d.Password)
+		if err != nil {
+			result.Message = fmt.Sprintf("Login with user %s failed : %s", d.Username, err)
+			failed <- true
+			return
+		}
+
+		// List mailboxes
+		mailboxes := make(chan *imap.MailboxInfo, 10)
+		err = c.List("", "*", mailboxes)
+		if err != nil {
+			result.Message = fmt.Sprintf("Listing mailboxes failed : %s", err)
+			failed <- true
+			return
+		}
+
+		// If we make it here the check passes
+		done <- true
+	}()
+
+	// Watch channels and context for timeout
+	for {
+		select {
+		case <-done:
+			result.Passed = true
+			out <- result
+			return
+		case <-failed:
+			out <- result
+			return
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
+			out <- result
+			return
+		}
 	}
-
-	// Defining these allow the if/else block below
-	var c *client.Client
-	var err error
-
-	// Connect to server with TLS or not
-	if d.Encrypted {
-		c, err = client.DialWithDialerTLS(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port), &tls.Config{})
-	} else {
-		c, err = client.DialWithDialer(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port))
-	}
-	if err != nil {
-		result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-	defer c.Logout() // This is the same as close() for normal conn objects
-
-	// Set timeout for commands
-	c.Timeout = 5 * time.Second
-
-	// Login
-	err = c.Login(d.Username, d.Password)
-	if err != nil {
-		result.Message = fmt.Sprintf("Login with user %s failed : %s", d.Username, err)
-		out <- result
-		return
-	}
-
-	// List mailboxes
-	mailboxes := make(chan *imap.MailboxInfo, 10)
-	err = c.List("", "*", mailboxes)
-	if err != nil {
-		result.Message = fmt.Sprintf("Listing mailboxes failed : %s", err)
-		out <- result
-		return
-	}
-
-	// If we make it here the check passes
-	result.Passed = true
-	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
