@@ -11,7 +11,7 @@
         "Sender": "{{.Sender}}",
         "Reciever": "{{.Reciever}}",
         "Body": "{{.Body}}",
-        "Encrypted": false,
+        "Encrypted": true,
         "Port": "{{.Port}}"
     }
 }
