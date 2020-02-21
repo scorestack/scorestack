@@ -152,7 +152,6 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 	for {
 		select {
 		case <-done:
-			result.Passed = true
 			out <- result
 			return
 		case <-failed:
@@ -160,6 +159,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 			out <- result
 			return
 		case <-ctx.Done():
+			result.Passed = false
 			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
 			out <- result
 			return
