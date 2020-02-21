@@ -1,5 +1,5 @@
 {
-    "id": "icmp",
+    "id": "icmp-anarchaos",
     "name": "anarchaos - ICMP",
     "type": "icmp",
     "group": "${TEAM}",
