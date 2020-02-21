@@ -1,6 +1,7 @@
 package smtp
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -43,7 +44,7 @@ func (a unencryptedAuth) Start(server *smtp.ServerInfo) (string, []byte, error) 
 // **************************************************
 
 // Run a single instance of the check
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Set up result
@@ -56,93 +57,114 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType:   "smtp",
 	}
 
-	// Create a dialer
-	dialer := net.Dialer{
-		Timeout: 5 * time.Second,
+	// Make channels for ocmpleting the check or not
+	done := make(chan bool)
+	failed := make(chan bool)
+
+	go func() {
+		// Create a dialer
+		dialer := net.Dialer{
+			Timeout: 5 * time.Second,
+		}
+
+		// ***********************************************
+		// Set up custom auth for bypassing net/smtp protections
+		auth := unencryptedAuth{smtp.PlainAuth("", d.Username, d.Password, d.Host)}
+		// ***********************************************
+
+		// The good way to do auth
+		// auth := smtp.PlainAuth("", d.Username, d.Password, d.Host)
+		// Create TLS config
+		tlsConfig := tls.Config{
+			InsecureSkipVerify: true,
+		}
+
+		// Declare these for the below if block
+		var conn net.Conn
+		var err error
+
+		if d.Encrypted {
+			conn, err = tls.DialWithDialer(&dialer, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), &tlsConfig)
+		} else {
+			conn, err = dialer.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
+		}
+		if err != nil {
+			result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
+			failed <- true
+			return
+		}
+		defer conn.Close()
+
+		// Create smtp client
+		c, err := smtp.NewClient(conn, d.Host)
+		if err != nil {
+			result.Message = fmt.Sprintf("Created smtp client to host %s failed : %s", d.Host, err)
+			failed <- true
+			return
+		}
+		defer c.Quit()
+
+		// Login
+		err = c.Auth(auth)
+		if err != nil {
+			result.Message = fmt.Sprintf("Login to %s failed : %s", d.Host, err)
+			failed <- true
+			return
+		}
+
+		// Set the sender
+		err = c.Mail(d.Sender)
+		if err != nil {
+			result.Message = fmt.Sprintf("Setting sender %s failed : %s", d.Sender, err)
+			failed <- true
+			return
+		}
+
+		// Set the reciver
+		err = c.Rcpt(d.Reciever)
+		if err != nil {
+			result.Message = fmt.Sprintf("Setting reciever %s failed : %s", d.Reciever, err)
+			failed <- true
+			return
+		}
+
+		// Send the email body.
+		wc, err := c.Data()
+		if err != nil {
+			result.Message = fmt.Sprintf("Creating writer failed : %s", err)
+			failed <- true
+			return
+		}
+		defer wc.Close()
+
+		// Write the body
+		_, err = fmt.Fprintf(wc, d.Body)
+		if err != nil {
+			result.Message = fmt.Sprintf("Writing mail body failed : %s", err)
+			failed <- true
+			return
+		}
+
+		// If we make it here the check succeeds
+		done <- true
+	}()
+
+	// Watch channels and context for timeout
+	for {
+		select {
+		case <-done:
+			result.Passed = true
+			out <- result
+			return
+		case <-failed:
+			out <- result
+			return
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
+			out <- result
+			return
+		}
 	}
-
-	// Create TLS config
-	tlsConfig := tls.Config{
-		InsecureSkipVerify: true,
-	}
-
-	// ***********************************************
-	// Set up custom auth for bypassing net/smtp protections
-	auth := unencryptedAuth{smtp.PlainAuth("", d.Username, d.Password, d.Host)}
-	// ***********************************************
-
-	// The good way to do auth
-	// auth := smtp.PlainAuth("", d.Username, d.Password, d.Host)
-
-	// Declare these for the below if block
-	var conn net.Conn
-	var err error
-
-	if d.Encrypted {
-		conn, err = tls.DialWithDialer(&dialer, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), &tlsConfig)
-	} else {
-		conn, err = dialer.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
-	}
-	if err != nil {
-		result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-	defer conn.Close()
-
-	// Create smtp client
-	c, err := smtp.NewClient(conn, d.Host)
-	if err != nil {
-		result.Message = fmt.Sprintf("Created smtp client to host %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-	defer c.Quit()
-
-	// Login
-	err = c.Auth(auth)
-	if err != nil {
-		result.Message = fmt.Sprintf("Login to %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-
-	// Set the sender
-	err = c.Mail(d.Sender)
-	if err != nil {
-		result.Message = fmt.Sprintf("Setting sender %s failed : %s", d.Sender, err)
-		out <- result
-		return
-	}
-
-	// Set the reciver
-	err = c.Rcpt(d.Reciever)
-	if err != nil {
-		result.Message = fmt.Sprintf("Setting reciever %s failed : %s", d.Reciever, err)
-		out <- result
-		return
-	}
-
-	// Send the email body.
-	wc, err := c.Data()
-	if err != nil {
-		result.Message = fmt.Sprintf("Creating writer failed : %s", err)
-		out <- result
-		return
-	}
-	defer wc.Close()
-
-	// Write the body
-	_, err = fmt.Fprintf(wc, d.Body)
-	if err != nil {
-		result.Message = fmt.Sprintf("Writing mail body failed : %s", err)
-		out <- result
-		return
-	}
-
-	// If we make it here the check succeeds
-	result.Passed = true
-	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will

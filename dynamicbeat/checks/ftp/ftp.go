@@ -1,6 +1,7 @@
 package ftp
 
 import (
+	"context"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -33,7 +34,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Setup result
@@ -46,75 +47,96 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType:   "ftp",
 	}
 
-	// Connect to the ftp server
-	conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port), ftp.DialWithTimeout(5*time.Second))
-	if err != nil {
-		result.Message = fmt.Sprintf("Connection to %s on port %s failed : %s", d.Host, d.Port, err)
-		out <- result
-		return
-	}
-	defer conn.Quit()
+	// Create channels for passing or failing
+	done := make(chan bool)
+	failed := make(chan bool)
 
-	// Login
-	err = conn.Login(d.Username, d.Password)
-	if err != nil {
-		result.Message = fmt.Sprintf("Login attempt with user %s failed : %s", d.Username, err)
-		out <- result
-		return
-	}
+	go func() {
+		// Connect to the ftp server
+		conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port), ftp.DialWithTimeout(5*time.Second))
+		if err != nil {
+			result.Message = fmt.Sprintf("Connection to %s on port %s failed : %s", d.Host, d.Port, err)
+			failed <- true
+			return
+		}
+		defer conn.Quit()
 
-	// Retrieve file contents
-	resp, err := conn.Retr(d.File)
-	if err != nil {
-		result.Message = fmt.Sprintf("Could not retrieve file %s : %s", d.File, err)
-		out <- result
-		return
-	}
-	defer resp.Close()
-
-	content, err := ioutil.ReadAll(resp)
-	if err != nil {
-		result.Message = fmt.Sprintf("Could not read file %s contents : %s", d.File, err)
-		out <- result
-		return
-	}
-
-	// Check if we are doing hash matching, non default
-	if d.HashContentMatch {
-		// Get the file hash
-		digest := sha3.Sum256(content)
-
-		// Check if the digest of the file matches the defined hash
-		if digestString := hex.EncodeToString(digest[:]); digestString != d.Hash {
-			result.Message = fmt.Sprintf("Incorrect hash")
-			out <- result
+		// Login
+		err = conn.Login(d.Username, d.Password)
+		if err != nil {
+			result.Message = fmt.Sprintf("Login attempt with user %s failed : %s", d.Username, err)
+			failed <- true
 			return
 		}
 
-		// If we make it here the check was successful for matching hashes
-		result.Passed = true
-		out <- result
-		return
-	}
+		// Retrieve file contents
+		resp, err := conn.Retr(d.File)
+		if err != nil {
+			result.Message = fmt.Sprintf("Could not retrieve file %s : %s", d.File, err)
+			failed <- true
+			return
+		}
+		defer resp.Close()
 
-	// Default, regex content matching
-	regex, err := regexp.Compile(d.ContentRegex)
-	if err != nil {
-		result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
-		out <- result
-		return
-	}
+		content, err := ioutil.ReadAll(resp)
+		if err != nil {
+			result.Message = fmt.Sprintf("Could not read file %s contents : %s", d.File, err)
+			failed <- true
+			return
+		}
 
-	// Check if content matches regex
-	if !regex.Match(content) {
-		result.Message = fmt.Sprintf("Matching content not found")
-		out <- result
-		return
-	}
+		// Check if we are doing hash matching, non default
+		if d.HashContentMatch {
+			// Get the file hash
+			digest := sha3.Sum256(content)
 
-	// If we reach here the check is successful
-	result.Passed = true
-	out <- result
+			// Check if the digest of the file matches the defined hash
+			if digestString := hex.EncodeToString(digest[:]); digestString != d.Hash {
+				result.Message = fmt.Sprintf("Incorrect hash")
+				failed <- true
+				return
+			}
+
+			// If we make it here the check was successful for matching hashes
+			done <- true
+			return
+		}
+
+		// Default, regex content matching
+		regex, err := regexp.Compile(d.ContentRegex)
+		if err != nil {
+			result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+			failed <- true
+			return
+		}
+
+		// Check if content matches regex
+		if !regex.Match(content) {
+			result.Message = fmt.Sprintf("Matching content not found")
+			failed <- true
+			return
+		}
+
+		// If we reach here the check is successful
+		done <- true
+	}()
+
+	// Watch channels and context for timeout
+	for {
+		select {
+		case <-done:
+			result.Passed = true
+			out <- result
+			return
+		case <-failed:
+			out <- result
+			return
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
+			out <- result
+			return
+		}
+	}
 }
 
 // Init the check using a known ID and name. The rest of the check fields will

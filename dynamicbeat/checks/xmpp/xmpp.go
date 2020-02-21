@@ -1,6 +1,7 @@
 package xmpp
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -28,7 +29,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Set up result
@@ -110,7 +111,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		done <- true
 	}()
 
-	// Timeout for the above go function check
+	// Watch channels and context for timeout
 	for {
 		select {
 		case <-done:
@@ -120,8 +121,8 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		case <-failed:
 			out <- result
 			return
-		case <-time.After(5 * time.Second):
-			result.Message = fmt.Sprintf("Custom timeout reached. Most likely auth issue")
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
 			out <- result
 			return
 		}

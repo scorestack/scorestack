@@ -2,6 +2,7 @@ package checks
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"html/template"
 	"sync"
@@ -40,11 +41,14 @@ func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan
 
 	// Iterate over each check
 	for _, def := range defs {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
 		check := unpackDef(def)
 
 		// Start check goroutine
 		events.Add(1)
-		go check.Run(&events, queue)
+		go check.Run(ctx, &events, queue)
 	}
 	// Send definitions back through channel
 	defPass <- defs

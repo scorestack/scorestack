@@ -1,6 +1,7 @@
 package vnc
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -24,7 +25,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Set up result
@@ -37,33 +38,55 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType:   "vnc",
 	}
 
-	// Configure the vnc client
-	config := vnc.ClientConfig{
-		Auth: []vnc.ClientAuth{
-			&vnc.PasswordAuth{Password: d.Password},
-		},
-	}
+	// Make channels for completing the check or not
+	done := make(chan bool)
+	failed := make(chan bool)
 
-	// Dial the vnc server
-	conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), 5*time.Second)
-	if err != nil {
-		result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-	defer conn.Close()
+	go func() {
+		// Configure the vnc client
+		config := vnc.ClientConfig{
+			Auth: []vnc.ClientAuth{
+				&vnc.PasswordAuth{Password: d.Password},
+			},
+		}
 
-	vncClient, err := vnc.Client(conn, &config)
-	if err != nil {
-		result.Message = fmt.Sprintf("Login to server %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-	defer vncClient.Close()
+		// Dial the vnc server
+		conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), 5*time.Second)
+		if err != nil {
+			result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
+			failed <- true
+			return
+		}
+		defer conn.Close()
 
-	// If we made it here the check passes
-	result.Passed = true
-	out <- result
+		vncClient, err := vnc.Client(conn, &config)
+		if err != nil {
+			result.Message = fmt.Sprintf("Login to server %s failed : %s", d.Host, err)
+			failed <- true
+			return
+		}
+		defer vncClient.Close()
+
+		// If we made it here the check passes
+		done <- true
+	}()
+
+	// Watch channels and context for timeout
+	for {
+		select {
+		case <-done:
+			result.Passed = true
+			out <- result
+			return
+		case <-failed:
+			out <- result
+			return
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
+			out <- result
+			return
+		}
+	}
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
