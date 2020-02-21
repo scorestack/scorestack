@@ -1,6 +1,7 @@
 package ssh
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"regexp"
@@ -28,7 +29,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Set up result
@@ -41,69 +42,90 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType:   "ssh",
 	}
 
-	// Config SSH client
-	config := &ssh.ClientConfig{
-		User: d.Username,
-		Auth: []ssh.AuthMethod{
-			ssh.Password(d.Password),
-		},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout:         5 * time.Second,
-	}
+	// Make channels for completing the check or not
+	done := make(chan bool)
+	failed := make(chan bool)
 
-	// Create the ssh client
-	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), config)
-	if err != nil {
-		result.Message = fmt.Sprintf("Error creating ssh client: %s", err)
-		out <- result
-		return
-	}
-	defer client.Close()
+	go func() {
+		// Config SSH client
+		config := &ssh.ClientConfig{
+			User: d.Username,
+			Auth: []ssh.AuthMethod{
+				ssh.Password(d.Password),
+			},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			Timeout:         5 * time.Second,
+		}
 
-	// Create a session from the connection
-	session, err := client.NewSession()
-	if err != nil {
-		result.Message = fmt.Sprintf("Error creating a ssh session: %s", err)
-		out <- result
-		return
-	}
-	defer session.Close()
+		// Create the ssh client
+		client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), config)
+		if err != nil {
+			result.Message = fmt.Sprintf("Error creating ssh client: %s", err)
+			failed <- true
+			return
+		}
+		defer client.Close()
 
-	// Run a command
-	output, err := session.CombinedOutput(d.Cmd)
-	if err != nil {
-		result.Message = fmt.Sprintf("Error executing command: %s", err)
-		out <- result
-		return
-	}
+		// Create a session from the connection
+		session, err := client.NewSession()
+		if err != nil {
+			result.Message = fmt.Sprintf("Error creating a ssh session: %s", err)
+			failed <- true
+			return
+		}
+		defer session.Close()
 
-	// Check if we are going to match content
-	if !d.MatchContent {
-		// If we made it here the check passes
-		result.Message = fmt.Sprintf("Command %s executed successfully: %s", d.Cmd, output)
-		result.Passed = true
-		out <- result
-		return
-	}
+		// Run a command
+		output, err := session.CombinedOutput(d.Cmd)
+		if err != nil {
+			result.Message = fmt.Sprintf("Error executing command: %s", err)
+			failed <- true
+			return
+		}
 
-	// Match some content
-	regex, err := regexp.Compile(d.ContentRegex)
-	if err != nil {
-		result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
-		out <- result
-		return
-	}
+		// Check if we are going to match content
+		if !d.MatchContent {
+			// If we made it here the check passes
+			result.Message = fmt.Sprintf("Command %s executed successfully: %s", d.Cmd, output)
+			done <- true
+			return
+		}
 
-	// Check if the content matches
-	if !regex.Match(output) {
-		result.Message = fmt.Sprintf("Matching content not found")
-		out <- result
-		return
-	}
+		// Match some content
+		regex, err := regexp.Compile(d.ContentRegex)
+		if err != nil {
+			result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+			failed <- true
+			return
+		}
 
-	// If we reach here the check is successful
-	result.Passed = true
-	out <- result
+		// Check if the content matches
+		if !regex.Match(output) {
+			result.Message = fmt.Sprintf("Matching content not found")
+			failed <- true
+			return
+		}
+
+		// If we reach here the check is successful
+		done <- true
+	}()
+
+	// Watch channels and context for timeout
+	for {
+		select {
+		case <-done:
+			result.Passed = true
+			out <- result
+			return
+		case <-failed:
+			out <- result
+			return
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
+			out <- result
+			return
+		}
+	}
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
