@@ -80,7 +80,7 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	var storedValue *string
 
 	type storedValTempl struct {
-		StoredValue string
+		SavedValue string
 	}
 
 	// Make each request in the list
@@ -94,9 +94,9 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 				logp.Info("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
 			} else {
 				attrs := storedValTempl{
-					StoredValue: *storedValue,
+					SavedValue: *storedValue,
 				}
-				templ := template.Must(template.New("http-storecvalue").Parse(string(def)))
+				templ := template.Must(template.New("http-storedvalue").Parse(string(def)))
 				var buf bytes.Buffer
 				err := templ.Execute(&buf, attrs)
 				if err != nil {
