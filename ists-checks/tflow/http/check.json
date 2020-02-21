@@ -1,6 +1,6 @@
 {
     "id": "http-tflow",
-    "name": "tflow - HTTP check",
+    "name": "tflow - HTTP",
     "type": "http",
     "group": "${TEAM}",
     "score_weight": 1,

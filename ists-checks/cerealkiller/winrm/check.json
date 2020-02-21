@@ -1,6 +1,6 @@
 {
     "id": "winrm-cerealkiller",
-    "name": "cerealkill - WinRM Check",
+    "name": "cerealkill - WinRM",
     "type": "winrm",
     "group": "${TEAM}",
     "score_weight": 1,

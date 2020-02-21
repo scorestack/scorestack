@@ -1,6 +1,6 @@
 {
     "id": "winrm-zerocool",
-    "name": "zerocool - WinRM Check",
+    "name": "zerocool - WinRM",
     "type": "winrm",
     "group": "${TEAM}",
     "score_weight": 1,

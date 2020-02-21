@@ -1,6 +1,6 @@
 {
     "id": "http-sabu",
-    "name": "sabu - HTTP check",
+    "name": "sabu - HTTP",
     "type": "http",
     "group": "${TEAM}",
     "score_weight": 1,

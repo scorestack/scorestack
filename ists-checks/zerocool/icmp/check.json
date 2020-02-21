@@ -1,6 +1,6 @@
 {
     "id": "icmp-zerocool",
-    "name": "zerocool - ICMP check",
+    "name": "zerocool - ICMP",
     "type": "icmp",
     "group": "${TEAM}",
     "score_weight": 1,

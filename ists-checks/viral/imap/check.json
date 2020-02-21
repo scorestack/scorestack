@@ -1,6 +1,6 @@
 {
     "id": "imap-viral",
-    "name": "viral - IMAP Check",
+    "name": "viral - IMAP",
     "type": "imap",
     "group": "${TEAM}",
     "score_weight": 1,

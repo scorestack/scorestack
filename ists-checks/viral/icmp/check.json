@@ -1,6 +1,6 @@
 {
     "id": "icmp-viral",
-    "name": "viral - ICMP check",
+    "name": "viral - ICMP",
     "type": "icmp",
     "group": "${TEAM}",
     "score_weight": 1,

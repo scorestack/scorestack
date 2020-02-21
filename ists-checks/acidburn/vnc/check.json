@@ -1,6 +1,6 @@
 {
     "id": "vnc-acidburn",
-    "name": "acidburn - VNC Check",
+    "name": "acidburn - VNC",
     "type": "vnc",
     "group": "${TEAM}",
     "score_weight": 1,

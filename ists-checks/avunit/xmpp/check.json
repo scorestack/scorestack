@@ -1,6 +1,6 @@
 {
     "id": "xmpp-avunit",
-    "name": "avunit - XMPP Check",
+    "name": "avunit - XMPP",
     "type": "xmpp",
     "group": "${TEAM}",
     "score_weight": 1,

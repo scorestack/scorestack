@@ -1,6 +1,6 @@
 {
     "id": "ssh-tflow",
-    "name": "tflow - SSH Check",
+    "name": "tflow - SSH",
     "type": "ssh",
     "group": "${TEAM}",
     "score_weight": 1,

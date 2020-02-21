@@ -1,6 +1,6 @@
 {
     "id": "dns-lordnikon",
-    "name": "lordnikon - DNS check",
+    "name": "lordnikon - DNS",
     "type": "dns",
     "group": "${TEAM}",
     "score_weight": 1,

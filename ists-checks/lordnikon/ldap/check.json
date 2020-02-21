@@ -1,6 +1,6 @@
 {
     "id": "ldap-lordnikon",
-    "name": "lordnikon - LDAP check",
+    "name": "lordnikon - LDAP",
     "type": "ldap",
     "group": "${TEAM}",
     "score_weight": 1,

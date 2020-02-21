@@ -1,6 +1,6 @@
 {
     "id": "winrm-sabu",
-    "name": "sabu - WinRM Check",
+    "name": "sabu - WinRM",
     "type": "winrm",
     "group": "${TEAM}",
     "score_weight": 1,

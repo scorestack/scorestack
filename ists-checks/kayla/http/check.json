@@ -1,6 +1,6 @@
 {
     "id": "http-kayla",
-    "name": "kayla - HTTP check",
+    "name": "kayla - HTTP",
     "type": "http",
     "group": "${TEAM}",
     "score_weight": 1,

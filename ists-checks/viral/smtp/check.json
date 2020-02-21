@@ -1,6 +1,6 @@
 {
     "id": "smtp-viral",
-    "name": "viral - SMTP Check",
+    "name": "viral - SMTP",
     "type": "smtp",
     "group": "example",
     "score_weight": 1,

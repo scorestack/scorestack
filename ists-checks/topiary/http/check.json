@@ -1,6 +1,6 @@
 {
     "id": "http-topiary",
-    "name": "topiary - HTTP check",
+    "name": "topiary - HTTP",
     "type": "http",
     "group": "${TEAM}",
     "score_weight": 1,

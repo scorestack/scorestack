@@ -1,6 +1,6 @@
 {
     "id": "ssh-kayla",
-    "name": "kayla - SSH Check",
+    "name": "kayla - SSH",
     "type": "ssh",
     "group": "${TEAM}",
     "score_weight": 1,

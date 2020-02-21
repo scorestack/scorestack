@@ -1,6 +1,6 @@
 {
     "id": "icmp",
-    "name": "anarchaos - ICMP check",
+    "name": "anarchaos - ICMP",
     "type": "icmp",
     "group": "${TEAM}",
     "score_weight": 1,

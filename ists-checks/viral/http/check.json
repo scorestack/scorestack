@@ -1,6 +1,6 @@
 {
     "id": "http-viral",
-    "name": "viral - HTTP check",
+    "name": "viral - HTTP",
     "type": "http",
     "group": "${TEAM}",
     "score_weight": 1,

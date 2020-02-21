@@ -1,6 +1,6 @@
 {
     "id": "vnc-theplauge",
-    "name": "theplauge - VNC Check",
+    "name": "theplauge - VNC",
     "type": "vnc",
     "group": "${TEAM}",
     "score_weight": 1,

@@ -1,6 +1,6 @@
 {
     "id": "icmp-pwnsauce",
-    "name": "pwnsauce - ICMP check",
+    "name": "pwnsauce - ICMP",
     "type": "icmp",
     "group": "${TEAM}",
     "score_weight": 1,
