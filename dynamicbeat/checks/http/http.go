@@ -214,7 +214,8 @@ func request(client *http.Client, r Request) (bool, *string, error) {
 		if !regex.Match(body) {
 			return false, nil, fmt.Errorf("recieved bad response body")
 		}
-		matchStr = fmt.Sprintf("%s", regex.Find(body))
+		matches := regex.FindSubmatch(body)
+		matchStr = fmt.Sprintf("%s", matches[len(matches)-1])
 	}
 
 	// If we've reached this point, then the check succeeded
