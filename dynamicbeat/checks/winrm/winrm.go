@@ -81,11 +81,11 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		defer shell.Close()
 
 		// Setup command to run
-		stdin := bytes.NewBufferString(d.Cmd)
+		// stdin := bytes.NewBufferString(d.Cmd)
 
 		// Spawn cmd.exe :D
 		var cmdPrompt *winrm.Command
-		cmdPrompt, err = shell.Execute("cmd.exe")
+		cmdPrompt, err = shell.Execute(d.Cmd)
 
 		// Define these for the command output
 		bufOut := new(bytes.Buffer)
@@ -98,7 +98,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		// 	failed <- true
 		// 	return
 		// }
-		go io.Copy(cmdPrompt.Stdin, stdin)
+		// go io.Copy(cmdPrompt.Stdin, stdin)
 		go io.Copy(bufOut, cmdPrompt.Stdout)
 		go io.Copy(bufErr, cmdPrompt.Stderr)
 		cmdPrompt.Wait()
