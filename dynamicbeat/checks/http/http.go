@@ -17,28 +17,28 @@ import (
 
 // The Definition configures the behavior of an HTTP check.
 type Definition struct {
-	ID          string    // a unique identifier for this check
-	Name        string    // a human-readable title for this check
-	Group       string    // the group this check is part of
-	ScoreWeight float64   // the weight that this check has relative to others
-	Verify      bool      // (optional, default false) whether HTTPS certs should be validated
-	Requests    []Request // a list of requests to make
+	ID                 string    // a unique identifier for this check
+	Name               string    // a human-readable title for this check
+	Group              string    // the group this check is part of
+	ScoreWeight        float64   // the weight that this check has relative to others
+	Verify             bool      // (optional, default false) whether HTTPS certs should be validated
+	SaveMatchedContent bool      // (optional, default false) whether the matched content should be returned in the CheckResult
+	Requests           []Request // a list of requests to make
 }
 
 // A Request represents a single HTTP request to make.
 type Request struct {
-	Host               string            // (required) IP or FQDN of the HTTP server
-	Path               string            // (required) path to request - see RFC3986, section 3.3
-	HTTPS              bool              // (optional, default false) if HTTPS is to be used
-	Port               uint16            // (optional, default 80) TCP port number the HTTP server is listening on
-	Method             string            // (optional, default `GET`) HTTP method to use
-	Headers            map[string]string // (optional, default empty) name-value pairs of header fields to add/override
-	Body               string            // (optional, default empty) the request body
-	MatchCode          bool              // (optional, default false) whether the response code must match a defined value for the check to pass
-	Code               int               // (optional, default 200) the response status code to match
-	MatchContent       bool              // (optional, default false) whether the response body must match a defined regex for the check to pass
-	ContentRegex       string            // (optional, default `.*`) regex for the response body to match
-	SaveMatchedContent bool              // (optional, default false) whether the matched content should be returned in the CheckResult
+	Host         string            // (required) IP or FQDN of the HTTP server
+	Path         string            // (required) path to request - see RFC3986, section 3.3
+	HTTPS        bool              // (optional, default false) if HTTPS is to be used
+	Port         uint16            // (optional, default 80) TCP port number the HTTP server is listening on
+	Method       string            // (optional, default `GET`) HTTP method to use
+	Headers      map[string]string // (optional, default empty) name-value pairs of header fields to add/override
+	Body         string            // (optional, default empty) the request body
+	MatchCode    bool              // (optional, default false) whether the response code must match a defined value for the check to pass
+	Code         int               // (optional, default 200) the response status code to match
+	MatchContent bool              // (optional, default false) whether the response body must match a defined regex for the check to pass
+	ContentRegex string            // (optional, default `.*`) regex for the response body to match
 }
 
 // Run a single instance of the check.
