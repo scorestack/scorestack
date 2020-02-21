@@ -2,6 +2,7 @@ package winrm
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"regexp"
@@ -31,7 +32,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Set up result
@@ -44,77 +45,98 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType:   "winrm",
 	}
 
-	// Convert d.Port to int
-	port, err := strconv.Atoi(d.Port)
-	if err != nil {
-		result.Message = fmt.Sprintf("Failed to convert d.Port to int : %s", err)
-		out <- result
-		return
+	// make channels for completing the check or not
+	done := make(chan bool)
+	failed := make(chan bool)
+
+	go func() {
+		// Convert d.Port to int
+		port, err := strconv.Atoi(d.Port)
+		if err != nil {
+			result.Message = fmt.Sprintf("Failed to convert d.Port to int : %s", err)
+			failed <- true
+			return
+		}
+
+		// Another timeout for the bois
+		params := winrm.Parameters{
+			Timeout: "5",
+		}
+
+		// Login to winrm and create client
+		endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
+		// client, err := winrm.NewClient(endpoint, d.Username, d.Password)
+		client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
+		if err != nil {
+			result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
+			failed <- true
+			return
+		}
+		client.Timeout = "5"
+
+		// Define these for the command output
+		bufOut := new(bytes.Buffer)
+		bufErr := new(bytes.Buffer)
+
+		// Execute a command
+		_, err = client.Run("netstat", bufOut, bufErr)
+		if err != nil {
+			result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
+			failed <- true
+			return
+		}
+
+		// Check if the command errored
+		if bufErr.String() != "" {
+			result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
+			failed <- true
+			return
+		}
+
+		// Check if we matching content and the command did not error
+		if !d.MatchContent {
+			// If we make it here, no content matching, the check succeeds
+			result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
+			done <- true
+			return
+		}
+
+		// Keep going if we are matching content
+		// Create regexp
+		regex, err := regexp.Compile(d.ContentRegex)
+		if err != nil {
+			result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+			failed <- true
+			return
+		}
+
+		// Check if the content matches
+		if !regex.Match(bufOut.Bytes()) {
+			result.Message = fmt.Sprintf("Matching content not found")
+			failed <- true
+			return
+		}
+
+		// If we reach here the check is successful
+		done <- true
+	}()
+
+	// Watch channels and context for timeout
+	for {
+		select {
+		case <-done:
+			result.Passed = true
+			out <- result
+			return
+		case <-failed:
+			out <- result
+			return
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
+			out <- result
+			return
+		}
 	}
-
-	// Another timeout for the bois
-	params := winrm.Parameters{
-		Timeout: "5",
-	}
-
-	// Login to winrm and create client
-	endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
-	// client, err := winrm.NewClient(endpoint, d.Username, d.Password)
-	client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
-	if err != nil {
-		result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
-		out <- result
-		return
-	}
-	client.Timeout = "5"
-
-	// Define these for the command output
-	bufOut := new(bytes.Buffer)
-	bufErr := new(bytes.Buffer)
-
-	// Execute a command
-	_, err = client.Run("netstat", bufOut, bufErr)
-	if err != nil {
-		result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
-		out <- result
-		return
-	}
-
-	// Check if the command errored
-	if bufErr.String() != "" {
-		result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
-		out <- result
-		return
-	}
-
-	// Check if we matching content and the command did not error
-	if !d.MatchContent {
-		// If we make it here, no content matching, the check succeeds
-		result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
-		result.Passed = true
-		out <- result
-		return
-	}
-
-	// Keep going if we are matching content
-	// Create regexp
-	regex, err := regexp.Compile(d.ContentRegex)
-	if err != nil {
-		result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
-		out <- result
-		return
-	}
-
-	// Check if the content matches
-	if !regex.Match(bufOut.Bytes()) {
-		result.Message = fmt.Sprintf("Matching content not found")
-		out <- result
-		return
-	}
-
-	// If we reach here the check is successful
-	result.Passed = true
-	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
