@@ -8,31 +8,31 @@
         "requests": [
             {
                 "host": "{{.Host}}",
-                "path": "/api/security/v1/login",
+                "path": "/api/v1/kolide/login",
                 "https": true,
-                "port": 5601,
+                "port": 8000,
                 "method": "POST",
                 "headers": {
-                    "Content-Type": "application/json;charset=utf-8",
-                    "kbn-xsrf": "true"
+                    "Content-Type": "application/json"
                 },
                 "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
                 "matchcode": true,
-                "code": 204
+                "matchcontent": true,
+                "contentregex": "\"token\": \"([^\"]+)\"",
+                "storevalue": true
             },
             {
                 "host": "{{.Host}}",
-                "path": "/app/kibana",
+                "path": "/api/v1/kolide/labels",
                 "https": true,
-                "port": 5601,
+                "port": 8000,
                 "method": "GET",
                 "headers": {
-                    "kbn-xsrf": "true"
+                    "Authorization": "Bearer {{.SavedValue}}"
                 },
                 "matchcode": true,
-                "code": 200,
                 "matchcontent": true,
-                "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+                "contentregex": "\"display_text\": \"All Hosts\",\\s\"count\": {{.TotalHostCount}},\\s\"online\": {{.OnlineHostCount}},\\s\"offline\": {{.OfflineHostCount}},\\s\"missing_in_action\": {{.MIAHostCount}},"
             }
         ]
     }
