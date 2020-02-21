@@ -1,37 +1,32 @@
 {
     "id": "http-pwnsauce",
-    "name": "pwnsauce - HTTP check",
+    "name": "pwnsauce - HTTP",
     "type": "http",
     "group": "${TEAM}",
     "score_weight": 1,
     "definition": [
         {
-            "host": "{{.Host}}",
-            "path": "/api/security/v1/login",
-            "https": true,
-            "port": 5601,
+            "host": "pwnsauce.${TEAM}.ists.io",
+            "path": "/upload",
+            "port": 8080,
             "method": "POST",
             "headers": {
-                "Content-Type": "application/json;charset=utf-8",
-                "kbn-xsrf": "true"
+                "Content-Type": "multipart/form-data;boundary=-XXX"
             },
-            "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
+            "body": "---XXX\r\nContent-Disposition: form-data; name=\"type\"\r\n\r\nbash\r\n---XXX\r\nContent-Disposition: form-data; name=\"warez\"; filename=\"test.sh\"\r\nContent-Type: application/x-shellscript\r\n\r\n#!/bin/bash\necho 'oof ouch owie my webshell'\r\n---XXXX--\r\n",
             "matchcode": true,
-            "code": 204
+            "matchcontent": true,
+            "contentregex": "/results/[0-9a-f]*",
+            "storevalue": true
         },
         {
-            "host": "{{.Host}}",
-            "path": "/app/kibana",
-            "https": true,
-            "port": 5601,
+            "host": "pwnsauce.${TEAM}.ists.io",
+            "path": "{{.SavedValue}}",
+            "port": 8080,
             "method": "GET",
-            "headers": {
-                "kbn-xsrf": "true"
-            },
             "matchcode": true,
-            "code": 200,
             "matchcontent": true,
-            "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+            "contentregex": "<h2>Standard out:</h1>\n<pre>\noof ouch owie my webshell\n\n</pre>"
         }
     ]
 }
