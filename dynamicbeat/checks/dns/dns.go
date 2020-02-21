@@ -1,6 +1,7 @@
 package dns
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"sync"
@@ -25,7 +26,7 @@ type Definition struct {
 
 // Run a single instance of the check
 // For now we only support A record querries
-func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
+func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 	defer wg.Done()
 
 	// Setup result
@@ -38,45 +39,68 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		CheckType:   "dns",
 	}
 
-	// Create a dns client
-	mydns := dns.Client{
-		Timeout: 5 * time.Second,
-	}
+	// Make channels for completing the check or not
+	done := make(chan bool)
+	failed := make(chan bool)
 
-	// Setup for dns query
-	var msg dns.Msg
-	fqdn := dns.Fqdn(d.Fqdn)
-	msg.SetQuestion(fqdn, dns.TypeA)
+	// Check logic
+	go func() {
+		// Create a dns client
+		mydns := dns.Client{
+			Timeout: 5 * time.Second,
+		}
 
-	// Send the query
-	in, _, err := mydns.Exchange(&msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
-	if err != nil {
-		result.Message = fmt.Sprintf("Problem sending query to %s : %s", d.Server, err)
-		out <- result
-		return
-	}
+		// Setup for dns query
+		var msg dns.Msg
+		fqdn := dns.Fqdn(d.Fqdn)
+		msg.SetQuestion(fqdn, dns.TypeA)
 
-	// Check if we got any records
-	if len(in.Answer) < 1 {
-		result.Message = fmt.Sprintf("No records received from %s", d.Server)
-		out <- result
-		return
-	}
+		// Send the query
+		in, _, err := mydns.Exchange(&msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
+		if err != nil {
+			result.Message = fmt.Sprintf("Problem sending query to %s : %s", d.Server, err)
+			failed <- true
+			return
+		}
 
-	// Loop through results and check for correct match
-	for _, answer := range in.Answer {
-		// Check if an answer is an A record and it matches the expected IP
-		if a, ok := answer.(*dns.A); ok && (a.A).String() == d.ExpectedIP {
-			// If we reach here the check succeeds
+		// Check if we got any records
+		if len(in.Answer) < 1 {
+			result.Message = fmt.Sprintf("No records received from %s", d.Server)
+			failed <- true
+			return
+		}
+
+		// Loop through results and check for correct match
+		for _, answer := range in.Answer {
+			// Check if an answer is an A record and it matches the expected IP
+			if a, ok := answer.(*dns.A); ok && (a.A).String() == d.ExpectedIP {
+				// If we reach here the check succeeds
+				done <- true
+				return
+			}
+		}
+
+		// If we reach here no records matched expected IP and check fails
+		result.Message = fmt.Sprintf("Incorrect Records Returned")
+		failed <- true
+	}()
+
+	// Watch channels and context for timeout
+	for {
+		select {
+		case <-done:
 			result.Passed = true
+			out <- result
+			return
+		case <-failed:
+			out <- result
+			return
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
 			out <- result
 			return
 		}
 	}
-
-	// If we reach here no records matched expected IP and check fails
-	result.Message = fmt.Sprintf("Incorrect Records Returned")
-	out <- result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
