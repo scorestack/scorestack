@@ -1,8 +1,5 @@
 {
     "Host": "anarchaos.${TEAM}.ists.io",
     "Username": "admin@${TEAM}.ists.io",
-    "TotalHostCount": "7",
-    "OnlineHostCount": "7",
-    "OfflineHostCount": "0",
-    "MIAHostCount": "0"
+    "OnlineHostCount": "7"
 }

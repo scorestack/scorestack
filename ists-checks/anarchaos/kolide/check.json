@@ -5,6 +5,7 @@
     "group": "${TEAM}",
     "score_weight": 1,
     "definition": {
+        "reportmatchedcontent": true,
         "requests": [
             {
                 "host": "{{.Host}}",
@@ -32,7 +33,7 @@
                 },
                 "matchcode": true,
                 "matchcontent": true,
-                "contentregex": "\"display_text\": \"All Hosts\",\\s\"count\": {{.TotalHostCount}},\\s\"online\": {{.OnlineHostCount}},\\s\"offline\": {{.OfflineHostCount}},\\s\"missing_in_action\": {{.MIAHostCount}},"
+                "contentregex": "\"online\": {{.OnlineHostCount}},"
             }
         ]
     }
