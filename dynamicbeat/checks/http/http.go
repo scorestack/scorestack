@@ -213,35 +213,35 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 	d.ScoreWeight = scoreWeight
 
 	// Finish initializing each request
-	for _, r := range d.Requests {
+	for i := range d.Requests {
 		// Set nonzero default values
-		if r.Port == 0 {
-			r.Port = 80
+		if d.Requests[i].Port == 0 {
+			d.Requests[i].Port = 80
 		}
 
-		if r.Method == "" {
-			r.Method = "GET"
+		if d.Requests[i].Method == "" {
+			d.Requests[i].Method = "GET"
 		}
 
-		if r.Headers == nil {
-			r.Headers = make(map[string]string)
+		if d.Requests[i].Headers == nil {
+			d.Requests[i].Headers = make(map[string]string)
 		}
 
-		if r.Code == 0 {
-			r.Code = 200
+		if d.Requests[i].Code == 0 {
+			d.Requests[i].Code = 200
 		}
 
-		if r.ContentRegex == "" {
-			r.ContentRegex = ".*"
+		if d.Requests[i].ContentRegex == "" {
+			d.Requests[i].ContentRegex = ".*"
 		}
 
 		// Make sure required fields are defined
 		missingFields := make([]string, 0)
-		if r.Host == "" {
+		if d.Requests[i].Host == "" {
 			missingFields = append(missingFields, "Host")
 		}
 
-		if r.Path == "" {
+		if d.Requests[i].Path == "" {
 			missingFields = append(missingFields, "Path")
 		}
 
