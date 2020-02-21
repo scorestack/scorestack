@@ -156,6 +156,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 			out <- result
 			return
 		case <-failed:
+			result.Passed = false
 			out <- result
 			return
 		case <-ctx.Done():
