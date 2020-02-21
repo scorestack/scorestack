@@ -14,7 +14,7 @@
                 "method": "GET",
                 "matchcode": true,
                 "matchcontent": true,
-                "contentregex": "{\"status\":{\"overall\":{\"state\":\"green\","
+                "contentregex": "},\"status\":{\"overall\":{\"state\":\"green\","
             },
             {
                 "host": "{{.Host}}",
