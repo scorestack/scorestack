@@ -1,9 +1,11 @@
 package http
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
@@ -12,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
@@ -39,6 +42,7 @@ type Request struct {
 	Code         int               // (optional, default 200) the response status code to match
 	MatchContent bool              // (optional, default false) whether the response body must match a defined regex for the check to pass
 	ContentRegex string            // (optional, default `.*`) regex for the response body to match
+	StoreValue   bool              // (optional, default false) whether the matched content should be saved for use in a later request
 }
 
 // Run a single instance of the check.
@@ -71,11 +75,44 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		},
 	}
 
-	// Save the last returned match string
+	// Save match strings
 	var lastMatch *string
+	var storedValue *string
+
+	type storedValTempl struct {
+		StoredValue string
+	}
 
 	// Make each request in the list
 	for _, r := range d.Requests {
+		// Check to see if the StoredValue needs to be templated in
+		if storedValue != nil {
+			// TODO: refactor this out into a function that keeps the "happy line"
+			// Re-encode definition to JSON string
+			def, err := json.Marshal(r)
+			if err != nil {
+				logp.Info("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
+			} else {
+				attrs := storedValTempl{
+					StoredValue: *storedValue,
+				}
+				templ := template.Must(template.New("http-storecvalue").Parse(string(def)))
+				var buf bytes.Buffer
+				err := templ.Execute(&buf, attrs)
+				if err != nil {
+					logp.Info("Error templating HTTP definition for StoredValue templating: %s", err)
+				} else {
+					newReq := Request{}
+					err := json.Unmarshal(buf.Bytes(), &newReq)
+					if err != nil {
+						logp.Info("Error decoding StoredValue-templated HTTP definition: %s", err)
+					} else {
+						r = newReq
+					}
+				}
+			}
+		}
+
 		pass, match, err := request(client, r)
 
 		// Process request results
@@ -85,6 +122,9 @@ func (d *Definition) Run(wg *sync.WaitGroup, out chan<- schema.CheckResult) {
 		}
 		if match != nil {
 			lastMatch = match
+			if r.StoreValue {
+				storedValue = match
+			}
 		}
 
 		// If this request failed, don't continue on to the next request
