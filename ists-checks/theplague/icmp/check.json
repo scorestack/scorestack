@@ -1,6 +1,6 @@
 {
-    "id": "icmp-theplauge",
-    "name": "theplauge - ICMP",
+    "id": "icmp-theplague",
+    "name": "theplague - ICMP",
     "type": "icmp",
     "group": "${TEAM}",
     "score_weight": 1,
