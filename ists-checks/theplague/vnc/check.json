@@ -1,6 +1,6 @@
 {
-    "id": "vnc-theplauge",
-    "name": "theplauge - VNC",
+    "id": "vnc-theplague",
+    "name": "theplague - VNC",
     "type": "vnc",
     "group": "${TEAM}",
     "score_weight": 1,
