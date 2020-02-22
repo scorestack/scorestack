@@ -55,14 +55,14 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		// Create xmpp config
 		config := xmpp.Config{
 			TransportConfiguration: xmpp.TransportConfiguration{
-				Address:        fmt.Sprintf("%s:%s", d.Host, d.Port),
-				TLSConfig:      &tls.Config{InsecureSkipVerify: true},
-				ConnectTimeout: 5,
+				Address:   fmt.Sprintf("%s:%s", d.Host, d.Port),
+				TLSConfig: &tls.Config{InsecureSkipVerify: true},
+				// ConnectTimeout: 5,
 			},
-			Jid:            fmt.Sprintf("%s@%s", d.Username, d.Host),
-			Credential:     xmpp.Password(d.Password),
-			Insecure:       d.Encrypted,
-			ConnectTimeout: 5,
+			Jid:        fmt.Sprintf("%s@%s", d.Username, d.Host),
+			Credential: xmpp.Password(d.Password),
+			Insecure:   d.Encrypted,
+			// ConnectTimeout: 5,
 		}
 
 		// Create a client
