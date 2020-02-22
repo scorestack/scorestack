@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
-	"sync"
 	"time"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
@@ -29,8 +28,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{
@@ -42,93 +40,64 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		CheckType:   "ssh",
 	}
 
-	// Make channels for completing the check or not
-	done := make(chan bool)
-	failed := make(chan bool)
-
-	go func() {
-		// Config SSH client
-		config := &ssh.ClientConfig{
-			User: d.Username,
-			Auth: []ssh.AuthMethod{
-				ssh.Password(d.Password),
-			},
-			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-			// Timeout:         5 * time.Second,
-		}
-
-		// Create the ssh client
-		client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), config)
-		if err != nil {
-			result.Message = fmt.Sprintf("Error creating ssh client: %s", err)
-			failed <- true
-			return
-		}
-		defer client.Close()
-
-		// Create a session from the connection
-		session, err := client.NewSession()
-		if err != nil {
-			result.Message = fmt.Sprintf("Error creating a ssh session: %s", err)
-			failed <- true
-			return
-		}
-		defer session.Close()
-
-		// Run a command
-		output, err := session.CombinedOutput(d.Cmd)
-		if err != nil {
-			result.Message = fmt.Sprintf("Error executing command: %s", err)
-			failed <- true
-			return
-		}
-
-		// Check if we are going to match content
-		if !d.MatchContent {
-			// If we made it here the check passes
-			result.Message = fmt.Sprintf("Command %s executed successfully: %s", d.Cmd, output)
-			done <- true
-			return
-		}
-
-		// Match some content
-		regex, err := regexp.Compile(d.ContentRegex)
-		if err != nil {
-			result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
-			failed <- true
-			return
-		}
-
-		// Check if the content matches
-		if !regex.Match(output) {
-			result.Message = fmt.Sprintf("Matching content not found")
-			failed <- true
-			return
-		}
-
-		// If we reach here the check is successful
-		done <- true
-		return
-	}()
-
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			close(done)
-			result.Passed = true
-			out <- result
-			return
-		case <-failed:
-			close(failed)
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
-		}
+	// Config SSH client
+	config := &ssh.ClientConfig{
+		User: d.Username,
+		Auth: []ssh.AuthMethod{
+			ssh.Password(d.Password),
+		},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		Timeout:         20 * time.Second,
 	}
+
+	// Create the ssh client
+	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), config)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error creating ssh client: %s", err)
+		return result
+	}
+	defer client.Close()
+
+	// Create a session from the connection
+	session, err := client.NewSession()
+	if err != nil {
+		result.Message = fmt.Sprintf("Error creating a ssh session: %s", err)
+		return result
+	}
+	defer session.Close()
+
+	// Run a command
+	output, err := session.CombinedOutput(d.Cmd)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error executing command: %s", err)
+		return result
+	}
+
+	// Check if we are going to match content
+	if !d.MatchContent {
+		// If we made it here the check passes
+		result.Message = fmt.Sprintf("Command %s executed successfully: %s", d.Cmd, output)
+		result.Passed = true
+		return result
+	}
+
+	// Match some content
+	regex, err := regexp.Compile(d.ContentRegex)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+		return result
+	}
+
+	// Check if the content matches
+	if !regex.Match(output) {
+		result.Message = fmt.Sprintf("Matching content not found")
+		return result
+	}
+
+	// If we reach here the check is successful
+	result.Passed = true
+	return result
+
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
