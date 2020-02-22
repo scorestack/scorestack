@@ -10,7 +10,7 @@ import (
 // A Check represents the configuration required to verify the operation of a
 // single network service.
 type Check interface {
-	Run(ctx context.Context, wg *sync.WaitGroup, out chan<- CheckResult)
+	Run(ctx context.Context) schema.CheckResult
 	Init(id string, name string, group string, scoreWeight float64, def []byte) error
 }
 

@@ -28,33 +28,34 @@ import (
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(defPass chan []schema.CheckDef, wg *sync.WaitGroup, pubQueue chan<- beat.Event) {
+func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 	start := time.Now()
-	defer wg.Done()
 
 	// Recieve definitions from channel
 	defs := <-defPass
 
 	// Prepare event queue
 	queue := make(chan schema.CheckResult, len(defs))
-	var events sync.WaitGroup
 
 	// Iterate over each check
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	var wg sync.WaitGroup
 	for _, def := range defs {
-		ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
-		defer cancel()
-
 		check := unpackDef(def)
 
 		// Start check goroutine
-		events.Add(1)
-		go check.Run(ctx, &events, queue)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			queue <- check.Run(ctx)
+		}()
 	}
 	// Send definitions back through channel
 	defPass <- defs
 
 	// Wait for checks to finish
-	events.Wait()
+	wg.Wait()
 	logp.Info("Checks started at %s have finished", start.Format("15:04:05.000"))
 	close(queue)
 	for result := range queue {
