@@ -86,11 +86,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
 		return result
 	}
-	defer func() {
-		if closeErr := conn.Close(); closeErr != nil {
-			logp.Warn("failed to close smtp connection: %s", closeErr.Error())
-		}
-	}()
+	// defer func() {
+	// 	if closeErr := conn.Close(); closeErr != nil {
+	// 		logp.Warn("failed to close smtp connection: %s", closeErr.Error())
+	// 	}
+	// }()
 
 	// Create smtp client
 	c, err := smtp.NewClient(conn, d.Host)
