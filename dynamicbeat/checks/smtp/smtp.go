@@ -64,7 +64,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 	go func() {
 		// Create a dialer
 		dialer := net.Dialer{
-			Timeout: 5 * time.Second,
+			// Timeout: 5 * time.Second,
 		}
 
 		// ***********************************************
