@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/sparrc/go-ping"
@@ -24,8 +23,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{
@@ -37,56 +35,30 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		CheckType:   "icmp",
 	}
 
-	// Make channels for completing a check or not
-	done := make(chan bool)
-	failed := make(chan bool)
-
-	go func() {
-		// Create pinger
-		pinger, err := ping.NewPinger(d.Host)
-		if err != nil {
-			result.Message = fmt.Sprintf("Error creating pinger: %s", err)
-			failed <- true
-			return
-		}
-
-		// Send ping
-		pinger.Count = d.Count
-		// pinger.Timeout = 5 * time.Second
-		pinger.Run()
-
-		stats := pinger.Statistics()
-
-		// Check for failure of ICMP
-		if stats.PacketsRecv != d.Count {
-			result.Message = fmt.Sprintf("FAILED: Not all pings made it back! Received %d out of %d", stats.PacketsRecv, stats.PacketsSent)
-			failed <- true
-			return
-		}
-
-		// If we make it here the check passes
-		done <- true
-		return
-	}()
-
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			close(done)
-			result.Passed = true
-			out <- result
-			return
-		case <-failed:
-			close(failed)
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
-		}
+	// Create pinger
+	pinger, err := ping.NewPinger(d.Host)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error creating pinger: %s", err)
+		return result
 	}
+
+	// Send ping
+	pinger.Count = d.Count
+	pinger.Timeout = 5 * time.Second
+	pinger.Run()
+
+	stats := pinger.Statistics()
+
+	// Check for failure of ICMP
+	if stats.PacketsRecv != d.Count {
+		result.Message = fmt.Sprintf("FAILED: Not all pings made it back! Received %d out of %d", stats.PacketsRecv, stats.PacketsSent)
+		return result
+	}
+
+	// If we make it here the check passes
+	result.Passed = true
+	return result
+
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
