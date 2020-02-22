@@ -54,11 +54,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
 		return result
 	}
-	// defer func() {
-	// 	if closeErr := conn.Close(); closeErr != nil {
-	// 		logp.Warn("failed to close vnc connection: %s", closeErr.Error())
-	// 	}
-	// }()
+	defer func() {
+		if closeErr := conn.Close(); closeErr != nil {
+			logp.Warn("failed to close vnc connection: %s", closeErr.Error())
+		}
+	}()
 
 	vncClient, err := vnc.Client(conn, &config)
 	if err != nil {
