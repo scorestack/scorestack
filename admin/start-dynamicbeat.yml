@@ -1,0 +1,9 @@
+---
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: start dynamicbeat
+      systemd:
+        name: dynamicbeat
+        state: started

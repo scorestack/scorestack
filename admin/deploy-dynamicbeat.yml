@@ -1,0 +1,27 @@
+---
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Stop dynamicbeat
+      systemd:
+        name: dynamicbeat
+        state: stopped
+    
+    - name: Configure index
+      template:
+        src: override.conf.j2
+        dest: /etc/systemd/system/dynamicbeat.service.d/override.conf
+
+    - name: Copy dynamicbeat binary
+      copy:
+        src: ../dynamicbeat/dynamicbeat
+        dest: /opt/dynamicbeat/dynamicbeat
+        owner: dynamicbeat
+        group: dynamicbeat
+        mode: 0755
+    
+    - name: Start dynamicbeat
+      systemd:
+        name: dynamicbeat
+        state: started
