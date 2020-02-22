@@ -52,7 +52,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 
 		// Send ping
 		pinger.Count = d.Count
-		pinger.Timeout = 5 * time.Second
+		// pinger.Timeout = 5 * time.Second
 		pinger.Run()
 
 		stats := pinger.Statistics()
