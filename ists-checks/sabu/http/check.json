@@ -37,6 +37,13 @@
                 "matchcode": true,
                 "matchcontent": true,
                 "contentregex": "<title>Dashboard - Gophish</title>"
+            },
+            {
+                "host": "{{.Host}}",
+                "path": "/logout",
+                "https": true,
+                "port": 3333,
+                "method": "GET"
             }
         ]
     }
