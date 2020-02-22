@@ -19,7 +19,7 @@ type Definition struct {
 	Name        string  // a human-readable title for the check
 	Group       string  // the group this check is part of
 	ScoreWeight float64 // the weight that this check has relative to others
-	User        string  // (required) The user written in DN syntax
+	User        string  // (required) The user written in user@domain syntax
 	Password    string  // (required) the password for the user
 	Fqdn        string  // (required) The Fqdn of the ldap server
 	Ldaps       bool    // (optional, default=false) Whether or not to use LDAP+TLS

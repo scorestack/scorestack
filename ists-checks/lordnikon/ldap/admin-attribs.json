@@ -1,5 +1,5 @@
 {
-    "User": "cn=armitage,dc=${TEAM},dc=ists,dc=io",
+    "User": "armitage@${TEAM}.ists.io",
     "Fqdn": "lordnikon.${TEAM}.ists.io",
     "Port": "389"
 }
