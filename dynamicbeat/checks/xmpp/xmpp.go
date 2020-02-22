@@ -9,6 +9,7 @@ import (
 
 	"gosrc.io/xmpp/stanza"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"gosrc.io/xmpp"
 )
@@ -82,7 +83,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = fmt.Sprintf("Connecting to %s failed : %s", d.Host, err)
 		return result
 	}
-	defer client.Disconnect()
+	defer func() {
+		if closeErr := client.Disconnect(); closeErr != nil {
+			logp.Warn("failed to close xmpp connection: %s", closeErr.Error())
+		}
+	}()
 
 	// Send the IQ message
 	err = client.Send(iq)
