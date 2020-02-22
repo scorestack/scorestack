@@ -8,31 +8,35 @@
         "requests": [
             {
                 "host": "{{.Host}}",
-                "path": "/api/security/v1/login",
-                "https": true,
-                "port": 5601,
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json;charset=utf-8",
-                    "kbn-xsrf": "true"
-                },
-                "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
+                "path": "/inventory.php",
                 "matchcode": true,
-                "code": 204
+                "matchcontent": true,
+                "contentregex": "<tr><td>1</td><td> <img src=\"images/products/Stolen Government Documents.jpg\" alt=\"Stolen Government Documents\" border=3 height=100 width=100></img></td><td>Stolen Government Documents</td><td>99.99</td><td> In Stock </td><td> <a href=\"product.php?name='Stolen Government Documents'\"> <img src=\"images/more-info.png\"style=\"width:60px;height:30px;border:0;\"> </a> </td></tr><tr><td>2</td><td> <img src=\"images/products/Skimmed Credit Cards.jpg\" alt=\"Skimmed Credit Cards\" border=3 height=100 width=100></img></td><td>Skimmed Credit Cards</td><td>4.99</td><td> In Stock </td><td> <a href=\"product.php?name='Skimmed Credit Cards'\"> <img src=\"images/more-info.png\"style=\"width:60px;height:30px;border:0;\"> </a> </td></tr><tr><td>3</td><td> <img src=\"images/products/Windows Me 0-day.jpg\" alt=\"Windows Me 0-day\" border=3 height=100 width=100></img></td><td>Windows Me 0-day</td><td>0.99</td><td> Out of Stock </td><td> <a href=\"product.php?name='Windows Me 0-day'\"> <img src=\"images/more-info.png\"style=\"width:60px;height:30px;border:0;\"> </a> </td></tr>"
             },
             {
                 "host": "{{.Host}}",
-                "path": "/app/kibana",
-                "https": true,
-                "port": 5601,
-                "method": "GET",
+                "path": "/purchase.php",
+                "method": "POST",
                 "headers": {
-                    "kbn-xsrf": "true"
+                    "Content-Type": "application/x-www-form-urlencoded"
                 },
+                "body": "firstname=Joe&lastname=Biden&email=press%40joebiden.com&prodid=1&ccnum=1337&cvv=420&submit=Submit",
                 "matchcode": true,
-                "code": 200,
                 "matchcontent": true,
-                "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+                "contentregex": "<h4>Your order number is: </h4><h4 id=\"newordernumber\">(\\d+)</h4>",
+                "storevalue": true
+            },
+            {
+                "host": "{{.Host}}",
+                "path": "/order.php",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                "body": "orderid={{.SavedValue}}&search=Search+Orders",
+                "matchcode": true,
+                "matchcontent": true,
+                "contentregex": "<h4> Order Info </h4><p>Order id: {{.SavedValue}}</p><p>Name on order: Joe Biden</p><p>Contact email: press@joebiden.com</p><p>Product ID: 1</p><p>Product Name: Stolen Government Documents</p><p>Credit Card Number: 1337</p><p>CVV/CVC Number: 420</p>"
             }
         ]
     }
