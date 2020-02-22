@@ -50,7 +50,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 	go func() {
 		// Create a dialer so we can set timeouts
 		dialer := net.Dialer{
-			Timeout: 5 * time.Second,
+			// Timeout: 5 * time.Second,
 		}
 
 		// Defining these allow the if/else block below
@@ -71,7 +71,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		defer c.Logout() // This is the same as close() for normal conn objects
 
 		// Set timeout for commands
-		c.Timeout = 5 * time.Second
+		// c.Timeout = 5 * time.Second
 
 		// Login
 		err = c.Login(d.Username, d.Password)
