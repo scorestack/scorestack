@@ -5,6 +5,11 @@
       systemd:
         name: dynamicbeat
         state: stopped
+    
+    - name: Configure index
+      template:
+        src: override.conf.j2
+        dest: /etc/systemd/system/dynamicbeat.service.d/override.conf
 
     - name: Copy dynamicbeat binary
       copy:
