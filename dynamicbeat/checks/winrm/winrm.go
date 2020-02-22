@@ -61,7 +61,8 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		params := winrm.DefaultParameters
 
 		// Login to winrm and create client
-		endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
+		// endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
+		endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 0)
 		client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, params)
 		if err != nil {
 			result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
