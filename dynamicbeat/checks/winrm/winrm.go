@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"strconv"
 	"sync"
 	"time"
@@ -58,41 +59,77 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		}
 
 		// Another timeout for the bois
-		params := winrm.DefaultParameters
+		params := *winrm.DefaultParameters
 
 		// Login to winrm and create client
 		// endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
 		endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 0)
-		client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, params)
+		client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
 		if err != nil {
 			result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
 			failed <- true
 			return
 		}
-		command := winrm.Powershell(d.Cmd)
 
-		// shell := client.NewShell("ScoreStack-Shell-ID")
-		// defer shell.Close()
-
-		// cmdOut, err := shell.Execute(command)
-		// defer cmdOut.Close()
-
-		// if err != nil {
-		// 	result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, err)
-		// 	failed <- true
-		// 	return
-		// }
-
-		// Define these for the command output
-		bufOut := new(bytes.Buffer)
-		bufErr := new(bytes.Buffer)
-
-		_, err = client.Run(command, bufOut, bufErr)
+		shell, err := client.CreateShell()
 		if err != nil {
-			result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
+			result.Message = fmt.Sprintf("Failed to create shell : %s", err)
 			failed <- true
 			return
 		}
+		defer shell.Close()
+
+		cmd, err := shell.Execute(d.Cmd)
+		if err != nil {
+			result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, err)
+			failed <- true
+			return
+		}
+
+		var test sync.WaitGroup
+		copyFunc := func(w io.Writer, r io.Reader) {
+			defer test.Done()
+			io.Copy(w, r)
+		}
+
+		bufOut := new(bytes.Buffer)
+
+		if cmd.Stdout != nil {
+			test.Add(1)
+			go copyFunc(bufOut, cmd.Stdout)
+		} else {
+			result.Message = fmt.Sprintf("Failed to get stdout from command %s : %s", d.Cmd, err)
+			failed <- true
+			return
+		}
+
+		cmd.Wait()
+		test.Wait()
+
+		// command := winrm.Powershell(d.Cmd)
+
+		// // shell := client.NewShell("ScoreStack-Shell-ID")
+		// // defer shell.Close()
+
+		// // cmdOut, err := shell.Execute(command)
+		// // defer cmdOut.Close()
+
+		// // if err != nil {
+		// // 	result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, err)
+		// // 	failed <- true
+		// // 	return
+		// // }
+
+		// // Define these for the command output
+		// bufOut := new(bytes.Buffer)
+		// bufErr := new(bytes.Buffer)
+
+		// _, err = client.Run(command, bufOut, bufErr)
+		// if err != nil {
+		// 	result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
+		// 	failed <- true
+		// 	return
+		// }
 
 		// // Check if the command errored
 		// if bufErr.String() != "" {
