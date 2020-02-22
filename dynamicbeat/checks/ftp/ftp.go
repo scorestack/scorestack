@@ -31,6 +31,7 @@ type Definition struct {
 	HashContentMatch  bool    // (optional, default=false) Whether or not to match a hash of the file contents
 	Hash              string  // (optional, default="") The hash digest from sha3-256 to compare the hashed file contents to
 	Port              string  // (optional, default=21) The port to attempt an ftp connection on
+	Fucked            bool    // (optional, default=false) Custom case for Cerealkiller ISTS2020
 }
 
 // Run a single instance of the check
@@ -69,6 +70,30 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 			failed <- true
 			return
 		}
+
+		// ***********************************************
+		if d.Fucked {
+			// Do check for cerealkiller
+			err = conn.ChangeDir(d.File)
+			if err != nil {
+				result.Message = fmt.Sprintf("Changing to directory %s failed : %s", d.File, err)
+				failed <- true
+				return
+			}
+
+			_, err := conn.CurrentDir()
+			// entries, err := conn.List("/")
+			if err != nil {
+				result.Message = fmt.Sprintf("Getting current directory %s failed : %s", d.File, err)
+				failed <- true
+				return
+			}
+
+			// If we reached here, changed dir success, check passed
+			done <- true
+			return
+		}
+		// **************
 
 		// Retrieve file contents
 		resp, err := conn.Retr(d.File)
