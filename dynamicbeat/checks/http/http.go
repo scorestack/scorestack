@@ -137,7 +137,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 	result.Details = details
 
-	result.Passed = true
 	return result
 }
 
