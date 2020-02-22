@@ -1,0 +1,20 @@
+---
+- hosts: all
+  tasks:
+    - name: Stop dynamicbeat
+      systemd:
+        name: dynamicbeat
+        state: stopped
+
+    - name: Copy dynamicbeat binary
+      copy:
+        src: ../dynamicbeat/dynamicbeat
+        dest: /opt/dynamicbeat/dynamicbeat
+        owner: dynamicbeat
+        group: dynamicbeat
+        mode: 0755
+    
+    - name: Start dynamicbeat
+      systemd:
+        name: dynamicbeat
+        state: started
