@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/masterzen/winrm"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
@@ -69,7 +70,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = fmt.Sprintf("Failed to create shell : %s", err)
 		return result
 	}
-	defer shell.Close()
+	defer func() {
+		if closeErr := shell.Close(); closeErr != nil {
+			logp.Warn("failed to close winrm connection: %s", closeErr.Error())
+		}
+	}()
 
 	cmd, err := shell.Execute(d.Cmd)
 	if err != nil {

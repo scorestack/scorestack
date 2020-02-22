@@ -7,6 +7,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/mitchellh/go-vnc"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
@@ -53,7 +54,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
 		return result
 	}
-	defer conn.Close()
+	defer func() {
+		if closeErr := conn.Close(); closeErr != nil {
+			logp.Warn("failed to close vnc connection: %s", closeErr.Error())
+		}
+	}()
 
 	vncClient, err := vnc.Client(conn, &config)
 	if err != nil {
