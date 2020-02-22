@@ -42,13 +42,17 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 	defer cancel()
 	var wg sync.WaitGroup
 	for _, def := range defs {
+		checkName := def.Name
 		check := unpackDef(def)
 
 		// Start check goroutine
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
+
+			checkStart := time.Now()
 			queue <- check.Run(ctx)
+			logp.Info("[%s] Finished after %.2f seconds", checkName, time.Now().Since(checkStart).Seconds())
 		}()
 	}
 	// Send definitions back through channel
@@ -56,7 +60,7 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 
 	// Wait for checks to finish
 	wg.Wait()
-	logp.Info("Checks started at %s have finished", start.Format("15:04:05.000"))
+	logp.Info("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Now().Since(start).Seconds())
 	close(queue)
 	for result := range queue {
 		// Publish check results
