@@ -111,7 +111,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 			}
 		}
 
-		pass, match, err := request(client, r)
+		pass, match, err := request(ctx, client, r)
 
 		// Process request results
 		result.Passed = pass
@@ -141,7 +141,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	return result
 }
 
-func request(client *http.Client, r Request) (bool, *string, error) {
+func request(ctx context.Context, client *http.Client, r Request) (bool, *string, error) {
 	// Construct URL
 	var schema string
 	if r.HTTPS {
@@ -152,7 +152,7 @@ func request(client *http.Client, r Request) (bool, *string, error) {
 	url := fmt.Sprintf("%s://%s:%d%s", schema, r.Host, r.Port, r.Path)
 
 	// Construct request
-	req, err := http.NewRequest(r.Method, url, strings.NewReader(r.Body))
+	req, err := http.NewRequestWithContext(ctx, r.Method, url, strings.NewReader(r.Body))
 
 	// Add headers
 	for k, v := range r.Headers {
