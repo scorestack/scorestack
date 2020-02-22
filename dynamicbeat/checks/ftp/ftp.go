@@ -7,13 +7,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
-	"sync"
 	"time"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/jlaffaye/ftp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"golang.org/x/crypto/sha3"
-	"github.com/elastic/beats/libbeat/logp"
 )
 
 // The Definition configures the behavior of the FTP check

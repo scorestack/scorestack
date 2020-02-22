@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/miekg/dns"
@@ -43,7 +42,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	msg.SetQuestion(fqdn, dns.TypeA)
 
 	// Send the query
-	in, _, err := dns.ExchangeContext(ctx, &msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
+	in, err := dns.ExchangeContext(ctx, &msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
 	if err != nil {
 		result.Message = fmt.Sprintf("Problem sending query to %s : %s", d.Server, err)
 		return result
