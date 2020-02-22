@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
@@ -27,8 +26,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{
@@ -40,67 +38,40 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		CheckType:   "ldap",
 	}
 
-	// Make channels for completing the check or not
-	done := make(chan bool)
-	failed := make(chan bool)
+	// Set timeout
+	ldap.DefaultTimeout = 20 * time.Second
 
-	go func() {
-		// Set timeout
-		// ldap.DefaultTimeout = 5 * time.Second
+	// Normal, default ldap check
+	lconn, err := ldap.Dial("tcp", fmt.Sprintf("%s:%s", d.Fqdn, d.Port))
+	if err != nil {
+		result.Message = fmt.Sprintf("Could not dial server %s : %s", d.Fqdn, err)
+		return result
+	}
+	defer lconn.Close()
 
-		// Normal, default ldap check
-		lconn, err := ldap.Dial("tcp", fmt.Sprintf("%s:%s", d.Fqdn, d.Port))
+	// Set message timeout
+	lconn.SetTimeout(5 * time.Second)
+
+	// Add TLS if needed
+	if d.Ldaps {
+		err = lconn.StartTLS(&tls.Config{InsecureSkipVerify: true})
 		if err != nil {
-			result.Message = fmt.Sprintf("Could not dial server %s : %s", d.Fqdn, err)
-			failed <- true
-			return
-		}
-		defer lconn.Close()
-
-		// Set message timeout
-		// lconn.SetTimeout(5 * time.Second)
-
-		// Add TLS if needed
-		if d.Ldaps {
-			err = lconn.StartTLS(&tls.Config{InsecureSkipVerify: true})
-			if err != nil {
-				result.Message = fmt.Sprintf("TLS session creation failed : %s", err)
-				failed <- true
-				return
-			}
-		}
-
-		// Attempt to login
-		err = lconn.Bind(d.User, d.Password)
-		if err != nil {
-			result.Message = fmt.Sprintf("Failed to login with user %s : %s", d.User, err)
-			failed <- true
-			return
-		}
-
-		// If we reached here the check passes
-		done <- true
-		return
-	}()
-
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			close(done)
-			result.Passed = true
-			out <- result
-			return
-		case <-failed:
-			close(failed)
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
+			result.Message = fmt.Sprintf("TLS session creation failed : %s", err)
+			return result
 		}
 	}
+
+	// Attempt to login
+	err = lconn.Bind(d.User, d.Password)
+	if err != nil {
+		result.Message = fmt.Sprintf("Failed to login with user %s : %s", d.User, err)
+		return result
+	}
+
+	// If we reached here the check passes
+	result.Passed = true
+	return result
+
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
