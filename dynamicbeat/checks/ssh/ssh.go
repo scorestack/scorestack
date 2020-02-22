@@ -54,7 +54,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 				ssh.Password(d.Password),
 			},
 			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-			Timeout:         5 * time.Second,
+			// Timeout:         5 * time.Second,
 		}
 
 		// Create the ssh client

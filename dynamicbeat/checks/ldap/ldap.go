@@ -46,7 +46,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 
 	go func() {
 		// Set timeout
-		ldap.DefaultTimeout = 5 * time.Second
+		// ldap.DefaultTimeout = 5 * time.Second
 
 		// Normal, default ldap check
 		lconn, err := ldap.Dial("tcp", fmt.Sprintf("%s:%s", d.Fqdn, d.Port))
@@ -58,7 +58,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		defer lconn.Close()
 
 		// Set message timeout
-		lconn.SetTimeout(5 * time.Second)
+		// lconn.SetTimeout(5 * time.Second)
 
 		// Add TLS if needed
 		if d.Ldaps {

@@ -53,7 +53,8 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 
 	go func() {
 		// Connect to the ftp server
-		conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port), ftp.DialWithTimeout(5*time.Second))
+		// conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port), ftp.DialWithTimeout(5*time.Second))
+		conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port))
 		if err != nil {
 			result.Message = fmt.Sprintf("Connection to %s on port %s failed : %s", d.Host, d.Port, err)
 			failed <- true

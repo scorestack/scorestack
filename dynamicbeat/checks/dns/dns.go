@@ -46,9 +46,9 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 	// Check logic
 	go func() {
 		// Create a dns client
-		mydns := dns.Client{
-			Timeout: 5 * time.Second,
-		}
+		// mydns := dns.Client{
+		// 	Timeout: 5 * time.Second,
+		// }
 
 		// Setup for dns query
 		var msg dns.Msg
@@ -56,7 +56,7 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		msg.SetQuestion(fqdn, dns.TypeA)
 
 		// Send the query
-		in, _, err := mydns.Exchange(&msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
+		in, err := dns.Exchange(&msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
 		if err != nil {
 			result.Message = fmt.Sprintf("Problem sending query to %s : %s", d.Server, err)
 			failed <- true

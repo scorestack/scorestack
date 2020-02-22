@@ -51,7 +51,8 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		}
 
 		// Dial the vnc server
-		conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), 5*time.Second)
+		// conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), 5*time.Second)
+		conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
 		if err != nil {
 			result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
 			failed <- true
