@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"sync"
 	"time"
 
 	"github.com/mitchellh/go-vnc"
@@ -25,8 +24,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{
@@ -38,59 +36,36 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		CheckType:   "vnc",
 	}
 
-	// Make channels for completing the check or not
-	done := make(chan bool)
-	failed := make(chan bool)
-
-	go func() {
-		// Configure the vnc client
-		config := vnc.ClientConfig{
-			Auth: []vnc.ClientAuth{
-				&vnc.PasswordAuth{Password: d.Password},
-			},
-		}
-
-		// Dial the vnc server
-		// conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), 5*time.Second)
-		conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
-		if err != nil {
-			result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
-			failed <- true
-			return
-		}
-		defer conn.Close()
-
-		vncClient, err := vnc.Client(conn, &config)
-		if err != nil {
-			result.Message = fmt.Sprintf("Login to server %s failed : %s", d.Host, err)
-			failed <- true
-			return
-		}
-		defer vncClient.Close()
-
-		// If we made it here the check passes
-		done <- true
-		return
-	}()
-
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			close(done)
-			result.Passed = true
-			out <- result
-			return
-		case <-failed:
-			close(failed)
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
-		}
+	// Configure the vnc client
+	config := vnc.ClientConfig{
+		Auth: []vnc.ClientAuth{
+			&vnc.PasswordAuth{Password: d.Password},
+		},
 	}
+
+	// Make a dialer
+	dialer := net.Dialer{}
+
+	// Dial the vnc server
+	// conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), 5*time.Second)
+	conn, err := dialer.DialContext(ctx, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
+	if err != nil {
+		result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
+		return result
+	}
+	defer conn.Close()
+
+	vncClient, err := vnc.Client(conn, &config)
+	if err != nil {
+		result.Message = fmt.Sprintf("Login to server %s failed : %s", d.Host, err)
+		return result
+	}
+	defer vncClient.Close()
+
+	// If we made it here the check passes
+	result.Passed = true
+	return result
+
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
