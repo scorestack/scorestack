@@ -11,7 +11,7 @@ import (
 )
 
 func run() error {
-	defer profile.Start(profile.GoroutineProfile).Stop()
+	defer profile.Start(profile.ThreadcreationProfile).Stop()
 	return cmd.RootCmd.Execute()
 }
 
