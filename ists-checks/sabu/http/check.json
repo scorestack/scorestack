@@ -8,31 +8,35 @@
         "requests": [
             {
                 "host": "{{.Host}}",
-                "path": "/api/security/v1/login",
+                "path": "/login",
                 "https": true,
-                "port": 5601,
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json;charset=utf-8",
-                    "kbn-xsrf": "true"
-                },
-                "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
+                "port": 3333,
+                "method": "GET",
                 "matchcode": true,
-                "code": 204
+                "matchcontent": true,
+                "contentregex": "value=\"(.+)\" />",
+                "storevalue": true
             },
             {
                 "host": "{{.Host}}",
-                "path": "/app/kibana",
+                "path": "/login",
                 "https": true,
-                "port": 5601,
-                "method": "GET",
+                "port": 3333,
+                "method": "POST",
                 "headers": {
-                    "kbn-xsrf": "true"
+                    "Content-Type": "application/x-www-form-urlencoded"
                 },
+                "body": "username={{.Username}}&password={{.Password}}&csrf_token={{.SavedValue}}"
+            },
+            {
+                "host": "{{.Host}}",
+                "path": "/",
+                "https": true,
+                "port": 3333,
+                "method": "GET",
                 "matchcode": true,
-                "code": 200,
                 "matchcontent": true,
-                "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+                "contentregex": "<title>Dashboard - Gophish</title>"
             }
         ]
     }
