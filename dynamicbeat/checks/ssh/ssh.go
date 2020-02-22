@@ -57,11 +57,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = fmt.Sprintf("Error creating ssh client: %s", err)
 		return result
 	}
-	defer func() {
-		if closeErr := client.Close(); closeErr != nil {
-			logp.Warn("failed to close ssh connection: %s", closeErr.Error())
-		}
-	}()
+	// defer func() {
+	// 	if closeErr := client.Close(); closeErr != nil {
+	// 		logp.Warn("failed to close ssh connection: %s", closeErr.Error())
+	// 	}
+	// }()
 
 	// Create a session from the connection
 	session, err := client.NewSession()
