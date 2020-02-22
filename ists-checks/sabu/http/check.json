@@ -14,36 +14,7 @@
                 "method": "GET",
                 "matchcode": true,
                 "matchcontent": true,
-                "contentregex": "value=\"(.+)\" />",
-                "storevalue": true
-            },
-            {
-                "host": "{{.Host}}",
-                "path": "/login",
-                "https": true,
-                "port": 3333,
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                "body": "username={{.Username}}&password={{.Password}}&csrf_token={{.SavedValue}}"
-            },
-            {
-                "host": "{{.Host}}",
-                "path": "/",
-                "https": true,
-                "port": 3333,
-                "method": "GET",
-                "matchcode": true,
-                "matchcontent": true,
-                "contentregex": "<title>Dashboard - Gophish</title>"
-            },
-            {
-                "host": "{{.Host}}",
-                "path": "/logout",
-                "https": true,
-                "port": 3333,
-                "method": "GET"
+                "contentregex": "<title>Gophish - Login</title>"
             }
         ]
     }
