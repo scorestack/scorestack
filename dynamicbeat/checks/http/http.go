@@ -12,7 +12,6 @@ import (
 	"net/http/cookiejar"
 	"regexp"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/elastic/beats/libbeat/logp"
@@ -47,8 +46,7 @@ type Request struct {
 }
 
 // Run a single instance of the check.
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{
@@ -60,114 +58,87 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		CheckType:   "http",
 	}
 
-	// Make channels for completing the check or not
-	done := make(chan bool)
-	failed := make(chan bool)
-
-	go func() {
-		// Configure HTTP client
-		cookieJar, err := cookiejar.New(nil)
-		if err != nil {
-			result.Message = "Could not create CookieJar"
-			failed <- true
-			return
-		}
-		client := &http.Client{
-			Jar: cookieJar,
-			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: !d.Verify,
-				},
+	// Configure HTTP client
+	cookieJar, err := cookiejar.New(nil)
+	if err != nil {
+		result.Message = "Could not create CookieJar"
+		return result
+	}
+	client := &http.Client{
+		Jar: cookieJar,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: !d.Verify,
 			},
-		}
+		},
+	}
 
-		// Save match strings
-		var lastMatch *string
-		var storedValue *string
+	// Save match strings
+	var lastMatch *string
+	var storedValue *string
 
-		type storedValTempl struct {
-			SavedValue string
-		}
+	type storedValTempl struct {
+		SavedValue string
+	}
 
-		// Make each request in the list
-		for _, r := range d.Requests {
-			// Check to see if the StoredValue needs to be templated in
-			if storedValue != nil {
-				// TODO: refactor this out into a function that keeps the "happy line"
-				// Re-encode definition to JSON string
-				def, err := json.Marshal(r)
-				if err != nil {
-					logp.Info("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
-				} else {
-					attrs := storedValTempl{
-						SavedValue: *storedValue,
-					}
-					templ := template.Must(template.New("http-storedvalue").Parse(string(def)))
-					var buf bytes.Buffer
-					err := templ.Execute(&buf, attrs)
-					if err != nil {
-						logp.Info("Error templating HTTP definition for StoredValue templating: %s", err)
-					} else {
-						newReq := Request{}
-						err := json.Unmarshal(buf.Bytes(), &newReq)
-						if err != nil {
-							logp.Info("Error decoding StoredValue-templated HTTP definition: %s", err)
-						} else {
-							r = newReq
-						}
-					}
-				}
-			}
-
-			pass, match, err := request(client, r)
-
-			// Process request results
-			result.Passed = pass
+	// Make each request in the list
+	for _, r := range d.Requests {
+		// Check to see if the StoredValue needs to be templated in
+		if storedValue != nil {
+			// TODO: refactor this out into a function that keeps the "happy line"
+			// Re-encode definition to JSON string
+			def, err := json.Marshal(r)
 			if err != nil {
-				result.Message = fmt.Sprintf("%s", err)
-			}
-			if match != nil {
-				lastMatch = match
-				if r.StoreValue {
-					storedValue = match
+				logp.Info("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
+			} else {
+				attrs := storedValTempl{
+					SavedValue: *storedValue,
+				}
+				templ := template.Must(template.New("http-storedvalue").Parse(string(def)))
+				var buf bytes.Buffer
+				err := templ.Execute(&buf, attrs)
+				if err != nil {
+					logp.Info("Error templating HTTP definition for StoredValue templating: %s", err)
+				} else {
+					newReq := Request{}
+					err := json.Unmarshal(buf.Bytes(), &newReq)
+					if err != nil {
+						logp.Info("Error decoding StoredValue-templated HTTP definition: %s", err)
+					} else {
+						r = newReq
+					}
 				}
 			}
+		}
 
-			// If this request failed, don't continue on to the next request
-			if !pass {
-				break
+		pass, match, err := request(client, r)
+
+		// Process request results
+		result.Passed = pass
+		if err != nil {
+			result.Message = fmt.Sprintf("%s", err)
+		}
+		if match != nil {
+			lastMatch = match
+			if r.StoreValue {
+				storedValue = match
 			}
 		}
 
-		details := make(map[string]string)
-		if d.ReportMatchedContent && lastMatch != nil {
-			details["matched_content"] = *lastMatch
-		}
-		result.Details = details
-
-		done <- true
-		return
-	}()
-
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			close(done)
-			out <- result
-			return
-		case <-failed:
-			close(failed)
-			result.Passed = false
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Passed = false
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
+		// If this request failed, don't continue on to the next request
+		if !pass {
+			break
 		}
 	}
+
+	details := make(map[string]string)
+	if d.ReportMatchedContent && lastMatch != nil {
+		details["matched_content"] = *lastMatch
+	}
+	result.Details = details
+
+	result.Passed = true
+	return result
 }
 
 func request(client *http.Client, r Request) (bool, *string, error) {
