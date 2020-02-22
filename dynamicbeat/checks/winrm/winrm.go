@@ -1,6 +1,7 @@
 package winrm
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -67,29 +68,30 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 			failed <- true
 			return
 		}
+		command := winrm.Powershell(d.Cmd)
 
-		shell := client.NewShell("67A74734-DD32-4F10-89DE-49A060483810")
-		defer shell.Close()
+		// shell := client.NewShell("ScoreStack-Shell-ID")
+		// defer shell.Close()
 
-		cmdOut, err := shell.Execute(d.Cmd)
-		defer cmdOut.Close()
+		// cmdOut, err := shell.Execute(command)
+		// defer cmdOut.Close()
 
-		if err != nil {
-			result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, err)
-			failed <- true
-			return
-		}
-
-		// Define these for the command output
-		// bufOut := new(bytes.Buffer)
-		// bufErr := new(bytes.Buffer)
-
-		// _, err = client.Run("netstat", bufOut, bufErr)
 		// if err != nil {
-		// 	result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
+		// 	result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, err)
 		// 	failed <- true
 		// 	return
 		// }
+
+		// Define these for the command output
+		bufOut := new(bytes.Buffer)
+		bufErr := new(bytes.Buffer)
+
+		_, err = client.Run(command, bufOut, bufErr)
+		if err != nil {
+			result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
+			failed <- true
+			return
+		}
 
 		// // Check if the command errored
 		// if bufErr.String() != "" {
