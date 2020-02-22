@@ -1,0 +1,5 @@
+{
+    "Host": "avunit.${TEAM}.ists.io",
+    "Port": "5222",
+    "Username": "admin"
+}

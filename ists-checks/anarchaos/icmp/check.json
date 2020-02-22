@@ -1,0 +1,10 @@
+{
+    "id": "icmp-anarchaos",
+    "name": "anarchaos - ICMP",
+    "type": "icmp",
+    "group": "${TEAM}",
+    "score_weight": 1,
+    "definition": {
+        "host": "{{.Host}}"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "id": "icmp-cerealkiller",
+    "name": "cerealkill - ICMP",
+    "type": "icmp",
+    "group": "${TEAM}",
+    "score_weight": 1,
+    "definition": {
+        "host": "{{.Host}}"
+    }
+}

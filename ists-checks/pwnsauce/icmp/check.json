@@ -1,0 +1,10 @@
+{
+    "id": "icmp-pwnsauce",
+    "name": "pwnsauce - ICMP",
+    "type": "icmp",
+    "group": "${TEAM}",
+    "score_weight": 1,
+    "definition": {
+        "host": "{{.Host}}"
+    }
+}

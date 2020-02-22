@@ -1,0 +1,12 @@
+{
+    "id": "vnc-theplauge",
+    "name": "theplauge - VNC",
+    "type": "vnc",
+    "group": "${TEAM}",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Password": "{{.Password}}"
+    }
+}

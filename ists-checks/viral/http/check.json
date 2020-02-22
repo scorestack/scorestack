@@ -1,0 +1,39 @@
+{
+    "id": "http-viral",
+    "name": "viral - HTTP",
+    "type": "http",
+    "group": "${TEAM}",
+    "score_weight": 1,
+    "definition": {
+        "requests": [
+            {
+                "host": "{{.Host}}",
+                "path": "/api/security/v1/login",
+                "https": true,
+                "port": 5601,
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json;charset=utf-8",
+                    "kbn-xsrf": "true"
+                },
+                "body": "{\"username\": \"{{.Username}}\", \"password\": \"{{.Password}}\"}",
+                "matchcode": true,
+                "code": 204
+            },
+            {
+                "host": "{{.Host}}",
+                "path": "/app/kibana",
+                "https": true,
+                "port": 5601,
+                "method": "GET",
+                "headers": {
+                    "kbn-xsrf": "true"
+                },
+                "matchcode": true,
+                "code": 200,
+                "matchcontent": true,
+                "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+            }
+        ]
+    }
+}
