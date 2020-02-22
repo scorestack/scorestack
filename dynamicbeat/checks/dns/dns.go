@@ -83,16 +83,19 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		// If we reach here no records matched expected IP and check fails
 		result.Message = fmt.Sprintf("Incorrect Records Returned")
 		failed <- true
+		return
 	}()
 
 	// Watch channels and context for timeout
 	for {
 		select {
 		case <-done:
+			close(done)
 			result.Passed = true
 			out <- result
 			return
 		case <-failed:
+			close(failed)
 			out <- result
 			return
 		case <-ctx.Done():

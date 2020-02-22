@@ -146,15 +146,18 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		result.Details = details
 
 		done <- true
+		return
 	}()
 
 	// Watch channels and context for timeout
 	for {
 		select {
 		case <-done:
+			close(done)
 			out <- result
 			return
 		case <-failed:
+			close(failed)
 			result.Passed = false
 			out <- result
 			return

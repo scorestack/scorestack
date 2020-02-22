@@ -151,10 +151,12 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 	for {
 		select {
 		case <-done:
+			close(done)
 			result.Passed = true
 			out <- result
 			return
 		case <-failed:
+			close(failed)
 			out <- result
 			return
 		case <-ctx.Done():

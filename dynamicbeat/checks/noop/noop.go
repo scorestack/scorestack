@@ -43,12 +43,16 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 	// make channel for completing the check or not
 	done := make(chan bool)
 
-	go func() { done <- true }()
+	go func() {
+		done <- true
+		return
+	}()
 
 	// Watch channels and context for timeout
 	for {
 		select {
 		case <-done:
+			close(done)
 			result.Passed = true
 			out <- result
 			return
