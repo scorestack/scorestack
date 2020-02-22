@@ -9,11 +9,7 @@
             {
                 "host": "{{.Host}}",
                 "path": "/login",
-                "https": false,
-                "port": 80,
-                "method": "GET",
                 "matchcode": true,
-                "code": 200,
                 "matchcontent": true,
                 "contentregex": "<title>Greenbone Security Assistant</title>"
             }
