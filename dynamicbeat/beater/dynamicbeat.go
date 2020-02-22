@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"runtime"
 	"sync"
 	"time"
 
@@ -135,6 +136,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 				logp.Info("Updated check definitions")
 			}
 		case <-ticker.C:
+			logp.Info("Number of go-routines: %d", runtime.NumGoroutine())
 			logp.Info("Starting a series of %d checks", len(defs))
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
 			defPass := make(chan []schema.CheckDef)
