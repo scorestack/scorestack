@@ -12,7 +12,8 @@
         "File": "{{.File}}",
         "RegexContentMatch": false,
         "ContentRegex": "{{.ContentRegex}}",
-        "HashContentMatch": true,
-        "Hash": "{{.Hash}}"
+        "HashContentMatch": false,
+        "Hash": "{{.Hash}}",
+        "Fucked": true
     }
 }
