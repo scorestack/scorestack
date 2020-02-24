@@ -1,6 +1,6 @@
 {
     "id": "icmp-cerealkiller",
-    "name": "cerealkill - ICMP",
+    "name": "cerealkiller - ICMP",
     "type": "icmp",
     "group": "${TEAM}",
     "score_weight": 1,
