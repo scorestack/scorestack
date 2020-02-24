@@ -143,7 +143,10 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 
 			// Start the goroutine
 			wg.Add(1)
-			go checks.RunChecks(defPass, &wg, pubQueue)
+			go func() {
+				defer wg.Done()
+				checks.RunChecks(defPass, pubQueue)
+			}()
 
 			// Give it the check definitions
 			defPass <- defs

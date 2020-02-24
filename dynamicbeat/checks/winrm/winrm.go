@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/masterzen/winrm"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
@@ -32,8 +33,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{
@@ -45,143 +45,121 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		CheckType:   "winrm",
 	}
 
-	// make channels for completing the check or not
-	done := make(chan bool)
-	failed := make(chan bool)
+	// Convert d.Port to int
+	port, err := strconv.Atoi(d.Port)
+	if err != nil {
+		result.Message = fmt.Sprintf("Failed to convert d.Port to int : %s", err)
+		return result
+	}
 
-	go func() {
-		// Convert d.Port to int
-		port, err := strconv.Atoi(d.Port)
-		if err != nil {
-			result.Message = fmt.Sprintf("Failed to convert d.Port to int : %s", err)
-			failed <- true
-			return
+	// Another timeout for the bois
+	params := *winrm.DefaultParameters
+	params.Timeout = "15"
+
+	// Login to winrm and create client
+	// endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
+	endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 20*time.Second)
+	client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
+	if err != nil {
+		result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
+		return result
+	}
+
+	shell, err := client.CreateShell()
+	if err != nil {
+		result.Message = fmt.Sprintf("Failed to create shell : %s", err)
+		return result
+	}
+	defer func() {
+		if closeErr := shell.Close(); closeErr != nil {
+			logp.Warn("failed to close winrm connection: %s", closeErr.Error())
 		}
-
-		// Another timeout for the bois
-		params := *winrm.DefaultParameters
-
-		// Login to winrm and create client
-		// endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
-		endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 0)
-		client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
-		if err != nil {
-			result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
-			failed <- true
-			return
-		}
-
-		shell, err := client.CreateShell()
-		if err != nil {
-			result.Message = fmt.Sprintf("Failed to create shell : %s", err)
-			failed <- true
-			return
-		}
-		defer shell.Close()
-
-		cmd, err := shell.Execute(d.Cmd)
-		if err != nil {
-			result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, err)
-			failed <- true
-			return
-		}
-
-		var test sync.WaitGroup
-		copyFunc := func(w io.Writer, r io.Reader) {
-			defer test.Done()
-			io.Copy(w, r)
-		}
-
-		bufOut := new(bytes.Buffer)
-
-		if cmd.Stdout != nil {
-			test.Add(1)
-			go copyFunc(bufOut, cmd.Stdout)
-		} else {
-			result.Message = fmt.Sprintf("Failed to get stdout from command %s : %s", d.Cmd, err)
-			failed <- true
-			return
-		}
-
-		cmd.Wait()
-		test.Wait()
-
-		// command := winrm.Powershell(d.Cmd)
-
-		// // shell := client.NewShell("ScoreStack-Shell-ID")
-		// // defer shell.Close()
-
-		// // cmdOut, err := shell.Execute(command)
-		// // defer cmdOut.Close()
-
-		// // if err != nil {
-		// // 	result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, err)
-		// // 	failed <- true
-		// // 	return
-		// // }
-
-		// // Define these for the command output
-		// bufOut := new(bytes.Buffer)
-		// bufErr := new(bytes.Buffer)
-
-		// _, err = client.Run(command, bufOut, bufErr)
-		// if err != nil {
-		// 	result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
-		// 	failed <- true
-		// 	return
-		// }
-
-		// // Check if the command errored
-		// if bufErr.String() != "" {
-		// 	result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
-		// 	failed <- true
-		// 	return
-		// }
-
-		// // Check if we matching content and the command did not error
-		// if !d.MatchContent {
-		// 	// If we make it here, no content matching, the check succeeds
-		// 	result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
-		// 	done <- true
-		// 	return
-		// }
-
-		// // Keep going if we are matching content
-		// // Create regexp
-		// regex, err := regexp.Compile(d.ContentRegex)
-		// if err != nil {
-		// 	result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
-		// 	failed <- true
-		// 	return
-		// }
-
-		// // Check if the content matches
-		// if !regex.Match(bufOut.Bytes()) {
-		// 	result.Message = fmt.Sprintf("Matching content not found")
-		// 	failed <- true
-		// 	return
-		// }
-
-		// If we reach here the check is successful
-		done <- true
 	}()
 
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			result.Passed = true
-			out <- result
-			return
-		case <-failed:
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
-		}
+	cmd, err := shell.Execute(d.Cmd)
+	if err != nil {
+		result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, err)
+		return result
 	}
+
+	var test sync.WaitGroup
+	copyFunc := func(w io.Writer, r io.Reader) {
+		defer test.Done()
+		io.Copy(w, r)
+	}
+
+	bufOut := new(bytes.Buffer)
+
+	if cmd.Stdout != nil {
+		test.Add(1)
+		go copyFunc(bufOut, cmd.Stdout)
+	} else {
+		result.Message = fmt.Sprintf("Failed to get stdout from command %s : %s", d.Cmd, err)
+		return result
+	}
+
+	cmd.Wait()
+	test.Wait()
+
+	// command := winrm.Powershell(d.Cmd)
+
+	// // shell := client.NewShell("ScoreStack-Shell-ID")
+	// // defer shell.Close()
+
+	// // cmdOut, err := shell.Execute(command)
+	// // defer cmdOut.Close()
+
+	// // if err != nil {
+	// // 	result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, err)
+	// // 	failed <- true
+	// // 	return
+	// // }
+
+	// // Define these for the command output
+	// bufOut := new(bytes.Buffer)
+	// bufErr := new(bytes.Buffer)
+
+	// _, err = client.Run(command, bufOut, bufErr)
+	// if err != nil {
+	// 	result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
+	// 	failed <- true
+	// 	return
+	// }
+
+	// // Check if the command errored
+	// if bufErr.String() != "" {
+	// 	result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
+	// 	failed <- true
+	// 	return
+	// }
+
+	// // Check if we matching content and the command did not error
+	// if !d.MatchContent {
+	// 	// If we make it here, no content matching, the check succeeds
+	// 	result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
+	// 	done <- true
+	// 	return
+	// }
+
+	// // Keep going if we are matching content
+	// // Create regexp
+	// regex, err := regexp.Compile(d.ContentRegex)
+	// if err != nil {
+	// 	result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+	// 	failed <- true
+	// 	return
+	// }
+
+	// // Check if the content matches
+	// if !regex.Match(bufOut.Bytes()) {
+	// 	result.Message = fmt.Sprintf("Matching content not found")
+	// 	failed <- true
+	// 	return
+	// }
+
+	// If we reach here the check is successful
+	result.Passed = true
+	return result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will

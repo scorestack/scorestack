@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
-	"sync"
 	"time"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/jlaffaye/ftp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"golang.org/x/crypto/sha3"
@@ -35,9 +35,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
-
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Setup result
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),
@@ -48,121 +46,93 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		CheckType:   "ftp",
 	}
 
-	// Create channels for passing or failing
-	done := make(chan bool)
-	failed := make(chan bool)
-
-	go func() {
-		// Connect to the ftp server
-		// conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port), ftp.DialWithTimeout(5*time.Second))
-		conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port))
-		if err != nil {
-			result.Message = fmt.Sprintf("Connection to %s on port %s failed : %s", d.Host, d.Port, err)
-			failed <- true
-			return
+	// Connect to the ftp server
+	conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port), ftp.DialWithContext(ctx))
+	if err != nil {
+		result.Message = fmt.Sprintf("Connection to %s on port %s failed : %s", d.Host, d.Port, err)
+		return result
+	}
+	defer func() {
+		if closeErr := conn.Quit(); closeErr != nil {
+			logp.Warn("failed to close ftp connection: %s", closeErr.Error())
 		}
-		defer conn.Quit()
-
-		// Login
-		err = conn.Login(d.Username, d.Password)
-		if err != nil {
-			result.Message = fmt.Sprintf("Login attempt with user %s failed : %s", d.Username, err)
-			failed <- true
-			return
-		}
-
-		// ***********************************************
-		if d.Fucked {
-			// Do check for cerealkiller
-			err = conn.ChangeDir(d.File)
-			if err != nil {
-				result.Message = fmt.Sprintf("Changing to directory %s failed : %s", d.File, err)
-				failed <- true
-				return
-			}
-
-			_, err := conn.CurrentDir()
-			// entries, err := conn.List("/")
-			if err != nil {
-				result.Message = fmt.Sprintf("Getting current directory %s failed : %s", d.File, err)
-				failed <- true
-				return
-			}
-
-			// If we reached here, changed dir success, check passed
-			done <- true
-			return
-		}
-		// **************
-
-		// Retrieve file contents
-		resp, err := conn.Retr(d.File)
-		if err != nil {
-			result.Message = fmt.Sprintf("Could not retrieve file %s : %s", d.File, err)
-			failed <- true
-			return
-		}
-		defer resp.Close()
-
-		content, err := ioutil.ReadAll(resp)
-		if err != nil {
-			result.Message = fmt.Sprintf("Could not read file %s contents : %s", d.File, err)
-			failed <- true
-			return
-		}
-
-		// Check if we are doing hash matching, non default
-		if d.HashContentMatch {
-			// Get the file hash
-			digest := sha3.Sum256(content)
-
-			// Check if the digest of the file matches the defined hash
-			if digestString := hex.EncodeToString(digest[:]); digestString != d.Hash {
-				result.Message = fmt.Sprintf("Incorrect hash")
-				failed <- true
-				return
-			}
-
-			// If we make it here the check was successful for matching hashes
-			done <- true
-			return
-		}
-
-		// Default, regex content matching
-		regex, err := regexp.Compile(d.ContentRegex)
-		if err != nil {
-			result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
-			failed <- true
-			return
-		}
-
-		// Check if content matches regex
-		if !regex.Match(content) {
-			result.Message = fmt.Sprintf("Matching content not found")
-			failed <- true
-			return
-		}
-
-		// If we reach here the check is successful
-		done <- true
 	}()
 
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			result.Passed = true
-			out <- result
-			return
-		case <-failed:
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
-		}
+	// Login
+	err = conn.Login(d.Username, d.Password)
+	if err != nil {
+		result.Message = fmt.Sprintf("Login attempt with user %s failed : %s", d.Username, err)
+		return result
 	}
+
+	// ***********************************************
+	if d.Fucked {
+		// Do check for cerealkiller
+		err = conn.ChangeDir(d.File)
+		if err != nil {
+			result.Message = fmt.Sprintf("Changing to directory %s failed : %s", d.File, err)
+			return result
+		}
+
+		_, err := conn.CurrentDir()
+		// entries, err := conn.List("/")
+		if err != nil {
+			result.Message = fmt.Sprintf("Getting current directory %s failed : %s", d.File, err)
+			return result
+		}
+
+		// If we reached here, changed dir success, check passed
+		result.Passed = true
+		return result
+	}
+	// **************
+
+	// Retrieve file contents
+	resp, err := conn.Retr(d.File)
+	if err != nil {
+		result.Message = fmt.Sprintf("Could not retrieve file %s : %s", d.File, err)
+		return result
+	}
+	defer resp.Close()
+
+	content, err := ioutil.ReadAll(resp)
+	if err != nil {
+		result.Message = fmt.Sprintf("Could not read file %s contents : %s", d.File, err)
+		return result
+	}
+
+	// Check if we are doing hash matching, non default
+	if d.HashContentMatch {
+		// Get the file hash
+		digest := sha3.Sum256(content)
+
+		// Check if the digest of the file matches the defined hash
+		if digestString := hex.EncodeToString(digest[:]); digestString != d.Hash {
+			result.Message = fmt.Sprintf("Incorrect hash")
+			return result
+		}
+
+		// If we make it here the check was successful for matching hashes
+		result.Passed = true
+		return result
+	}
+
+	// Default, regex content matching
+	regex, err := regexp.Compile(d.ContentRegex)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+		return result
+	}
+
+	// Check if content matches regex
+	if !regex.Match(content) {
+		result.Message = fmt.Sprintf("Matching content not found")
+		return result
+	}
+
+	// If we reach here the check is successful
+	result.Passed = true
+	return result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will

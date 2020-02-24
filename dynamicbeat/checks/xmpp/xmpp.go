@@ -5,11 +5,11 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 
 	"gosrc.io/xmpp/stanza"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"gosrc.io/xmpp"
 )
@@ -29,8 +29,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{
@@ -42,91 +41,64 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		CheckType:   "xmpp",
 	}
 
-	// Create "done" channel for timing out
-	done := make(chan bool)
+	// Create xmpp config
+	config := xmpp.Config{
+		TransportConfiguration: xmpp.TransportConfiguration{
+			Address:        fmt.Sprintf("%s:%s", d.Host, d.Port),
+			TLSConfig:      &tls.Config{InsecureSkipVerify: true},
+			ConnectTimeout: 20,
+		},
+		Jid:            fmt.Sprintf("%s@%s", d.Username, d.Host),
+		Credential:     xmpp.Password(d.Password),
+		Insecure:       d.Encrypted,
+		ConnectTimeout: 20,
+	}
 
-	// Create "failed" channel for safely failing
-	failed := make(chan bool)
+	// Create a client
+	client, err := xmpp.NewClient(config, xmpp.NewRouter(), errorHandler)
+	if err != nil {
+		result.Message = fmt.Sprintf("Creating a xmpp client failed : %s", err)
+		return result
+	}
 
-	// This method for timing out is necessary due to the library not timing out in the case
-	// of auth failures or other connection issues
-	// TODO: Make this timeout method not bad
-	go func() {
-		// Create xmpp config
-		config := xmpp.Config{
-			TransportConfiguration: xmpp.TransportConfiguration{
-				Address:   fmt.Sprintf("%s:%s", d.Host, d.Port),
-				TLSConfig: &tls.Config{InsecureSkipVerify: true},
-				// ConnectTimeout: 5,
-			},
-			Jid:        fmt.Sprintf("%s@%s", d.Username, d.Host),
-			Credential: xmpp.Password(d.Password),
-			Insecure:   d.Encrypted,
-			// ConnectTimeout: 5,
+	// Create IQ xmpp message
+	iq, err := stanza.NewIQ(stanza.Attrs{
+		Type: stanza.IQTypeGet,
+		From: d.Host,
+		To:   "localhost",
+		Id:   "ScoreStack-check",
+	})
+	if err != nil {
+		result.Message = fmt.Sprintf("Creating IQ message failed : %s", err)
+		return result
+	}
+
+	// Set Disco as the payload of IQ
+	disco := iq.DiscoInfo()
+	iq.Payload = disco
+
+	// Connect the client
+	err = client.Connect()
+	if err != nil {
+		result.Message = fmt.Sprintf("Connecting to %s failed : %s", d.Host, err)
+		return result
+	}
+	defer func() {
+		if closeErr := client.Disconnect(); closeErr != nil {
+			logp.Warn("failed to close xmpp connection: %s", closeErr.Error())
 		}
-
-		// Create a client
-		client, err := xmpp.NewClient(config, xmpp.NewRouter(), errorHandler)
-		if err != nil {
-			result.Message = fmt.Sprintf("Creating a xmpp client failed : %s", err)
-			failed <- true
-			return
-		}
-
-		// Create IQ xmpp message
-		iq, err := stanza.NewIQ(stanza.Attrs{
-			Type: stanza.IQTypeGet,
-			From: d.Host,
-			To:   "localhost",
-			Id:   "ScoreStack-check",
-		})
-		if err != nil {
-			result.Message = fmt.Sprintf("Creating IQ message failed : %s", err)
-			failed <- true
-			return
-		}
-
-		// Set Disco as the payload of IQ
-		disco := iq.DiscoInfo()
-		iq.Payload = disco
-
-		// Connect the client
-		err = client.Connect()
-		if err != nil {
-			result.Message = fmt.Sprintf("Connecting to %s failed : %s", d.Host, err)
-			failed <- true
-			return
-		}
-		defer client.Disconnect()
-
-		// Send the IQ message
-		err = client.Send(iq)
-		if err != nil {
-			result.Message = fmt.Sprintf("Sending IQ message to %s failed %s", d.Host, err)
-			failed <- true
-			return
-		}
-
-		// If we make it here the check should pass
-		done <- true
 	}()
 
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			result.Passed = true
-			out <- result
-			return
-		case <-failed:
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
-		}
+	// Send the IQ message
+	err = client.Send(iq)
+	if err != nil {
+		result.Message = fmt.Sprintf("Sending IQ message to %s failed %s", d.Host, err)
+		return result
 	}
+
+	// If we make it here the check should pass
+	result.Passed = true
+	return result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will

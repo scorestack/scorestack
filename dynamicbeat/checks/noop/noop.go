@@ -3,9 +3,7 @@ package noop
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
@@ -22,8 +20,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check.
-func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- schema.CheckResult) {
-	defer wg.Done()
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),
@@ -40,24 +37,9 @@ func (d *Definition) Run(ctx context.Context, wg *sync.WaitGroup, out chan<- sch
 		},
 	}
 
-	// make channel for completing the check or not
-	done := make(chan bool)
+	result.Passed = true
+	return result
 
-	go func() { done <- true }()
-
-	// Watch channels and context for timeout
-	for {
-		select {
-		case <-done:
-			result.Passed = true
-			out <- result
-			return
-		case <-ctx.Done():
-			result.Message = fmt.Sprintf("Timeout via context : %s", ctx.Err())
-			out <- result
-			return
-		}
-	}
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
