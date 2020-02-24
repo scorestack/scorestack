@@ -1,9 +1,10 @@
 package main
 
 import (
+	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
-
-	"github.com/pkg/profile"
 
 	"github.com/s-newman/scorestack/dynamicbeat/cmd"
 
@@ -11,7 +12,10 @@ import (
 )
 
 func run() error {
-	defer profile.Start(profile.ThreadcreationProfile).Stop()
+	// defer profile.Start(profile.ThreadcreationProfile).Stop()
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
 	return cmd.RootCmd.Execute()
 }
 
