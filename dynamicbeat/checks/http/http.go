@@ -67,6 +67,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	client := &http.Client{
 		Jar: cookieJar,
 		Transport: &http.Transport{
+			IdleConnTimeout: 10 * time.Second,
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: !d.Verify,
 			},
