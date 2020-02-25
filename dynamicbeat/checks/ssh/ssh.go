@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/elastic/beats/libbeat/logp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"golang.org/x/crypto/ssh"
 )
@@ -59,7 +58,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 	defer func() {
 		if closeErr := client.Close(); closeErr != nil {
-			logp.Warn("failed to close ssh connection: %s", closeErr.Error())
+			// logp.Warn("failed to close ssh connection: %s", closeErr.Error())
 		}
 	}()
 
@@ -71,7 +70,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 	defer func() {
 		if closeErr := session.Close(); closeErr != nil {
-			logp.Warn("failed to close ssh session connection: %s", closeErr.Error())
+			// logp.Warn("failed to close ssh session connection: %s", closeErr.Error())
 		}
 	}()
 
