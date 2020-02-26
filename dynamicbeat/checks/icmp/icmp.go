@@ -44,7 +44,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Send ping
 	pinger.Count = d.Count
-	pinger.Timeout = 5 * time.Second
+	pinger.Timeout = 25 * time.Second
 	pinger.Run()
 
 	stats := pinger.Statistics()
