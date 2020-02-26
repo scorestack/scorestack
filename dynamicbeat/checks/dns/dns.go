@@ -41,8 +41,12 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	fqdn := dns.Fqdn(d.Fqdn)
 	msg.SetQuestion(fqdn, dns.TypeA)
 
+	// Make it obey timeout via deadline
+	deadctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(20*time.Second))
+	defer cancel()
+
 	// Send the query
-	in, err := dns.ExchangeContext(ctx, &msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
+	in, err := dns.ExchangeContext(deadctx, &msg, fmt.Sprintf("%s:%s", d.Server, d.Port))
 	if err != nil {
 		result.Message = fmt.Sprintf("Problem sending query to %s : %s", d.Server, err)
 		return result
