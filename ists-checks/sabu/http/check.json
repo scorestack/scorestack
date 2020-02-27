@@ -10,7 +10,7 @@
                 "host": "{{.Host}}",
                 "path": "/login",
                 "https": true,
-                "port": 3333,
+                "port": 443,
                 "method": "GET",
                 "matchcode": true,
                 "matchcontent": true,
