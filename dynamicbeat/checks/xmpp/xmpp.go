@@ -9,7 +9,6 @@ import (
 
 	"gosrc.io/xmpp/stanza"
 
-	"github.com/elastic/beats/libbeat/logp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"gosrc.io/xmpp"
 )
@@ -85,7 +84,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 	defer func() {
 		if closeErr := client.Disconnect(); closeErr != nil {
-			logp.Warn("failed to close xmpp connection: %s", closeErr.Error())
+			// logp.Warn("failed to close xmpp connection: %s", closeErr.Error())
 		}
 	}()
 

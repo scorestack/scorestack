@@ -38,11 +38,11 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 	queue := make(chan schema.CheckResult, len(defs))
 
 	// Iterate over each check
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	var wg sync.WaitGroup
 	for _, def := range defs {
-		checkName := def.Name
+		// checkName := def.Name
 		check := unpackDef(def)
 
 		// Start check goroutine
@@ -50,9 +50,9 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 		go func() {
 			defer wg.Done()
 
-			checkStart := time.Now()
+			// checkStart := time.Now()
 			queue <- check.Run(ctx)
-			logp.Info("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
+			// logp.Info("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
 		}()
 	}
 	// Send definitions back through channel

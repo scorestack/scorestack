@@ -8,7 +8,6 @@ import (
 	"net"
 	"time"
 
-	"github.com/elastic/beats/libbeat/logp"
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
@@ -63,7 +62,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 	defer func() {
 		if closeErr := c.Logout(); closeErr != nil {
-			logp.Warn("failed to close imap connection: %s", closeErr.Error())
+			// logp.Warn("failed to close imap connection: %s", closeErr.Error())
 		}
 	}()
 
