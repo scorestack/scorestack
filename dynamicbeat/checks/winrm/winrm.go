@@ -53,7 +53,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Another timeout for the bois
 	params := *winrm.DefaultParameters
-	params.Timeout = "15"
+	params.Timeout = "22"
 
 	// Login to winrm and create client
 	// endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)

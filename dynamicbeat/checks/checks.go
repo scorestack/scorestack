@@ -38,7 +38,7 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 	queue := make(chan schema.CheckResult, len(defs))
 
 	// Iterate over each check
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
 	var wg sync.WaitGroup
 	for _, def := range defs {
