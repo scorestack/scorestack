@@ -3,7 +3,7 @@
 # Loop through all teams passed as arguments
 for TEAM in "${@}"
 do
-  TEAM_NUM=$(echo $TEAM | sed "s/[a-zA-Z_]//g")
+  TEAM_NUM=$(echo $TEAM | sed "s/[a-zA-Z_]//g" | sed "s/^0//g")
   # Add example checks for the team
   for check in $(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
   do
