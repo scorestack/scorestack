@@ -29,7 +29,7 @@
                 "body": "orderid={{.SavedValue}}&search=Search+Orders",
                 "matchcode": true,
                 "matchcontent": true,
-                "contentregex": "<h4> Order Info </h4><p>Order id: {{.SavedValue}}</p><p>Name on order: {{.FirstName}} {{.LastName}}</p><p>Contact email: .+</p><p>Product ID: {{.ProdID}}</p><p>Product Name: .+</p><p>Credit Card Number: {{.CCNum}}</p><p>CVV/CVC Number: {{.CVV}</p>"
+                "contentregex": "<h4> Order Info </h4><p>Order id: {{.SavedValue}}</p><p>Name on order: {{.FirstName}} {{.LastName}}</p><p>Contact email: .+</p><p>Product ID: {{.ProdID}}</p><p>Product Name: .+</p><p>Credit Card Number: {{.CCNum}}</p><p>CVV/CVC Number: {{.CVV}}</p>"
             }
         ]
     }
