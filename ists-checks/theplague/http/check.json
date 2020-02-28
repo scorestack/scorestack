@@ -9,7 +9,7 @@
             {
                 "host": "{{.Host}}",
                 "path": "/profile",
-                "port": 80,
+                "port": 5000,
                 "method": "POST",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -19,7 +19,7 @@
             {
                 "host": "{{.Host}}",
                 "path": "/memes",
-                "port": 80,
+                "port": 5000,
                 "method": "GET",
                 "matchcode": true,
                 "code": 200,
