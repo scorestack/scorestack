@@ -55,6 +55,7 @@ do
 done
 
 # Clean up
-rm check.tmp.json
-rm generic-check.tmp.json
-rm tmp-dashboard.json
+rm -f check.tmp.json
+rm -f generic-check.tmp.json
+rm -f admin-attribs.tmp.json
+rm -f tmp-dashboard.json
