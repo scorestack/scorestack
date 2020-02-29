@@ -75,7 +75,9 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		}
 	}()
 
-	cmd, err := shell.Execute(d.Cmd)
+	powershellCmd := winrm.Powershell(d.Cmd)
+
+	cmd, err := shell.Execute(powershellCmd)
 	if err != nil {
 		result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, err)
 		return result
