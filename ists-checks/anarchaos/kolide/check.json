@@ -33,7 +33,7 @@
                 },
                 "matchcode": true,
                 "matchcontent": true,
-                "contentregex": "\"online\": {{.OnlineHostCount}},"
+                "contentregex": "\"count\": {{.HostCount}},"
             }
         ]
     }
