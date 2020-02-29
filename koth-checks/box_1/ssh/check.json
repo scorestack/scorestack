@@ -5,12 +5,12 @@
     "group": "koth",
     "score_weight": 1,
     "definition": {
-        "Host": "{{.Host}}",
-        "Port": "{{.Port}}",
-        "Username": "{{.Username}}",
-        "Password": "{{.Password}}",
-        "Cmd": "{{.Cmd}}",
+        "Host": "172.20.0.71",
+        "Port": "22",
+        "Username": "whiteteam",
+        "Password": "P@ssw0rd-123!",
+        "Cmd": "cat /etc/motd",
         "MatchContent": true,
-        "ContentRegex": "{{.ContentRegex}}"
+        "ContentRegex": "KOTH-TEAM{${TEAM}}"
     }
 }

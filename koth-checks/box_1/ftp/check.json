@@ -5,12 +5,12 @@
     "group": "koth",
     "score_weight": 1,
     "definition": {
-        "Host": "{{.Host}}",
-        "Port": "{{.Port}}",
-        "Username": "{{.Username}}",
-        "Password": "{{.Password}}",
-        "File": "{{.File}}",
+        "Host": "172.20.0.71",
+        "Port": "21",
+        "Username": "whiteteam",
+        "Password": "P@ssw0rd-123!",
+        "File": "/home/anonymous/mankdemes/ownership.txt",
         "RegexContentMatch": true,
-        "ContentRegex": "{{.ContentRegex}}"
+        "ContentRegex": "KOTH-TEAM{${TEAM}}"
     }
 }

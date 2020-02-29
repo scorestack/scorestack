@@ -1,8 +1,0 @@
-{
-    "Host": "172.20.0.71",
-    "Port": "21",
-    "Username": "whiteteam",
-    "Password": "P@ssw0rd-123!",
-    "File": "/home/anonymous/mankdemes/ownership.txt",
-    "ContentRegex": "KOTH-TEAM{${KOTH_TEAM}}"
-}

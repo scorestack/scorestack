@@ -1,8 +1,0 @@
-{
-    "Host": "172.20.0.71",
-    "Port": "22",
-    "Username": "whiteteam",
-    "Password": "P@ssw0rd-123!",
-    "Cmd": "cat /etc/motd",
-    "ContentRegex": "KOTH-TEAM{${KOTH_TEAM}}"
-}

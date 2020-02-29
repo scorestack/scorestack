@@ -7,7 +7,7 @@
     "definition": {
         "requests": [
             {
-                "host": "{{.Host}}",
+                "host": "172.20.0.71",
                 "path": "/maintainer.html",
                 "https": false,
                 "port": 80,
@@ -15,7 +15,7 @@
                 "matchcode": true,
                 "code": 200,
                 "MatchContent": true,
-                "ContentRegex": "KOTH-TEAM{${KOTH_TEAM}}"
+                "ContentRegex": "KOTH-TEAM{${TEAM}}"
             }
         ]
     }
