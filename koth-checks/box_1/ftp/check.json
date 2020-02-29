@@ -1,0 +1,16 @@
+{
+    "id": "ftp-KOTH",
+    "name": "KOTH - FTP",
+    "type": "ftp",
+    "group": "koth",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Port": "{{.Port}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "File": "{{.File}}",
+        "RegexContentMatch": true,
+        "ContentRegex": "{{.ContentRegex}}"
+    }
+}
