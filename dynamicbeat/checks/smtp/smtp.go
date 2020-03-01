@@ -88,6 +88,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		if err != nil {
 			result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
 			done <- true
+			return
 		}
 		defer func() {
 			if closeErr := conn.Close(); closeErr != nil {
@@ -100,6 +101,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		if err != nil {
 			result.Message = fmt.Sprintf("Created smtp client to host %s failed : %s", d.Host, err)
 			done <- true
+			return
 		}
 		defer func() {
 			if closeErr := c.Quit(); closeErr != nil {
@@ -112,6 +114,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		if err != nil {
 			result.Message = fmt.Sprintf("Login to %s failed : %s", d.Host, err)
 			done <- true
+			return
 		}
 
 		// Set the sender
@@ -119,6 +122,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		if err != nil {
 			result.Message = fmt.Sprintf("Setting sender %s failed : %s", d.Sender, err)
 			done <- true
+			return
 		}
 
 		// Set the reciver
@@ -126,6 +130,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		if err != nil {
 			result.Message = fmt.Sprintf("Setting reciever %s failed : %s", d.Reciever, err)
 			done <- true
+			return
 		}
 
 		// Send the email body.
@@ -133,6 +138,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		if err != nil {
 			result.Message = fmt.Sprintf("Creating writer failed : %s", err)
 			done <- true
+			return
 		}
 		defer wc.Close()
 
@@ -141,6 +147,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		if err != nil {
 			result.Message = fmt.Sprintf("Writing mail body failed : %s", err)
 			done <- true
+			return
 		}
 
 		result.Passed = true
