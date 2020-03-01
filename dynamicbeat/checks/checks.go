@@ -68,7 +68,7 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 		for {
 			if names == nil {
 				break
-			} else if len(names) > 0 {
+			} else if len(names) == 0 {
 				break
 			} else {
 				time.Sleep(30 * time.Second)
