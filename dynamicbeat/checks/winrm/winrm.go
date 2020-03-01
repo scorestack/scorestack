@@ -167,6 +167,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 		// If we reach here the check is successful
 		result.Passed = true
+		return
 	}()
 
 	for {
