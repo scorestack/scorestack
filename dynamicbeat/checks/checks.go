@@ -72,7 +72,7 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 				break
 			} else {
 				time.Sleep(30 * time.Second)
-				logp.Info("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
+				// logp.Info("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
 			}
 		}
 		logp.Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
