@@ -111,6 +111,13 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 	// Start running checks
 	ticker := time.NewTicker(bt.config.Period)
 	updateTicker := time.NewTicker(bt.config.UpdatePeriod)
+
+	// Buffered channel for async updating checks
+	updateChan := make(chan []schema.CheckDef, 1)
+
+	// Buffered channel for making sure only one async check update runs at a time
+	runUpdate := make(chan bool, 1)
+	runUpdate <- true
 	var wg sync.WaitGroup
 	for {
 		select {
@@ -126,18 +133,41 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			close(published)
 			return nil
 		case <-updateTicker.C:
-			logp.Info("Updating check definitions")
 			// Update the check definitions
-			tmpdefs, err := esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
-			if err != nil {
-				logp.Info("Failed to update check definitions : %s", err)
-			} else {
-				defs = tmpdefs
-				logp.Info("Updated check definitions")
+			select {
+			case <-runUpdate:
+				logp.Info("Updating check definitions")
+				go func() {
+					tmpdefs, err := esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
+					if err != nil {
+						logp.Info("Failed to update check definitions : %s", err)
+					} else {
+						updateChan <- tmpdefs
+						logp.Info("Updated check definitions")
+					}
+					runUpdate <- true
+				}()
+			default:
+				logp.Info("Skipping check definition update - checks are currently being updated")
 			}
+			// tmpdefs, err := esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
+			// if err != nil {
+			// 	logp.Info("Failed to update check definitions : %s", err)
+			// } else {
+			// 	defs = tmpdefs
+			// 	logp.Info("Updated check definitions")
+			// }
 		case <-ticker.C:
 			logp.Info("Number of go-routines: %d", runtime.NumGoroutine())
-			logp.Info("Starting a series of %d checks", len(defs))
+			// Attempt to pull updated checks
+			select {
+			case updatedDefs := <-updateChan:
+				defs = updatedDefs
+				logp.Info("Starting a series of %d checks with updated check definitions", len(defs))
+			default:
+				logp.Info("Starting a series of %d checks", len(defs))
+			}
+
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
 			defPass := make(chan []schema.CheckDef)
 

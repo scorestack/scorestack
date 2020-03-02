@@ -13,7 +13,7 @@
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
-                "body": "firstname=Joe&lastname=Biden&email=press%40joebiden.com&prodid=1&ccnum=1337&cvv=420&submit=Submit",
+                "body": "firstname={{.FirstName}}&lastname={{.LastName}}&email={{.Email}}&prodid={{.ProdID}}&ccnum={{.CCNum}}&cvv={{.CVV}}&submit=Submit",
                 "matchcode": true,
                 "matchcontent": true,
                 "contentregex": "<h4>Your order number is: </h4><h4 id=\"newordernumber\">(\\d+)</h4>",
@@ -29,7 +29,7 @@
                 "body": "orderid={{.SavedValue}}&search=Search+Orders",
                 "matchcode": true,
                 "matchcontent": true,
-                "contentregex": "<h4> Order Info </h4><p>Order id: {{.SavedValue}}</p><p>Name on order: Joe Biden</p><p>Contact email: press@joebiden.com</p><p>Product ID: 1</p><p>Product Name: Stolen Government Documents</p><p>Credit Card Number: 1337</p><p>CVV/CVC Number: 420</p>"
+                "contentregex": "<h4> Order Info </h4><p>Order id: {{.SavedValue}}</p><p>Name on order: {{.FirstName}} {{.LastName}}</p><p>Contact email: .+</p><p>Product ID: {{.ProdID}}</p><p>Product Name: .+</p><p>Credit Card Number: {{.CCNum}}</p><p>CVV/CVC Number: {{.CVV}}</p>"
             }
         ]
     }

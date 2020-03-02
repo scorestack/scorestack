@@ -43,17 +43,22 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Send ping
-	pinger.Count = d.Count
+	pinger.Count = 3
 	pinger.Timeout = 25 * time.Second
 	pinger.Run()
 
 	stats := pinger.Statistics()
 
-	// Check for failure of ICMP
-	if stats.PacketsRecv != d.Count {
+	if stats.PacketLoss >= 70.0 {
 		result.Message = fmt.Sprintf("FAILED: Not all pings made it back! Received %d out of %d", stats.PacketsRecv, stats.PacketsSent)
 		return result
 	}
+
+	// Check for failure of ICMP
+	// if stats.PacketsRecv != d.Count {
+	// 	result.Message = fmt.Sprintf("FAILED: Not all pings made it back! Received %d out of %d", stats.PacketsRecv, stats.PacketsSent)
+	// 	return result
+	// }
 
 	// If we make it here the check passes
 	result.Passed = true

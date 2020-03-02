@@ -33,16 +33,19 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 
 	// Recieve definitions from channel
 	defs := <-defPass
+	logp.Info("Recieved defs")
 
 	// Prepare event queue
 	queue := make(chan schema.CheckResult, len(defs))
 
 	// Iterate over each check
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
+	names := make(map[string]bool)
 	var wg sync.WaitGroup
 	for _, def := range defs {
 		// checkName := def.Name
+		names[def.ID] = false
 		check := unpackDef(def)
 
 		// Start check goroutine
@@ -59,9 +62,21 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 	defPass <- defs
 
 	// Wait for checks to finish
-	wg.Wait()
-	logp.Info("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
-	close(queue)
+	defer wg.Wait()
+	// logp.Info("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
+	go func() {
+		for {
+			if names == nil {
+				break
+			} else if len(names) == 0 {
+				break
+			} else {
+				time.Sleep(30 * time.Second)
+				// logp.Info("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
+			}
+		}
+		logp.Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
+	}()
 	for result := range queue {
 		// Publish check results
 		event := beat.Event{
@@ -79,6 +94,7 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 			},
 		}
 		pubQueue <- event
+		delete(names, result.ID)
 	}
 }
 

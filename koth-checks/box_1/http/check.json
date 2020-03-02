@@ -1,0 +1,22 @@
+{
+    "id": "http-koth",
+    "name": "Koth - HTTP",
+    "type": "http",
+    "group": "koth",
+    "score_weight": 1,
+    "definition": {
+        "requests": [
+            {
+                "host": "172.20.0.71",
+                "path": "/maintainer.html",
+                "https": false,
+                "port": 80,
+                "method": "GET",
+                "matchcode": true,
+                "code": 200,
+                "MatchContent": true,
+                "ContentRegex": "KOTH-TEAM{${TEAM}}"
+            }
+        ]
+    }
+}

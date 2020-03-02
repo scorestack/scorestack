@@ -1,0 +1,16 @@
+{
+    "id": "ssh-KOTH",
+    "name": "Koth - SSH",
+    "type": "ssh",
+    "group": "koth",
+    "score_weight": 1,
+    "definition": {
+        "Host": "172.20.0.71",
+        "Port": "22",
+        "Username": "whiteteam",
+        "Password": "P@ssw0rd-123!",
+        "Cmd": "cat /etc/motd",
+        "MatchContent": true,
+        "ContentRegex": "KOTH-TEAM{${TEAM}}"
+    }
+}

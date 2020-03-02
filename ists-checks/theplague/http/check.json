@@ -1,0 +1,31 @@
+{
+    "id": "http-theplague",
+    "name": "theplague - HTTP",
+    "type": "http",
+    "group": "${TEAM}",
+    "score_weight": 1,
+    "definition": {
+        "requests": [
+            {
+                "host": "{{.Host}}",
+                "path": "/profile",
+                "port": 5000,
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                "body": "name=ScoreStack"
+            },
+            {
+                "host": "{{.Host}}",
+                "path": "/memes",
+                "port": 5000,
+                "method": "GET",
+                "matchcode": true,
+                "code": 200,
+                "matchcontent": true,
+                "contentregex": "<img src=\"/static/angry.png\">"
+            }
+        ]
+    }
+}

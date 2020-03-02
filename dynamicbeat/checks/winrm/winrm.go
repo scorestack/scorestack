@@ -51,9 +51,12 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		return result
 	}
 
+	// CHECK REAPER 3000
+	// done := make(chan bool)
+	// go func() {
 	// Another timeout for the bois
 	params := *winrm.DefaultParameters
-	params.Timeout = "15"
+	params.Timeout = "22"
 
 	// Login to winrm and create client
 	// endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
@@ -61,12 +64,14 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
 	if err != nil {
 		result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
+		// done <- true
 		return result
 	}
 
 	shell, err := client.CreateShell()
 	if err != nil {
 		result.Message = fmt.Sprintf("Failed to create shell : %s", err)
+		// done <- true
 		return result
 	}
 	defer func() {
@@ -75,9 +80,12 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		}
 	}()
 
-	cmd, err := shell.Execute(d.Cmd)
+	powershellCmd := winrm.Powershell(d.Cmd)
+
+	cmd, err := shell.Execute(powershellCmd)
 	if err != nil {
 		result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, err)
+		// done <- true
 		return result
 	}
 
@@ -85,6 +93,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	copyFunc := func(w io.Writer, r io.Reader) {
 		defer test.Done()
 		io.Copy(w, r)
+		return
 	}
 
 	bufOut := new(bytes.Buffer)
@@ -94,6 +103,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		go copyFunc(bufOut, cmd.Stdout)
 	} else {
 		result.Message = fmt.Sprintf("Failed to get stdout from command %s : %s", d.Cmd, err)
+		// done <- true
 		return result
 	}
 
@@ -158,7 +168,19 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// If we reach here the check is successful
 	result.Passed = true
+	// done <- true
 	return result
+	// }()
+
+	// for {
+	// 	select {
+	// 	case <-ctx.Done():
+	// 		result.Message = fmt.Sprintf("Timeout limit reached: %s", ctx.Err())
+	// 		return result
+	// 	case <-done:
+	// 		return result
+	// 	}
+	// }
 }
 
 // Init the check using a known ID and name. The rest of the check fields will

@@ -72,77 +72,96 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		InsecureSkipVerify: true,
 	}
 
-	// Declare these for the below if block
-	var conn net.Conn
-	var err error
+	// KILL THIS CHECK!
+	done := make(chan bool)
 
-	if d.Encrypted {
-		conn, err = tls.DialWithDialer(&dialer, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), &tlsConfig)
-	} else {
-		conn, err = dialer.DialContext(ctx, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
-	}
-	if err != nil {
-		result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
-		return result
-	}
-	defer func() {
-		if closeErr := conn.Close(); closeErr != nil {
-			// logp.Warn("failed to close smtp connection: %s", closeErr.Error())
+	go func() {
+		// Declare these for the below if block
+		var conn net.Conn
+		var err error
+
+		if d.Encrypted {
+			conn, err = tls.DialWithDialer(&dialer, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), &tlsConfig)
+		} else {
+			conn, err = dialer.DialContext(ctx, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
 		}
+		if err != nil {
+			result.Message = fmt.Sprintf("Connecting to server %s failed : %s", d.Host, err)
+			done <- true
+			return
+		}
+		defer func() {
+			if closeErr := conn.Close(); closeErr != nil {
+				// logp.Warn("failed to close smtp connection: %s", closeErr.Error())
+			}
+		}()
+
+		// Create smtp client
+		c, err := smtp.NewClient(conn, d.Host)
+		if err != nil {
+			result.Message = fmt.Sprintf("Created smtp client to host %s failed : %s", d.Host, err)
+			done <- true
+			return
+		}
+		defer func() {
+			if closeErr := c.Quit(); closeErr != nil {
+				// logp.Warn("failed to close smtp client connection: %s", closeErr.Error())
+			}
+		}()
+
+		// Login
+		err = c.Auth(auth)
+		if err != nil {
+			result.Message = fmt.Sprintf("Login to %s failed : %s", d.Host, err)
+			done <- true
+			return
+		}
+
+		// Set the sender
+		err = c.Mail(d.Sender)
+		if err != nil {
+			result.Message = fmt.Sprintf("Setting sender %s failed : %s", d.Sender, err)
+			done <- true
+			return
+		}
+
+		// Set the reciver
+		err = c.Rcpt(d.Reciever)
+		if err != nil {
+			result.Message = fmt.Sprintf("Setting reciever %s failed : %s", d.Reciever, err)
+			done <- true
+			return
+		}
+
+		// Send the email body.
+		wc, err := c.Data()
+		if err != nil {
+			result.Message = fmt.Sprintf("Creating writer failed : %s", err)
+			done <- true
+			return
+		}
+		defer wc.Close()
+
+		// Write the body
+		_, err = fmt.Fprintf(wc, d.Body)
+		if err != nil {
+			result.Message = fmt.Sprintf("Writing mail body failed : %s", err)
+			done <- true
+			return
+		}
+
+		result.Passed = true
 	}()
 
-	// Create smtp client
-	c, err := smtp.NewClient(conn, d.Host)
-	if err != nil {
-		result.Message = fmt.Sprintf("Created smtp client to host %s failed : %s", d.Host, err)
-		return result
-	}
-	defer func() {
-		if closeErr := c.Quit(); closeErr != nil {
-			// logp.Warn("failed to close smtp client connection: %s", closeErr.Error())
+	for {
+		select {
+		case <-ctx.Done():
+			result.Message = fmt.Sprintf("Timeout limit reached: %s", ctx.Err())
+			return result
+		case <-done:
+			return result
 		}
-	}()
-
-	// Login
-	err = c.Auth(auth)
-	if err != nil {
-		result.Message = fmt.Sprintf("Login to %s failed : %s", d.Host, err)
-		return result
 	}
-
-	// Set the sender
-	err = c.Mail(d.Sender)
-	if err != nil {
-		result.Message = fmt.Sprintf("Setting sender %s failed : %s", d.Sender, err)
-		return result
-	}
-
-	// Set the reciver
-	err = c.Rcpt(d.Reciever)
-	if err != nil {
-		result.Message = fmt.Sprintf("Setting reciever %s failed : %s", d.Reciever, err)
-		return result
-	}
-
-	// Send the email body.
-	wc, err := c.Data()
-	if err != nil {
-		result.Message = fmt.Sprintf("Creating writer failed : %s", err)
-		return result
-	}
-	defer wc.Close()
-
-	// Write the body
-	_, err = fmt.Fprintf(wc, d.Body)
-	if err != nil {
-		result.Message = fmt.Sprintf("Writing mail body failed : %s", err)
-		return result
-	}
-
-	// If we make it here the check succeeds
-	result.Passed = true
-	return result
-
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
