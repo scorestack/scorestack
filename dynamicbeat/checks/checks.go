@@ -28,7 +28,7 @@ import (
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
+func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 	start := time.Now()
 
 	// Recieve definitions from channel
@@ -98,7 +98,7 @@ func RunChecks(defPass chan []schema.CheckDef, pubQueue chan<- beat.Event) {
 	}
 }
 
-func unpackDef(c schema.CheckDef) schema.Check {
+func unpackDef(c schema.CheckConfig) schema.Check {
 	// Render any template strings in the definition
 	var renderedJSON []byte
 	templ := template.Must(template.New("definition").Parse(string(c.Definition)))

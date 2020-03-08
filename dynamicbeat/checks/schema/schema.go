@@ -13,9 +13,10 @@ type Check interface {
 	Init(id string, name string, group string, scoreWeight float64, def []byte) error
 }
 
-// A CheckDef is an untemplated representation of a check. In this format, the
-// definition is represented as a JSON string.
-type CheckDef struct {
+// CheckConfig contains the generic metadata about a check that all check types
+// must have. It also includes the untemplated check-specific definition JSON
+// string and any related attributes.
+type CheckConfig struct {
 	ID          string
 	Name        string
 	Type        string

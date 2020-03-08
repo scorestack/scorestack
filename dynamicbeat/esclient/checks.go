@@ -12,8 +12,8 @@ import (
 
 // UpdateCheckDefs will re-read all check definitions from a single index and
 // load the related attributes for each check.
-func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckDef, error) {
-	results := make([]schema.CheckDef, 0)
+func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, error) {
+	results := make([]schema.CheckConfig, 0)
 
 	// Get list of checks
 	checks, err := GetAllDocuments(c, i)
@@ -35,7 +35,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckDef, erro
 			return nil, fmt.Errorf("Error encoding definition as JSON: %s", err)
 		}
 
-		result := schema.CheckDef{
+		result := schema.CheckConfig{
 			ID:          checkMap["id"].(string),
 			Name:        checkMap["name"].(string),
 			Type:        checkMap["type"].(string),
