@@ -31,7 +31,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, result schema.CheckResult) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResult) {
 	// Setup result
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),

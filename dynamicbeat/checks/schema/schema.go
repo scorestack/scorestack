@@ -3,14 +3,13 @@ package schema
 import (
 	"context"
 	"fmt"
-	"time"
 )
 
 // A Check represents the configuration required to verify the operation of a
 // single network service.
 type Check interface {
 	GetConfig() CheckConfig
-	Run(ctx context.Context, result CheckResult) CheckResult
+	Run(ctx context.Context, sendResult chan<- CheckResult)
 	Init(config CheckConfig, def []byte) error
 }
 
@@ -31,17 +30,14 @@ type CheckConfig struct {
 	Attribs     map[string]string
 }
 
-// CheckResult : Information about the results of executing a check.
+// A CheckResult contains information on how a check finished - if it passed or
+// failed, and if it failed, why it may have failed. Optionally, a check may
+// populate the Details map with additional information about the check's
+// execution.
 type CheckResult struct {
-	Timestamp   time.Time
-	ID          string
-	Name        string
-	Group       string
-	ScoreWeight float64
-	CheckType   string
-	Passed      bool
-	Message     string
-	Details     map[string]string
+	Passed  bool
+	Message string
+	Details map[string]string
 }
 
 // A ValidationError represents an issue with a check definition.

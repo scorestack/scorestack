@@ -25,17 +25,10 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, result schema.CheckResult) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResult) {
 
 	// Set up result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "ssh",
-	}
+	result := schema.CheckResult{}
 
 	// Config SSH client
 	config := &ssh.ClientConfig{

@@ -148,3 +148,20 @@ func unpackDef(config schema.CheckConfig) schema.Check {
 
 	return def
 }
+
+func runCheck(ctx context.Context, check schema.Check) schema.CheckResult {
+	// Initialize CheckResult
+	result := schema.CheckResult{
+		Timestamp:   time.Now(),
+		ID:          check.Config.ID,
+		Name:        check.Config.Name,
+		Group:       check.Config.Group,
+		ScoreWeight: check.Config.ScoreWeight,
+		CheckType:   check.Config.Type,
+	}
+
+	// Set up channel to recieve the pass/fail value, the message, and any
+	// details from the check.
+	recieveResults := make(chan (bool, string, map[string]string))
+
+}
