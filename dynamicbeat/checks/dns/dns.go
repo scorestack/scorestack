@@ -22,7 +22,7 @@ type Definition struct {
 
 // Run a single instance of the check
 // For now we only support A record querries
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context, result schema.CheckResult) schema.CheckResult {
 	// Setup result
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),

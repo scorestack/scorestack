@@ -26,7 +26,7 @@ type Definition struct {
 
 // Run a single instance of the check
 // We are only supporting the listing of mailboxes as a check currently
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context, result schema.CheckResult) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{

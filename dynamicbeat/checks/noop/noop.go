@@ -17,7 +17,7 @@ type Definition struct {
 }
 
 // Run a single instance of the check.
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context, result schema.CheckResult) schema.CheckResult {
 
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),

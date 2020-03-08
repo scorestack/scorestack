@@ -43,7 +43,7 @@ type Request struct {
 }
 
 // Run a single instance of the check.
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context, result schema.CheckResult) schema.CheckResult {
 
 	// Set up result
 	result := schema.CheckResult{
