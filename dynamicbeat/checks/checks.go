@@ -149,19 +149,42 @@ func unpackDef(config schema.CheckConfig) schema.Check {
 	return def
 }
 
-func runCheck(ctx context.Context, check schema.Check) schema.CheckResult {
-	// Initialize CheckResult
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          check.Config.ID,
-		Name:        check.Config.Name,
-		Group:       check.Config.Group,
-		ScoreWeight: check.Config.ScoreWeight,
-		CheckType:   check.Config.Type,
+func runCheck(ctx context.Context, check schema.Check) beat.Event {
+	// Initialize the event to be published
+	event := beat.Event{
+		Timestamp: time.Now(),
+		Fields: common.MapStr{
+			"type": "dynamicbeat",
+			"id": check.GetConfig().ID,
+			"name": check.GetConfig().Name,
+			"check_type": check.GetConfig().Type,
+			"group": check.GetConfig().Group,
+			"score_weight": check.GetConfig().ScoreWeight,
+			"passed": false,
+			"message": "Check timed out",
+			"details": nil,
+		}
 	}
 
-	// Set up channel to recieve the pass/fail value, the message, and any
-	// details from the check.
-	recieveResults := make(chan (bool, string, map[string]string))
+	// Set up the channel to recieve the CheckResult from the Check
+	recieveResult := make(chan schema.CheckResult, 1)
 
+	// Run the check
+	go check.Run(ctx, recieveResult)
+
+	// Wait for either the timeout or for the check to finish
+	for {
+		select {
+		case <-ctx.Done():
+			// We already initialized the event with the correct values for a
+			// context timeout, so just return that.
+			return event
+		case result := <-recieveResult:
+			// Set the passed, message, and details fields with the CheckResult
+			event.Fields.Put("passed", result.Passed)
+			event.Fields.Put("message", result.Message)
+			event.Fields.Put("details", result.Details)
+			return event
+		}
+	}
 }
