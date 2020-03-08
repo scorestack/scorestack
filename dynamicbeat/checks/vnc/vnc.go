@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"time"
 
 	"github.com/mitchellh/go-vnc"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
@@ -21,17 +20,9 @@ type Definition struct {
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResult) {
-
-	// Set up result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "vnc",
-	}
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+	// Initialize empty result
+	result := schema.CheckResult{}
 
 	// Configure the vnc client
 	config := vnc.ClientConfig{
@@ -45,6 +36,7 @@ func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResu
 
 	// Dial the vnc server
 	// conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), 5*time.Second)
+	// TODO: create child context with deadline less than the parent context
 	conn, err := dialer.DialContext(ctx, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))
 	if err != nil {
 		result.Message = fmt.Sprintf("Connection to VNC host %s failed : %s", d.Host, err)
