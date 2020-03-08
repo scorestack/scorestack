@@ -159,7 +159,9 @@ func runCheck(ctx context.Context, check schema.Check) beat.Event {
 	recieveResult := make(chan schema.CheckResult, 1)
 
 	// Run the check
-	go check.Run(ctx, recieveResult)
+	go func() {
+		recieveResult <- check.Run(ctx)
+	}()
 
 	// Wait for either the timeout or for the check to finish
 	for {
