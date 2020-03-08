@@ -53,6 +53,8 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = "Could not create CookieJar"
 		return result
 	}
+	// TODO: change http.Client.Timeout to be relative to the parent context's
+	// timeout
 	client := &http.Client{
 		Jar: cookieJar,
 		Transport: &http.Transport{
@@ -76,7 +78,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	for _, r := range d.Requests {
 		// Check to see if the StoredValue needs to be templated in
 		if storedValue != nil {
-			// TODO: refactor this out into a function that keeps the "happy line"
 			// Re-encode definition to JSON string
 			def, err := json.Marshal(r)
 			if err != nil {
@@ -102,6 +103,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 			}
 		}
 
+		// TODO: create child context with deadline less than the parent context
 		pass, match, err := request(ctx, client, r)
 
 		// Process request results

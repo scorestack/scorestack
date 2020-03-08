@@ -30,6 +30,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	result := schema.CheckResult{}
 
 	// Config SSH client
+	// TODO: change timeout to be relative to the parent context's timeout
 	config := &ssh.ClientConfig{
 		User: d.Username,
 		Auth: []ssh.AuthMethod{
