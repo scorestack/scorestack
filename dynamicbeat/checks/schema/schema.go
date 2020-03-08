@@ -9,6 +9,7 @@ import (
 // A Check represents the configuration required to verify the operation of a
 // single network service.
 type Check interface {
+	GetConfig() CheckConfig
 	Run(ctx context.Context) CheckResult
 	Init(c CheckConfig, def []byte) error
 }

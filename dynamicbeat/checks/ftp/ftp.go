@@ -177,3 +177,9 @@ func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 	}
 	return nil
 }
+
+// GetConfig returns the current CheckConfig struct this check has been
+// configured with.
+func (d *Definition) GetConfig() schema.CheckConfig {
+	return d.Config
+}
