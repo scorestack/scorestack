@@ -35,8 +35,9 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 	defs := <-defPass
 	logp.Info("Recieved defs")
 
-	// Prepare event queue
-	queue := make(chan schema.CheckResult, len(defs))
+	// Make an event queue separate from the publisher queue so we can track
+	// which checks are still running
+	eventQueue := make(chan beat.Event, len(defs))
 
 	// Iterate over each check
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
@@ -54,7 +55,7 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 			defer wg.Done()
 
 			// checkStart := time.Now()
-			queue <- check.Run(ctx)
+			eventQueue <- runCheck(ctx, check)
 			// logp.Info("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
 		}()
 	}
@@ -77,23 +78,11 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 		}
 		logp.Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
 	}()
-	for result := range queue {
-		// Publish check results
-		event := beat.Event{
-			Timestamp: result.Timestamp,
-			Fields: common.MapStr{
-				"type":         "dynamicbeat",
-				"id":           result.ID,
-				"name":         result.Name,
-				"group":        result.Group,
-				"score_weight": result.ScoreWeight,
-				"check_type":   result.CheckType,
-				"passed":       result.Passed,
-				"message":      result.Message,
-				"details":      result.Details,
-			},
-		}
+	for event := range eventQueue {
+		// Publish the event to the publisher queue
 		pubQueue <- event
+
+		// Record that the check has finished
 		delete(names, result.ID)
 	}
 }
