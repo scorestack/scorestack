@@ -43,17 +43,9 @@ type Request struct {
 }
 
 // Run a single instance of the check.
-func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResult) {
-
-	// Set up result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "http",
-	}
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+	// Initialize empty result
+	result := schema.CheckResult{}
 
 	// Configure HTTP client
 	cookieJar, err := cookiejar.New(nil)
@@ -80,6 +72,7 @@ func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResu
 	}
 
 	// Make each request in the list
+	// TODO: use "happy line" structure instead of deeply-nested if statements
 	for _, r := range d.Requests {
 		// Check to see if the StoredValue needs to be templated in
 		if storedValue != nil {
