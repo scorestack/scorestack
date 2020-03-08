@@ -10,12 +10,16 @@ import (
 // single network service.
 type Check interface {
 	Run(ctx context.Context) CheckResult
-	Init(id string, name string, group string, scoreWeight float64, def []byte) error
+	Init(c CheckConfig, def []byte) error
 }
 
 // CheckConfig contains the generic metadata about a check that all check types
 // must have. It also includes the untemplated check-specific definition JSON
-// string and any related attributes.
+// string and any related attributes. The CheckConfig should be stored in
+// structs that implement the Check interface. The Definition and Attribs
+// members of the CheckConfig struct will not typically be used by implementers
+// of the Check interface, but could still be useful for administrative and
+// debugging purposes later on.
 type CheckConfig struct {
 	ID          string
 	Name        string

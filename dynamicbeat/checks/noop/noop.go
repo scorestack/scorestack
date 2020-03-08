@@ -11,12 +11,9 @@ import (
 
 // The Definition configures the behavior of a Noop check.
 type Definition struct {
-	ID          string  // a unique identifier for this check
-	Name        string  // a human-readable title for this check
-	Group       string  // the group this check is part of
-	ScoreWeight float64 // the weight that this check has relative to others
-	Dynamic     string  // (required) contains attributes that can be modified by admins or users
-	Static      string  // (required) contains no attributes
+	Config  schema.CheckConfig // generic metadata about the check
+	Dynamic string             // (required) contains attributes that can be modified by admins or users
+	Static  string             // (required) contains no attributes
 }
 
 // Run a single instance of the check.
@@ -24,10 +21,10 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),
-		ID:          d.ID,
-		Name:        d.Name,
-		Group:       d.Group,
-		ScoreWeight: d.ScoreWeight,
+		ID:          d.Config.ID,
+		Name:        d.Config.Name,
+		Group:       d.Config.Group,
+		ScoreWeight: d.Config.ScoreWeight,
 		CheckType:   "noop",
 		Passed:      true,
 		Message:     strings.Join([]string{d.Dynamic, d.Static}, "; "),
@@ -44,7 +41,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
+func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 	// Unpack definition json
 	err := json.Unmarshal(def, &d)
 	if err != nil {
@@ -52,10 +49,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 	}
 
 	// Set ID and name attributes
-	d.ID = id
-	d.Name = name
-	d.Group = group
-	d.ScoreWeight = scoreWeight
+	d.Config = config
 
 	// Make sure required fields are defined
 	missingFields := make([]string, 0)
@@ -70,7 +64,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 	// Error on only the first missing field, if there are any
 	if len(missingFields) > 0 {
 		return schema.ValidationError{
-			ID:    d.ID,
+			ID:    d.Config.ID,
 			Type:  "noop",
 			Field: missingFields[0],
 		}

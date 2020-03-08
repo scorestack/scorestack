@@ -98,22 +98,22 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 	}
 }
 
-func unpackDef(c schema.CheckConfig) schema.Check {
+func unpackDef(config schema.CheckConfig) schema.Check {
 	// Render any template strings in the definition
 	var renderedJSON []byte
-	templ := template.Must(template.New("definition").Parse(string(c.Definition)))
+	templ := template.Must(template.New("definition").Parse(string(config.Definition)))
 	var buf bytes.Buffer
-	err := templ.Execute(&buf, c.Attribs)
+	err := templ.Execute(&buf, config.Attribs)
 	if err != nil {
 		// If there was an error parsing the template, use the original string
-		renderedJSON = c.Definition
+		renderedJSON = config.Definition
 	} else {
 		renderedJSON = buf.Bytes()
 	}
 
 	// Create a Definition from the rendered JSON string
 	var def schema.Check
-	switch c.Type {
+	switch config.Type {
 	case "noop":
 		def = &noop.Definition{}
 	case "http":
@@ -141,7 +141,7 @@ func unpackDef(c schema.CheckConfig) schema.Check {
 	default:
 		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
 	}
-	err = def.Init(c.ID, c.Name, c.Group, c.ScoreWeight, renderedJSON)
+	err = def.Init(config, renderedJSON)
 	if err != nil {
 		logp.Info("%s", err)
 	}
