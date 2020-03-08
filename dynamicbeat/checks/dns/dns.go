@@ -22,16 +22,9 @@ type Definition struct {
 
 // Run a single instance of the check
 // For now we only support A record querries
-func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResult) {
-	// Setup result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "dns",
-	}
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+	// Initialize empty result
+	result := schema.CheckResult{}
 
 	// Setup for dns query
 	var msg dns.Msg
@@ -39,7 +32,8 @@ func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResu
 	msg.SetQuestion(fqdn, dns.TypeA)
 
 	// Make it obey timeout via deadline
-	deadctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(20*time.Second))
+	// TODO: change this to be relative to the parent context's timeout
+	deadctx, cancel := context.WithDeadline(ctx, time.Now().Add(20*time.Second))
 	defer cancel()
 
 	// Send the query
