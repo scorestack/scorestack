@@ -9,7 +9,7 @@ import (
 // single network service.
 type Check interface {
 	GetConfig() CheckConfig
-	Run(ctx context.Context, sendResult chan<- CheckResult)
+	Run(ctx context.Context) CheckResult
 	Init(config CheckConfig, def []byte) error
 }
 
