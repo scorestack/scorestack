@@ -26,19 +26,12 @@ type Definition struct {
 
 // Run a single instance of the check
 // We are only supporting the listing of mailboxes as a check currently
-func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResult) {
-
-	// Set up result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "imap",
-	}
+func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+	// Initialize empty result
+	result := schema.CheckResult{}
 
 	// Create a dialer so we can set timeouts
+	// TODO: change this to be relative to the parent context's timeout
 	dialer := net.Dialer{
 		Timeout: 20 * time.Second,
 	}
@@ -84,7 +77,6 @@ func (d *Definition) Run(ctx context.Context, sendResult chan<- schema.CheckResu
 	// If we make it here the check passes
 	result.Passed = true
 	return result
-
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
