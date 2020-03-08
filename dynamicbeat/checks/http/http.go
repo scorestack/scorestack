@@ -20,13 +20,10 @@ import (
 
 // The Definition configures the behavior of an HTTP check.
 type Definition struct {
-	ID                   string    // a unique identifier for this check
-	Name                 string    // a human-readable title for this check
-	Group                string    // the group this check is part of
-	ScoreWeight          float64   // the weight that this check has relative to others
-	Verify               bool      // (optional, default false) whether HTTPS certs should be validated
-	ReportMatchedContent bool      // (optional, default false) whether the matched content should be returned in the CheckResult
-	Requests             []Request // a list of requests to make
+	Config               schema.CheckConfig // generic metadata about the check
+	Verify               bool               // (optional, default false) whether HTTPS certs should be validated
+	ReportMatchedContent bool               // (optional, default false) whether the matched content should be returned in the CheckResult
+	Requests             []Request          // a list of requests to make
 }
 
 // A Request represents a single HTTP request to make.
@@ -51,10 +48,10 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Set up result
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),
-		ID:          d.ID,
-		Name:        d.Name,
-		Group:       d.Group,
-		ScoreWeight: d.ScoreWeight,
+		ID:          d.Config.ID,
+		Name:        d.Config.Name,
+		Group:       d.Config.Group,
+		ScoreWeight: d.Config.ScoreWeight,
 		CheckType:   "http",
 	}
 
@@ -198,7 +195,7 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
+func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 	// Unpack definition json
 	err := json.Unmarshal(def, &d)
 	if err != nil {
@@ -207,10 +204,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 	// TODO: set verify value
 
 	// Set generic attributes
-	d.ID = id
-	d.Name = name
-	d.Group = group
-	d.ScoreWeight = scoreWeight
+	d.Config = config
 
 	// Finish initializing each request
 	for i := range d.Requests {
@@ -248,7 +242,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 		// Error on only the first missing field, if there are any
 		if len(missingFields) > 0 {
 			return schema.ValidationError{
-				ID:    d.ID,
+				ID:    d.Config.ID,
 				Type:  "http",
 				Field: missingFields[0],
 			}

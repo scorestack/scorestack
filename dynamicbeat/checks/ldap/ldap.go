@@ -14,15 +14,12 @@ import (
 // The Definition configures the behavior of the LDAP check
 // it implements the "check" interface
 type Definition struct {
-	ID          string  // a unique identifier for this check
-	Name        string  // a human-readable title for the check
-	Group       string  // the group this check is part of
-	ScoreWeight float64 // the weight that this check has relative to others
-	User        string  // (required) The user written in user@domain syntax
-	Password    string  // (required) the password for the user
-	Fqdn        string  // (required) The Fqdn of the ldap server
-	Ldaps       bool    // (optional, default=false) Whether or not to use LDAP+TLS
-	Port        string  // (optional, default=389) Port for ldap
+	Config   schema.CheckConfig // generic metadata about the check
+	User     string             // (required) The user written in user@domain syntax
+	Password string             // (required) the password for the user
+	Fqdn     string             // (required) The Fqdn of the ldap server
+	Ldaps    bool               // (optional, default=false) Whether or not to use LDAP+TLS
+	Port     string             // (optional, default=389) Port for ldap
 }
 
 // Run a single instance of the check
@@ -31,10 +28,10 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Set up result
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),
-		ID:          d.ID,
-		Name:        d.Name,
-		Group:       d.Group,
-		ScoreWeight: d.ScoreWeight,
+		ID:          d.Config.ID,
+		Name:        d.Config.Name,
+		Group:       d.Config.Group,
+		ScoreWeight: d.Config.ScoreWeight,
 		CheckType:   "ldap",
 	}
 
@@ -76,7 +73,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
+func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 
 	// Explicitly set default values
 	d.Port = "389"
@@ -88,10 +85,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 	}
 
 	// Set generic values
-	d.ID = id
-	d.Name = name
-	d.Group = group
-	d.ScoreWeight = scoreWeight
+	d.Config = config
 
 	// Check for missing fields
 	missingFields := make([]string, 0)
@@ -109,7 +103,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 
 	if len(missingFields) > 0 {
 		return schema.ValidationError{
-			ID:    d.ID,
+			ID:    d.Config.ID,
 			Type:  "ldap",
 			Field: missingFields[0],
 		}

@@ -15,18 +15,15 @@ import (
 // The Definition configures the behavior of the SMTP check
 // it implements the "check" interface
 type Definition struct {
-	ID          string  // a unique identifier for this check
-	Name        string  // a human-readable title for the check
-	Group       string  // the group this check is part of
-	ScoreWeight float64 // the weight that this check has relative to others
-	Host        string  // (required) IP or hostname of the smtp server
-	Username    string  // (required) Username for the smtp server
-	Password    string  // (required) Password for the smtp server
-	Sender      string  // (required) Who is sending the email
-	Reciever    string  // (required) Who is receiving the email
-	Body        string  // (optional, default="Hello from ScoreStack") Body of the email
-	Encrypted   bool    // (optional, default=false) Whether or not to use TLS
-	Port        string  // (optional, default="25") Port of the smtp server
+	Config    schema.CheckConfig // generic metadata about the check
+	Host      string             // (required) IP or hostname of the smtp server
+	Username  string             // (required) Username for the smtp server
+	Password  string             // (required) Password for the smtp server
+	Sender    string             // (required) Who is sending the email
+	Reciever  string             // (required) Who is receiving the email
+	Body      string             // (optional, default="Hello from ScoreStack") Body of the email
+	Encrypted bool               // (optional, default=false) Whether or not to use TLS
+	Port      string             // (optional, default="25") Port of the smtp server
 }
 
 // **************************************************
@@ -48,10 +45,10 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Set up result
 	result := schema.CheckResult{
 		Timestamp:   time.Now(),
-		ID:          d.ID,
-		Name:        d.Name,
-		Group:       d.Group,
-		ScoreWeight: d.ScoreWeight,
+		ID:          d.Config.ID,
+		Name:        d.Config.Name,
+		Group:       d.Config.Group,
+		ScoreWeight: d.Config.ScoreWeight,
 		CheckType:   "smtp",
 	}
 
@@ -166,7 +163,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // Init the check using a known ID and name. The rest of the check fields will
 // be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(id string, name string, group string, scoreWeight float64, def []byte) error {
+func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 
 	// Explicitly set defaults
 	d.Body = "Hello from ScoreStack"
@@ -179,10 +176,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 	}
 
 	// Set generic values
-	d.ID = id
-	d.Name = name
-	d.Group = group
-	d.ScoreWeight = scoreWeight
+	d.Config = config
 
 	// Check for missing fields
 	missingFields := make([]string, 0)
@@ -209,7 +203,7 @@ func (d *Definition) Init(id string, name string, group string, scoreWeight floa
 	// Error only the first missing field, if there are any
 	if len(missingFields) > 0 {
 		return schema.ValidationError{
-			ID:    d.ID,
+			ID:    d.Config.ID,
 			Type:  "smtp",
 			Field: missingFields[0],
 		}

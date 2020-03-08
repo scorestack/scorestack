@@ -77,7 +77,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 	}
 
 	// Get initial check definitions
-	var defs []schema.CheckDef
+	var defs []schema.CheckConfig
 	doubleBreak := false
 	// TODO: Find a better way for looping until we can hit Elasticsearch
 	for {
@@ -113,7 +113,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 	updateTicker := time.NewTicker(bt.config.UpdatePeriod)
 
 	// Buffered channel for async updating checks
-	updateChan := make(chan []schema.CheckDef, 1)
+	updateChan := make(chan []schema.CheckConfig, 1)
 
 	// Buffered channel for making sure only one async check update runs at a time
 	runUpdate := make(chan bool, 1)
@@ -169,7 +169,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			}
 
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
-			defPass := make(chan []schema.CheckDef)
+			defPass := make(chan []schema.CheckConfig)
 
 			// Start the goroutine
 			wg.Add(1)
