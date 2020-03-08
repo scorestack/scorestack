@@ -130,6 +130,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	result.Passed = true
+	return result
 }
 
 // Init the check using a known ID and name. The rest of the check fields will

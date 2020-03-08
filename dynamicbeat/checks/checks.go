@@ -83,7 +83,8 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 		pubQueue <- event
 
 		// Record that the check has finished
-		delete(names, result.ID)
+		id, _ := event.Fields.GetValue("id")
+		delete(names, id.(string))
 	}
 }
 
@@ -143,16 +144,16 @@ func runCheck(ctx context.Context, check schema.Check) beat.Event {
 	event := beat.Event{
 		Timestamp: time.Now(),
 		Fields: common.MapStr{
-			"type": "dynamicbeat",
-			"id": check.GetConfig().ID,
-			"name": check.GetConfig().Name,
-			"check_type": check.GetConfig().Type,
-			"group": check.GetConfig().Group,
+			"type":         "dynamicbeat",
+			"id":           check.GetConfig().ID,
+			"name":         check.GetConfig().Name,
+			"check_type":   check.GetConfig().Type,
+			"group":        check.GetConfig().Group,
 			"score_weight": check.GetConfig().ScoreWeight,
-			"passed": false,
-			"message": "Check timed out",
-			"details": nil,
-		}
+			"passed":       false,
+			"message":      "Check timed out",
+			"details":      nil,
+		},
 	}
 
 	// Set up the channel to recieve the CheckResult from the Check
