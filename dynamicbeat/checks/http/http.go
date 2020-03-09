@@ -44,16 +44,8 @@ type Request struct {
 
 // Run a single instance of the check.
 func (d *Definition) Run(ctx context.Context) schema.CheckResult {
-
-	// Set up result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "http",
-	}
+	// Initialize empty result
+	result := schema.CheckResult{}
 
 	// Configure HTTP client
 	cookieJar, err := cookiejar.New(nil)
@@ -61,6 +53,8 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = "Could not create CookieJar"
 		return result
 	}
+	// TODO: change http.Client.Timeout to be relative to the parent context's
+	// timeout
 	client := &http.Client{
 		Jar: cookieJar,
 		Transport: &http.Transport{
@@ -80,10 +74,10 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Make each request in the list
+	// TODO: use "happy line" structure instead of deeply-nested if statements
 	for _, r := range d.Requests {
 		// Check to see if the StoredValue needs to be templated in
 		if storedValue != nil {
-			// TODO: refactor this out into a function that keeps the "happy line"
 			// Re-encode definition to JSON string
 			def, err := json.Marshal(r)
 			if err != nil {
@@ -109,6 +103,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 			}
 		}
 
+		// TODO: create child context with deadline less than the parent context
 		pass, match, err := request(ctx, client, r)
 
 		// Process request results
@@ -250,4 +245,10 @@ func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 	}
 
 	return nil
+}
+
+// GetConfig returns the current CheckConfig struct this check has been
+// configured with.
+func (d *Definition) GetConfig() schema.CheckConfig {
+	return d.Config
 }

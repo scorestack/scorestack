@@ -21,16 +21,8 @@ type Definition struct {
 
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) schema.CheckResult {
-
-	// Set up result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "icmp",
-	}
+	// Initialize empty result
+	result := schema.CheckResult{}
 
 	// Create pinger
 	pinger, err := ping.NewPinger(d.Host)
@@ -41,6 +33,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Send ping
 	pinger.Count = 3
+	// TODO: change this to be relative to the parent context's timeout
 	pinger.Timeout = 25 * time.Second
 	pinger.Run()
 
@@ -51,6 +44,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		return result
 	}
 
+	// TODO: add configuration option to change whether a certain number of pings should make it back, or if a certain percentage of packetloss should be allowed
 	// Check for failure of ICMP
 	// if stats.PacketsRecv != d.Count {
 	// 	result.Message = fmt.Sprintf("FAILED: Not all pings made it back! Received %d out of %d", stats.PacketsRecv, stats.PacketsSent)
@@ -60,7 +54,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// If we make it here the check passes
 	result.Passed = true
 	return result
-
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
@@ -94,4 +87,10 @@ func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 		}
 	}
 	return nil
+}
+
+// GetConfig returns the current CheckConfig struct this check has been
+// configured with.
+func (d *Definition) GetConfig() schema.CheckConfig {
+	return d.Config
 }

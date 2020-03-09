@@ -24,18 +24,11 @@ type Definition struct {
 
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) schema.CheckResult {
-
-	// Set up result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "ldap",
-	}
+	// Initialize empty result
+	result := schema.CheckResult{}
 
 	// Set timeout
+	// TODO: change this to be relative to the parent context's timeout
 	ldap.DefaultTimeout = 20 * time.Second
 
 	// Normal, default ldap check
@@ -68,7 +61,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// If we reached here the check passes
 	result.Passed = true
 	return result
-
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
@@ -109,4 +101,10 @@ func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 		}
 	}
 	return nil
+}
+
+// GetConfig returns the current CheckConfig struct this check has been
+// configured with.
+func (d *Definition) GetConfig() schema.CheckConfig {
+	return d.Config
 }

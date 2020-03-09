@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"strings"
-	"time"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
@@ -18,25 +17,18 @@ type Definition struct {
 
 // Run a single instance of the check.
 func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+	// Initialize empty result
+	result := schema.CheckResult{}
 
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "noop",
-		Passed:      true,
-		Message:     strings.Join([]string{d.Dynamic, d.Static}, "; "),
-		Details: map[string]string{
-			"Dynamic": d.Dynamic,
-			"Static":  d.Static,
-		},
+	// "Run" the check
+	result.Passed = true
+	result.Message = strings.Join([]string{d.Dynamic, d.Static}, "; ")
+	result.Details = map[string]string{
+		"Dynamic": d.Dynamic,
+		"Static":  d.Static,
 	}
 
-	result.Passed = true
 	return result
-
 }
 
 // Init the check using a known ID and name. The rest of the check fields will
@@ -70,4 +62,10 @@ func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 		}
 	}
 	return nil
+}
+
+// GetConfig returns the current CheckConfig struct this check has been
+// configured with.
+func (d *Definition) GetConfig() schema.CheckConfig {
+	return d.Config
 }

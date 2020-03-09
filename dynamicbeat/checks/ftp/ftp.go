@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
-	"time"
 
 	"github.com/jlaffaye/ftp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
@@ -32,17 +31,11 @@ type Definition struct {
 
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) schema.CheckResult {
-	// Setup result
-	result := schema.CheckResult{
-		Timestamp:   time.Now(),
-		ID:          d.Config.ID,
-		Name:        d.Config.Name,
-		Group:       d.Config.Group,
-		ScoreWeight: d.Config.ScoreWeight,
-		CheckType:   "ftp",
-	}
+	// Initialize empty result
+	result := schema.CheckResult{}
 
 	// Connect to the ftp server
+	// TODO: create child context with deadline less than the parent context
 	conn, err := ftp.Dial(fmt.Sprintf("%s:%s", d.Host, d.Port), ftp.DialWithContext(ctx))
 	if err != nil {
 		result.Message = fmt.Sprintf("Connection to %s on port %s failed : %s", d.Host, d.Port, err)
@@ -176,4 +169,10 @@ func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
 		}
 	}
 	return nil
+}
+
+// GetConfig returns the current CheckConfig struct this check has been
+// configured with.
+func (d *Definition) GetConfig() schema.CheckConfig {
+	return d.Config
 }
