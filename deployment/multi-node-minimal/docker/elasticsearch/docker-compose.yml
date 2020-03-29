@@ -1,0 +1,25 @@
+---
+version: '3'
+
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    env_file: elasticsearch.env
+    environment:
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65535
+      nproc: 4096
+    volumes:
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./healthcheck.sh:/bin/healthcheck.sh
+      - /usr/share/elasticsearch/data
+    healthcheck:
+      test: /bin/healthcheck.sh
+      interval: 30s
+      timeout: 10s
+      retries: 5
