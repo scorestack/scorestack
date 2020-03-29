@@ -15,6 +15,17 @@ services:
     ports:
       - 9200:9200
 
+  kibana:
+    extends:
+      file: kibana/docker-compose.yml
+      service: kibana
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - server.name=kibana
+    networks:
+      - elastic
+
 networks:
   elastic:
     driver: bridge
