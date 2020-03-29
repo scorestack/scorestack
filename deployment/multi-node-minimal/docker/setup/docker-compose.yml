@@ -3,9 +3,9 @@ version: '3'
 
 services:
 
-  create-pki:
+  setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
-    command: bin/create-certificates.sh
+    command: bin/setup.sh
     working_dir: /usr/share/elasticsearch
     volumes:
       - ./create-certificates.sh:/usr/share/elasticsearch/bin/create-certificates.sh

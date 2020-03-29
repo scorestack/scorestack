@@ -3,11 +3,11 @@ version: '3'
 
 services:
 
-  create-pki:
+  setup:
     extends:
-      file: create-pki/docker-compose.yml
-      service: create-pki
-    container_name: create-pki
+      file: setup/docker-compose.yml
+      service: setup 
+    container_name: setup
     networks:
       - elastic
     volumes:
@@ -25,6 +25,7 @@ services:
       - elastic
     ports:
       - 9200:9200
+    restart: always
     volumes:
       - ./certificates/elasticsearch:/usr/share/elasticsearch/config/certificates/elasticsearch
       - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
@@ -39,6 +40,7 @@ services:
       - server.name=kibana
     networks:
       - elastic
+    restart: always
     volumes:
       - ./certificates/kibana:/usr/share/kibana/config/certificates/kibana
       - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
@@ -52,6 +54,7 @@ services:
       - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
     networks:
       - elastic
+    restart: always
     volumes:
       - ./certificates/logstash:/usr/share/logstash/config/certificates/kibana
       - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
