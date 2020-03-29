@@ -1,0 +1,15 @@
+---
+version: '3'
+
+services:
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.5.1
+    ports:
+      - 5454:5454
+    environment:
+      - PATH_DATA=/usr/share/logstash/data
+      - ELASTICSEARCH_PASSWORD=${LOGSTASH_USER_PASSWORD}
+    volumes:
+      - ./dynamicbeat-pipline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
+      - /usr/share/logstash/data

@@ -25,6 +25,14 @@ services:
       - server.name=kibana
     networks:
       - elastic
+  
+  logstash:
+    extends:
+      file: logstash/docker-compose.yml
+      service: logstash
+    container_name: logstash
+    networks:
+      - elastic
 
 networks:
   elastic:
