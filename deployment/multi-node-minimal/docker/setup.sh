@@ -6,7 +6,7 @@ yum install -y -q -e 0 unzip openssl jq
 # Generate certificate bundle if it isn't already generated
 if [[ ! -f /certificates/bundle.zip ]]
 then
-  bin/elasticsearch-certutil cert --silent --pem --in config/certificates/instances.yml -out /certificates/bundle.zip
+  bin/elasticsearch-certutil cert --silent --pem --in config/instances.yml -out /certificates/bundle.zip
   unzip /certificates/bundle.zip -d /certificates
 fi
 
@@ -44,6 +44,9 @@ BEATS_PASSWORD=${beats_pass}
 LOGSTASH_USER_PASSWORD=${logstash_user_pass}
 LOGSTASH_SYSTEM_PASSWORD=${logstash_system_pass}
 EOF
+
+# Delete the passwords file
+shred -uvz /tmp/cluster-passwords.txt
 
 # Install kibana plugin
 docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin"

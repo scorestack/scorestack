@@ -4,7 +4,7 @@ version: '3'
 services:
 
   setup:
-    command: bin/setup.sh
+    command: config/setup.sh
     container_name: setup
     environment:
       - ELASTICSEARCH_HOST=https://elasticsearch:9200
@@ -15,10 +15,8 @@ services:
     networks:
       - elastic
     volumes:
-      - ./.env:/usr/share/elasticsearch/config/.env
+      - ./:/usr/share/elasticsearch/config/
       - ./certificates:/certificates
-      - ./instances.yml:/usr/share/elasticsearch/config/certificates/instances.yml
-      - ./setup.sh:/usr/share/elasticsearch/bin/setup.sh
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /usr/share/elasticsearch
 
@@ -47,9 +45,9 @@ services:
       nproc: 4096
     volumes:
       - ./certificates/elasticsearch:/usr/share/elasticsearch/config/certificates/elasticsearch
-      - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
+      - ./certificates/ca:/usr/share/elasticsearch/config/certificates/ca
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ./healthcheck.sh:/bin/healthcheck.sh
+      - ./elasticsearch-healthcheck.sh:/bin/healthcheck.sh
       - /usr/share/elasticsearch/data
 
   kibana:
@@ -66,7 +64,7 @@ services:
     restart: always
     volumes:
       - ./certificates/kibana:/usr/share/kibana/config/certificates/kibana
-      - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
+      - ./certificates/ca:/usr/share/elasticsearch/config/certificates/ca
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
       - /usr/share/kibana/data
       - /usr/share/kibana/plugins
@@ -85,8 +83,8 @@ services:
     restart: always
     volumes:
       - ./certificates/logstash:/usr/share/logstash/config/certificates/kibana
-      - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
-      - ./dynamicbeat-pipline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
+      - ./certificates/ca:/usr/share/elasticsearch/config/certificates/ca
+      - ./dynamicbeat-pipeline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
       - /usr/share/logstash/data
 
 networks:
