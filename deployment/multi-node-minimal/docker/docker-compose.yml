@@ -3,6 +3,17 @@ version: '3'
 
 services:
 
+  create-pki:
+    extends:
+      file: create-pki/docker-compose.yml
+      service: create-pki
+    container_name: create-pki
+    networks:
+      - elastic
+    volumes:
+      - ./certificates:/certificates
+      - ./create-pki/instances.yml:/usr/share/elasticsearch/config/certificates/instances.yml
+
   elasticsearch:
     extends:
       file: elasticsearch/docker-compose.yml
@@ -14,6 +25,9 @@ services:
       - elastic
     ports:
       - 9200:9200
+    volumes:
+      - ./certificates/elasticsearch:/usr/share/elasticsearch/config/certificates/elasticsearch
+      - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
 
   kibana:
     extends:
@@ -25,14 +39,22 @@ services:
       - server.name=kibana
     networks:
       - elastic
+    volumes:
+      - ./certificates/kibana:/usr/share/kibana/config/certificates/kibana
+      - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
   
   logstash:
     extends:
       file: logstash/docker-compose.yml
       service: logstash
     container_name: logstash
+    environment:
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
     networks:
       - elastic
+    volumes:
+      - ./certificates/logstash:/usr/share/logstash/config/certificates/kibana
+      - ./certificates/ca/ca.crt:/usr/share/elasticsearch/config/certificates/ca.crt
 
 networks:
   elastic:

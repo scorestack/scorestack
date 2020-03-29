@@ -1,10 +1,10 @@
 ---
 csp.strict: true
 
-elasticsearch.ssl.certificate: /usr/share/kibana/config/pki/kiba.cert.pem
-elasticsearch.ssl.key: /usr/share/kibana/config/pki/kiba.key.pem
+elasticsearch.ssl.certificate: /usr/share/kibana/config/certificates/kibana/kibana.crt
+elasticsearch.ssl.key: /usr/share/kibana/config/certificates/kibana/kibana.key
 elasticsearch.ssl.certificateAuthorities:
-  - /usr/share/kibana/config/pki/ca.cert.pem
+  - /usr/share/kibana/config/certificates/ca.crt
 
 elasticsearch.username: kibana
 
@@ -12,10 +12,10 @@ path.data: /usr/share/kibana/data
 
 server.host: "0.0.0.0"
 
-server.ssl.certificate: /usr/share/kibana/config/pki/kiba.cert.pem
-server.ssl.key: /usr/share/kibana/config/pki/kiba.key.pem
+server.ssl.certificate: /usr/share/kibana/config/certificates/kibana/kibana.crt
+server.ssl.key: /usr/share/kibana/config/certificates/kibana/kibana.key
 server.ssl.certificateAuthorities:
-  - /usr/share/kibana/config/pki/ca.cert.pem
+  - /usr/share/kibana/config/certificates/ca.crt
 server.ssl.enabled: true
 
 uiSettings.overrides.theme.darkMode: true
