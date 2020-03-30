@@ -39,15 +39,17 @@ docker exec ${ELASTICSEARCH_CONTAINER} /bin/bash -c \
 kibana_pass=$(cat /tmp/cluster-passwords.txt | grep kibana | awk '{print $NF}')
 elastic_pass=$(cat /tmp/cluster-passwords.txt | grep elastic | awk '{print $NF}')
 beats_pass=$(cat /tmp/cluster-passwords.txt | grep beats_system | awk '{print $NF}')
-logstash_system_pass=$(cat /tmp/cluster-passwords.txt | grep logstash_system | awk '{print $NF}')
-logstash_user_pass=$(openssl rand -hex 20)
+logstash_pass=$(openssl rand -hex 20)
+
+# Set passwords in kibana and logstash keystores
+docker exec ${KIBANA_CONTAINER} bin/kibana-keystore create
+docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-keystore add elasticsearch.password --stdin <<< '${kibana_pass}'"
+docker exec ${LOGSTASH_CONTAINER} bin/logstash-keystore create
+docker exec ${LOGSTASH_CONTAINER} /bin/bash -c "bin/logstash-keystore add ELASTICSEARCH_PASSWORD --stdin <<< '${logstash_pass}'"
 
 # Write passwords to docker-compose default environment file
 cat > config/.env << EOF
-KIBANA_PASSWORD=${kibana_pass}
 BEATS_PASSWORD=${beats_pass}
-LOGSTASH_USER_PASSWORD=${logstash_user_pass}
-LOGSTASH_SYSTEM_PASSWORD=${logstash_system_pass}
 EOF
 
 # Delete the passwords file
@@ -65,11 +67,12 @@ curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/d
 
 # Create logstash user
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/role/logstash_writer -H "Content-Type: application/json" -d '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["results-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]}'
-curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/logstash_internal -H "Content-Type: application/json" -d '{"password":"'"${logstash_user_pass}"'","roles":["logstash_writer"],"full_name":"Internal Logstash User"}'
+curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/logstash_internal -H "Content-Type: application/json" -d '{"password":"'"${logstash_pass}"'","roles":["logstash_writer"],"full_name":"Internal Logstash User"}'
 
-# Recreate kibana and logstash to update credentials
-docker-compose up -d --force-recreate kibana
-docker-compose up -d --force-recreate logstash
+# Restart kibana and logstash to reload credentials from keystore
+cd config
+docker-compose -p docker restart kibana logstash
+cd ..
 
 # Wait for kibana to be up
 while [[ "$(curl -sku root:changeme ${KIBANA_HOST}/api/status | jq -r .status.overall.state 2>/dev/null)" != "green" ]]

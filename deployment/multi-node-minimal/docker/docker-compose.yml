@@ -54,7 +54,6 @@ services:
     container_name: kibana
     environment:
       - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
-      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - server.name=kibana
     image: docker.elastic.co/kibana/kibana:7.5.1
     networks:
