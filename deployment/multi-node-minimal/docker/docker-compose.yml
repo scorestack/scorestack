@@ -18,6 +18,7 @@ services:
     volumes:
       - ./:/usr/share/elasticsearch/config/
       - ./certificates:/certificates
+      - ../../../dashboards:/usr/share/elasticsearch/dashboards
       - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /usr/share/elasticsearch
 
