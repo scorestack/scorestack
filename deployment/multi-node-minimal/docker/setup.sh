@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Install dependencies
-yum install -y -q -e 0 unzip openssl jq
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum install -y -q -e 0 unzip openssl jq docker-ce-cli
 
 # Generate certificate bundle if it isn't already generated
 if [[ ! -f /certificates/bundle.zip ]]
