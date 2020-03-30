@@ -2,7 +2,11 @@
 
 # Install dependencies
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum install -y -q -e 0 epel-release
 yum install -y -q -e 0 unzip openssl jq docker-ce-cli
+curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # Generate certificate bundle if it isn't already generated
 if [[ ! -f /certificates/bundle.zip ]]
@@ -62,6 +66,10 @@ curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/d
 # Create logstash user
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/role/logstash_writer -H "Content-Type: application/json" -d '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["results-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]}'
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/logstash_internal -H "Content-Type: application/json" -d '{"password":"'"${logstash_user_pass}"'","roles":["logstash_writer"],"full_name":"Internal Logstash User"}'
+
+# Recreate kibana and logstash to update credentials
+docker-compose up -d --force-recreate kibana
+docker-compose up -d --force-recreate logstash
 
 # Wait for kibana to be up
 while [[ "$(curl -sku root:changeme ${KIBANA_HOST}/api/status | jq -r .status.overall.state 2>/dev/null)" != "green" ]]
