@@ -64,7 +64,7 @@ services:
     restart: always
     volumes:
       - ./certificates/kibana:/usr/share/kibana/config/certificates/kibana
-      - ./certificates/ca:/usr/share/elasticsearch/config/certificates/ca
+      - ./certificates/ca:/usr/share/kibana/config/certificates/ca
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
       - /usr/share/kibana/data
       - /usr/share/kibana/plugins
@@ -83,7 +83,7 @@ services:
     restart: always
     volumes:
       - ./certificates/logstash:/usr/share/logstash/config/certificates/kibana
-      - ./certificates/ca:/usr/share/elasticsearch/config/certificates/ca
+      - ./certificates/ca:/usr/share/logstash/config/certificates/ca
       - ./dynamicbeat-pipeline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
       - /usr/share/logstash/data
 
