@@ -11,6 +11,7 @@ services:
       - ELASTICSEARCH_CONTAINER=elasticsearch
       - KIBANA_HOST=https://kibana:5601
       - KIBANA_CONTAINER=kibana
+      - LOGSTASH_CONTAINER=logstash
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     networks:
       - elastic
@@ -71,9 +72,9 @@ services:
   logstash:
     container_name: logstash
     environment:
-      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
       - ELASTICSEARCH_PASSWORD=${LOGSTASH_USER_PASSWORD}
       - PATH_DATA=/usr/share/logstash/data
+      - XPACK_MONITORING_ENABLED=false
     image: docker.elastic.co/logstash/logstash:7.5.1
     networks:
       - elastic
@@ -81,10 +82,11 @@ services:
       - 5454:5454
     restart: always
     volumes:
-      - ./certificates/logstash:/usr/share/logstash/config/certificates/kibana
+      - ./certificates/logstash:/usr/share/logstash/config/certificates/logstash
       - ./certificates/ca:/usr/share/logstash/config/certificates/ca
       - ./dynamicbeat-pipeline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
       - /usr/share/logstash/data
+      - /usr/share/logstash/config
 
 networks:
   elastic:

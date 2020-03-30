@@ -44,8 +44,8 @@ logstash_pass=$(openssl rand -hex 20)
 # Set passwords in kibana and logstash keystores
 docker exec ${KIBANA_CONTAINER} bin/kibana-keystore create
 docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-keystore add elasticsearch.password --stdin <<< '${kibana_pass}'"
-docker exec ${LOGSTASH_CONTAINER} bin/logstash-keystore create
-docker exec ${LOGSTASH_CONTAINER} /bin/bash -c "bin/logstash-keystore add ELASTICSEARCH_PASSWORD --stdin <<< '${logstash_pass}'"
+docker exec ${LOGSTASH_CONTAINER} /bin/bash -c "yes y | bin/logstash-keystore create"
+docker exec ${LOGSTASH_CONTAINER} /bin/bash -c "bin/logstash-keystore add elasticsearch_password --stdin <<< '${logstash_pass}'"
 
 # Write passwords to docker-compose default environment file
 cat > config/.env << EOF
