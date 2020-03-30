@@ -28,7 +28,7 @@ docker exec ${ELASTICSEARCH_CONTAINER} /bin/bash -c \
   "bin/elasticsearch-setup-passwords auto --batch \
   -Expack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/elasticsearch/elasticsearch.key \
   -Expack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/elasticsearch/elasticsearch.crt \
-  -Expack.security.http.ssl.certificate_authorities=/usr/share/elasticsearch/config/certificates/ca.crt \
+  -Expack.security.http.ssl.certificate_authorities=/usr/share/elasticsearch/config/certificates/ca/ca.crt \
   --url ${ELASTICSEARCH_HOST}" | grep PASSWORD > /tmp/cluster-passwords.txt
 
 # Extract passwords from output
