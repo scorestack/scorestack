@@ -30,3 +30,7 @@ variable "ssh_user" {
 variable "inventory_destination" {
     default = "../ansible/inventory.ini"
 }
+
+variable "certificate_destination" {
+    default = "../ansible/certificates"
+}
