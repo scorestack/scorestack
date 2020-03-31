@@ -1,3 +1,18 @@
+resource "random_password" "elastic" {
+    length = 32
+    special = false
+}
+
+resource "random_password" "kibana" {
+    length = 32
+    special = false
+}
+
+resource "random_password" "logstash" {
+    length = 32
+    special = false
+}
+
 data "template_file" "inventory" {
     template = file("${path.module}/inventory_template.ini")
 
@@ -12,6 +27,9 @@ data "template_file" "inventory" {
         elasticsearch4_ip = google_compute_instance.elasticsearch4.network_interface.0.network_ip
         ssh_user = var.ssh_user
         ssh_priv_key_file = var.ssh_priv_key_file
+        elastic_password = random_password.elastic.result
+        kibana_password = random_password.kibana.result
+        logstash_password = random_password.logstash.result
     }
 }
 
