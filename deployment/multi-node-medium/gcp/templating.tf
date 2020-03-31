@@ -1,7 +1,7 @@
 data "template_file" "inventory" {
     template = file("${path.module}/inventory_template.ini")
 
-    vars {
+    vars = {
         nginx_ip = google_compute_instance.nginx.network_interface.0.network_ip
         logstash_ip = google_compute_instance.logstash.network_interface.0.network_ip
         kibana_ip = google_compute_instance.kibana.network_interface.0.network_ip
@@ -15,7 +15,7 @@ data "template_file" "inventory" {
 }
 
 resource "null_resource" "inventory" {
-    triggers {
+    triggers = {
         template_rendered = data.template_file.inventory.rendered
     }
 

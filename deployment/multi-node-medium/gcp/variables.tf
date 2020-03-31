@@ -28,5 +28,5 @@ variable "ssh_user" {
 }
 
 variable "inventory_destination" {
-    default = "${path.module}/../ansible/inventory.ini"
+    default = "../ansible/inventory.ini"
 }

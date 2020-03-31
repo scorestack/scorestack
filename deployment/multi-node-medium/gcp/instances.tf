@@ -17,7 +17,7 @@ resource "google_compute_instance" "elasticsearch1" {
         access_config {}
     }
 
-    metadata {
+    metadata = {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
@@ -43,7 +43,7 @@ resource "google_compute_instance" "elasticsearch2" {
         access_config {}
     }
 
-    metadata {
+    metadata = {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
@@ -69,7 +69,7 @@ resource "google_compute_instance" "elasticsearch3" {
         access_config {}
     }
 
-    metadata {
+    metadata = {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
@@ -95,7 +95,7 @@ resource "google_compute_instance" "elasticsearch4" {
         access_config {}
     }
 
-    metadata {
+    metadata = {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
@@ -120,7 +120,7 @@ resource "google_compute_instance" "kibana" {
         access_config {}
     }
 
-    metadata {
+    metadata = {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
@@ -145,7 +145,7 @@ resource "google_compute_instance" "logstash" {
         access_config {}
     }
 
-    metadata {
+    metadata = {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
@@ -172,7 +172,7 @@ resource "google_compute_instance" "nginx" {
         }
     }
 
-    metadata {
+    metadata = {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
