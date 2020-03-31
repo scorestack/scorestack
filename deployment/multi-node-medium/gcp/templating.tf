@@ -2,7 +2,7 @@ data "template_file" "inventory" {
     template = file("${path.module}/inventory_template.ini")
 
     vars = {
-        nginx_ip = google_compute_instance.nginx.network_interface.0.network_ip
+        nginx_ip = google_compute_address.nginx.address
         logstash_ip = google_compute_instance.logstash.network_interface.0.network_ip
         kibana_ip = google_compute_instance.kibana.network_interface.0.network_ip
         elasticsearch1_ip = google_compute_instance.elasticsearch1.network_interface.0.network_ip
