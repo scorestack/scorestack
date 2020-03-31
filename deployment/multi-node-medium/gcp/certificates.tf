@@ -22,7 +22,7 @@ resource "tls_self_signed_cert" "ca_cert" {
 
 resource "null_resource" "ca_cert" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        cert_created = tls_self_signed_cert.ca_cert.cert_pem
     }
 
     provisioner "local-exec" {
@@ -36,7 +36,7 @@ resource "tls_private_key" "elasticsearch1_key" {
 
 resource "null_resource" "elasticsearch1_key" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        key_created = tls_private_key.elasticsearch1_key.private_key_pem
     }
 
     provisioner "local-exec" {
@@ -72,7 +72,7 @@ resource "tls_locally_signed_cert" "elasticsearch1_cert" {
 
 resource "null_resource" "elasticsearch1_cert" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        cert_created = tls_locally_signed_cert.elasticsearch1_cert.cert_pem
     }
 
     provisioner "local-exec" {
@@ -86,7 +86,7 @@ resource "tls_private_key" "elasticsearch2_key" {
 
 resource "null_resource" "elasticsearch2_key" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        key_created = tls_private_key.elasticsearch2_key.private_key_pem
     }
 
     provisioner "local-exec" {
@@ -122,7 +122,7 @@ resource "tls_locally_signed_cert" "elasticsearch2_cert" {
 
 resource "null_resource" "elasticsearch2_cert" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        cert_created = tls_locally_signed_cert.elasticsearch2_cert.cert_pem
     }
 
     provisioner "local-exec" {
@@ -136,7 +136,7 @@ resource "tls_private_key" "elasticsearch3_key" {
 
 resource "null_resource" "elasticsearch3_key" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        key_created = tls_private_key.elasticsearch3_key.private_key_pem
     }
 
     provisioner "local-exec" {
@@ -172,7 +172,7 @@ resource "tls_locally_signed_cert" "elasticsearch3_cert" {
 
 resource "null_resource" "elasticsearch3_cert" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        cert_created = tls_locally_signed_cert.elasticsearch3_cert.cert_pem
     }
 
     provisioner "local-exec" {
@@ -186,7 +186,7 @@ resource "tls_private_key" "elasticsearch4_key" {
 
 resource "null_resource" "elasticsearch4_key" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        key_created = tls_private_key.elasticsearch4_key.private_key_pem
     }
 
     provisioner "local-exec" {
@@ -222,7 +222,7 @@ resource "tls_locally_signed_cert" "elasticsearch4_cert" {
 
 resource "null_resource" "elasticsearch4_cert" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        cert_created = tls_locally_signed_cert.elasticsearch4_cert.cert_pem
     }
 
     provisioner "local-exec" {
@@ -236,7 +236,7 @@ resource "tls_private_key" "logstash_key" {
 
 resource "null_resource" "logstash_key" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        key_created = tls_private_key.logstash_key.private_key_pem
     }
 
     provisioner "local-exec" {
@@ -272,7 +272,7 @@ resource "tls_locally_signed_cert" "logstash_cert" {
 
 resource "null_resource" "logstash_cert" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        cert_created = tls_locally_signed_cert.logstash_cert.cert_pem
     }
 
     provisioner "local-exec" {
@@ -286,7 +286,7 @@ resource "tls_private_key" "kibana_key" {
 
 resource "null_resource" "kibana_key" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        key_created = tls_private_key.kibana_key.private_key_pem
     }
 
     provisioner "local-exec" {
@@ -322,7 +322,7 @@ resource "tls_locally_signed_cert" "kibana_cert" {
 
 resource "null_resource" "kibana_cert" {
     triggers = {
-        template_rendered = data.template_file.inventory.rendered
+        cert_created = tls_locally_signed_cert.kibana_cert.cert_pem
     }
 
     provisioner "local-exec" {
