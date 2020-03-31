@@ -1,3 +1,8 @@
+resource "random_password" "bootstrap" {
+    length = 32
+    special = false
+}
+
 resource "random_password" "elastic" {
     length = 32
     special = false
@@ -27,6 +32,7 @@ data "template_file" "inventory" {
         elasticsearch4_ip = google_compute_instance.elasticsearch4.network_interface.0.network_ip
         ssh_user = var.ssh_user
         ssh_priv_key_file = var.ssh_priv_key_file
+        bootstrap_password = random_password.bootstrap.result
         elastic_password = random_password.elastic.result
         kibana_password = random_password.kibana.result
         logstash_password = random_password.logstash.result
