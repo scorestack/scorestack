@@ -3,4 +3,4 @@ Deployment
 
 TODO
 
-- [Multi-Node Minimal](./multi-node-minimal/README.md)
+- [Multi-Node small](./multi-node-small/README.md)
