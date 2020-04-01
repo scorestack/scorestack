@@ -63,7 +63,7 @@
       sysctl:
         name: vm.max_map_count
         sysctl_set: yes
-        value: 262144
+        value: "262144"
 
     - name: Copy root CA certificate
       copy:
