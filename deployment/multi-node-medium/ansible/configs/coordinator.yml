@@ -6,16 +6,11 @@ node.data: false
 node.ingest: false
 network.host: 0.0.0.0
 
-discovery.seed_hosts:
-  - elasticsearch1
-  - elasticsearch2
-  - elasticsearch3
-
-bootstrap.memory_lock: true
+discovery.seed_providers: file
 
 path:
   logs: /var/log/elasticsearch
-  data: /var/data/elasticsearch
+  data: /var/lib/elasticsearch
 
 xpack.monitoring.collection.enabled: true
 xpack.monitoring.elasticsearch.collection.enabled: false
