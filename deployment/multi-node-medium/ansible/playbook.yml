@@ -7,7 +7,7 @@
     - name: Add entries to /etc/hosts
       lineinfile:
         path: /etc/hosts
-        line: "{{ item.ip }}{{ item.hostname }}"
+        line: "{{ item.ip }} {{ item.hostname }}"
       loop:
         - { ip: "{{ nginx_internal_ip }}", hostname: "nginx" }
         - { ip: "{{ logstash_ip }}", hostname: "logstash" }
