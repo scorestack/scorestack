@@ -304,7 +304,7 @@
 
     - name: Configure Dynamicbeat pipeline
       copy:
-        src: config/dynamicbeat-pipeline.conf
+        src: configs/dynamicbeat-pipeline.conf
         dest: /etc/logstash/conf.d/dynamicbeat-pipeline.conf
       notify:
         - Restart Logstash
