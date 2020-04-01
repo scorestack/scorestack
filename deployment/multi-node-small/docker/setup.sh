@@ -68,15 +68,15 @@ shred -uvz /tmp/cluster-passwords.txt
 docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin"
 
 # Create admin user
-curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/root -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"root","email":"root@example.com","roles":["superuser"]}'
+curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/root -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"Extra Superuser","email":"root@example.com","roles":["superuser"]}'
 
 # Add dynamicbeat role and user 
-curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/role/dynamicbeat-role -H "Content-Type: application/json" -d '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
-curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/dynamicbeat -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"dynamicbeat","email":"dynamicbeat@example.com","roles":["dynamicbeat-role"]}'
+curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/role/dynamicbeat_reader -H "Content-Type: application/json" -d '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
+curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/dynamicbeat -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"Dynamicbeat Definition-Reading User","email":"dynamicbeat@example.com","roles":["dynamicbeat_reader"]}'
 
 # Create logstash user
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/role/logstash_writer -H "Content-Type: application/json" -d '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["results-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]}'
-curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/logstash_internal -H "Content-Type: application/json" -d '{"password":"'"${logstash_pass}"'","roles":["logstash_writer"],"full_name":"Internal Logstash User"}'
+curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/logstash -H "Content-Type: application/json" -d '{"password":"'"${logstash_pass}"'","roles":["logstash_writer"],"full_name":"Internal Logstash User","email":"logstash@example.com"}'
 
 # Restart kibana and logstash to reload credentials from keystore
 cd config
