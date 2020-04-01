@@ -103,6 +103,14 @@
       notify:
         - Restart Elasticsearch
 
+    # In the first run-through, Elasticsearch is not running at this point. We
+    # need to start it so we can check if the elastic user password has been
+    # set.
+    - name: Start Elasticsearch
+      systemd:
+        name: elasticsearch
+        state: started
+
     - name: Check if elastic user password is set
       uri:
         url: https://elasticsearch1:9200/_cluster/health
