@@ -9,8 +9,6 @@ cluster.initial_master_nodes:
   - elasticsearch2
   - elasticsearch3
 
-bootstrap.memory_lock: true
-
 path:
   logs: /var/log/elasticsearch
   data: /var/lib/elasticsearch

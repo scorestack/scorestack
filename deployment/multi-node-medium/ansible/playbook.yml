@@ -65,6 +65,12 @@
         sysctl_set: yes
         value: "262144"
 
+    - name: Reduce swappiness
+      sysctl:
+        name: vm.swappiness
+        sysctl_set: yes
+        value: "1"
+
     - name: Copy root CA certificate
       copy:
         src: certificates/ca/ca.crt
