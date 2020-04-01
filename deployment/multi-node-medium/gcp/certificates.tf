@@ -329,3 +329,53 @@ resource "null_resource" "kibana_cert" {
         command = "mkdir -p ${var.certificate_destination}/kibana && echo '${tls_private_key.kibana_key.private_key_pem}' > ${var.certificate_destination}/kibana/kibana.crt"
     }
 }
+
+resource "tls_private_key" "nginx_key" {
+    algorithm = "ECDSA"
+}
+
+resource "null_resource" "nginx_key" {
+    triggers = {
+        key_created = tls_private_key.nginx_key.private_key_pem
+    }
+
+    provisioner "local-exec" {
+        command = "mkdir -p ${var.certificate_destination}/nginx && echo '${tls_private_key.nginx_key.private_key_pem}' > ${var.certificate_destination}/nginx/nginx.key"
+    }
+}
+
+resource "tls_cert_request" "nginx_csr" {
+    key_algorithm = "ECDSA"
+    private_key_pem = tls_private_key.nginx_key.private_key_pem
+
+    subject {
+        common_name = "nginx"
+        organization = "ScoreStack"
+    }
+
+    dns_names = ["nginx", var.fqdn]
+    ip_addresses = [google_compute_instance.nginx.network_interface.0.network_ip, google_compute_address.nginx.address]
+}
+
+resource "tls_locally_signed_cert" "nginx_cert" {
+    cert_request_pem = tls_cert_request.nginx_csr.cert_request_pem
+    ca_key_algorithm = "ECDSA"
+    ca_private_key_pem = tls_private_key.ca_key.private_key_pem
+    ca_cert_pem = tls_self_signed_cert.ca_cert.cert_pem
+    validity_period_hours = 8760
+
+    allowed_uses = [
+        "server_auth",
+        "client_auth",
+    ]
+}
+
+resource "null_resource" "nginx_cert" {
+    triggers = {
+        cert_created = tls_locally_signed_cert.nginx_cert.cert_pem
+    }
+
+    provisioner "local-exec" {
+        command = "mkdir -p ${var.certificate_destination}/nginx && echo '${tls_private_key.nginx_key.private_key_pem}' > ${var.certificate_destination}/nginx/nginx.crt"
+    }
+}
