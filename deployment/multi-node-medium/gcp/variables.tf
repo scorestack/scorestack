@@ -2,6 +2,7 @@ variable "project" {}
 variable "credentials_file" {}
 variable "ssh_pub_key_file" {}
 variable "ssh_priv_key_file" {}
+variable "domain" {}
 
 variable "region" {
     default = "us-central1"

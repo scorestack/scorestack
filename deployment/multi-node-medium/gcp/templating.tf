@@ -36,6 +36,7 @@ data "template_file" "inventory" {
         elastic_password = random_password.elastic.result
         kibana_password = random_password.kibana.result
         logstash_password = random_password.logstash.result
+        fqdn = var.fqdn
     }
 }
 
