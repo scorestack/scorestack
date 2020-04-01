@@ -406,7 +406,9 @@
       copy:
         src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
         dest: /etc/kibana/{{ inventory_hostname }}.key
-        mode: 0600
+        user: root
+        group: kibana
+        mode: 0660
       notify:
         - Restart Kibana
 
