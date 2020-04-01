@@ -76,7 +76,7 @@ resource "null_resource" "elasticsearch1_cert" {
     }
 
     provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/elasticsearch1 && echo '${tls_private_key.elasticsearch1_key.private_key_pem}' > ${var.certificate_destination}/elasticsearch1/elasticsearch1.crt"
+        command = "mkdir -p ${var.certificate_destination}/elasticsearch1 && echo '${tls_locally_signed_cert.elasticsearch1_cert.cert_pem}' > ${var.certificate_destination}/elasticsearch1/elasticsearch1.crt"
     }
 }
 
@@ -126,7 +126,7 @@ resource "null_resource" "elasticsearch2_cert" {
     }
 
     provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/elasticsearch2 && echo '${tls_private_key.elasticsearch2_key.private_key_pem}' > ${var.certificate_destination}/elasticsearch2/elasticsearch2.crt"
+        command = "mkdir -p ${var.certificate_destination}/elasticsearch2 && echo '${tls_locally_signed_cert.elasticsearch2_cert.cert_pem}' > ${var.certificate_destination}/elasticsearch2/elasticsearch2.crt"
     }
 }
 
@@ -176,7 +176,7 @@ resource "null_resource" "elasticsearch3_cert" {
     }
 
     provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/elasticsearch3 && echo '${tls_private_key.elasticsearch3_key.private_key_pem}' > ${var.certificate_destination}/elasticsearch3/elasticsearch3.crt"
+        command = "mkdir -p ${var.certificate_destination}/elasticsearch3 && echo '${tls_locally_signed_cert.elasticsearch3_cert.cert_pem}' > ${var.certificate_destination}/elasticsearch3/elasticsearch3.crt"
     }
 }
 
@@ -226,7 +226,7 @@ resource "null_resource" "elasticsearch4_cert" {
     }
 
     provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/elasticsearch4 && echo '${tls_private_key.elasticsearch4_key.private_key_pem}' > ${var.certificate_destination}/elasticsearch4/elasticsearch4.crt"
+        command = "mkdir -p ${var.certificate_destination}/elasticsearch4 && echo '${tls_locally_signed_cert.elasticsearch4_cert.cert_pem}' > ${var.certificate_destination}/elasticsearch4/elasticsearch4.crt"
     }
 }
 
@@ -276,7 +276,7 @@ resource "null_resource" "logstash_cert" {
     }
 
     provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/logstash && echo '${tls_private_key.logstash_key.private_key_pem}' > ${var.certificate_destination}/logstash/logstash.crt"
+        command = "mkdir -p ${var.certificate_destination}/logstash && echo '${tls_locally_signed_cert.logstash_cert.cert_pem}' > ${var.certificate_destination}/logstash/logstash.crt"
     }
 }
 
@@ -326,7 +326,7 @@ resource "null_resource" "kibana_cert" {
     }
 
     provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/kibana && echo '${tls_private_key.kibana_key.private_key_pem}' > ${var.certificate_destination}/kibana/kibana.crt"
+        command = "mkdir -p ${var.certificate_destination}/kibana && echo '${tls_locally_signed_cert.kibana_cert.cert_pem}' > ${var.certificate_destination}/kibana/kibana.crt"
     }
 }
 
@@ -376,6 +376,6 @@ resource "null_resource" "nginx_cert" {
     }
 
     provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/nginx && echo '${tls_private_key.nginx_key.private_key_pem}' > ${var.certificate_destination}/nginx/nginx.crt"
+        command = "mkdir -p ${var.certificate_destination}/nginx && echo '${tls_locally_signed_cert.nginx_cert.cert_pem}' > ${var.certificate_destination}/nginx/nginx.crt"
     }
 }
