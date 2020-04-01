@@ -136,21 +136,33 @@
             name: elasticsearch
             state: stopped
 
+        - name: Check if bootstrap password is set
+          command: /usr/share/elasticsearch/bin/elasticsearch-keystore list
+          changed_when: no
+          register: elasticsearch_keystore_keys
+
         - name: Set bootstrap password
           shell: "echo {{ bootstrap_password }} | /usr/share/elasticsearch/bin/elasticsearch-keystore add bootstrap.password --stdin"
+          when: '"bootstrap.password" not in elasticsearch_keystore_keys.stdout'
+
+        - name: Start Elasticsearch
+          systemd:
+            name: elasticsearch
+            state: started
 
         - name: Set elastic user password
           uri:
             url: https://elasticsearch1:9200/_xpack/security/user/elastic/_password
             body: '{"password": "{{ elastic_password }}"}'
             body_format: json
+            force_basic_auth: yes
             method: PUT
             url_username: "elastic"
             url_password: "{{ bootstrap_password }}"
             validate_certs: no
           notify:
             - Restart Elasticsearch
-      when: bootstrap_req.status == 401
+      when: inventory_hostname == "elasticsearch1" and bootstrap_req.status == 401
 
     - name: Enable Elasticsearch service
       systemd:
@@ -201,6 +213,7 @@
     - name: Wait for cluster status to be green
       uri:
         url: "https://elasticsearch4:9200/_cluster/health?wait_for_status=green&timeout=1m"
+        force_basic_auth: yes
         timeout: 60
         url_username: elastic
         url_password: "{{ elastic_password }}"
@@ -212,6 +225,7 @@
         url: "https://elasticsearch4:9200/_xpack/security/user/{{ item.username }}/_password"
         body: '{"password": "{{ item.password }}"}'
         body_format: json
+        force_basic_auth: yes
         method: PUT
         url_username: elastic
         url_password: "{{ elastic_password }}"
