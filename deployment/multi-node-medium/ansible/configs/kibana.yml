@@ -9,6 +9,7 @@ elasticsearch.ssl.certificateAuthorities:
   - /etc/kibana/ca.crt
 
 elasticsearch.username: kibana
+elasticsearch.password: {{ kibana_password }}
 
 path.data: /usr/share/kibana/data
 

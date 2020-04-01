@@ -289,7 +289,7 @@
         deb: https://artifacts.elastic.co/downloads/logstash/logstash-7.5.1.deb
 
     - name: Configure Logstash
-      copy:
+      template:
         src: configs/logstash.yml
         dest: /etc/logstash/logstash.yml
       notify:
@@ -331,31 +331,6 @@
       notify:
         - Restart Logstash
 
-    - name: Create directory for Logstash keystore
-      file:
-        path: /usr/share/logstash/config
-        state: directory
-        owner: logstash
-        group: logstash
-
-    - name: Create Logstash keystore
-      shell: "yes y | /usr/share/logstash/bin/logstash-keystore create"
-      args:
-        creates: /usr/share/logstash/config/logstash.keystore
-      register: result
-      until: result.failed != true
-
-    - name: Check if Logstash password has been added to the keystore
-      command: /usr/share/logstash/bin/logstash-keystore list
-      changed_when: no
-      register: logstash_keystore_keys
-
-    - name: Add Logstash password
-      shell: "echo {{ logstash_password }} | /usr/share/logstash/bin/logstash-keystore add elasticsearch.password --stdin"
-      when: '"elasticsearch.password" not in logstash_keystore_keys.stdout'
-      notify:
-        - Restart Logstash
-
     - name: Enable Logstash service
       systemd:
         name: logstash
@@ -382,7 +357,7 @@
         deb: https://artifacts.elastic.co/downloads/kibana/kibana-7.5.1-amd64.deb
 
     - name: Configure Kibana
-      copy:
+      template:
         src: configs/kibana.yml
         dest: /etc/kibana/kibana.yml
       notify:
@@ -406,7 +381,7 @@
       copy:
         src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
         dest: /etc/kibana/{{ inventory_hostname }}.key
-        user: root
+        owner: root
         group: kibana
         mode: 0660
       notify:
@@ -417,27 +392,6 @@
       args:
         creates: /usr/share/kibana/plugins/scorestack
       become_user: kibana
-      notify:
-        - Restart Kibana
-
-    - name: Create Kibana keystore
-      command: /usr/share/kibana/bin/kibana-keystore create
-      args:
-        creates: /var/lib/kibana/kibana.keystore
-      become_user: kibana
-      notify:
-        - Restart Kibana
-      
-    - name: Check if Kibana password has been added to the keystore
-      command: /usr/share/kibana/bin/kibana-keystore list
-      become_user: kibana
-      changed_when: no
-      register: kibana_keystore_keys
-
-    - name: Add Kibana password
-      shell: "echo {{ kibana_password }} | /usr/share/kibana/bin/kibana-keystore add elasticsearch.password --stdin"
-      become_user: kibana
-      when: '"elasticsearch.password" not in kibana_keystore_keys.stdout'
       notify:
         - Restart Kibana
 
