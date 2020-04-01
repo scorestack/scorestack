@@ -29,7 +29,7 @@ xpack.security.http.ssl.certificate_authorities:
   - /etc/elasticsearch/ca.crt
 
 xpack.security.transport.ssl.enabled: true
-xpack.security.transport.ssl.client_authentication: full
+xpack.security.transport.ssl.client_authentication: required
 xpack.security.transport.ssl.verification_mode: full
 xpack.security.transport.ssl.key: /etc/elasticsearch/{{ inventory_hostname }}.key
 xpack.security.transport.ssl.certificate: /etc/elasticsearch/{{ inventory_hostname }}.crt
