@@ -120,6 +120,7 @@
     - name: Check if elastic user password is set
       uri:
         url: https://elasticsearch1:9200/_cluster/health
+        force_basic_auth: yes
         status_code: [200, 401]
         url_username: elastic
         url_password: "{{ elastic_password }}"
