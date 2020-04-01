@@ -69,6 +69,9 @@
       copy:
         src: certificates/ca/ca.crt
         dest: /etc/elasticsearch/ca.crt
+        owner: root
+        group: elasticsearch
+        mode: '0660'
 
     - name: Copy certificate
       copy:
