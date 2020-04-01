@@ -30,8 +30,13 @@
 - name: Install Java
   hosts: elasticsearch:logstash
   become: yes
-  roles:
-    - geerlingguy.java
+  tasks:
+
+    - name: Install Default JRE
+      apt:
+        name: default-jre
+        state: present
+        update_cache: yes
 
 ###############################################################################
 # ELASTICSEARCH
@@ -58,7 +63,7 @@
       pam_limits:
         domain: elasticsearch
         limit_item: "{{ item.item }}"
-        limit_type: -
+        limit_type: "-"
         value: "{{ item.value }}"
       loop:
         - { item: "nofile", value: "65535" }
@@ -129,9 +134,9 @@
             url_username: "elastic"
             url_password: "{{ bootstrap_password }}"
             validate_certs: no
+          notify:
+            - Restart Elasticsearch
       when: bootstrap_req.status == 401
-      notify:
-        - Restart Elasticsearch
 
     - name: Enable Elasticsearch service
       systemd:
@@ -260,7 +265,8 @@
 
     - name: Create Logstash keystore
       shell: "yes y | /usr/share/logstash/bin/logstash-keystore create"
-      creates: /usr/share/logstash/config/logstash.keystore
+      args:
+        creates: /usr/share/logstash/config/logstash.keystore
       register: result
       until: result.failed != true
 
@@ -271,7 +277,7 @@
 
     - name: Add Logstash password
       shell: "echo {{ logstash_password }} | /usr/share/logstash/bin/logstash-keystore add elasticsearch.password --stdin"
-      when: "elasticsearch.password" not in logstash_keystore_keys.stdout
+      when: '"elasticsearch.password" not in logstash_keystore_keys.stdout'
       notify:
         - Restart Logstash
 
@@ -324,13 +330,15 @@
 
     - name: Install plugin
       command: /usr/share/kibana/bin/kibana-plugin --allow-root install https://tinyurl.com/scorestack-kibana-plugin
-      creates: /usr/share/kibana/plugins/scorestack
+      args:
+        creates: /usr/share/kibana/plugins/scorestack
       notify:
         - Restart Kibana
 
     - name: Create Kibana keystore
       command: /usr/share/kibana/bin/kibana-keystore --allow-root create
-      creates: /var/lib/kibana/kibana.keystore
+      args:
+        creates: /var/lib/kibana/kibana.keystore
       notify:
         - Restart Kibana
       
@@ -341,7 +349,7 @@
 
     - name: Add Kibana password
       shell: "echo {{ kibana_password }} | /usr/share/kibana/bin/kibana-keystore --allow-root add elasticsearch.password --stdin"
-      when: "elasticsearch.password" not in kibana_keystore_keys.stdout
+      when: '"elasticsearch.password" not in kibana_keystore_keys.stdout'
 
     - name: Enable Kibana service
       systemd:
