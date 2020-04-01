@@ -6,7 +6,7 @@ elasticsearch.hosts: https://elasticsearch4:9200
 elasticsearch.ssl.certificate: /etc/kibana/kibana.crt
 elasticsearch.ssl.key: /etc/kibana/kibana.key
 elasticsearch.ssl.certificateAuthorities:
-  - /etc/ssl/certs/scorestack.crt
+  - /etc/kibana/ca.crt
 
 elasticsearch.username: kibana
 
@@ -15,10 +15,10 @@ path.data: /usr/share/kibana/data
 server.host: "0.0.0.0"
 server.name: kibana
 
-server.ssl.certificate: /usr/share/kibana/config/certificates/kibana/kibana.crt
-server.ssl.key: /usr/share/kibana/config/certificates/kibana/kibana.key
+server.ssl.certificate: /etc/kibana/kibana.crt
+server.ssl.key: /etc/kibana/kibana.key
 server.ssl.certificateAuthorities:
-  - /usr/share/kibana/config/certificates/ca/ca.crt
+  - /etc/kibana/ca.crt
 server.ssl.enabled: true
 
 uiSettings.overrides.theme.darkMode: true

@@ -17,16 +17,6 @@
         - { ip: "{{ elasticsearch3_ip }}", hostname: "elasticsearch3" }
         - { ip: "{{ elasticsearch4_ip }}", hostname: "elasticsearch4" }
 
-    - name: Create directory for root CA certificate
-      file:
-        path: /etc/ssl/certs
-        state: directory
-
-    - name: Copy root CA certificate
-      copy:
-        src: certificates/ca/ca.crt
-        dest: /etc/ssl/certs/scorestack.crt
-
 - name: Install Java
   hosts: elasticsearch:logstash
   become: yes
@@ -74,6 +64,11 @@
         name: vm.max_map_count
         sysctl_set: yes
         value: 262144
+
+    - name: Copy root CA certificate
+      copy:
+        src: certificates/ca/ca.crt
+        dest: /etc/elasticsearch/ca.crt
 
     - name: Copy certificate
       copy:
@@ -242,6 +237,13 @@
       notify:
         - Restart Logstash
 
+    - name: Copy root CA certificate
+      copy:
+        src: certificates/ca/ca.crt
+        dest: /etc/logstash/ca.crt
+      notify:
+        - Restart Logstash
+
     - name: Copy certificate
       copy:
         src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.crt
@@ -311,6 +313,13 @@
       copy:
         src: configs/kibana.yml
         dest: /etc/kibana/kibana.yml
+      notify:
+        - Restart Kibana
+
+    - name: Copy root CA certificate
+      copy:
+        src: certificates/ca/ca.crt
+        dest: /etc/logstash/ca.crt
       notify:
         - Restart Kibana
 
@@ -394,6 +403,13 @@
         - elasticsearch.conf
         - kibana.conf
         - logstash.conf
+      notify:
+        - Restart Nginx
+
+    - name: Copy root CA certificate
+      copy:
+        src: certificates/ca/ca.crt
+        dest: /etc/logstash/ca.crt
       notify:
         - Restart Nginx
 
