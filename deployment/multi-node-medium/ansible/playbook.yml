@@ -239,7 +239,7 @@
       uri:
         url: "https://elasticsearch4:9200/_security/role/dynamicbeat_reader"
         body: '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
-        body_type: json
+        body_format: json
         force_basic_auth: yes
         method: PUT
         url_username: elastic
@@ -251,7 +251,7 @@
       uri:
         url: "https://elasticsearch4:9200/_security/role/logstash_writer"
         body: '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["results-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]}'
-        body_type: json
+        body_format: json
         force_basic_auth: yes
         method: PUT
         url_username: elastic
@@ -263,7 +263,7 @@
       uri:
         url: "https://elasticsearch4:9200/_security/user/{{ item.username }}"
         body: '{"password":"{{ item.password }}","full_name":"{{ item.full_name }}","email":"{{ item.email }}","roles":["{{ item.role }}"]}'
-        body_type: json
+        body_format: json
         force_basic_auth: yes
         method: PUT
         url_username: elastic
