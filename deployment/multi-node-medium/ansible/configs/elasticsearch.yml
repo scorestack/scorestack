@@ -13,7 +13,7 @@ bootstrap.memory_lock: true
 
 path:
   logs: /var/log/elasticsearch
-  data: /var/data/elasticsearch
+  data: /var/lib/elasticsearch
 
 xpack.monitoring.collection.enabled: true
 xpack.monitoring.elasticsearch.collection.enabled: false
