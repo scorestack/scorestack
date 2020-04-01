@@ -1,0 +1,25 @@
+---
+csp.strict: true
+
+elasticsearch.hosts: https://elasticsearch4:9200
+
+elasticsearch.ssl.certificate: /etc/kibana/kibana.crt
+elasticsearch.ssl.key: /etc/kibana/kibana.key
+elasticsearch.ssl.certificateAuthorities:
+  - /etc/kibana/ca.crt
+
+elasticsearch.username: kibana
+elasticsearch.password: {{ kibana_password }}
+
+path.data: /var/lib/kibana
+
+server.host: "0.0.0.0"
+server.name: kibana
+
+server.ssl.certificate: /etc/kibana/kibana.crt
+server.ssl.key: /etc/kibana/kibana.key
+server.ssl.certificateAuthorities:
+  - /etc/kibana/ca.crt
+server.ssl.enabled: true
+
+uiSettings.overrides.theme.darkMode: true

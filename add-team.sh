@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Add scoreboard dashboard
+UUID_A=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+UUID_B=$(uuidgen)
+UUID_C=$(uuidgen)
+UUID_D=dddddddd-dddd-dddd-dddd-dddddddddddd
+UUID_E=eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee
+UUID_F=ffffffff-ffff-ffff-ffff-ffffffffffff
+cat dashboards/scoreboard.json | sed -e "s/\${UUID_A}/${UUID_A}/g" | sed -e "s/\${UUID_B}/${UUID_B}/g" | sed -e "s/\${UUID_C}/${UUID_C}/g" | sed -e "s/\${UUID_D}/${UUID_D}/g" | sed -e "s/\${UUID_E}/${UUID_E}/g" | sed -e "s/\${UUID_F}/${UUID_F}/g" > tmp-dashboard.json
+curl -ku root:changeme ${KIBANA_HOST}/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
+curl -kX POST -u root:changeme ${KIBANA_HOST}/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"'${UUID_A}'"}],"includeReferences":true}'
+
+# Clean up
+rm tmp-dashboard.json
+
 # Loop through all teams passed as arguments
 for TEAM in "${@}"
 do

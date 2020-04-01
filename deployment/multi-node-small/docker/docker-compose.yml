@@ -1,0 +1,94 @@
+---
+version: '3'
+
+services:
+
+  setup:
+    command: config/setup.sh
+    container_name: setup
+    environment:
+      - ELASTICSEARCH_HOST=https://elasticsearch:9200
+      - ELASTICSEARCH_CONTAINER=elasticsearch
+      - KIBANA_HOST=https://kibana:5601
+      - KIBANA_CONTAINER=kibana
+      - LOGSTASH_CONTAINER=logstash
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    networks:
+      - elastic
+    volumes:
+      - ./:/usr/share/elasticsearch/config/
+      - ./certificates:/certificates
+      - ../../../dashboards:/usr/share/elasticsearch/dashboards
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /usr/share/elasticsearch
+
+  elasticsearch:
+    container_name: elasticsearch
+    env_file: elasticsearch.env
+    environment:
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+    healthcheck:
+      test: /bin/healthcheck.sh
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    networks:
+      - elastic
+    ports:
+      - 9200:9200
+    restart: always
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65535
+      nproc: 4096
+    volumes:
+      - ./certificates/elasticsearch:/usr/share/elasticsearch/config/certificates/elasticsearch
+      - ./certificates/ca:/usr/share/elasticsearch/config/certificates/ca
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch-healthcheck.sh:/bin/healthcheck.sh
+      - /usr/share/elasticsearch/data
+
+  kibana:
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - server.name=kibana
+    image: docker.elastic.co/kibana/kibana:7.5.1
+    networks:
+      - elastic
+    ports:
+      - 5601:5601
+    restart: always
+    volumes:
+      - ./certificates/kibana:/usr/share/kibana/config/certificates/kibana
+      - ./certificates/ca:/usr/share/kibana/config/certificates/ca
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+      - /usr/share/kibana/data
+      - /usr/share/kibana/plugins
+  
+  logstash:
+    container_name: logstash
+    environment:
+      - ELASTICSEARCH_PASSWORD=${LOGSTASH_USER_PASSWORD}
+      - PATH_DATA=/usr/share/logstash/data
+      - XPACK_MONITORING_ENABLED=false
+    image: docker.elastic.co/logstash/logstash:7.5.1
+    networks:
+      - elastic
+    ports:
+      - 5454:5454
+    restart: always
+    volumes:
+      - ./certificates/logstash:/usr/share/logstash/config/certificates/logstash
+      - ./certificates/ca:/usr/share/logstash/config/certificates/ca
+      - ./dynamicbeat-pipeline.conf:/usr/share/logstash/pipeline/dynamicbeat-pipeline.conf
+      - /usr/share/logstash/data
+      - /usr/share/logstash/config
+
+networks:
+  elastic:
+    driver: bridge

@@ -1,0 +1,18 @@
+---
+instances:
+  - name: elasticsearch
+    dns:
+      - elasticsearch
+      - localhost
+  - name: logstash
+    dns:
+      - logstash
+      - localhost
+  - name: kibana
+    dns:
+      - kibana
+      - localhost
+  - name: dynamicbeat
+    dns:
+      - dynamicbeat
+      - localhost

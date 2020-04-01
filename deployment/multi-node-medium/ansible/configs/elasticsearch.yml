@@ -1,0 +1,35 @@
+---
+cluster.name: scorestack
+node.name: "{{ inventory_hostname }}"
+network.host: 0.0.0.0
+
+discovery.seed_providers: file
+cluster.initial_master_nodes:
+  - elasticsearch1
+  - elasticsearch2
+  - elasticsearch3
+
+path:
+  logs: /var/log/elasticsearch
+  data: /var/lib/elasticsearch
+
+xpack.monitoring.collection.enabled: true
+xpack.monitoring.elasticsearch.collection.enabled: false
+
+xpack.security.enabled: true
+
+xpack.security.authc.realms.native.native1.order: 0
+
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.key: /etc/elasticsearch/{{ inventory_hostname }}.key
+xpack.security.http.ssl.certificate: /etc/elasticsearch/{{ inventory_hostname }}.crt
+xpack.security.http.ssl.certificate_authorities:
+  - /etc/elasticsearch/ca.crt
+
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.verification_mode: full
+xpack.security.transport.ssl.key: /etc/elasticsearch/{{ inventory_hostname }}.key
+xpack.security.transport.ssl.certificate: /etc/elasticsearch/{{ inventory_hostname }}.crt
+xpack.security.transport.ssl.certificate_authorities:
+  - /etc/elasticsearch/ca.crt

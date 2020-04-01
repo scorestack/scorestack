@@ -1,0 +1,597 @@
+---
+- name: General setup
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Add entries to /etc/hosts
+      template:
+        src: configs/hosts
+        dest: /etc/hosts
+
+- name: Install Java
+  hosts: elasticsearch:logstash
+  become: yes
+  tasks:
+
+    - name: Install Default JRE
+      apt:
+        name: default-jre
+        state: present
+        update_cache: yes
+
+###############################################################################
+# ELASTICSEARCH
+###############################################################################
+
+- name: Install Elasticsearch
+  hosts: elasticsearch
+  become: yes
+  tasks:
+
+    - name: Install Elasticsearch package
+      apt:
+        deb: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.1-amd64.deb
+
+    - name: Configure JVM
+      template:
+        src: configs/elasticsearch.jvm.options
+        dest: /etc/elasticsearch/jvm.options
+        owner: root
+        group: elasticsearch
+        mode: '0660'
+
+    - name: Configure seed hosts
+      template:
+        src: configs/unicast_hosts.txt
+        dest: /etc/elasticsearch/unicast_hosts.txt
+        owner: root
+        group: elasticsearch
+        mode: '0660'
+
+    - name: Configure limits
+      pam_limits:
+        domain: elasticsearch
+        limit_item: "{{ item.item }}"
+        limit_type: "-"
+        value: "{{ item.value }}"
+      loop:
+        - { item: "nofile", value: "65535" }
+        - { item: "nproc", value: "4096" }
+
+    - name: Increase memory limits
+      sysctl:
+        name: vm.max_map_count
+        sysctl_set: yes
+        value: "262144"
+
+    - name: Reduce swappiness
+      sysctl:
+        name: vm.swappiness
+        sysctl_set: yes
+        value: "1"
+
+    - name: Copy root CA certificate
+      copy:
+        src: certificates/ca/ca.crt
+        dest: /etc/elasticsearch/ca.crt
+        owner: root
+        group: elasticsearch
+        mode: '0660'
+
+    - name: Copy certificate
+      copy:
+        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.crt
+        dest: /etc/elasticsearch/{{ inventory_hostname }}.crt
+        owner: root
+        group: elasticsearch
+        mode: '0660'
+
+    - name: Copy key
+      copy:
+        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
+        dest: /etc/elasticsearch/{{ inventory_hostname }}.key
+        owner: root
+        group: elasticsearch
+        mode: '0660'
+
+- name: Configure master-eligible nodes
+  hosts: master
+  become: yes
+  tasks:
+
+    - name: Configure Elasticsearch
+      template:
+        src: configs/elasticsearch.yml
+        dest: /etc/elasticsearch/elasticsearch.yml
+        owner: root
+        group: elasticsearch
+      notify:
+        - Restart Elasticsearch
+
+    # In the first run-through, Elasticsearch is not running at this point. We
+    # need to start it so we can check if the elastic user password has been
+    # set.
+    - name: Start Elasticsearch
+      systemd:
+        name: elasticsearch
+        state: started
+
+    - name: Check if elastic user password is set
+      uri:
+        url: https://elasticsearch1:9200/_cluster/health
+        force_basic_auth: yes
+        status_code: [200, 401]
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      register: bootstrap_req
+      until: '"Connection refused" not in bootstrap_req.msg'
+      when: inventory_hostname == "elasticsearch1"
+
+    - name: Set elastic user password
+      block:
+        - name: Stop Elasticsearch
+          systemd:
+            name: elasticsearch
+            state: stopped
+
+        - name: Check if bootstrap password is set
+          command: /usr/share/elasticsearch/bin/elasticsearch-keystore list
+          changed_when: no
+          register: elasticsearch_keystore_keys
+
+        - name: Set bootstrap password
+          shell: "echo {{ bootstrap_password }} | /usr/share/elasticsearch/bin/elasticsearch-keystore add bootstrap.password --stdin"
+          when: '"bootstrap.password" not in elasticsearch_keystore_keys.stdout'
+
+        - name: Start Elasticsearch
+          systemd:
+            name: elasticsearch
+            state: started
+
+        - name: Set elastic user password
+          uri:
+            url: https://elasticsearch1:9200/_xpack/security/user/elastic/_password
+            body: '{"password": "{{ elastic_password }}"}'
+            body_format: json
+            force_basic_auth: yes
+            method: PUT
+            url_username: "elastic"
+            url_password: "{{ bootstrap_password }}"
+            validate_certs: no
+          notify:
+            - Restart Elasticsearch
+      when: inventory_hostname == "elasticsearch1" and bootstrap_req.status == 401
+
+    - name: Enable Elasticsearch service
+      systemd:
+        name: elasticsearch
+        enabled: yes
+
+  handlers:
+
+    - name: Restart Elasticsearch
+      systemd:
+        name: elasticsearch
+        state: restarted
+
+- name: Configure coordinating-only node
+  hosts: coordinating
+  become: yes
+  tasks:
+
+    - name: Configure Elasticsearch
+      template:
+        src: configs/coordinator.yml
+        dest: /etc/elasticsearch/elasticsearch.yml
+        owner: root
+        group: elasticsearch
+      notify:
+        - Restart Elasticsearch
+
+    - name: Enable Elasticsearch service
+      systemd:
+        name: elasticsearch
+        enabled: yes
+
+  handlers:
+
+    - name: Restart Elasticsearch
+      systemd:
+        name: elasticsearch
+        state: restarted
+
+###############################################################################
+# USERS
+###############################################################################
+
+- name: Set up Elasticsearch users
+  hosts: nginx
+  tasks:
+
+    - name: Wait for cluster status to be green
+      uri:
+        url: "https://elasticsearch4:9200/_cluster/health?wait_for_status=green&timeout=1m"
+        force_basic_auth: yes
+        timeout: 60
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+    - name: Set internal user passwords
+      uri:
+        url: "https://elasticsearch4:9200/_xpack/security/user/{{ item.username }}/_password"
+        body: '{"password": "{{ item.password }}"}'
+        body_format: json
+        force_basic_auth: yes
+        method: PUT
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      loop:
+        - { username: "kibana", password: "{{ kibana_password }}" }
+        - { username: "remote_monitoring_user", password: "{{ remote_monitoring_user_password }}" }
+      changed_when: no
+
+    - name: Create Dynamicbeat role
+      uri:
+        url: "https://elasticsearch4:9200/_security/role/dynamicbeat_reader"
+        body: '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
+        body_format: json
+        force_basic_auth: yes
+        method: PUT
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+    - name: Create Logstash role
+      uri:
+        url: "https://elasticsearch4:9200/_security/role/logstash_writer"
+        body: '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["results-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]}'
+        body_format: json
+        force_basic_auth: yes
+        method: PUT
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+    - name: Create additional users
+      uri:
+        url: "https://elasticsearch4:9200/_security/user/{{ item.username }}"
+        body: '{"password":"{{ item.password }}","full_name":"{{ item.full_name }}","email":"{{ item.email }}","roles":["{{ item.role }}"]}'
+        body_format: json
+        force_basic_auth: yes
+        method: PUT
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+      loop:
+        - { username: "root", password: "changeme", full_name: "Extra Superuser", email: "root@example.com", role: "superuser" }
+        - { username: "dynamicbeat", password: "changeme", full_name: "Dynamicbeat Definition-Reading User", email: "dynamicbeat@example.com", role: "dynamicbeat_reader" }
+        - { username: "logstash", password: "{{ logstash_password }}", full_name: "Internal Logstash User", email: "logstash@example.com", role: "logstash_writer" }
+
+###############################################################################
+# LOGSTASH
+###############################################################################
+
+- name: Install Logstash
+  hosts: logstash
+  become: yes
+  tasks:
+
+    - name: Install Logstash package
+      apt:
+        deb: https://artifacts.elastic.co/downloads/logstash/logstash-7.5.1.deb
+
+    - name: Configure Logstash
+      copy:
+        src: configs/logstash.yml
+        dest: /etc/logstash/logstash.yml
+      notify:
+        - Restart Logstash
+
+    - name: Configure JVM
+      template:
+        src: configs/logstash.jvm.options
+        dest: /etc/logstash/jvm.options
+      notify:
+        - Restart Logstash
+
+    - name: Configure Dynamicbeat pipeline
+      template:
+        src: configs/dynamicbeat-pipeline.conf
+        dest: /etc/logstash/conf.d/dynamicbeat-pipeline.conf
+      notify:
+        - Restart Logstash
+
+    - name: Copy root CA certificate
+      copy:
+        src: certificates/ca/ca.crt
+        dest: /etc/logstash/ca.crt
+      notify:
+        - Restart Logstash
+
+    - name: Copy certificate
+      copy:
+        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.crt
+        dest: /etc/logstash/{{ inventory_hostname }}.crt
+      notify:
+        - Restart Logstash
+
+    - name: Copy key
+      copy:
+        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
+        dest: /etc/logstash/{{ inventory_hostname }}.key
+        mode: '0600'
+
+    - name: Convert key format
+      command: openssl pkcs8 -topk8 -nocrypt -in /etc/logstash/{{ inventory_hostname }}.key -out /etc/logstash/{{ inventory_hostname }}.key.pkcs8
+      args:
+        creates: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
+      notify:
+        - Restart Logstash
+
+    - name: Set permissions on key
+      file:
+        path: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
+        mode: '0600'
+      notify:
+        - Restart Logstash
+
+    - name: Enable Logstash service
+      systemd:
+        name: logstash
+        enabled: yes
+
+  handlers:
+
+    - name: Restart Logstash
+      systemd:
+        name: logstash
+        state: restarted
+
+###############################################################################
+# KIBANA
+###############################################################################
+
+- name: Install Kibana
+  hosts: kibana
+  become: yes
+  tasks:
+
+    - name: Install Kibana package
+      apt:
+        deb: https://artifacts.elastic.co/downloads/kibana/kibana-7.5.1-amd64.deb
+
+    - name: Configure Kibana
+      template:
+        src: configs/kibana.yml
+        dest: /etc/kibana/kibana.yml
+      notify:
+        - Restart Kibana
+
+    - name: Copy root CA certificate
+      copy:
+        src: certificates/ca/ca.crt
+        dest: /etc/kibana/ca.crt
+      notify:
+        - Restart Kibana
+
+    - name: Copy certificate
+      copy:
+        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.crt
+        dest: /etc/kibana/{{ inventory_hostname }}.crt
+      notify:
+        - Restart Kibana
+
+    - name: Copy key
+      copy:
+        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
+        dest: /etc/kibana/{{ inventory_hostname }}.key
+        owner: root
+        group: kibana
+        mode: 0660
+      notify:
+        - Restart Kibana
+
+    - name: Install plugin
+      command: /usr/share/kibana/bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin
+      args:
+        creates: /usr/share/kibana/plugins/scorestack
+      become_user: kibana
+      notify:
+        - Restart Kibana
+
+    - name: Enable Kibana service
+      systemd:
+        name: kibana
+        enabled: yes
+
+  handlers:
+
+    - name: Restart Kibana
+      systemd:
+        name: kibana
+        state: restarted
+
+###############################################################################
+# KIBANA SETUP
+###############################################################################
+
+- name: Set up Kibana users and space
+  hosts: nginx
+  tasks:
+
+    - name: Wait for Kibana to be ready
+      uri:
+        url: https://kibana:5601/api/status
+        force_basic_auth: yes
+        return_content: yes
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+      ignore_errors: yes
+      retries: 50
+      register: kibana_status
+      until: "'\"status\":{\"overall\":{\"state\":\"green\"' in kibana_status.content"
+
+    - name: Check if ScoreStack space has been added
+      uri:
+        url: https://kibana:5601/api/spaces/space/scorestack
+        force_basic_auth: yes
+        headers:
+          kbn-xsrf: "true"
+        status_code: [200, 404]
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+      register: scorestack_space
+
+    - name: Add ScoreStack space
+      uri:
+        url: https://kibana:5601/api/spaces/space
+        body: '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","advancedSettings","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
+        body_format: json
+        force_basic_auth: yes
+        headers:
+          kbn-xsrf: "true"
+        method: POST
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+      when: scorestack_space.status == 404
+
+    - name: Add base role for common permissions
+      uri:
+        url: https://kibana:5601/api/security/role/common
+        body: '{"elasticsearch":{"indices":[{"names":["results-all*","checks"],"privileges":["read"]}]},"kibana":[{"base":["read"],"spaces":["scorestack"]}]}'
+        body_format: json
+        force_basic_auth: yes
+        headers:
+          kbn-xsrf: "true"
+        method: PUT
+        status_code: [204]
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+    - name: Add spectator role
+      uri:
+        url: https://kibana:5601/api/security/role/spectator
+        body: '{"elasticsearch":{"indices":[{"names":["results*"],"privileges":["read"]}]}}'
+        body_format: json
+        force_basic_auth: yes
+        headers:
+          kbn-xsrf: "true"
+        method: PUT
+        status_code: [204]
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+    - name: Add attribute admin role
+      uri:
+        url: https://kibana:5601/api/security/role/attribute-admin
+        body: '{"elasticsearch":{"indices":[{"names":["attrib_*"],"privileges":["all"]}]}}'
+        body_format: json
+        force_basic_auth: yes
+        headers:
+          kbn-xsrf: "true"
+        method: PUT
+        status_code: [204]
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+    - name: Add check admin role
+      uri:
+        url: https://kibana:5601/api/security/role/check-admin
+        body: '{"elasticsearch":{"indices":[{"names":["check*"],"privileges":["all"]}]}}'
+        body_format: json
+        force_basic_auth: yes
+        headers:
+          kbn-xsrf: "true"
+        method: PUT
+        status_code: [204]
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+###############################################################################
+# NGINX
+###############################################################################
+
+- name: Install Nginx
+  hosts: nginx
+  become: yes
+  tasks:
+
+    - name: Install Nginx package
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Configure Nginx
+      copy:
+        src: configs/nginx.conf
+        dest: /etc/nginx/nginx.conf
+      notify:
+        - Restart Nginx
+
+    - name: Configure Nginx server blocks
+      template:
+        src: "configs/{{ item }}"
+        dest: "/etc/nginx/conf.d/{{ item }}"
+      loop:
+        - elasticsearch.conf
+        - kibana.conf
+        - logstash.conf
+      notify:
+        - Restart Nginx
+
+    - name: Copy root CA certificate
+      copy:
+        src: certificates/ca/ca.crt
+        dest: /etc/nginx/ca.crt
+      notify:
+        - Restart Nginx
+
+    - name: Copy certificate
+      copy:
+        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.crt
+        dest: /etc/nginx/{{ inventory_hostname }}.crt
+      notify:
+        - Restart Nginx
+
+    - name: Copy key
+      copy:
+        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
+        dest: /etc/nginx/{{ inventory_hostname }}.key
+        mode: 0600
+      notify:
+        - Restart Nginx
+
+    - name: Enable Nginx
+      systemd:
+        name: nginx
+        enabled: yes
+
+  handlers:
+
+    - name: Restart Nginx
+      systemd:
+        name: nginx
+        state: restarted
