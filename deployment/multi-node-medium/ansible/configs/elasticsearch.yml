@@ -3,7 +3,7 @@ cluster.name: scorestack
 node.name: "{{ inventory_hostname }}"
 network.host: 0.0.0.0
 
-discovery.seed_hosts: "{{ seed_hosts }}"
+discovery.seed_providers: file
 cluster.initial_master_nodes:
   - elasticsearch1
   - elasticsearch2

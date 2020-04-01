@@ -41,6 +41,14 @@
         group: elasticsearch
         mode: '0660'
 
+    - name: Configure seed hosts
+      template:
+        src: configs/unicast_hosts.txt
+        dest: /etc/elasticsearch/unicast_hosts.txt
+        owner: root
+        group: elasticsearch
+        mode: '0660'
+
     - name: Configure limits
       pam_limits:
         domain: elasticsearch
