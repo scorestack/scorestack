@@ -289,7 +289,7 @@
         deb: https://artifacts.elastic.co/downloads/logstash/logstash-7.5.1.deb
 
     - name: Configure Logstash
-      template:
+      copy:
         src: configs/logstash.yml
         dest: /etc/logstash/logstash.yml
       notify:
@@ -303,7 +303,7 @@
         - Restart Logstash
 
     - name: Configure Dynamicbeat pipeline
-      copy:
+      template:
         src: configs/dynamicbeat-pipeline.conf
         dest: /etc/logstash/conf.d/dynamicbeat-pipeline.conf
       notify:
