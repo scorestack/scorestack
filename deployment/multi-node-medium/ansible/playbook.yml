@@ -113,6 +113,7 @@
         validate_certs: no
       ignore_errors: yes
       register: bootstrap_req
+      until: '"Connection refused" not in bootstrap_req.msg'
       when: inventory_hostname == "elasticsearch1"
 
     - name: Set elastic user password
