@@ -1,5 +1,6 @@
 resource "tls_private_key" "ca_key" {
     algorithm = "ECDSA"
+    ecdsa_curve = "P256"
 }
 
 resource "tls_self_signed_cert" "ca_cert" {
@@ -32,6 +33,7 @@ resource "null_resource" "ca_cert" {
 
 resource "tls_private_key" "elasticsearch1_key" {
     algorithm = "ECDSA"
+    ecdsa_curve = "P256"
 }
 
 resource "null_resource" "elasticsearch1_key" {
@@ -82,6 +84,7 @@ resource "null_resource" "elasticsearch1_cert" {
 
 resource "tls_private_key" "elasticsearch2_key" {
     algorithm = "ECDSA"
+    ecdsa_curve = "P256"
 }
 
 resource "null_resource" "elasticsearch2_key" {
@@ -132,6 +135,7 @@ resource "null_resource" "elasticsearch2_cert" {
 
 resource "tls_private_key" "elasticsearch3_key" {
     algorithm = "ECDSA"
+    ecdsa_curve = "P256"
 }
 
 resource "null_resource" "elasticsearch3_key" {
@@ -182,6 +186,7 @@ resource "null_resource" "elasticsearch3_cert" {
 
 resource "tls_private_key" "elasticsearch4_key" {
     algorithm = "ECDSA"
+    ecdsa_curve = "P256"
 }
 
 resource "null_resource" "elasticsearch4_key" {
@@ -232,6 +237,7 @@ resource "null_resource" "elasticsearch4_cert" {
 
 resource "tls_private_key" "logstash_key" {
     algorithm = "ECDSA"
+    ecdsa_curve = "P256"
 }
 
 resource "null_resource" "logstash_key" {
@@ -282,6 +288,7 @@ resource "null_resource" "logstash_cert" {
 
 resource "tls_private_key" "kibana_key" {
     algorithm = "ECDSA"
+    ecdsa_curve = "P256"
 }
 
 resource "null_resource" "kibana_key" {
@@ -332,6 +339,7 @@ resource "null_resource" "kibana_cert" {
 
 resource "tls_private_key" "nginx_key" {
     algorithm = "ECDSA"
+    ecdsa_curve = "P256"
 }
 
 resource "null_resource" "nginx_key" {
