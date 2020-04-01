@@ -446,6 +446,21 @@
         state: restarted
 
 ###############################################################################
+# KIBANA SETUP
+###############################################################################
+
+- name: Set up Kibana users and space
+  hosts: nginx
+  tasks:
+
+    - name: Add ScoreStack space
+      uri:
+        url: https://kibana:5601
+    - name: Add base role for common permissions
+    - name: Add spectator role
+    - name: add admin roles
+
+###############################################################################
 # NGINX
 ###############################################################################
 
@@ -456,7 +471,7 @@
 
     - name: Install Nginx package
       apt:
-        name: Nginx
+        name: nginx
         state: present
         update_cache: yes
 
