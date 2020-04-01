@@ -53,8 +53,8 @@ resource "tls_cert_request" "elasticsearch1_csr" {
         organization = "ScoreStack"
     }
 
-    dns_names = ["elasticsearch1"]
-    ip_addresses = [google_compute_instance.elasticsearch1.network_interface.0.network_ip]
+    dns_names = ["localhost", "elasticsearch1"]
+    ip_addresses = ["127.0.0.1", google_compute_instance.elasticsearch1.network_interface.0.network_ip]
 }
 
 resource "tls_locally_signed_cert" "elasticsearch1_cert" {
@@ -103,8 +103,8 @@ resource "tls_cert_request" "elasticsearch2_csr" {
         organization = "ScoreStack"
     }
 
-    dns_names = ["elasticsearch2"]
-    ip_addresses = [google_compute_instance.elasticsearch2.network_interface.0.network_ip]
+    dns_names = ["localhost", "elasticsearch2"]
+    ip_addresses = ["127.0.0.1", google_compute_instance.elasticsearch2.network_interface.0.network_ip]
 }
 
 resource "tls_locally_signed_cert" "elasticsearch2_cert" {
@@ -153,8 +153,8 @@ resource "tls_cert_request" "elasticsearch3_csr" {
         organization = "ScoreStack"
     }
 
-    dns_names = ["elasticsearch3"]
-    ip_addresses = [google_compute_instance.elasticsearch3.network_interface.0.network_ip]
+    dns_names = ["localhost", "elasticsearch3"]
+    ip_addresses = ["127.0.0.1", google_compute_instance.elasticsearch3.network_interface.0.network_ip]
 }
 
 resource "tls_locally_signed_cert" "elasticsearch3_cert" {
@@ -203,8 +203,8 @@ resource "tls_cert_request" "elasticsearch4_csr" {
         organization = "ScoreStack"
     }
 
-    dns_names = ["elasticsearch4"]
-    ip_addresses = [google_compute_instance.elasticsearch4.network_interface.0.network_ip]
+    dns_names = ["localhost", "elasticsearch4"]
+    ip_addresses = ["127.0.0.1", google_compute_instance.elasticsearch4.network_interface.0.network_ip]
 }
 
 resource "tls_locally_signed_cert" "elasticsearch4_cert" {
@@ -253,8 +253,8 @@ resource "tls_cert_request" "logstash_csr" {
         organization = "ScoreStack"
     }
 
-    dns_names = ["logstash"]
-    ip_addresses = [google_compute_instance.logstash.network_interface.0.network_ip]
+    dns_names = ["localhost", "logstash"]
+    ip_addresses = ["127.0.0.1", google_compute_instance.logstash.network_interface.0.network_ip]
 }
 
 resource "tls_locally_signed_cert" "logstash_cert" {
@@ -303,8 +303,8 @@ resource "tls_cert_request" "kibana_csr" {
         organization = "ScoreStack"
     }
 
-    dns_names = ["kibana"]
-    ip_addresses = [google_compute_instance.kibana.network_interface.0.network_ip]
+    dns_names = ["localhost", "kibana"]
+    ip_addresses = ["127.0.0.1", google_compute_instance.kibana.network_interface.0.network_ip]
 }
 
 resource "tls_locally_signed_cert" "kibana_cert" {
@@ -353,8 +353,8 @@ resource "tls_cert_request" "nginx_csr" {
         organization = "ScoreStack"
     }
 
-    dns_names = ["nginx", var.fqdn]
-    ip_addresses = [google_compute_instance.nginx.network_interface.0.network_ip, google_compute_address.nginx.address]
+    dns_names = ["localhost", "nginx", var.fqdn]
+    ip_addresses = ["127.0.0.1", google_compute_instance.nginx.network_interface.0.network_ip, google_compute_address.nginx.address]
 }
 
 resource "tls_locally_signed_cert" "nginx_cert" {
