@@ -3,7 +3,6 @@ package checks
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"html/template"
 	"sync"
 	"time"
@@ -129,7 +128,8 @@ func unpackDef(config schema.CheckConfig) schema.Check {
 	case "xmpp":
 		def = &xmpp.Definition{}
 	default:
-		fmt.Printf("\n\n[!] Add your definition to the switch case!\n\n")
+		logp.Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
+		def = &noop.Definition{}
 	}
 	err = def.Init(config, renderedJSON)
 	if err != nil {
