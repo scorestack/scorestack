@@ -10,12 +10,12 @@
         line: "{{ item.ip }}{{ item.hostname }}"
       loop:
         - { ip: "{{ nginx_internal_ip }}", hostname: "nginx" }
-        - { ip: "{{ logstash_internal_ip }}", hostname: "logstash" }
-        - { ip: "{{ kibana_internal_ip }}", hostname: "kibana" }
-        - { ip: "{{ elasticsearch1_internal_ip }}", hostname: "elasticsearch1" }
-        - { ip: "{{ elasticsearch2_internal_ip }}", hostname: "elasticsearch2" }
-        - { ip: "{{ elasticsearch3_internal_ip }}", hostname: "elasticsearch3" }
-        - { ip: "{{ elasticsearch4_internal_ip }}", hostname: "elasticsearch4" }
+        - { ip: "{{ logstash_ip }}", hostname: "logstash" }
+        - { ip: "{{ kibana_ip }}", hostname: "kibana" }
+        - { ip: "{{ elasticsearch1_ip }}", hostname: "elasticsearch1" }
+        - { ip: "{{ elasticsearch2_ip }}", hostname: "elasticsearch2" }
+        - { ip: "{{ elasticsearch3_ip }}", hostname: "elasticsearch3" }
+        - { ip: "{{ elasticsearch4_ip }}", hostname: "elasticsearch4" }
 
     - name: Create directory for root CA certificate
       file:
