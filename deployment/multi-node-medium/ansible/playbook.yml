@@ -72,7 +72,7 @@
     - name: Increase memory limits
       sysctl:
         name: vm.max_map_count
-        set: yes
+        sysctl_set: yes
         value: 262144
 
     - name: Copy certificate
