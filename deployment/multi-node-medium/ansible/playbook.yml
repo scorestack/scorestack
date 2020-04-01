@@ -429,6 +429,19 @@
       register: kibana_status
       until: "'\"status\":{\"overall\":{\"state\":\"green\"' in kibana_status.content"
 
+    - name: Check if ScoreStack space has been added
+      uri:
+        url: https://kibana:5601/api/spaces/space/scorestack
+        force_basic_auth: yes
+        headers:
+          kbn-xsrf: "true"
+        status_code: [200, 404]
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+      register: scorestack_space
+
     - name: Add ScoreStack space
       uri:
         url: https://kibana:5601/api/spaces/space
@@ -437,10 +450,12 @@
         force_basic_auth: yes
         headers:
           kbn-xsrf: "true"
+        method: POST
         url_username: elastic
         url_password: "{{ elastic_password }}"
         validate_certs: no
       changed_when: no
+      when: scorestack_space.status == 404
 
     - name: Add base role for common permissions
       uri:
@@ -450,6 +465,8 @@
         force_basic_auth: yes
         headers:
           kbn-xsrf: "true"
+        method: PUT
+        status_code: [204]
         url_username: elastic
         url_password: "{{ elastic_password }}"
         validate_certs: no
@@ -463,6 +480,8 @@
         force_basic_auth: yes
         headers:
           kbn-xsrf: "true"
+        method: PUT
+        status_code: [204]
         url_username: elastic
         url_password: "{{ elastic_password }}"
         validate_certs: no
@@ -476,6 +495,8 @@
         force_basic_auth: yes
         headers:
           kbn-xsrf: "true"
+        method: PUT
+        status_code: [204]
         url_username: elastic
         url_password: "{{ elastic_password }}"
         validate_certs: no
@@ -489,6 +510,8 @@
         force_basic_auth: yes
         headers:
           kbn-xsrf: "true"
+        method: PUT
+        status_code: [204]
         url_username: elastic
         url_password: "{{ elastic_password }}"
         validate_certs: no

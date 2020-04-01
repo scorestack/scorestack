@@ -11,7 +11,7 @@ elasticsearch.ssl.certificateAuthorities:
 elasticsearch.username: kibana
 elasticsearch.password: {{ kibana_password }}
 
-path.data: /usr/share/kibana/data
+path.data: /var/lib/kibana
 
 server.host: "0.0.0.0"
 server.name: kibana
