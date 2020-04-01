@@ -206,7 +206,7 @@
 # USERS
 ###############################################################################
 
-- name: Set up internal users
+- name: Set up Elasticsearch users
   hosts: nginx
   tasks:
 
@@ -231,9 +231,49 @@
         url_password: "{{ elastic_password }}"
         validate_certs: no
       loop:
-        - { user_name: "kibana", user_password: "{{ kibana_password }}" }
-        - { user_name: "logstash", user_password: "{{ logstash_password }}" }
+        - { username: "kibana", password: "{{ kibana_password }}" }
+        - { username: "remote_monitoring_user", password: "{{ remote_monitoring_user_password }}" }
       changed_when: no
+
+    - name: Create Dynamicbeat role
+      uri:
+        url: "https://elasticsearch4:9200/_security/role/dynamicbeat_reader"
+        body: '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
+        body_type: json
+        force_basic_auth: yes
+        method: PUT
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+    - name: Create Logstash role
+      uri:
+        url: "https://elasticsearch4:9200/_security/role/logstash_writer"
+        body: '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["results-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]}'
+        body_type: json
+        force_basic_auth: yes
+        method: PUT
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+
+    - name: Create additional users
+      uri:
+        url: "https://elasticsearch4:9200/_security/user/{{ item.username }}"
+        body: '{"password":"{{ item.password }}","full_name":"{{ item.full_name }}","email":"{{ item.email }}","roles":["{{ item.role }}"]}'
+        body_type: json
+        force_basic_auth: yes
+        method: PUT
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+      loop:
+        - { username: "root", password: "changeme", full_name: "Extra Superuser", email: "root@example.com", role: "superuser" }
+        - { username: "dynamicbeat", password: "changeme", full_name: "Dynamicbeat Definition-Reading User", email: "dynamicbeat@example.com", role: "dynamicbeat_reader" }
+        - { username: "logstash", password: "{{ logstash_password }}", full_name: "Internal Logstash User", email: "logstash@example.com", role: "logstash_writer" }
 
 ###############################################################################
 # LOGSTASH
