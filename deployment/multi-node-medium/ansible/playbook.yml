@@ -496,7 +496,7 @@
     - name: Copy root CA certificate
       copy:
         src: certificates/ca/ca.crt
-        dest: /etc/logstash/ca.crt
+        dest: /etc/nginx/ca.crt
       notify:
         - Restart Nginx
 
