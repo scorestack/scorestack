@@ -5,17 +5,9 @@
   tasks:
 
     - name: Add entries to /etc/hosts
-      lineinfile:
-        path: /etc/hosts
-        line: "{{ item.ip }} {{ item.hostname }}"
-      loop:
-        - { ip: "{{ nginx_internal_ip }}", hostname: "nginx" }
-        - { ip: "{{ logstash_ip }}", hostname: "logstash" }
-        - { ip: "{{ kibana_ip }}", hostname: "kibana" }
-        - { ip: "{{ elasticsearch1_ip }}", hostname: "elasticsearch1" }
-        - { ip: "{{ elasticsearch2_ip }}", hostname: "elasticsearch2" }
-        - { ip: "{{ elasticsearch3_ip }}", hostname: "elasticsearch3" }
-        - { ip: "{{ elasticsearch4_ip }}", hostname: "elasticsearch4" }
+      template:
+        src: configs/hosts
+        dest: /etc/hosts
 
 - name: Install Java
   hosts: elasticsearch:logstash
