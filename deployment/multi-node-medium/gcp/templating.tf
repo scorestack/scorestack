@@ -18,6 +18,11 @@ resource "random_password" "logstash" {
     special = false
 }
 
+resource "random_password" "remote_monitoring_user" {
+    length = 32
+    special = false
+}
+
 data "template_file" "inventory" {
     template = file("${path.module}/inventory_template.ini")
 
@@ -36,6 +41,7 @@ data "template_file" "inventory" {
         elastic_password = random_password.elastic.result
         kibana_password = random_password.kibana.result
         logstash_password = random_password.logstash.result
+        remote_monitoring_user_password = random_password.remote_monitoring_user.result
         fqdn = var.fqdn
     }
 }
