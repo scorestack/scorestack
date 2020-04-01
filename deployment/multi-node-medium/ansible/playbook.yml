@@ -465,6 +465,7 @@
         validate_certs: no
       changed_when: no
       ignore_errors: yes
+      retries: 50
       register: kibana_status
       until: "'\"status\":{\"overall\":{\"state\":\"green\"' in kibana_status.content"
 
