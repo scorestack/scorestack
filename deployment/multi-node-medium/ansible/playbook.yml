@@ -413,27 +413,33 @@
         - Restart Kibana
 
     - name: Install plugin
-      command: /usr/share/kibana/bin/kibana-plugin --allow-root install https://tinyurl.com/scorestack-kibana-plugin
+      command: /usr/share/kibana/bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin
       args:
         creates: /usr/share/kibana/plugins/scorestack
+      become_user: kibana
       notify:
         - Restart Kibana
 
     - name: Create Kibana keystore
-      command: /usr/share/kibana/bin/kibana-keystore --allow-root create
+      command: /usr/share/kibana/bin/kibana-keystore create
       args:
         creates: /var/lib/kibana/kibana.keystore
+      become_user: kibana
       notify:
         - Restart Kibana
       
     - name: Check if Kibana password has been added to the keystore
-      command: /usr/share/kibana/bin/kibana-keystore --allow-root list
+      command: /usr/share/kibana/bin/kibana-keystore list
+      become_user: kibana
       changed_when: no
       register: kibana_keystore_keys
 
     - name: Add Kibana password
-      shell: "echo {{ kibana_password }} | /usr/share/kibana/bin/kibana-keystore --allow-root add elasticsearch.password --stdin"
+      shell: "echo {{ kibana_password }} | /usr/share/kibana/bin/kibana-keystore add elasticsearch.password --stdin"
+      become_user: kibana
       when: '"elasticsearch.password" not in kibana_keystore_keys.stdout'
+      notify:
+        - Restart Kibana
 
     - name: Enable Kibana service
       systemd:
