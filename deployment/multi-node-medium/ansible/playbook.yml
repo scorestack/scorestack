@@ -103,10 +103,10 @@
     - name: Check if elastic user password is set
       uri:
         url: https://elasticsearch1:9200/_cluster/health
+        status_code: [200, 401]
         url_username: elastic
         url_password: "{{ elastic_password }}"
         validate_certs: no
-      ignore_errors: yes
       register: bootstrap_req
       until: '"Connection refused" not in bootstrap_req.msg'
       when: inventory_hostname == "elasticsearch1"
