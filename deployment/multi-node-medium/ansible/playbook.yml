@@ -391,21 +391,21 @@
     - name: Copy root CA certificate
       copy:
         src: certificates/ca/ca.crt
-        dest: /etc/logstash/ca.crt
+        dest: /etc/kibana/ca.crt
       notify:
         - Restart Kibana
 
     - name: Copy certificate
       copy:
         src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.crt
-        dest: /etc/logstash/{{ inventory_hostname }}.crt
+        dest: /etc/kibana/{{ inventory_hostname }}.crt
       notify:
         - Restart Kibana
 
     - name: Copy key
       copy:
         src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
-        dest: /etc/logstash/{{ inventory_hostname }}.key
+        dest: /etc/kibana/{{ inventory_hostname }}.key
         mode: 0600
       notify:
         - Restart Kibana
