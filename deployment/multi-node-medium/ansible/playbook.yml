@@ -328,6 +328,18 @@
         src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
         dest: /etc/logstash/{{ inventory_hostname }}.key
         mode: '0600'
+
+    - name: Convert key format
+      command: openssl pkcs8 -topk8 -nocrypt -in /etc/logstash/{{ inventory_hostname }}.key -out /etc/logstash/{{ inventory_hostname }}.key.pkcs8
+      args:
+        creates: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
+      notify:
+        - Restart Logstash
+
+    - name: Set permissions on key
+      file:
+        path: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
+        mode: '0600'
       notify:
         - Restart Logstash
 
