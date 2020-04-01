@@ -1,0 +1,4 @@
+---
+seed_hosts:
+  - elasticsearch1
+  - elasticsearch2
