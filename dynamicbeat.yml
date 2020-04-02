@@ -34,13 +34,13 @@ output.logstash:
   ssl.enabled: true
 
   # List of root certificates for HTTPS server verifications
-  ssl.certificate_authorities: ["./docker/build-certs/pki/intermediate/certs/ca-chain.cert.pem"]
+  ssl.certificate_authorities: ["./deployment/multi-node-small/docker/certificates/ca/ca.crt"]
 
   # Certificate for SSL client authentication
-  ssl.certificate: "./docker/build-certs/pki/intermediate/certs/beat.cert.pem"
+  ssl.certificate: "./deployment/multi-node-small/docker/dynamicbeat/dynamicbeat.crt"
 
   # Client Certificate Key
-  ssl.key: "./docker/build-certs/pki/intermediate/private/beat.key.pem"
+  ssl.key: "./deployment/multi-node-small/docker/dynamicbeat/dynamicbeat.key"
 
 #================================ Processors =====================================
 
