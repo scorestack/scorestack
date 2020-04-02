@@ -4,8 +4,16 @@ ELASTICSEARCH_HOST=localhost:9200
 KIBANA_HOST=localhost:5601
 
 # Wait for elasticsearch to come up
-until curl -sku root:changeme "https://${ELASTICSEARCH_HOST}/_cluster/health"
+while [[ "$(curl -sku root:changeme "https://${ELASTICSEARCH_HOST}/_cluster/health" | jq -r .status 2>/dev/null)" != "green" ]]
 do
+  echo "Waiting for Elasticsearch to be ready..."
+  sleep 5
+done
+
+# Wait for kibana to come up
+while [[ "$(curl -sku root:changeme https://${KIBANA_HOST}/api/status | jq -r .status.overall.state 2>/dev/null)" != "green" ]]
+do
+  echo "Waiting for Kibana to be ready..."
   sleep 5
 done
 
@@ -55,13 +63,6 @@ do
 
   # Add team user
   curl -kX PUT -u root:changeme https://${ELASTICSEARCH_HOST}/_security/user/${TEAM} -H 'Content-Type: application/json' -d '{"password":"changeme","roles":["common","'${TEAM}'"]}'
-
-  # Wait for kibana to be up
-  while [[ "$(curl -sku root:changeme https://${KIBANA_HOST}/api/status | jq -r .status.overall.state 2>/dev/null)" != "green" ]]
-  do
-    echo "Waiting for Kibana to be ready..."
-    sleep 5
-  done
 
   # Add team overview dashboard
   UUID_A=$(uuidgen)
