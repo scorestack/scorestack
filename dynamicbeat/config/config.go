@@ -20,10 +20,10 @@ type CheckSourceConfig struct {
 }
 
 var DefaultConfig = Config{
-	Period:       1 * time.Second,
+	Period:       30 * time.Second,
 	UpdatePeriod: 1 * time.Minute,
 	CheckSource: CheckSourceConfig{
-		Hosts:       []string{"http://localhost:9200"},
+		Hosts:       []string{"https://localhost:9200"},
 		Username:    "dynamicbeat",
 		Password:    "changeme",
 		VerifyCerts: true,
