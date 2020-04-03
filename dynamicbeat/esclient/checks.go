@@ -26,7 +26,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 	}
 
 	// Get list of attributes
-	attribDocs, err := GetAllDocuments(c, "attrib_")
+	attribDocs, err := GetAllDocuments(c, "attrib_*")
 	if err != nil {
 		return nil, err
 	}
@@ -65,14 +65,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 			for _, doc := range val {
 				for k, v := range doc.Source {
 					// Decode the value of the attribute
-					var value string
-					err = json.Unmarshal([]byte(v.(string)), &value)
-					if err != nil {
-						return nil, fmt.Errorf("Failed to decode value of attribute %s: %s", k, err)
-					}
-
-					// Add the attribute to the map
-					result.Attribs[k] = value
+					result.Attribs[k] = v.(string)
 				}
 			}
 		}
