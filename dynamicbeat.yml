@@ -10,7 +10,7 @@ dynamicbeat:
   #update_period: 1m
 
   # Where check definitions will be read from
-  #check_source:
+  check_source:
     # List of Elasticsearch hosts to query
     #hosts: ["https://localhost:9200"]
     
