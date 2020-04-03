@@ -43,9 +43,8 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		Username:  c.CheckSource.Username,
 		Password:  c.CheckSource.Password,
 		Transport: &http.Transport{
-			MaxIdleConnsPerHost:   10,
-			ResponseHeaderTimeout: time.Second,
-			DialContext:           (&net.Dialer{Timeout: time.Second}).DialContext,
+			MaxIdleConnsPerHost: 10,
+			DialContext:         (&net.Dialer{Timeout: 5 * time.Second}).DialContext,
 			TLSClientConfig: &tls.Config{
 				MinVersion:         tls.VersionTLS11,
 				InsecureSkipVerify: !c.CheckSource.VerifyCerts,

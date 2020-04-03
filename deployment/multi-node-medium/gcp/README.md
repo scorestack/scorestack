@@ -3,4 +3,4 @@ Multi-Node Medium: GCP
 
 TODO
 
-https://cloud.google.com/products/calculator/#id=d2e31400-6341-4451-b857-91b3e5ad0033
+https://cloud.google.com/products/calculator/#id=0fa433ed-d279-4773-9c7b-358eacffe7d4

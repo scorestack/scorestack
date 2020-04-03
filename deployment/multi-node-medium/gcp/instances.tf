@@ -112,7 +112,7 @@ resource "google_compute_instance" "kibana" {
         }
     }
 
-    machine_type = "n1-highcpu-2"
+    machine_type = "n1-standard-2"
     zone = var.zone1
 
     network_interface {
@@ -176,5 +176,5 @@ resource "google_compute_instance" "nginx" {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
-    tags = ["default", "ssh-jump", "www", "logstash", "elasticsearch"]
+    tags = ["default", "ssh-jump", "proxy", "logstash", "elasticsearch"]
 }

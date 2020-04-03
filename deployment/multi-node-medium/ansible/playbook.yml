@@ -336,13 +336,6 @@
       notify:
         - Restart Logstash
 
-    - name: Set permissions on key
-      file:
-        path: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
-        mode: '0600'
-      notify:
-        - Restart Logstash
-
     - name: Enable Logstash service
       systemd:
         name: logstash
@@ -558,7 +551,6 @@
       loop:
         - elasticsearch.conf
         - kibana.conf
-        - logstash.conf
       notify:
         - Restart Nginx
 
