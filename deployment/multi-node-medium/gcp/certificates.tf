@@ -259,8 +259,8 @@ resource "tls_cert_request" "logstash_csr" {
         organization = "ScoreStack"
     }
 
-    dns_names = ["localhost", "logstash"]
-    ip_addresses = ["127.0.0.1", google_compute_instance.logstash.network_interface.0.network_ip]
+    dns_names = ["localhost", "logstash", var.fqdn]
+    ip_addresses = ["127.0.0.1", google_compute_instance.logstash.network_interface.0.network_ip, google_compute_address.nginx.address]
 }
 
 resource "tls_locally_signed_cert" "logstash_cert" {
