@@ -59,7 +59,7 @@ export default function (server, dataCluster) {
     })
 
     server.route({
-        path: '/api/scorestack/attribute/{group}/{id}/{name}',
+        path: '/api/scorestack/attribute/{id}/{name}',
         method: 'POST',
         handler: async (req, h) => {
             // Make sure value is in request body
@@ -68,13 +68,16 @@ export default function (server, dataCluster) {
                     "statusCode": 400,
                     "error": "Bad Request",
                     "message": 'Request body must contain the "value" attribute',
-                }).code(400)
-
+                }).code(400);
             }
 
-            // Make sure the ID is real
+            // Parse the group from the ID
+            // TODO: don't rely on parsing the document ID or index ID to determine the group, or ensure that unsafe characters are filtered from group names and check names
+            let group = req.params.id.split("-").slice(-1)
+
+            // Make sure the group's index exists
             let attribIndices = await dataCluster.callWithRequest(req, 'indices.get', {
-                index: `attrib_*_${req.params["group"]}`,
+                index: `attrib_*_${group}`,
                 expand_wildcards: 'open',
             });
 
@@ -82,16 +85,18 @@ export default function (server, dataCluster) {
                 return h.response({
                     "statusCode": 404,
                     "error": "Not Found",
-                    "message": `Attributes for group "${req.params["group"]}" either don't exist or you do not have access to them`,
-                }).code(404)
+                    "message": `Attributes for group "${group}" either don't exist or you do not have access to them`,
+                }).code(404);
             }
 
             // Check each attribute index for the attribute we are overwriting
             for (let attribIndex of Object.keys(attribIndices)) {
+                // Try to get the attribute document for the index
                 let attribDoc = await dataCluster.callWithRequest(req, 'get', {
                     id: req.params["id"],
                     index: attribIndex,
                 });
+
                 // If the attribute exists in the document, update the document with the new value
                 if (req.params["name"] in attribDoc._source) {
                     let newAttrib = {};
