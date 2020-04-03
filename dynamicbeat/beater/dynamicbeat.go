@@ -80,6 +80,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 	var defs []schema.CheckConfig
 	doubleBreak := false
 	// TODO: Find a better way for looping until we can hit Elasticsearch
+	logp.Info("Getting initial check definitions...")
 	for {
 		select {
 		// Case for catching Ctrl+C and gracfully exiting
@@ -90,6 +91,7 @@ func (bt *Dynamicbeat) Run(b *beat.Beat) error {
 			defs, err = esclient.UpdateCheckDefs(bt.es, bt.config.CheckSource.Index)
 			if err != nil {
 				logp.Info("Failed to reach Elasticsearch. Waiting 5 seconds to try again...")
+				logp.Debug("dynamicbeat", "Connection error was: %s", err)
 				time.Sleep(5 * time.Second)
 			} else {
 				doubleBreak = true
