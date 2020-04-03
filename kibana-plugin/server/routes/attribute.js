@@ -3,6 +3,7 @@ export default function (server, dataCluster) {
         path: '/api/scorestack/attribute',
         method: 'GET',
         handler: async (req, h) => {
+            // All attributes will be returned in a single object
             let checks = {};
 
             // Get all attribute indexes
@@ -13,40 +14,52 @@ export default function (server, dataCluster) {
 
             // Get attributes for each check
             for (let attribIndex of Object.keys(attribIndices)) {
-                let checkID = attribIndex.split("_").slice(2).join("_");
-                let group = checkID.split("-").slice(-1)
-                let attribDoc = await dataCluster.callWithRequest(req, 'get', {
-                    id: 'attributes',
+                // Check how many documents are in the index
+                let countDoc = await dataCluster.callWithRequest(req, 'count', {
                     index: attribIndex,
                 });
-                if (group in checks === false) {
-                    checks[group] = {}
+
+                // Search for all documents in the index
+                let searchResults = await dataCluster.callWithRequest(req, 'search', {
+                    index: attribIndex,
+                    size: countDoc.count,
+                });
+
+                // Add each attribute to the object
+                for (let check of searchResults.hits.hits) {
+                    // Parse the document ID to determine the group
+                    // TODO: don't rely on parsing the document ID or index ID to determine the group, or ensure that unsafe characters are filtered from group names and check names
+                    let group = check._id.split("-").slice(-1)
+
+                    // Set up the checks object to receive the attributes in the right spot
+                    if (group in checks === false) {
+                        checks[group] = {};
+                    }
+                    if (check._id in checks[group] === false) {
+                        checks[group][check._id] = {
+                            "attributes": {},
+                        };
+
+                        // Add check name
+                        let checkDoc = await dataCluster.callWithRequest(req, 'get', {
+                            id: check._id,
+                            index: 'checks',
+                            _source_includes: 'name',
+                        });
+                        checks[group][check._id]["name"] = checkDoc._source.name;
+                    }
+
+                    // Add attribute contents
+                    checks[group][check._id]["attributes"] = Object.assign(checks[group][check._id]["attributes"], check._source);
                 }
-                if (checkID in checks[group] === false) {
-                    checks[group][checkID] = {
-                        "attributes": {},
-                    };
-                }
-                checks[group][checkID]["attributes"] = Object.assign(checks[group][checkID]["attributes"], attribDoc._source);
             }
 
-            // Get names for each check
-            for (let group of Object.keys(checks)) {
-                for (let checkID of Object.keys(checks[group])) {
-                    let checkDoc = await dataCluster.callWithRequest(req, 'get', {
-                        id: checkID,
-                        index: 'checks',
-                        _source_includes: 'name',
-                    })
-                    checks[group][checkID]["name"] = checkDoc._source.name;
-                }
-            }
             return h.response(checks).code(200);
         }
     })
 
     server.route({
-        path: '/api/scorestack/attribute/{id}/{name}',
+        path: '/api/scorestack/attribute/{group}/{id}/{name}',
         method: 'POST',
         handler: async (req, h) => {
             // Make sure value is in request body
@@ -61,7 +74,7 @@ export default function (server, dataCluster) {
 
             // Make sure the ID is real
             let attribIndices = await dataCluster.callWithRequest(req, 'indices.get', {
-                index: `attrib_*_${req.params["id"]}`,
+                index: `attrib_*_${req.params["group"]}`,
                 expand_wildcards: 'open',
             });
 
@@ -69,14 +82,14 @@ export default function (server, dataCluster) {
                 return h.response({
                     "statusCode": 404,
                     "error": "Not Found",
-                    "message": `Attributes for check ID "${req.params["id"]}" either don't exist or you do not have access to them`,
+                    "message": `Attributes for group "${req.params["group"]}" either don't exist or you do not have access to them`,
                 }).code(404)
             }
 
             // Check each attribute index for the attribute we are overwriting
             for (let attribIndex of Object.keys(attribIndices)) {
                 let attribDoc = await dataCluster.callWithRequest(req, 'get', {
-                    id: 'attributes',
+                    id: req.params["id"],
                     index: attribIndex,
                 });
                 // If the attribute exists in the document, update the document with the new value
@@ -84,7 +97,7 @@ export default function (server, dataCluster) {
                     let newAttrib = {};
                     newAttrib[req.params["name"]] = req.payload["value"];
                     let resp = await dataCluster.callWithRequest(req, 'update', {
-                        id: 'attributes',
+                        id: req.params["id"],
                         index: attribIndex,
                         body: {
                             "doc": newAttrib,
