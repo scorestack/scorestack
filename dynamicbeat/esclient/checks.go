@@ -3,7 +3,9 @@ package esclient
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/go-elasticsearch"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
@@ -12,6 +14,9 @@ import (
 // UpdateCheckDefs will re-read all check definitions from a single index and
 // load the related attributes for each check.
 func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, error) {
+	// Track how long it takes to update check definitions
+	start := time.Now()
+
 	results := make([]schema.CheckConfig, 0)
 
 	// Get list of checks
@@ -78,5 +83,6 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 		results = append(results, result)
 	}
 
+	logp.Info("Updated check definitions in %.2f seconds", time.Since(start).Seconds())
 	return results, nil
 }
