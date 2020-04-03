@@ -5,9 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
+	"regexp"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/masterzen/winrm"
@@ -41,9 +40,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Another timeout for the bois
-	// TODO: change this to be relative to the parent context's timeout
 	params := *winrm.DefaultParameters
-	params.Timeout = "22"
 
 	// Login to winrm and create client
 	// endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
@@ -54,99 +51,42 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		return result
 	}
 
-	shell, err := client.CreateShell()
-	if err != nil {
-		result.Message = fmt.Sprintf("Failed to create shell : %s", err)
-		return result
-	}
-	defer func() {
-		if closeErr := shell.Close(); closeErr != nil {
-			// logp.Warn("failed to close winrm connection: %s", closeErr.Error())
-		}
-	}()
-
 	powershellCmd := winrm.Powershell(d.Cmd)
 
-	cmd, err := shell.Execute(powershellCmd)
+	bufOut := new(bytes.Buffer)
+	bufErr := new(bytes.Buffer)
+
+	_, err = client.Run(powershellCmd, bufOut, bufErr)
 	if err != nil {
 		result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, err)
 		return result
 	}
 
-	var test sync.WaitGroup
-	copyFunc := func(w io.Writer, r io.Reader) {
-		defer test.Done()
-		io.Copy(w, r)
-		return
-	}
-
-	bufOut := new(bytes.Buffer)
-
-	if cmd.Stdout != nil {
-		test.Add(1)
-		go copyFunc(bufOut, cmd.Stdout)
-	} else {
-		result.Message = fmt.Sprintf("Failed to get stdout from command %s : %s", d.Cmd, err)
+	// Check for an error
+	if bufErr.String() != "" {
+		result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, bufErr.String())
 		return result
 	}
 
-	cmd.Wait()
-	test.Wait()
+	// Check if we are going to regex
+	if !d.MatchContent {
+		// If we make it in here the check passes
+		result.Passed = true
+		return result
+	}
 
-	// TODO: parse the output of the command
-	/*
-		command := winrm.Powershell(d.Cmd)
+	// Match some content
+	regex, err := regexp.Compile(d.ContentRegex)
+	if err != nil {
+		result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
+		return result
+	}
 
-		// shell := client.NewShell("ScoreStack-Shell-ID")
-		// defer shell.Close()
-
-		// cmdOut, err := shell.Execute(command)
-		// defer cmdOut.Close()
-
-		// if err != nil {
-		// 	result.Message = fmt.Sprintf("Command %s failed : %s", d.Cmd, err)
-		// 	failed <- true
-		// 	return
-		// }
-
-		// Define these for the command output
-		bufOut := new(bytes.Buffer)
-		bufErr := new(bytes.Buffer)
-
-		_, err = client.Run(command, bufOut, bufErr)
-		if err != nil {
-			result.Message = fmt.Sprintf("Running command %s failed : %s", d.Cmd, err)
-			return result
-		}
-
-		// Check if the command errored
-		if bufErr.String() != "" {
-			result.Message = fmt.Sprintf("Executing command %s failed : %s", d.Cmd, bufErr.String())
-			return result
-		}
-
-		// Check if we matching content and the command did not error
-		if !d.MatchContent {
-			// If we make it here, no content matching, the check succeeds
-			result.Message = fmt.Sprintf("Command %s executed seccessfully: %s", d.Cmd, bufOut.String())
-			result.Passed = true
-			return result
-		}
-
-		// Keep going if we are matching content
-		// Create regexp
-		regex, err := regexp.Compile(d.ContentRegex)
-		if err != nil {
-			result.Message = fmt.Sprintf("Error compiling regex string %s : %s", d.ContentRegex, err)
-			return result
-		}
-
-		// Check if the content matches
-		if !regex.Match(bufOut.Bytes()) {
-			result.Message = fmt.Sprintf("Matching content not found")
-			return result
-		}
-	*/
+	// Check if the content matches
+	if !regex.Match(bufOut.Bytes()) {
+		result.Message = fmt.Sprintf("Matching content not found")
+		return result
+	}
 
 	// If we reach here the check is successful
 	result.Passed = true
