@@ -26,9 +26,9 @@ type CountResult struct {
 // The Document struct is used to parse Elasticsearch's JSON representation of
 // a document.
 type Document struct {
-	Source []byte `json:"_source"`
-	ID     string `json:"_id"`
-	Index  string `json:"_index"`
+	Source map[string]interface{} `json:"_source"`
+	ID     string                 `json:"_id"`
+	Index  string                 `json:"_index"`
 }
 
 // GetAllDocuments finds and returns all the documents in an index. Any

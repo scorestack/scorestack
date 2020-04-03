@@ -36,37 +36,38 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 	}
 
 	// Iterate over each check
-	for _, check := range checks {
-		// Decode check definition
-		checkMap := make(map[string]interface{})
-		err = json.Unmarshal(check.Source, &checkMap)
+	for _, doc := range checks {
+		// Encode the definition as a JSON string
+		def, err := json.Marshal(doc.Source["definition"])
 		if err != nil {
-			return nil, fmt.Errorf("Error decoding JSON string for definition of %s: %s", check.ID, err)
+			return nil, fmt.Errorf("Error encoding definition for %s to JSON string: %s", doc.ID, err)
 		}
 
-		// Re-encode definition to JSON string
-		def, err := json.Marshal(checkMap["definition"])
-		if err != nil {
-			return nil, fmt.Errorf("Error encoding definition as JSON: %s", err)
-		}
-
+		// Unpack check definition into CheckConfig struct
 		result := schema.CheckConfig{
-			ID:          checkMap["id"].(string),
-			Name:        checkMap["name"].(string),
-			Type:        checkMap["type"].(string),
-			Group:       checkMap["group"].(string),
-			ScoreWeight: checkMap["score_weight"].(float64),
+			ID:          doc.Source["id"].(string),
+			Name:        doc.Source["name"].(string),
+			Type:        doc.Source["type"].(string),
+			Group:       doc.Source["group"].(string),
+			ScoreWeight: doc.Source["score_weight"].(float64),
 			Definition:  def,
 			Attribs:     make(map[string]string),
 		}
 
 		// Add any template variables to the check
 		if val, ok := attribs[result.ID]; ok {
-			// Decode each attribute document
+			// Decode each attribute in each document
 			for _, doc := range val {
-				err = json.Unmarshal(doc.Source, &result.Attribs)
-				if err != nil {
-					return nil, fmt.Errorf("Failed to decode attribute document from index %s for check %s: %s", doc.Index, doc.ID, err)
+				for k, v := range doc.Source {
+					// Decode the value of the attribute
+					var value string
+					err = json.Unmarshal([]byte(v.(string)), &value)
+					if err != nil {
+						return nil, fmt.Errorf("Failed to decode value of attribute %s: %s", k, err)
+					}
+
+					// Add the attribute to the map
+					result.Attribs[k] = value
 				}
 			}
 		}
