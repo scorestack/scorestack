@@ -48,7 +48,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 			DialContext:           (&net.Dialer{Timeout: time.Second}).DialContext,
 			TLSClientConfig: &tls.Config{
 				MinVersion:         tls.VersionTLS11,
-				InsecureSkipVerify: !c.CheckSource.VerifyCerts, // TODO: not this
+				InsecureSkipVerify: !c.CheckSource.VerifyCerts,
 			},
 		},
 	}
