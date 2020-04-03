@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/masterzen/winrm"
+	"github.com/oneNutW0nder/winrm"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
