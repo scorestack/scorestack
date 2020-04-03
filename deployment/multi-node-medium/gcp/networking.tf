@@ -77,7 +77,7 @@ resource "google_compute_firewall" "kibana" {
         ports = ["5601"]
     }
 
-    source_tags = ["www"]
+    source_tags = ["proxy"]
     target_tags = ["kibana"]
 }
 
@@ -92,7 +92,7 @@ resource "google_compute_firewall" "logstash" {
         ports = ["5454"]
     }
 
-    source_tags = ["www"]
+    source_tags = ["proxy"]
     target_tags = ["logstash"]
 }
 
