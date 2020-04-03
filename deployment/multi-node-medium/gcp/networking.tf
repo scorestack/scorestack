@@ -111,17 +111,17 @@ resource "google_compute_firewall" "ssh-jump" {
     target_tags = ["ssh-jump"]
 }
 
-resource "google_compute_firewall" "www" {
-    name = "www"
-    description = "Allow HTTP and HTTPS traffic to the Nginx server from the public internet."
+resource "google_compute_firewall" "proxy" {
+    name = "proxy"
+    description = "Allow all proxied traffic to the Nginx server from the public internet."
 
     network = google_compute_network.internal_network.self_link
 
     allow {
         protocol = "tcp"
-        ports = ["80", "443"]
+        ports = ["80", "443", "5454", "9200"]
     }
 
     source_ranges = ["0.0.0.0/0"]
-    target_tags = ["www"]
+    target_tags = ["proxy"]
 }
