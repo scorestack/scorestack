@@ -3,7 +3,6 @@ package esclient
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/elastic/go-elasticsearch"
 
@@ -21,13 +20,29 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 		return nil, err
 	}
 
+	// Get list of attributes
+	attribDocs, err := GetAllDocuments(c, "attrib_")
+	if err != nil {
+		return nil, err
+	}
+
+	// Organize attributes by check ID
+	attribs := make(map[string][]Document)
+	for _, doc := range attribDocs {
+		if _, ok := attribs[doc.ID]; !ok {
+			attribs[doc.ID] = make([]Document, 0)
+		}
+		attribs[doc.ID] = append(attribs[doc.ID], doc)
+	}
+
 	// Iterate over each check
 	for _, check := range checks {
 		// Decode check definition
 		checkMap := make(map[string]interface{})
-		// We can assume that the JSON can be unmarshalled, because the JSON
-		// was created with json.Marshal()
-		_ = json.Unmarshal(check, &checkMap)
+		err = json.Unmarshal(check.Source, &checkMap)
+		if err != nil {
+			return nil, fmt.Errorf("Error decoding JSON string for definition of %s: %s", check.ID, err)
+		}
 
 		// Re-encode definition to JSON string
 		def, err := json.Marshal(checkMap["definition"])
@@ -45,25 +60,18 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 			Attribs:     make(map[string]string),
 		}
 
-		// Get any template variables for the check
-		for _, perm := range []string{"admin", "user"} {
-			// Generate attribute index name
-			idx := strings.Join([]string{"attrib_", perm, "_", result.ID}, "")
-
-			// Get attribute document
-			docs, err := GetAllDocuments(c, idx)
-			if err != nil {
-				return results, err
-			}
-
-			// Decode attribute document, if there is one
-			if len(docs) > 0 {
-				err = json.Unmarshal(docs[0], &result.Attribs)
+		// Add any template variables to the check
+		if val, ok := attribs[result.ID]; ok {
+			// Decode each attribute document
+			for _, doc := range val {
+				err = json.Unmarshal(doc.Source, &result.Attribs)
 				if err != nil {
-					return nil, fmt.Errorf("Failed to decode attribute document %s: %s", idx, err)
+					return nil, fmt.Errorf("Failed to decode attribute document from index %s for check %s: %s", doc.Index, doc.ID, err)
 				}
 			}
 		}
+
+		// Add the SavedValue attribute in case the check uses it
 		result.Attribs["SavedValue"] = "{{.SavedValue}}"
 
 		results = append(results, result)
