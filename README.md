@@ -22,7 +22,7 @@ instance of ScoreStack with the example check configurations loaded up and run
 an instance of dynamicbeat against those checks.
 
 ```shell
-docker-compose -f deployment/multi-node-minimal/docker/docker-compose up -d
+docker-compose -f deployment/multi-node-small/docker/docker-compose.yml up -d
 ./add-team.sh example
-dynamicbeat/dynamicbeat -e -d "*"
+dynamicbeat/dynamicbeat -e
 ```
