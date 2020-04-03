@@ -112,7 +112,7 @@ resource "google_compute_instance" "kibana" {
         }
     }
 
-    machine_type = "n1-highcpu-2"
+    machine_type = "n1-standard-2"
     zone = var.zone1
 
     network_interface {
