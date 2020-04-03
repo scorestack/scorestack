@@ -76,14 +76,15 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 			}
 		}
 		logp.Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
+		close(eventQueue)
 	}()
 	for event := range eventQueue {
-		// Publish the event to the publisher queue
-		pubQueue <- event
-
 		// Record that the check has finished
 		id, _ := event.Fields.GetValue("id")
 		delete(names, id.(string))
+
+		// Publish the event to the publisher queue
+		pubQueue <- event
 	}
 }
 
@@ -172,6 +173,7 @@ func runCheck(ctx context.Context, check schema.Check) beat.Event {
 			// context timeout, so just return that.
 			return event
 		case result := <-recieveResult:
+			close(recieveResult)
 			// Set the passed, message, and details fields with the CheckResult
 			event.Fields.Put("passed", result.Passed)
 			event.Fields.Put("message", result.Message)

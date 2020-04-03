@@ -200,6 +200,7 @@ func publishEvents(client beat.Client, queue <-chan beat.Event, out chan<- uint6
 
 // Stop stops dynamicbeat.
 func (bt *Dynamicbeat) Stop() {
+	logp.Info("Waiting for all checks to publish before exiting...")
 	bt.client.Close()
 	close(bt.done)
 }
