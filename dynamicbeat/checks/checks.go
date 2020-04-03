@@ -173,6 +173,7 @@ func runCheck(ctx context.Context, check schema.Check) beat.Event {
 			// context timeout, so just return that.
 			return event
 		case result := <-recieveResult:
+			close(recieveResult)
 			// Set the passed, message, and details fields with the CheckResult
 			event.Fields.Put("passed", result.Passed)
 			event.Fields.Put("message", result.Message)
