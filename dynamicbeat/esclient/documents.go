@@ -35,7 +35,7 @@ type Document struct {
 // wildcards in the index name will be expanded.
 func GetAllDocuments(c *elasticsearch.Client, i string) ([]Document, error) {
 	// Check how many documents there are in the index
-	resp, err := c.Count(c.Count.WithIndex(i), c.Count.WithAnalyzeWildcard(true))
+	resp, err := c.Count(c.Count.WithIndex(i), c.Count.WithExpandWildcards("all"))
 	if err != nil {
 		return nil, fmt.Errorf("Error getting number of documents in index %s: %s", i, err)
 	}
@@ -48,7 +48,7 @@ func GetAllDocuments(c *elasticsearch.Client, i string) ([]Document, error) {
 	}
 
 	// Get all the documents in the index
-	resp, err = c.Search(c.Search.WithIndex(i), c.Search.WithAnalyzeWildcard(true), c.Search.WithSize(count.Count))
+	resp, err = c.Search(c.Search.WithIndex(i), c.Search.WithExpandWildcards("all"), c.Search.WithSize(count.Count))
 	if err != nil {
 		return nil, fmt.Errorf("Error searching for documents for index %s: %s", i, err)
 	}
