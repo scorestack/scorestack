@@ -42,7 +42,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Create a client
-	client, err := xmpp.NewClient(config, xmpp.NewRouter(), errorHandler)
+	client, err := xmpp.NewClient(&config, xmpp.NewRouter(), errorHandler)
 	if err != nil {
 		result.Message = fmt.Sprintf("Creating a xmpp client failed : %s", err)
 		return result
