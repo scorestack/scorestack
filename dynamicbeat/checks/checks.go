@@ -3,7 +3,9 @@ package checks
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"html/template"
+	"reflect"
 	"sync"
 	"time"
 
@@ -181,4 +183,48 @@ func runCheck(ctx context.Context, check schema.Check) beat.Event {
 			return event
 		}
 	}
+}
+
+func initCheck(config schema.CheckConfig, def []byte, check schema.Check) error {
+	// Unpack definition JSON
+	err := json.Unmarshal(def, &check)
+	if err != nil {
+		return err
+	}
+
+	// Set generic values
+	check.SetConfig(config)
+
+	// Construct a list of all first-level fields in the check struct
+	fields := make([]reflect.StructField, 0)
+	t := reflect.TypeOf(check)
+	for i := 0; i < t.NumField(); i++ {
+		fields = append(fields, t.Field(i))
+	}
+
+	// Process each field in the struct
+	for i := 0; i < len(fields); i++ {
+		field := fields[i]
+		optiontype := field.Tag.Get("optiontype")
+
+		switch optiontype {
+		case "required":
+			// Make sure the value is nonzero
+		case "optional":
+			// If the optiondefault is not set, then don't do anything with this field
+			if field.Tag.Get("optiondefault") == "" {
+				continue
+			}
+
+			// If the value is still zero, set the default value
+		case "list":
+			// If the list is not a list of structs, then don't do anything with this field - it's invalid
+			// Add all the fields for each item in the list to the slice of fields to be processed
+		default:
+			// If the optiontype is invalid, or no optiontype is set, then don't do anything with this field
+			continue
+		}
+	}
+
+	return nil
 }
