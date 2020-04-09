@@ -140,3 +140,8 @@ func errorHandler(err error) {
 func (d *Definition) GetConfig() schema.CheckConfig {
 	return d.Config
 }
+
+// SetConfig reconfigures this check with a new CheckConfig struct.
+func (d *Definition) SetConfig(config schema.CheckConfig) {
+	d.Config = config
+}
