@@ -1,6 +1,6 @@
 {
-    "id": "vnc-example",
-    "name": "Example VNC Check",
+    "id": "vnc",
+    "name": "VNC",
     "type": "vnc",
     "group": "example",
     "score_weight": 1,

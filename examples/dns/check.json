@@ -1,6 +1,6 @@
 {
-    "id": "dns-example",
-    "name": "Example dns check",
+    "id": "dns",
+    "name": "DNS",
     "type": "dns",
     "group": "example",
     "score_weight": 1,

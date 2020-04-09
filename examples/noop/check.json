@@ -1,6 +1,6 @@
 {
-    "id": "noop-example",
-    "name": "Example noop check",
+    "id": "noop",
+    "name": "Noop",
     "type": "noop",
     "group": "example",
     "score_weight": 1,

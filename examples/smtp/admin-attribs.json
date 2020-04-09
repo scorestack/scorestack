@@ -1,5 +1,5 @@
 {
-    "Host": "smtp.example.com",
+    "Host": "localhost",
     "Username": "user@exmaple.com",
     "Sender": "user@example.com",
     "Reciever": "user@example.com",
