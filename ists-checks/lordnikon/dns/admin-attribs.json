@@ -1,6 +1,0 @@
-{
-    "Server": "lordnikon.${TEAM}.ists.io",
-    "Port": "53",
-    "Fqdn": "sabu.${TEAM}.ists.io",
-    "ExpectedIP": "10.${TEAM_NUM}.3.20"
-}

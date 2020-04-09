@@ -1,0 +1,21 @@
+{
+    "id": "http-gophish",
+    "name": "Gophish",
+    "type": "http",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "requests": [
+            {
+                "host": "{{.Host}}",
+                "path": "/login",
+                "https": true,
+                "port": 3333,
+                "method": "GET",
+                "matchcode": true,
+                "matchcontent": true,
+                "contentregex": "<title>Gophish - Login</title>"
+            }
+        ]
+    }
+}

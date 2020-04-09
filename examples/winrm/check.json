@@ -1,6 +1,6 @@
 {
-    "id": "winrm-example",
-    "name": "Example WinRM Check",
+    "id": "winrm",
+    "name": "WinRM",
     "type": "winrm",
     "group": "example",
     "score_weight": 1,

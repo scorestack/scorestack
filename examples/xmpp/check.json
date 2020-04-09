@@ -1,6 +1,6 @@
 {
-    "id": "xmpp-example",
-    "name": "Example XMPP Check",
+    "id": "xmpp",
+    "name": "XMPP",
     "type": "xmpp",
     "group": "example",
     "score_weight": 1,

@@ -1,7 +1,0 @@
-{
-    "Host": "tflow.${TEAM}.ists.io",
-    "Port": "22",
-    "Username": "voodoo",
-    "Cmd": "id",
-    "ContentRegex": "voodoo"
-}

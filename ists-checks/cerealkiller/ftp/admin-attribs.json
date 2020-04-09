@@ -1,8 +1,0 @@
-{
-    "Host": "cerealkiller.${TEAM}.ists.io",
-    "Port": "21",
-    "Username": "hannibal",
-    "File": "/duck/Assets/Images/Memes/",
-    "ContentRegex": ".*",
-    "Hash": "9733c06204475b82c76a0c43b6f044376be3ec1c18be9f005755467c05c29ef9"
-}

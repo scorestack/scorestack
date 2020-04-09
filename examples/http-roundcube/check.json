@@ -1,0 +1,18 @@
+{
+    "id": "http-roundcube",
+    "name": "Roundcube Webmail",
+    "type": "http",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "requests": [
+            {
+                "host": "{{.Host}}",
+                "path": "/",
+                "matchcode": true,
+                "matchcontent": true,
+                "contentregex": "<title>Roundcube Webmail :: Welcome to Roundcube Webmail</title>"
+            }
+        ]
+    }
+}

@@ -1,6 +1,6 @@
 {
-    "id": "imap-example",
-    "name": "Example IMAP Check",
+    "id": "imap",
+    "name": "IMAP",
     "type": "imap",
     "group": "example",
     "score_weight": 1,

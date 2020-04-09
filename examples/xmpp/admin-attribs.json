@@ -1,5 +1,5 @@
 {
-    "Host": "192.168.100.147",
+    "Host": "localhost",
     "Port": "5222",
     "Username": "admin"
 }

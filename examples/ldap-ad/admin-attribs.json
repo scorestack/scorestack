@@ -1,0 +1,5 @@
+{
+    "User": "CN=Administrator,OU=Users,DC=contoso,DC=com",
+    "Fqdn": "localhost",
+    "Port": "389"
+}

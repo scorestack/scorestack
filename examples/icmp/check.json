@@ -1,6 +1,6 @@
 {
-    "id": "icmp-example",
-    "name": "Example ICMP check",
+    "id": "icmp",
+    "name": "ICMP",
     "type": "icmp",
     "group": "example",
     "score_weight": 1,
