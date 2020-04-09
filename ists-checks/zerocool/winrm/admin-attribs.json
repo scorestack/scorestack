@@ -1,7 +1,0 @@
-{
-    "Host": "zerocool.${TEAM}.ists.io",
-    "Port": "5986",
-    "Username": "ba",
-    "Cmd": "netstat",
-    "ContentRegex": ".*"
-}

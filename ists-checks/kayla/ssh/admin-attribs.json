@@ -1,7 +1,0 @@
-{
-    "Host": "kayla.${TEAM}.ists.io",
-    "Port": "22",
-    "Username": "mad",
-    "Cmd": "id",
-    "ContentRegex": "mad"
-}

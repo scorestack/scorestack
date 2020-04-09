@@ -1,7 +1,0 @@
-{
-    "Host": "sabu.${TEAM}.ists.io",
-    "Port": "5986",
-    "Username": "face",
-    "Cmd": "netstat",
-    "ContentRegex": ".*"
-}

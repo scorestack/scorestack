@@ -1,9 +1,0 @@
-{
-    "Host": "topiary.${TEAM}.ists.io",
-    "FirstName": "Joe",
-    "LastName": "Biden",
-    "Email": "press%40biden.com",
-    "ProdID": "1",
-    "CCNum": "1337",
-    "CVV": "420"
-}

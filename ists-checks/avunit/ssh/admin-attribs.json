@@ -1,7 +1,0 @@
-{
-    "Host": "avunit.${TEAM}.ists.io",
-    "Port": "22",
-    "Username": "face",
-    "Cmd": "id",
-    "ContentRegex": "face"
-}
