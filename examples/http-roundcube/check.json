@@ -1,8 +1,8 @@
 {
-    "id": "http-viral",
-    "name": "viral - HTTP",
+    "id": "http-roundcube",
+    "name": "Roundcube Webmail",
     "type": "http",
-    "group": "${TEAM}",
+    "group": "example",
     "score_weight": 1,
     "definition": {
         "requests": [
