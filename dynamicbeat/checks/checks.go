@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"html/template"
 	"reflect"
+	"strconv"
 	"sync"
 	"time"
 
@@ -195,34 +196,71 @@ func initCheck(config schema.CheckConfig, def []byte, check schema.Check) error 
 	// Set generic values
 	check.SetConfig(config)
 
-	// Construct a list of all first-level fields in the check struct
-	fields := make([]reflect.StructField, 0)
-	t := reflect.TypeOf(check)
-	for i := 0; i < t.NumField(); i++ {
-		fields = append(fields, t.Field(i))
-	}
+	// Process the field options
+	return processFields(check, check.GetConfig().ID, check.GetConfig().Type)
+}
+
+func processFields(s interface{}, id string, typ string) error {
+	// Convert the parameter to reflect.Type and reflect.Value variables
+	fields := reflect.TypeOf(&s).Elem()
+	values := reflect.ValueOf(&s).Elem()
 
 	// Process each field in the struct
-	for i := 0; i < len(fields); i++ {
-		field := fields[i]
+	for i := 0; i < fields.NumField(); i++ {
+		field := fields.Field(i)
+		value := values.Field(i)
 		optiontype := field.Tag.Get("optiontype")
 
 		switch optiontype {
 		case "required":
 			// Make sure the value is nonzero
+			if value.IsZero() {
+				return schema.ValidationError{
+					ID:    id,
+					Type:  typ,
+					Field: field.Name,
+				}
+			}
 		case "optional":
-			// If the optiondefault is not set, then don't do anything with this field
-			if field.Tag.Get("optiondefault") == "" {
+			dflt := field.Tag.Get("optiondefault")
+
+			// If the optiondefault is not set, then don't do anything with
+			// this field. This typically means that the default for the field
+			// is the zero value for the type, in which case we don't have to
+			// do anything else.
+			if dflt == "" {
 				continue
 			}
 
 			// If the value is still zero, set the default value
+			if value.IsZero() {
+				switch value.Kind() {
+				case reflect.Bool:
+					v, _ := strconv.ParseBool(dflt)
+					value.SetBool(v)
+				case reflect.Float32, reflect.Float64:
+					v, _ := strconv.ParseFloat(dflt, 64)
+					value.SetFloat(v)
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+					v, _ := strconv.ParseInt(dflt, 0, 64)
+					value.SetInt(v)
+				case reflect.String:
+					value.SetString(dflt)
+				case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+					v, _ := strconv.ParseUint(dflt, 0, 64)
+					value.SetUint(v)
+				}
+			}
 		case "list":
-			// If the list is not a list of structs, then don't do anything with this field - it's invalid
-			// Add all the fields for each item in the list to the slice of fields to be processed
+			// Recurse on each item in the list
+			for _, item := range value.Interface().([]interface{}) {
+				err := processFields(item, id, typ)
+				if err != nil {
+					return err
+				}
+			}
 		default:
 			// If the optiontype is invalid, or no optiontype is set, then don't do anything with this field
-			continue
 		}
 	}
 
