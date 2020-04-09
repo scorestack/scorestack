@@ -1,8 +1,8 @@
 {
-    "id": "http-sabu",
-    "name": "sabu - HTTP",
+    "id": "http-gophish",
+    "name": "Gophish",
     "type": "http",
-    "group": "${TEAM}",
+    "group": "example",
     "score_weight": 1,
     "definition": {
         "requests": [
