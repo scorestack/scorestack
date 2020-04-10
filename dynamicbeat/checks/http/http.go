@@ -23,7 +23,7 @@ type Definition struct {
 	Config               schema.CheckConfig // generic metadata about the check
 	Verify               bool               `optiontype:"optional"` // whether HTTPS certs should be validated
 	ReportMatchedContent bool               `optiontype:"optional"` // whether the matched content should be returned in the CheckResult
-	Requests             []Request          `optiontype:"list"`     // a list of requests to make
+	Requests             []*Request         `optiontype:"list"`     // a list of requests to make
 }
 
 // A Request represents a single HTTP request to make.
@@ -92,7 +92,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 				if err != nil {
 					logp.Info("Error templating HTTP definition for StoredValue templating: %s", err)
 				} else {
-					newReq := Request{}
+					newReq := &Request{}
 					err := json.Unmarshal(buf.Bytes(), &newReq)
 					if err != nil {
 						logp.Info("Error decoding StoredValue-templated HTTP definition: %s", err)
@@ -104,7 +104,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		}
 
 		// TODO: create child context with deadline less than the parent context
-		pass, match, err := request(ctx, client, r)
+		pass, match, err := request(ctx, client, *r)
 
 		// Process request results
 		result.Passed = pass
