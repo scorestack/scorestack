@@ -3,7 +3,6 @@ package imap
 import (
 	"context"
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"net"
 	"time"
@@ -17,11 +16,11 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config    schema.CheckConfig // generic metadata about the check
-	Host      string             // (required) IP or hostname for the imap server
-	Username  string             // (required) Username for the imap server
-	Password  string             // (required) Password for the user of the imap server
-	Encrypted bool               // (optional, default=false) Whether or not to use TLS (IMAPS)
-	Port      string             // (optional, default=143) Port for the imap server
+	Host      string             `optiontype:"required"`                     // IP or hostname for the imap server
+	Username  string             `optiontype:"required"`                     // Username for the imap server
+	Password  string             `optiontype:"required"`                     // Password for the user of the imap server
+	Encrypted bool               `optiontype:"optional"`                     // Whether or not to use TLS (IMAPS)
+	Port      string             `optiontype:"optional" optiondefault:"143"` // Port for the imap server
 }
 
 // Run a single instance of the check
@@ -79,49 +78,13 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	return result
 }
 
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Set optional values
-	d.Port = "143"
-
-	// Unpack JSON definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic values
-	d.Config = config
-
-	// Check for missing fields
-	missingFields := make([]string, 0)
-	if d.Host == "" {
-		missingFields = append(missingFields, "Host")
-	}
-
-	if d.Username == "" {
-		missingFields = append(missingFields, "Username")
-	}
-
-	if d.Password == "" {
-		missingFields = append(missingFields, "Password")
-	}
-
-	// Error only the first missing field, if there are any
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "imap",
-			Field: missingFields[0],
-		}
-	}
-	return nil
-}
-
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
 func (d *Definition) GetConfig() schema.CheckConfig {
 	return d.Config
+}
+
+// SetConfig reconfigures this check with a new CheckConfig struct.
+func (d *Definition) SetConfig(config schema.CheckConfig) {
+	d.Config = config
 }

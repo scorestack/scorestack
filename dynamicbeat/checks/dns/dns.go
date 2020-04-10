@@ -2,7 +2,6 @@ package dns
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -14,10 +13,10 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config     schema.CheckConfig // generic metadata about the check
-	Server     string             // (required) The IP of the DNS server to query
-	Fqdn       string             // (required) The FQDN of the host you are looking up
-	ExpectedIP string             // (required) The expected IP of the host you are looking up
-	Port       string             // (optional, default=53) The port of the DNS server
+	Server     string             `optiontype:"required"`                    // The IP of the DNS server to query
+	Fqdn       string             `optiontype:"required"`                    // The FQDN of the host you are looking up
+	ExpectedIP string             `optiontype:"required"`                    // The expected IP of the host you are looking up
+	Port       string             `optiontype:"optional" optiondefault:"53"` // The port of the DNS server
 }
 
 // Run a single instance of the check
@@ -64,49 +63,13 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	return result
 }
 
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Explicitly set default values
-	d.Port = "53"
-
-	// Unpack JSON definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic values
-	d.Config = config
-
-	// Check for missing fields
-	missingFields := make([]string, 0)
-	if d.Server == "" {
-		missingFields = append(missingFields, "Server")
-	}
-
-	if d.Fqdn == "" {
-		missingFields = append(missingFields, "Fqdn")
-	}
-
-	if d.ExpectedIP == "" {
-		missingFields = append(missingFields, "ExpectedIP")
-	}
-
-	// Error only the first missing field, if there are any
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "dns",
-			Field: missingFields[0],
-		}
-	}
-	return nil
-}
-
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
 func (d *Definition) GetConfig() schema.CheckConfig {
 	return d.Config
+}
+
+// SetConfig reconfigures this check with a new CheckConfig struct.
+func (d *Definition) SetConfig(config schema.CheckConfig) {
+	d.Config = config
 }

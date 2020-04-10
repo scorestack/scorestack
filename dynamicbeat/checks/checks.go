@@ -3,7 +3,10 @@ package checks
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"html/template"
+	"reflect"
+	"strconv"
 	"sync"
 	"time"
 
@@ -132,7 +135,7 @@ func unpackDef(config schema.CheckConfig) schema.Check {
 		logp.Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
 		def = &noop.Definition{}
 	}
-	err = def.Init(config, renderedJSON)
+	err = initCheck(config, renderedJSON, def)
 	if err != nil {
 		logp.Info("%s", err)
 	}
@@ -181,4 +184,91 @@ func runCheck(ctx context.Context, check schema.Check) beat.Event {
 			return event
 		}
 	}
+}
+
+func initCheck(config schema.CheckConfig, def []byte, check schema.Check) error {
+	// Unpack definition JSON
+	err := json.Unmarshal(def, &check)
+	if err != nil {
+		return err
+	}
+
+	// Set generic values
+	check.SetConfig(config)
+
+	// Process the field options
+	return processFields(check, check.GetConfig().ID, check.GetConfig().Type)
+}
+
+func processFields(s interface{}, id string, typ string) error {
+	// Convert the parameter to reflect.Type and reflect.Value variables
+	fields := reflect.TypeOf(s)
+	if fields.Kind() == reflect.Ptr {
+		fields = fields.Elem()
+	}
+	values := reflect.ValueOf(s)
+	if values.Kind() == reflect.Ptr {
+		values = values.Elem()
+	}
+
+	// Process each field in the struct
+	for i := 0; i < fields.NumField(); i++ {
+		field := fields.Field(i)
+		value := values.Field(i)
+		optiontype := field.Tag.Get("optiontype")
+
+		switch optiontype {
+		case "required":
+			// Make sure the value is nonzero
+			if value.IsZero() {
+				return schema.ValidationError{
+					ID:    id,
+					Type:  typ,
+					Field: field.Name,
+				}
+			}
+		case "optional":
+			dflt := field.Tag.Get("optiondefault")
+
+			// If the optiondefault is not set, then don't do anything with
+			// this field. This typically means that the default for the field
+			// is the zero value for the type, in which case we don't have to
+			// do anything else.
+			if dflt == "" {
+				continue
+			}
+
+			// If the value is still zero, set the default value
+			if value.IsZero() {
+				switch value.Kind() {
+				case reflect.Bool:
+					v, _ := strconv.ParseBool(dflt)
+					value.SetBool(v)
+				case reflect.Float32, reflect.Float64:
+					v, _ := strconv.ParseFloat(dflt, 64)
+					value.SetFloat(v)
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+					v, _ := strconv.ParseInt(dflt, 0, 64)
+					value.SetInt(v)
+				case reflect.String:
+					value.SetString(dflt)
+				case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+					v, _ := strconv.ParseUint(dflt, 0, 64)
+					value.SetUint(v)
+				}
+			}
+		case "list":
+			// Recurse on each item in the list
+			for j := 0; j < value.Len(); j++ {
+				err := processFields(value.Index(j).Interface(), id, typ)
+				if err != nil {
+					return err
+				}
+			}
+		default:
+			// If the optiontype is invalid, or no optiontype is set, then don't do anything with this field
+		}
+	}
+
+	return nil
 }

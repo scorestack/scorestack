@@ -3,7 +3,6 @@ package xmpp
 import (
 	"context"
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 
 	"gosrc.io/xmpp/stanza"
@@ -16,11 +15,11 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config    schema.CheckConfig // generic metadata about the check
-	Host      string             // (required) IP or hostname of the xmpp server
-	Username  string             // (required) Username to use for the xmpp server
-	Password  string             // (required) Password for the user
-	Encrypted bool               // (optional, default=true) TLS support or not
-	Port      string             // (optional, default=5222) Port for the xmpp server
+	Host      string             `optiontype:"required"`                      // IP or hostname of the xmpp server
+	Username  string             `optiontype:"required"`                      // Username to use for the xmpp server
+	Password  string             `optiontype:"required"`                      // Password for the user
+	Encrypted bool               `optiontype:"optional" optiondefault:"true"` // TLS support or not
+	Port      string             `optiontype:"optional" optiondefault:"5222"` // Port for the xmpp server
 }
 
 // Run a single instance of the check
@@ -88,48 +87,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	return result
 }
 
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Set explicit values
-	d.Port = "5222"
-	d.Encrypted = true
-
-	// Unpack JSON definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic values
-	d.Config = config
-
-	// Check for missing fields
-	missingfields := make([]string, 0)
-	if d.Host == "" {
-		missingfields = append(missingfields, "Host")
-	}
-
-	if d.Username == "" {
-		missingfields = append(missingfields, "Username")
-	}
-
-	if d.Password == "" {
-		missingfields = append(missingfields, "Password")
-	}
-
-	// Error only the first missing field, if there are any
-	if len(missingfields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "xmpp",
-			Field: missingfields[0],
-		}
-	}
-	return nil
-}
-
 // Without this function, the xmpp "client" calls will seg fault
 func errorHandler(err error) {
 	return
@@ -139,4 +96,9 @@ func errorHandler(err error) {
 // configured with.
 func (d *Definition) GetConfig() schema.CheckConfig {
 	return d.Config
+}
+
+// SetConfig reconfigures this check with a new CheckConfig struct.
+func (d *Definition) SetConfig(config schema.CheckConfig) {
+	d.Config = config
 }

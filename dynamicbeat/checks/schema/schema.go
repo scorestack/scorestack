@@ -9,8 +9,8 @@ import (
 // single network service.
 type Check interface {
 	GetConfig() CheckConfig
+	SetConfig(config CheckConfig)
 	Run(ctx context.Context) CheckResult
-	Init(config CheckConfig, def []byte) error
 }
 
 // CheckConfig contains the generic metadata about a check that all check types

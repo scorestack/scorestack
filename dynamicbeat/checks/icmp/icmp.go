@@ -2,7 +2,6 @@ package icmp
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -15,8 +14,8 @@ import (
 // it implements the "Check" interface
 type Definition struct {
 	Config schema.CheckConfig // generic metadata about the check
-	Host   string             // (required) IP or hostname of the host to run the ICMP check against
-	Count  int                // (opitonal, default=1) The number of ICMP requests to send per check
+	Host   string             `optiontype:"required"`                   // IP or hostname of the host to run the ICMP check against
+	Count  int                `optiontype:"optional" optiondefault:"1"` // The number of ICMP requests to send per check
 }
 
 // Run a single instance of the check
@@ -56,41 +55,13 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	return result
 }
 
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Explicitly set default values
-	d.Count = 1
-
-	// Unpack json definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic attributes
-	d.Config = config
-
-	// Make sure required fields are defined
-	missingFields := make([]string, 0)
-	if d.Host == "" {
-		missingFields = append(missingFields, "Host")
-	}
-
-	// Error only the first missing field, if there are any
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "icmp",
-			Field: missingFields[0],
-		}
-	}
-	return nil
-}
-
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
 func (d *Definition) GetConfig() schema.CheckConfig {
 	return d.Config
+}
+
+// SetConfig reconfigures this check with a new CheckConfig struct.
+func (d *Definition) SetConfig(config schema.CheckConfig) {
+	d.Config = config
 }

@@ -2,7 +2,6 @@ package vnc
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net"
 
@@ -14,9 +13,9 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config   schema.CheckConfig // generic metadata about the check
-	Host     string             // (required) The IP or hostname of the vnc server
-	Port     string             // (required) The port for the vnc server
-	Password string             // (required) The password for the vnc server
+	Host     string             `optiontype:"required"` // The IP or hostname of the vnc server
+	Port     string             `optiontype:"required"` // The port for the vnc server
+	Password string             `optiontype:"required"` // The password for the vnc server
 }
 
 // Run a single instance of the check
@@ -65,46 +64,13 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 }
 
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Unpack JSON definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic values
-	d.Config = config
-
-	// Check for missing fields
-	missingFields := make([]string, 0)
-	if d.Host == "" {
-		missingFields = append(missingFields, "Host")
-	}
-
-	if d.Port == "" {
-		missingFields = append(missingFields, "Port")
-	}
-
-	if d.Password == "" {
-		missingFields = append(missingFields, "Password")
-	}
-
-	// Error only the first missing field, if there are any
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "vnc",
-			Field: missingFields[0],
-		}
-	}
-	return nil
-}
-
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
 func (d *Definition) GetConfig() schema.CheckConfig {
 	return d.Config
+}
+
+// SetConfig reconfigures this check with a new CheckConfig struct.
+func (d *Definition) SetConfig(config schema.CheckConfig) {
+	d.Config = config
 }
