@@ -202,8 +202,8 @@ func initCheck(config schema.CheckConfig, def []byte, check schema.Check) error 
 
 func processFields(s interface{}, id string, typ string) error {
 	// Convert the parameter to reflect.Type and reflect.Value variables
-	fields := reflect.TypeOf(&s).Elem()
-	values := reflect.ValueOf(&s).Elem()
+	fields := reflect.TypeOf(s).Elem()
+	values := reflect.ValueOf(s).Elem()
 
 	// Process each field in the struct
 	for i := 0; i < fields.NumField(); i++ {
