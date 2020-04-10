@@ -2,7 +2,6 @@ package ssh
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"time"
@@ -15,13 +14,13 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config       schema.CheckConfig // generic metadata about the check
-	Host         string             // (required) IP or hostname of the host to run the SSH check against
-	Username     string             // (required) The user to login with over ssh
-	Password     string             // (required) The password for the user that you wish to login with
-	Cmd          string             // (required) The command to execute once ssh connection established
-	MatchContent bool               // (optional, default=false) Whether or not to match content like checking files
-	ContentRegex string             // (optional, default=`.*`) Regex to match if reading a file
-	Port         string             // (optional, default=22) The port to attempt an ssh connection on
+	Host         string             `optiontype:"required"`                    // IP or hostname of the host to run the SSH check against
+	Username     string             `optiontype:"required"`                    // The user to login with over ssh
+	Password     string             `optiontype:"required"`                    // The password for the user that you wish to login with
+	Cmd          string             `optiontype:"required"`                    // The command to execute once ssh connection established
+	MatchContent bool               `optiontype:"optional"`                    // Whether or not to match content like checking files
+	ContentRegex string             `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
+	Port         string             `optiontype:"optional" optiondefault:"22"` // The port to attempt an ssh connection on
 }
 
 // Run a single instance of the check
@@ -95,52 +94,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// If we reach here the check is successful
 	result.Passed = true
 	return result
-}
-
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Explicitly set defaults
-	d.Port = "22"
-	d.ContentRegex = ".*"
-
-	// Unpack JSON definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic values
-	d.Config = config
-
-	// Check for missing fields
-	missingFields := make([]string, 0)
-	if d.Host == "" {
-		missingFields = append(missingFields, "Host")
-	}
-
-	if d.Username == "" {
-		missingFields = append(missingFields, "Username")
-	}
-
-	if d.Password == "" {
-		missingFields = append(missingFields, "Password")
-	}
-
-	if d.Cmd == "" {
-		missingFields = append(missingFields, "Cmd")
-	}
-
-	// Error only the first missing field, if there are any
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "ssh",
-			Field: missingFields[0],
-		}
-	}
-	return nil
 }
 
 // GetConfig returns the current CheckConfig struct this check has been

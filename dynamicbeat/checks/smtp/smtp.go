@@ -3,7 +3,6 @@ package smtp
 import (
 	"context"
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"net"
 	"net/smtp"
@@ -16,14 +15,14 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config    schema.CheckConfig // generic metadata about the check
-	Host      string             // (required) IP or hostname of the smtp server
-	Username  string             // (required) Username for the smtp server
-	Password  string             // (required) Password for the smtp server
-	Sender    string             // (required) Who is sending the email
-	Reciever  string             // (required) Who is receiving the email
-	Body      string             // (optional, default="Hello from ScoreStack") Body of the email
-	Encrypted bool               // (optional, default=false) Whether or not to use TLS
-	Port      string             // (optional, default="25") Port of the smtp server
+	Host      string             `optiontype:"required"`                                       // IP or hostname of the smtp server
+	Username  string             `optiontype:"required"`                                       // Username for the smtp server
+	Password  string             `optiontype:"required"`                                       // Password for the smtp server
+	Sender    string             `optiontype:"required"`                                       // Who is sending the email
+	Reciever  string             `optiontype:"required"`                                       // Who is receiving the email
+	Body      string             `optiontype:"optional" optiondefault:"Hello from ScoreStack"` // Body of the email
+	Encrypted bool               `optiontype:"optional"`                                       // Whether or not to use TLS
+	Port      string             `optiontype:"optional" optiondefault:"25"`                    // Port of the smtp server
 }
 
 // **************************************************
@@ -131,56 +130,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	result.Passed = true
 	return result
-}
-
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Explicitly set defaults
-	d.Body = "Hello from ScoreStack"
-	d.Port = "25"
-
-	// Unpack JSON definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic values
-	d.Config = config
-
-	// Check for missing fields
-	missingFields := make([]string, 0)
-	if d.Host == "" {
-		missingFields = append(missingFields, "Host")
-	}
-
-	if d.Username == "" {
-		missingFields = append(missingFields, "Username")
-	}
-
-	if d.Password == "" {
-		missingFields = append(missingFields, "Password")
-	}
-
-	if d.Sender == "" {
-		missingFields = append(missingFields, "Sender")
-	}
-
-	if d.Reciever == "" {
-		missingFields = append(missingFields, "Reciever")
-	}
-
-	// Error only the first missing field, if there are any
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "smtp",
-			Field: missingFields[0],
-		}
-	}
-	return nil
 }
 
 // GetConfig returns the current CheckConfig struct this check has been

@@ -3,7 +3,6 @@ package winrm
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -17,14 +16,14 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config       schema.CheckConfig // generic metadata about the check
-	Host         string             // (required) IP or hostname of the WinRM box
-	Username     string             // (required) User to login as
-	Password     string             // (required) Password for the user
-	Cmd          string             // (required) Command that will be executed
-	Encrypted    bool               // (optional, default=true) Use TLS for connection
-	MatchContent bool               // (optional, default=false) Turn this on to match content from the output of the cmd
-	ContentRegex string             // (optional, default=`.*`) Regexp for matching output of a command
-	Port         string             // (optional, default=5986) Port for WinRM
+	Host         string             `optiontype:"required"`                      // IP or hostname of the WinRM box
+	Username     string             `optiontype:"required"`                      // User to login as
+	Password     string             `optiontype:"required"`                      // Password for the user
+	Cmd          string             `optiontype:"required"`                      // Command that will be executed
+	Encrypted    bool               `optiontype:"optional" optiondefault:"true"` // Use TLS for connection
+	MatchContent bool               `optiontype:"optional"`                      // Turn this on to match content from the output of the cmd
+	ContentRegex string             `optiontype:"optional" optiondefault:".*"`   // Regexp for matching output of a command
+	Port         string             `optiontype:"optional" optiondefault:"5986"` // Port for WinRM
 }
 
 // Run a single instance of the check
@@ -91,53 +90,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// If we reach here the check is successful
 	result.Passed = true
 	return result
-}
-
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Explicitly set defaults
-	d.Encrypted = true
-	d.ContentRegex = ".*"
-	d.Port = "5986"
-
-	// Unpack JSON definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic values
-	d.Config = config
-
-	// Check for missing fields
-	missingFields := make([]string, 0)
-	if d.Host == "" {
-		missingFields = append(missingFields, "Host")
-	}
-
-	if d.Username == "" {
-		missingFields = append(missingFields, "Username")
-	}
-
-	if d.Password == "" {
-		missingFields = append(missingFields, "Password")
-	}
-
-	if d.Cmd == "" {
-		missingFields = append(missingFields, "Cmd")
-	}
-
-	// Error only the first missing field, if there are any
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "winrm",
-			Field: missingFields[0],
-		}
-	}
-	return nil
 }
 
 // GetConfig returns the current CheckConfig struct this check has been

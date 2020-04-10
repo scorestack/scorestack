@@ -21,25 +21,25 @@ import (
 // The Definition configures the behavior of an HTTP check.
 type Definition struct {
 	Config               schema.CheckConfig // generic metadata about the check
-	Verify               bool               // (optional, default false) whether HTTPS certs should be validated
-	ReportMatchedContent bool               // (optional, default false) whether the matched content should be returned in the CheckResult
-	Requests             []Request          // a list of requests to make
+	Verify               bool               `optiontype:"optional"` // whether HTTPS certs should be validated
+	ReportMatchedContent bool               `optiontype:"optional"` // whether the matched content should be returned in the CheckResult
+	Requests             []Request          `optiontype:"list"`     // a list of requests to make
 }
 
 // A Request represents a single HTTP request to make.
 type Request struct {
-	Host         string            // (required) IP or FQDN of the HTTP server
-	Path         string            // (required) path to request - see RFC3986, section 3.3
-	HTTPS        bool              // (optional, default false) if HTTPS is to be used
-	Port         uint16            // (optional, default 80) TCP port number the HTTP server is listening on
-	Method       string            // (optional, default `GET`) HTTP method to use
-	Headers      map[string]string // (optional, default empty) name-value pairs of header fields to add/override
-	Body         string            // (optional, default empty) the request body
-	MatchCode    bool              // (optional, default false) whether the response code must match a defined value for the check to pass
-	Code         int               // (optional, default 200) the response status code to match
-	MatchContent bool              // (optional, default false) whether the response body must match a defined regex for the check to pass
-	ContentRegex string            // (optional, default `.*`) regex for the response body to match
-	StoreValue   bool              // (optional, default false) whether the matched content should be saved for use in a later request
+	Host         string            `optiontype:"required"`                     // IP or FQDN of the HTTP server
+	Path         string            `optiontype:"required"`                     // Path to request - see RFC3986, section 3.3
+	HTTPS        bool              `optiontype:"optional"`                     // if HTTPS is to be used
+	Port         uint16            `optiontype:"optional" optiondefault:"80"`  // TCP port number the HTTP server is listening on
+	Method       string            `optiontype:"optional" optiondefault:"GET"` // HTTP method to use
+	Headers      map[string]string `optiontype:"optional"`                     // name-value pairs of header fields to add/override
+	Body         string            `optiontype:"optional"`                     // the request body
+	MatchCode    bool              `optiontype:"optional"`                     // whether the response code must match a defined value for the check to pass
+	Code         int               `optiontype:"optional" optiondefault:"200"` // the response status code to match
+	MatchContent bool              `optiontype:"optional"`                     // whether the response body must match a defined regex for the check to pass
+	ContentRegex string            `optiontype:"optional" optiondefault:".*"`  // regex for the response body to match
+	StoreValue   bool              `optiontype:"optional"`                     // whether the matched content should be saved for use in a later request
 }
 
 // Run a single instance of the check.
@@ -186,65 +186,6 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 
 	// If we've reached this point, then the check succeeded
 	return true, &matchStr, nil
-}
-
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-	// Unpack definition json
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-	// TODO: set verify value
-
-	// Set generic attributes
-	d.Config = config
-
-	// Finish initializing each request
-	for i := range d.Requests {
-		// Set nonzero default values
-		if d.Requests[i].Port == 0 {
-			d.Requests[i].Port = 80
-		}
-
-		if d.Requests[i].Method == "" {
-			d.Requests[i].Method = "GET"
-		}
-
-		if d.Requests[i].Headers == nil {
-			d.Requests[i].Headers = make(map[string]string)
-		}
-
-		if d.Requests[i].Code == 0 {
-			d.Requests[i].Code = 200
-		}
-
-		if d.Requests[i].ContentRegex == "" {
-			d.Requests[i].ContentRegex = ".*"
-		}
-
-		// Make sure required fields are defined
-		missingFields := make([]string, 0)
-		if d.Requests[i].Host == "" {
-			missingFields = append(missingFields, "Host")
-		}
-
-		if d.Requests[i].Path == "" {
-			missingFields = append(missingFields, "Path")
-		}
-
-		// Error on only the first missing field, if there are any
-		if len(missingFields) > 0 {
-			return schema.ValidationError{
-				ID:    d.Config.ID,
-				Type:  "http",
-				Field: missingFields[0],
-			}
-		}
-	}
-
-	return nil
 }
 
 // GetConfig returns the current CheckConfig struct this check has been

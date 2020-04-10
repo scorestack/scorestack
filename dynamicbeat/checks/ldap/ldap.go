@@ -3,7 +3,6 @@ package ldap
 import (
 	"context"
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -15,11 +14,11 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config   schema.CheckConfig // generic metadata about the check
-	User     string             // (required) The user written in user@domain syntax
-	Password string             // (required) the password for the user
-	Fqdn     string             // (required) The Fqdn of the ldap server
-	Ldaps    bool               // (optional, default=false) Whether or not to use LDAP+TLS
-	Port     string             // (optional, default=389) Port for ldap
+	User     string             `optiontype:"required"`                     // The user written in user@domain syntax
+	Password string             `optiontype:"required"`                     // the password for the user
+	Fqdn     string             `optiontype:"required"`                     // The Fqdn of the ldap server
+	Ldaps    bool               `optiontype:"optional"`                     // Whether or not to use LDAP+TLS
+	Port     string             `optiontype:"optional" optiondefault:"389"` // Port for ldap
 }
 
 // Run a single instance of the check
@@ -61,46 +60,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// If we reached here the check passes
 	result.Passed = true
 	return result
-}
-
-// Init the check using a known ID and name. The rest of the check fields will
-// be filled in by parsing a JSON string representing the check definition.
-func (d *Definition) Init(config schema.CheckConfig, def []byte) error {
-
-	// Explicitly set default values
-	d.Port = "389"
-
-	// Unpack JSON definition
-	err := json.Unmarshal(def, &d)
-	if err != nil {
-		return err
-	}
-
-	// Set generic values
-	d.Config = config
-
-	// Check for missing fields
-	missingFields := make([]string, 0)
-	if d.User == "" {
-		missingFields = append(missingFields, "User")
-	}
-
-	if d.Password == "" {
-		missingFields = append(missingFields, "Password")
-	}
-
-	if d.Fqdn == "" {
-		missingFields = append(missingFields, "Fqdn")
-	}
-
-	if len(missingFields) > 0 {
-		return schema.ValidationError{
-			ID:    d.Config.ID,
-			Type:  "ldap",
-			Field: missingFields[0],
-		}
-	}
-	return nil
 }
 
 // GetConfig returns the current CheckConfig struct this check has been

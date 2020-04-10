@@ -135,7 +135,7 @@ func unpackDef(config schema.CheckConfig) schema.Check {
 		logp.Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
 		def = &noop.Definition{}
 	}
-	err = def.Init(config, renderedJSON)
+	err = initCheck(config, renderedJSON, def)
 	if err != nil {
 		logp.Info("%s", err)
 	}
