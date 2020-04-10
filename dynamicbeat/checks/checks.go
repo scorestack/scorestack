@@ -253,8 +253,8 @@ func processFields(s interface{}, id string, typ string) error {
 			}
 		case "list":
 			// Recurse on each item in the list
-			for _, item := range value.Interface().([]interface{}) {
-				err := processFields(item, id, typ)
+			for j := 0; j < value.Len(); j++ {
+				err := processFields(value.Index(j).Interface(), id, typ)
 				if err != nil {
 					return err
 				}
