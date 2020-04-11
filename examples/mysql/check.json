@@ -5,8 +5,8 @@
     "group": "example",
     "score_weight": 1,
     "definition": {
-        "Host": "{{.Fqdn}}",
-        "Username": "{{.User}}",
+        "Host": "{{.Host}}",
+        "Username": "{{.Username}}",
         "Password": "{{.Password}}",
         "Database": "{{.Database}}",
         "Table": "{{.Table}}",
