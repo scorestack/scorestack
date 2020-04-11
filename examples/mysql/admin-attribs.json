@@ -1,0 +1,7 @@
+{
+    "Host": "localhost",
+    "Username": "root",
+    "Database": "armbook",
+    "Table": "chat",
+    "Column": "message"
+}

@@ -1,0 +1,15 @@
+{
+    "id": "mysql",
+    "name": "MySQL Example",
+    "type": "mysql",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Fqdn}}",
+        "Username": "{{.User}}",
+        "Password": "{{.Password}}",
+        "Database": "{{.Database}}",
+        "Table": "{{.Table}}",
+        "Column": "{{.Column}}"
+    }
+}
