@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"regexp"
 
+	// MySQL driver
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
