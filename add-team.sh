@@ -2,6 +2,7 @@
 
 ELASTICSEARCH_HOST=localhost:9200
 KIBANA_HOST=localhost:5601
+CHECK_FOLDER=examples
 
 # Wait for elasticsearch to come up
 while [[ "$(curl -sku root:changeme "https://${ELASTICSEARCH_HOST}/_cluster/health" | jq -r .status 2>/dev/null)" != "green" ]]
@@ -39,25 +40,25 @@ for TEAM in "${@}"
 do
   TEAM_NUM=$(echo $TEAM | sed "s/[a-zA-Z_]//g" | sed "s/^0//g")
   # Add example checks for the team
-  for check in $(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
+  for check in $(find ${CHECK_FOLDER} -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
   do
     # Add check definition
-    cat examples/${check}/check.json | jq --arg TEAM "$TEAM" '.group = $TEAM | .id = "\(.id)-\($TEAM)"' > check.tmp.json
+    cat ${CHECK_FOLDER}/${check}/check.json | jq --arg TEAM "$TEAM" '.group = $TEAM | .id = "\(.id)-\($TEAM)"' > check.tmp.json
     ID=$(cat check.tmp.json | jq -r '.id')
     curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/checkdef/_doc/${ID} -H 'Content-Type: application/json' -d @check.tmp.json
     cat check.tmp.json | jq '{id, name, type, group}' > generic-check.tmp.json
     curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/checks/_doc/${ID} -H 'Content-Type: application/json' -d @generic-check.tmp.json
 
     # Add admin attributes, if they are defined
-    if [ -f examples/${check}/admin-attribs.json ]
+    if [ -f ${CHECK_FOLDER}/${check}/admin-attribs.json ]
     then
-      curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/attrib_admin_${TEAM}/_doc/${ID} -H "Content-Type: application/json" -d @examples/${check}/admin-attribs.json
+      curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/attrib_admin_${TEAM}/_doc/${ID} -H "Content-Type: application/json" -d @${CHECK_FOLDER}/${check}/admin-attribs.json
     fi
 
     # Add user attributes, if they are defined
-    if [ -f examples/${check}/user-attribs.json ]
+    if [ -f ${CHECK_FOLDER}/${check}/user-attribs.json ]
     then
-      curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/attrib_user_${TEAM}/_doc/${ID} -H "Content-Type: application/json" -d @examples/${check}/user-attribs.json
+      curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/attrib_user_${TEAM}/_doc/${ID} -H "Content-Type: application/json" -d @${CHECK_FOLDER}/${check}/user-attribs.json
     fi
   done
 
