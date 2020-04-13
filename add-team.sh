@@ -33,7 +33,7 @@ curl -kX POST -u root:changeme https://${KIBANA_HOST}/api/spaces/_copy_saved_obj
 rm tmp-dashboard.json
 
 # Add default index template
-curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/_template/default -H 'Content-Type: application/json' -d '{"index_patterns":["check*","attrib_*"],"settings":{"number_of_replicas":"0"}}'
+curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/_template/default -H 'Content-Type: application/json' -d '{"index_patterns":["check*","attrib_*","results*"],"settings":{"number_of_replicas":"0"}}'
 
 # Loop through all teams passed as arguments
 for TEAM in "${@}"
