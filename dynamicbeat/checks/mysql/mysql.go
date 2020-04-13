@@ -50,7 +50,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Query the DB
 	// TODO: This is SQL injectable. Figure out Paramerterized queries
-	rows, err := db.QueryContext(ctx, fmt.Sprintf("SELECT %s, FROM %s;", d.Column, d.Table))
+	rows, err := db.QueryContext(ctx, fmt.Sprintf("SELECT %s FROM %s;", d.Column, d.Table))
 	if err != nil {
 		result.Message = fmt.Sprintf("Could not query database : %s", err)
 		return result
