@@ -393,7 +393,7 @@
         - Restart Kibana
 
     - name: Install plugin
-      command: /usr/share/kibana/bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin-3
+      command: /usr/share/kibana/bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin-4
       args:
         creates: /usr/share/kibana/plugins/scorestack
       become_user: kibana
