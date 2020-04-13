@@ -1,6 +1,6 @@
 {
     "id": "mysql",
-    "name": "MySQL Example",
+    "name": "MySQL",
     "type": "mysql",
     "group": "example",
     "score_weight": 1,
@@ -10,6 +10,8 @@
         "Password": "{{.Password}}",
         "Database": "{{.Database}}",
         "Table": "{{.Table}}",
-        "Column": "{{.Column}}"
+        "Column": "{{.Column}}",
+        "MatchContent": true,
+        "ContentRegex": "performance_schema"
     }
 }
