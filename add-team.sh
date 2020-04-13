@@ -43,7 +43,7 @@ do
   for check in $(find ${CHECK_FOLDER} -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
   do
     # Add check definition
-    cat ${CHECK_FOLDER}/${check}/check.json | jq --arg TEAM "$TEAM" '.group = $TEAM | .id = "\(.id)-\($TEAM)"' > check.tmp.json
+    cat ${CHECK_FOLDER}/${check}/check.json | jq --arg TEAM "$TEAM" '.group = $TEAM | .id = "\(.id)-\($TEAM)"' | sed -e "s/\${TEAM_NUM}/${TEAM_NUM}/g" > check.tmp.json
     ID=$(cat check.tmp.json | jq -r '.id')
     curl -k -XPUT -u root:changeme https://${ELASTICSEARCH_HOST}/checkdef/_doc/${ID} -H 'Content-Type: application/json' -d @check.tmp.json
     cat check.tmp.json | jq '{id, name, type, group}' > generic-check.tmp.json
