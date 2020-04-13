@@ -21,5 +21,3 @@ server.ssl.key: /etc/kibana/kibana.key
 server.ssl.certificateAuthorities:
   - /etc/kibana/ca.crt
 server.ssl.enabled: true
-
-uiSettings.overrides.theme.darkMode: true

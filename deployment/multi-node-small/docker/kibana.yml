@@ -17,5 +17,3 @@ server.ssl.key: /usr/share/kibana/config/certificates/kibana/kibana.key
 server.ssl.certificateAuthorities:
   - /usr/share/kibana/config/certificates/ca/ca.crt
 server.ssl.enabled: true
-
-uiSettings.overrides.theme.darkMode: true
