@@ -134,6 +134,8 @@ func unpackDef(config schema.CheckConfig) schema.Check {
 		def = &xmpp.Definition{}
 	case "mysql":
 		def = &mysql.Definition{}
+	case "smb":
+		def = &smd.Definition{}
 	default:
 		logp.Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
 		def = &noop.Definition{}
