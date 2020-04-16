@@ -1,0 +1,7 @@
+{
+    "Host": "localhost",
+    "Username": "Administrator",
+    "Share": "myshare",
+    "Domain": "SMB",
+    "File": "file.txt"
+}
