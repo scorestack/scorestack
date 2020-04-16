@@ -1,0 +1,15 @@
+{
+    "id": "smb",
+    "name": "SMB Example Check",
+    "type": "smb",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Share": "{{.Share}}",
+        "Domain": "{{.Domain}}",
+        "File": "{{.File}}"
+    }
+}

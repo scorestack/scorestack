@@ -23,6 +23,7 @@ import (
 	"github.com/s-newman/scorestack/dynamicbeat/checks/mysql"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/noop"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/s-newman/scorestack/dynamicbeat/checks/smb"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/smtp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/ssh"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/vnc"
@@ -134,6 +135,8 @@ func unpackDef(config schema.CheckConfig) schema.Check {
 		def = &xmpp.Definition{}
 	case "mysql":
 		def = &mysql.Definition{}
+	case "smb":
+		def = &smb.Definition{}
 	default:
 		logp.Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
 		def = &noop.Definition{}
