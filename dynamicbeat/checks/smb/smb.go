@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net"
 	"os"
 	"regexp"
@@ -83,7 +82,8 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Read from the file
 	content, err := ioutil.ReadAll(f)
 	if err != nil {
-		log.Fatalf("Error reading file : %s", err)
+		result.Message = fmt.Sprintf("Error reading the file contents : %s", err)
+		return result
 	}
 
 	// Compile regex
