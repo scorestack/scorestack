@@ -65,7 +65,7 @@ EOF
 shred -uvz /tmp/cluster-passwords.txt
 
 # Install kibana plugin
-docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin-3"
+docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin-4"
 
 # Create admin user
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/root -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"Extra Superuser","email":"root@example.com","roles":["superuser"]}'
@@ -91,7 +91,11 @@ do
 done
 
 # Add ScoreStack space
-curl -kX POST -u root:changeme ${KIBANA_HOST}/api/spaces/space -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","advancedSettings","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
+curl -kX POST -u root:changeme ${KIBANA_HOST}/api/spaces/space -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
+
+# Set dark theme on both spaces
+curl -kX POST -u root:changeme ${KIBANA_HOST}/api/kibana/settings/theme:darkMode -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"value":"true"}'
+curl -kX POST -u root:changeme ${KIBANA_HOST}/s/scorestack/api/kibana/settings/theme:darkMode -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"value":"true"}'
 
 # Add base role for common permissions
 curl -kX PUT -u root:changeme ${KIBANA_HOST}/api/security/role/common -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results-all*","checks"],"privileges":["read"]}]},"kibana":[{"base":["read"],"spaces":["scorestack"]}]}'

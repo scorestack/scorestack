@@ -336,6 +336,13 @@
       notify:
         - Restart Logstash
 
+    - name: Set permissions on key
+      file:
+        path: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
+        owner: root
+        group: logstash
+        mode: 660
+
     - name: Enable Logstash service
       systemd:
         name: logstash
@@ -393,7 +400,7 @@
         - Restart Kibana
 
     - name: Install plugin
-      command: /usr/share/kibana/bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin-3
+      command: /usr/share/kibana/bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin-4
       args:
         creates: /usr/share/kibana/plugins/scorestack
       become_user: kibana
@@ -450,7 +457,7 @@
     - name: Add ScoreStack space
       uri:
         url: https://kibana:5601/api/spaces/space
-        body: '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","advancedSettings","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
+        body: '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
         body_format: json
         force_basic_auth: yes
         headers:
@@ -461,6 +468,24 @@
         validate_certs: no
       changed_when: no
       when: scorestack_space.status == 404
+
+    - name: Enable dark theme on both spaces
+      uri:
+        url: "{{ item }}"
+        body: '{"value":"true"}'
+        body_format: json
+        force_basic_auth: yes
+        headers:
+          kbn-xsrf: "true"
+        method: POST
+        url_username: elastic
+        url_password: "{{ elastic_password }}"
+        validate_certs: no
+      changed_when: no
+      when: scorestack_space.status == 404
+      loop:
+        - https://kibana:5601/api/kibana/settings/theme:darkMode
+        - https://kibana:5601/s/scorestack/api/kibana/settings/theme:darkMode
 
     - name: Add base role for common permissions
       uri:

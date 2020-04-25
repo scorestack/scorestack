@@ -22,6 +22,7 @@ instance of ScoreStack with the example check configurations loaded up and run
 an instance of dynamicbeat against those checks.
 
 ```shell
+sudo sysctl -w vm.max_map_count=262144
 docker-compose -f deployment/multi-node-small/docker/docker-compose.yml up -d
 ./add-team.sh example
 dynamicbeat/dynamicbeat -e
