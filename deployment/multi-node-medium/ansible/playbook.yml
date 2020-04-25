@@ -336,6 +336,13 @@
       notify:
         - Restart Logstash
 
+    - name: Set permissions on key
+      file:
+        path: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
+        owner: root
+        group: logstash
+        mode: 660
+
     - name: Enable Logstash service
       systemd:
         name: logstash
