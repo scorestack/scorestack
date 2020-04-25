@@ -65,7 +65,7 @@ do
   done
 
   # Add team role
-  curl -kX PUT -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/security/role/${TEAM} -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results-'${TEAM}'*"],"privileges":["read"]},{"names":["attrib_user_*-'${TEAM}'"],"privileges":["read","index","view_index_metadata"]}]}}'
+  curl -kX PUT -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/security/role/${TEAM} -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results-'${TEAM}'*"],"privileges":["read"]},{"names":["attrib_user_'${TEAM}'"],"privileges":["read","index","view_index_metadata"]}]}}'
 
   # Add team user
   curl -kX PUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_security/user/${TEAM} -H 'Content-Type: application/json' -d '{"password":"changeme","roles":["common","'${TEAM}'"]}'
