@@ -5,35 +5,22 @@ on: [push]
 
 jobs:
   build:
-    env:
-      GOPATH: '/home/runner/work/scorestack/scorestack'
-      PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/runner/work/scorestack/scorestack/bin'
-      VIRTUALENVWRAPPER_PYTHON: '/usr/bin/python2.7'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          path: 'src/github.com/s-newman/scorestack'
-      - name: Install virtualenv
-        run: sudo apt-get install -y virtualenv
-      - name: Update golang to latest version
-        run: |
-          git clone https://github.com/udhos/update-golang
-          cd update-golang
-          sudo ./update-golang.sh
-      - name: Clone go-elasticsearch repository
-        run: |
-          git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github.com/elastic/go-elasticsearch
-          cd $GOPATH/src/github.com/elastic/go-elasticsearch
-          git checkout v7.5.0
+      - name: Build dockerfile
+        run: docker build --target build -t dynamicbeat:latest dockerfiles/dynamicbeat.Dockerfile
       - name: Build dynamicbeat
-        run: |
-          go version
-          cd $GOPATH/src/github.com/s-newman/scorestack/dynamicbeat
-          make setup
-          go get
-          mage build
+        run: docker run --rm -v dynamicbeat:/go/src/github.com/s-newman/scorestack/dynamicbeat dynamicbeat:latest cd $GOPATH/src/github.com/s-newman/scorestack/dynamicbeat && make setup && go get && make build
+#      - name: Build dynamicbeat
+#        run: |
+#          go version
+#          cd $GOPATH/src/github.com/s-newman/scorestack/dynamicbeat
+#          make setup
+#          go get
+#          mage build
       - name: Run dynamicbeat
         run: |
+          pwd
           cd src/github.com/s-newman/scorestack/dynamicbeat
           ./dynamicbeat version
