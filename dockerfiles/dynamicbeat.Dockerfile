@@ -12,7 +12,7 @@ ARG USER_GID=$USER_UID
 
 # Add non-root user
 RUN groupadd --gid $USER_GID $USERNAME
-RUN useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME
+RUN useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME -d /
 
 # Add sudo privileges to non-root user
 RUN apt-get install -y sudo
