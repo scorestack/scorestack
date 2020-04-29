@@ -1,7 +1,8 @@
 FROM golang:1.13.10 as build
 
-# Install virtualenv and git
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
+    python-pip \
     virtualenv \
     git
 
