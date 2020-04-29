@@ -1,7 +1,7 @@
 FROM golang:1.13.10 as build
 
 # Install virtualenv and git
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     virtualenv \
     git
 
