@@ -2,6 +2,8 @@
 
 A security competition scoring system built on the Elastic stack.
 
+![Dynamicbeat CI](https://github.com/s-newman/scorestack/workflows/Dynamicbeat%20CI/badge.svg)
+
 ## Building dynamicbeat
 
 For a number of reasons, we use vscode dev container to build dynamicbeat. Once
