@@ -20,8 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up container
+        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-lint
       - name: Lint dynamicbeat
-        run: docker run --rm -v dynamicbeat:/app -w /app golangci/golangci-lint:v1.25.1 golangci-lint run -v
+        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-lint dynamicbeat-lint
 
   test:
     runs-on: ubuntu-latest
