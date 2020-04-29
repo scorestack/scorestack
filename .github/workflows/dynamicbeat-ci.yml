@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build dynamicbeat
         run: |
-          docker -v
+          docker version
           docker-compose -v
           docker-compose -f dockerfiles/docker-compose.yml up dynamicbeat-build
 #      - name: Build dynamicbeat
