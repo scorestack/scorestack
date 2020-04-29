@@ -12,3 +12,14 @@ services:
     volumes:
       - "../:/go/src/github.com/s-newman/scorestack"
       - "./scripts/dynamicbeat-build.sh:/dynamicbeat-build.sh"
+
+  dynamicbeat-test:
+    build:
+      context: .
+      dockerfile: dynamicbeat.Dockerfile
+      target: build
+    entrypoint: /dynamicbeat-test.sh
+    image: dynamicbeat-build:latest
+    volumes:
+      - "../:/go/src/github.com/s-newman/scorestack"
+      - "./scripts/dynamicbeat-test.sh:/dynamicbeat-test.sh"
