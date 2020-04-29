@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Fix file permissions
-        run: chown -R 1000:1000 .
+        run: sudo chown -R 1000:1000 .
       - name: Set up container
         run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
       - name: Build dynamicbeat
@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Fix file permissions
-        run: chown -R 1000:1000 .
+        run: sudo chown -R 1000:1000 .
       - name: Set up container
         run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
       - name: Lint dynamicbeat
@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Fix file permissions
-        run: chown -R 1000:1000 .
+        run: sudo chown -R 1000:1000 .
       - name: Set up container
         run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
       - name: Test dynamicbeat
