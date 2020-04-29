@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build dockerfile
-        run: docker build --target build -t dynamicbeat:latest dockerfiles/dynamicbeat.Dockerfile
+        run: docker build --target build -t dynamicbeat:latest -f dockerfiles/dynamicbeat.Dockerfile
       - name: Build dynamicbeat
         run: docker run --rm -v dynamicbeat:/go/src/github.com/s-newman/scorestack/dynamicbeat dynamicbeat:latest cd $GOPATH/src/github.com/s-newman/scorestack/dynamicbeat && make setup && go get && make build
 #      - name: Build dynamicbeat
