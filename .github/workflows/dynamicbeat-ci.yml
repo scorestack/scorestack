@@ -9,8 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up container
+        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-build
       - name: Build dynamicbeat
-        run: docker-compose -f dockerfiles/docker-compose.yml up dynamicbeat-build
+        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-build dynamicbeat-build
       - name: Run dynamicbeat
         run: ./dynamicbeat/dynamicbeat version
 
@@ -18,5 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up container
+        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-test
       - name: Test dynamicbeat
-        run: docker-compose -f dockerfiles/docker-compose.yml up dynamicbeat-test
+        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-test dynamicbeat-test
