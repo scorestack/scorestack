@@ -12,7 +12,7 @@ ARG USER_GID=$USER_UID
 
 # Add non-root user
 RUN groupadd --gid $USER_GID $USERNAME
-RUN useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME -d /
+RUN useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME
 
 # Add sudo privileges to non-root user
 RUN apt-get install -y sudo
@@ -20,7 +20,8 @@ RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME
 RUN chmod 0440 /etc/sudoers.d/$USERNAME
 
 # Set up non-root user gopath
-RUN chown -R $USER_UID:$USER_GID /go
+RUN mkdir -p /home/$USERNAME/go/src/github.com/s-newman
+RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/go
 
 # Install Packages ############################################################
 
