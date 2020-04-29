@@ -7,9 +7,7 @@ RUN apt-get update && apt-get install -y \
 
 # Clone go-elasticsearch repository
 RUN git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github.com/elastic/go-elasticsearch
-RUN cd $GOPATH/src/github.com/elastic/go-elasticsearch
-RUN git checkout v7.5.0
-RUN cd $GOPATH
+RUN cd $GOPATH/src/github.com/elastic/go-elasticsearch && git checkout v7.5.0
 
 FROM build as devcontainer
 
