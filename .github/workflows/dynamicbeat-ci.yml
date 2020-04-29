@@ -9,19 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build dynamicbeat
-        run: |
-          docker version
-          docker-compose -v
-          docker-compose -f dockerfiles/docker-compose.yml up dynamicbeat-build
-#      - name: Build dynamicbeat
-#        run: |
-#          go version
-#          cd $GOPATH/src/github.com/s-newman/scorestack/dynamicbeat
-#          make setup
-#          go get
-#          mage build
+        run: docker-compose -f dockerfiles/docker-compose.yml up dynamicbeat-build
       - name: Run dynamicbeat
-        run: |
-          pwd
-          cd src/github.com/s-newman/scorestack/dynamicbeat
-          ./dynamicbeat version
+        run: ./dynamicbeat/dynamicbeat version
