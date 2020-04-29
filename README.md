@@ -1,8 +1,8 @@
 # scorestack
 
-A security competition scoring system built on the Elastic stack.
-
 ![Dynamicbeat CI](https://github.com/s-newman/scorestack/workflows/Dynamicbeat%20CI/badge.svg)
+
+A security competition scoring system built on the Elastic stack.
 
 ## Building dynamicbeat
 
