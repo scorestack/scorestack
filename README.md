@@ -1,19 +1,18 @@
 # scorestack
 
+![Dynamicbeat CI](https://github.com/s-newman/scorestack/workflows/Dynamicbeat%20CI/badge.svg)
+
 A security competition scoring system built on the Elastic stack.
 
 ## Building dynamicbeat
 
-For a number of reasons, we use vscode dev container to build dynamicbeat. Once
-you open the project in the provided dev container, run the following commands
-to build the beat:
+Run the following command to build and test dynamicbeat with docker:
 
 ```shell
-cd dynamicbeat
-make setup
-go get
-mage build
+docker-compose -f dockerfiles/docker-compose.yml run dynamicbeat-ci /scripts/dynamicbeat-test.sh
 ```
+
+The compiled binary can be found at `dynamicbeat/dynamicbeat`.
 
 ## Running everything
 

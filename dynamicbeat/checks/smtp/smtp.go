@@ -8,6 +8,7 @@ import (
 	"net/smtp"
 	"time"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
 
@@ -75,8 +76,9 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		return result
 	}
 	defer func() {
-		if closeErr := conn.Close(); closeErr != nil {
-			// logp.Warn("failed to close smtp connection: %s", closeErr.Error())
+		err := conn.Close()
+		if err != nil {
+			logp.Warn("Failed to close SMTP connection: %s", err)
 		}
 	}()
 
@@ -87,8 +89,9 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		return result
 	}
 	defer func() {
-		if closeErr := c.Quit(); closeErr != nil {
-			// logp.Warn("failed to close smtp client connection: %s", closeErr.Error())
+		err = c.Quit()
+		if err != nil {
+			logp.Warn("Failed to close SMTP client connection: %s", err)
 		}
 	}()
 

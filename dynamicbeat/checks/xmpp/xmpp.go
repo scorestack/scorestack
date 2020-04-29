@@ -7,6 +7,7 @@ import (
 
 	"gosrc.io/xmpp/stanza"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"gosrc.io/xmpp"
 )
@@ -70,8 +71,9 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		return result
 	}
 	defer func() {
-		if closeErr := client.Disconnect(); closeErr != nil {
-			// logp.Warn("failed to close xmpp connection: %s", closeErr.Error())
+		err = client.Disconnect()
+		if err != nil {
+			logp.Warn("Failed to close XMPP connection: %s", err)
 		}
 	}()
 
@@ -89,7 +91,6 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // Without this function, the xmpp "client" calls will seg fault
 func errorHandler(err error) {
-	return
 }
 
 // GetConfig returns the current CheckConfig struct this check has been

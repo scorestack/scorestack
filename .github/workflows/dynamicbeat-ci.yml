@@ -4,36 +4,25 @@ name: Dynamicbeat CI
 on: [push]
 
 jobs:
-  build:
-    env:
-      GOPATH: '/home/runner/work/scorestack/scorestack'
-      PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/runner/work/scorestack/scorestack/bin'
-      VIRTUALENVWRAPPER_PYTHON: '/usr/bin/python2.7'
+
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          path: 'src/github.com/s-newman/scorestack'
-      - name: Install virtualenv
-        run: sudo apt-get install -y virtualenv
-      - name: Update golang to latest version
-        run: |
-          git clone https://github.com/udhos/update-golang
-          cd update-golang
-          sudo ./update-golang.sh
-      - name: Clone go-elasticsearch repository
-        run: |
-          git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github.com/elastic/go-elasticsearch
-          cd $GOPATH/src/github.com/elastic/go-elasticsearch
-          git checkout v7.5.0
-      - name: Build dynamicbeat
-        run: |
-          go version
-          cd $GOPATH/src/github.com/s-newman/scorestack/dynamicbeat
-          make setup
-          go get
-          mage build
-      - name: Run dynamicbeat
-        run: |
-          cd src/github.com/s-newman/scorestack/dynamicbeat
-          ./dynamicbeat version
+      - name: Fix file permissions
+        run: sudo chown -R 1000:1000 .
+      - name: Set up container
+        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
+      - name: Lint dynamicbeat
+        run: docker-compose -f dockerfiles/docker-compose.yml run dynamicbeat-ci /scripts/dynamicbeat-lint.sh
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fix file permissions
+        run: sudo chown -R 1000:1000 .
+      - name: Set up container
+        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
+      - name: Test dynamicbeat
+        run: docker-compose -f dockerfiles/docker-compose.yml run dynamicbeat-ci /scripts/dynamicbeat-test.sh

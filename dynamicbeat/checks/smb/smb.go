@@ -3,11 +3,12 @@ package smb
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
-	"os"
 	"regexp"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/hirochachacha/go-smb2"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 )
@@ -54,7 +55,12 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = fmt.Sprintf("Error connecting to smb server : %s", err)
 		return result
 	}
-	defer c.Logoff()
+	defer func() {
+		err := c.Logoff()
+		if err != nil {
+			logp.Info("Error logging off from SMB server: %s", err)
+		}
+	}()
 
 	// Mount the SMB share
 	fs, err := c.Mount(fmt.Sprintf(`\\%s\%s`, d.Host, d.Share))
@@ -62,7 +68,12 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		result.Message = fmt.Sprintf("Error mounting share : %s", err)
 		return result
 	}
-	defer fs.Umount()
+	defer func() {
+		err := fs.Umount()
+		if err != nil {
+			logp.Warn("Error unmounting remote file system: %s", err)
+		}
+	}()
 
 	// Open the file for reading
 	f, err := fs.Open(d.File)
@@ -73,7 +84,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer f.Close()
 
 	// Ensure we are reading from the beginning of the file
-	_, err = f.Seek(0, os.SEEK_SET)
+	_, err = f.Seek(0, io.SeekStart)
 	if err != nil {
 		result.Message = fmt.Sprintf("Error seeking to beginning of file : %s", err)
 		return result

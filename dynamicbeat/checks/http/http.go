@@ -145,6 +145,9 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 
 	// Construct request
 	req, err := http.NewRequestWithContext(ctx, r.Method, url, strings.NewReader(r.Body))
+	if err != nil {
+		return false, nil, fmt.Errorf("Error constructing request: %s", err)
+	}
 
 	// Add headers
 	for k, v := range r.Headers {

@@ -84,6 +84,6 @@ func GetDocument(c *elasticsearch.Client, idx string, id string) (*Document, err
 
 func read(r io.Reader) string {
 	var buf bytes.Buffer
-	buf.ReadFrom(r)
+	_, _ = buf.ReadFrom(r)
 	return buf.String()
 }
