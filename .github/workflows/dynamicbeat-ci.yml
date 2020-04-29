@@ -16,6 +16,13 @@ jobs:
       - name: Run dynamicbeat
         run: ./dynamicbeat/dynamicbeat version
 
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint dynamicbeat
+        run: docker run --vm -v dynamicbeat:/app -w /app golangci/golangci-lint:v1.25.1 golangci-lint run -v
+
   test:
     runs-on: ubuntu-latest
     steps:
