@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"regexp"
 
+	"github.com/elastic/beats/libbeat/logp"
 	"github.com/jlaffaye/ftp"
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
 	"golang.org/x/crypto/sha3"
@@ -41,8 +42,9 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		return result
 	}
 	defer func() {
-		if closeErr := conn.Quit(); closeErr != nil {
-			// logp.Warn("failed to close ftp connection: %s", closeErr.Error())
+		err := conn.Quit()
+		if err != nil {
+			logp.Warn("Failed to close FTP connection: %s", err)
 		}
 	}()
 

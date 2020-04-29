@@ -1,10 +1,8 @@
 package beater
 
 import (
-	"bytes"
 	"crypto/tls"
 	"fmt"
-	"io"
 	"net"
 	"net/http"
 	"runtime"
@@ -204,10 +202,4 @@ func (bt *Dynamicbeat) Stop() {
 	logp.Info("Waiting for all checks to publish before exiting...")
 	bt.client.Close()
 	close(bt.done)
-}
-
-func read(reader io.Reader) string {
-	var buf bytes.Buffer
-	buf.ReadFrom(reader)
-	return buf.String()
 }

@@ -184,9 +184,9 @@ func runCheck(ctx context.Context, check schema.Check) beat.Event {
 		case result := <-recieveResult:
 			close(recieveResult)
 			// Set the passed, message, and details fields with the CheckResult
-			event.Fields.Put("passed", result.Passed)
-			event.Fields.Put("message", result.Message)
-			event.Fields.Put("details", result.Details)
+			_, _ = event.Fields.Put("passed", result.Passed)
+			_, _ = event.Fields.Put("message", result.Message)
+			_, _ = event.Fields.Put("details", result.Details)
 			return event
 		}
 	}
