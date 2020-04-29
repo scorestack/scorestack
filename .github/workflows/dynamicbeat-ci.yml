@@ -10,9 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up container
-        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-build
+        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
       - name: Build dynamicbeat
-        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-build dynamicbeat-build
+        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-ci dynamicbeat-ci /scripts/dynamicbeat-build.sh
       - name: Run dynamicbeat
         run: ./dynamicbeat/dynamicbeat version
 
@@ -21,15 +21,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up container
-        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-lint
+        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
       - name: Lint dynamicbeat
-        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-lint dynamicbeat-lint
+        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-ci dynamicbeat-ci /scripts/dynamicbeat-lint.sh
 
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up container
-        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-test
+        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
       - name: Test dynamicbeat
-        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-test dynamicbeat-test
+        run: docker-compose -f dockerfiles/docker-compose.yml up --exit-code-from dynamicbeat-ci dynamicbeat-ci /scripts/dynamicbeat-test.sh

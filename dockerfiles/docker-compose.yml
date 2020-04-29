@@ -2,40 +2,15 @@
 version: '3.7'
 services:
 
-  dynamicbeat-build:
+  dynamicbeat-ci:
     build:
       context: .
       dockerfile: dynamicbeat.Dockerfile
-      target: build
-    entrypoint: /dynamicbeat-build.sh
-    image: dynamicbeat-build:latest
+      target: ci
+    image: dynamicbeat-ci:latest
     volumes:
       - "../:/home/scorestack/go/src/github.com/s-newman/scorestack"
-      - "./scripts/dynamicbeat-build.sh:/dynamicbeat-build.sh"
-    user: scorestack
-
-  dynamicbeat-test:
-    build:
-      context: .
-      dockerfile: dynamicbeat.Dockerfile
-      target: build
-    entrypoint: /dynamicbeat-test.sh
-    image: dynamicbeat-build:latest
-    volumes:
-      - "../:/home/scorestack/go/src/github.com/s-newman/scorestack"
-      - "./scripts/dynamicbeat-test.sh:/dynamicbeat-test.sh"
-    user: scorestack
-
-  dynamicbeat-lint:
-    build:
-      context: .
-      dockerfile: dynamicbeat.Dockerfile
-      target: build
-    entrypoint: /dynamicbeat-lint.sh
-    image: dynamicbeat-build:latest
-    volumes:
-      - "../:/home/scorestack/go/src/github.com/s-newman/scorestack"
-      - "./scripts/dynamicbeat-test.sh:/dynamicbeat-lint.sh"
+      - "./scripts:/scripts"
     user: scorestack
 
   dynamicbeat-devcontainer:

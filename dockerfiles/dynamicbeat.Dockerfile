@@ -1,5 +1,5 @@
 ###############################################################################
-FROM golang:1.13.10 as build
+FROM golang:1.13.10 as ci
 ###############################################################################
 
 RUN apt-get update
@@ -36,7 +36,7 @@ RUN git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github
 RUN cd $GOPATH/src/github.com/elastic/go-elasticsearch && git checkout v7.5.0
 
 ###############################################################################
-FROM build as devcontainer
+FROM ci as devcontainer
 ###############################################################################
 
 # Install packages ############################################################
