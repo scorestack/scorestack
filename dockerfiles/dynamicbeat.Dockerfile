@@ -2,6 +2,8 @@
 FROM golang:1.13.10 as build
 ###############################################################################
 
+RUN apt-get update
+
 # Set up non-root user ########################################################
 
 ARG USERNAME=scorestack
@@ -24,7 +26,7 @@ RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/go
 # Install Packages ############################################################
 
 # Install build dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get install -y \
     python-pip \
     virtualenv \
     git
@@ -43,4 +45,4 @@ FROM build as devcontainer
 RUN go get -v golang.org/x/tools/...
 
 # Install golangci-lint
-RUN go get -v github.com/golangci/golangci-lint/cmd/golangci-lint
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.25.1
