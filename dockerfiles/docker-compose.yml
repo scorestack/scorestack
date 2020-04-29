@@ -1,0 +1,14 @@
+---
+version: '3'
+services:
+
+  dynamicbeat-build:
+    build:
+      context: .
+      dockerfile: dynamicbeat.Dockerfile
+      target: build
+    entrypoint: /bin/dynamicbeat-build.sh
+    image: dynamicbeat-build:latest
+    volumes:
+      - "./dynamicbeat:/go/src/github/s-newman/scorestack/dynamicbeat"
+      - "./dockerfiles/scripts/dynamicbeat-build.sh:/bin/dynamicbeat-build.sh"

@@ -8,10 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build dockerfile
-        run: docker build --target build -t dynamicbeat:latest -f dockerfiles/dynamicbeat.Dockerfile
       - name: Build dynamicbeat
-        run: docker run --rm -v dynamicbeat:/go/src/github.com/s-newman/scorestack/dynamicbeat dynamicbeat:latest cd $GOPATH/src/github.com/s-newman/scorestack/dynamicbeat && make setup && go get && make build
+        run: docker-compose -f dockerfiles/docker-compose.yml up dynamicbeat-build
 #      - name: Build dynamicbeat
 #        run: |
 #          go version
