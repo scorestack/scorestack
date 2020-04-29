@@ -5,19 +5,6 @@ on: [push]
 
 jobs:
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Fix file permissions
-        run: sudo chown -R 1000:1000 .
-      - name: Set up container
-        run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
-      - name: Build dynamicbeat
-        run: docker-compose -f dockerfiles/docker-compose.yml run dynamicbeat-ci /scripts/dynamicbeat-build.sh
-      - name: Run dynamicbeat
-        run: ./dynamicbeat/dynamicbeat version
-
   lint:
     runs-on: ubuntu-latest
     steps:
