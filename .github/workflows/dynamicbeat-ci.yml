@@ -9,7 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build dynamicbeat
-        run: docker-compose -f dockerfiles/docker-compose.yml up dynamicbeat-build
+        run: |
+          docker -v
+          docker-compose -v
+          docker-compose -f dockerfiles/docker-compose.yml up dynamicbeat-build
 #      - name: Build dynamicbeat
 #        run: |
 #          go version
