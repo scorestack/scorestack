@@ -12,6 +12,6 @@ jobs:
   include:
     - stage: Kibana Plugin
       name: Lint
-      script: docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/lint.sh
+      script: chown -R 1000:1000 . && docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/lint.sh
     - name: Test
-      script: docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/test.sh
+      script: chown -R 1000:1000 . && docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/test.sh
