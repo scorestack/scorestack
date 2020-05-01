@@ -27,11 +27,11 @@ export class Main extends React.Component {
     const { httpClient } = this.props;
     httpClient.get('../api/scorestack/attribute').then((resp) => {
       this.setState({ checks: resp.data });
-      let navItems = [];
+      const navItems = [];
       let itemId = 0;
-      for (let group of Object.keys(this.state.checks)) {
-        let subItems = [];
-        for (let check of Object.keys(this.state.checks[group])) {
+      for (const group of Object.keys(this.state.checks)) {
+        const subItems = [];
+        for (const check of Object.keys(this.state.checks[group])) {
           subItems.push({
             name: this.state.checks[group][check].name,
             id: itemId,
@@ -45,7 +45,7 @@ export class Main extends React.Component {
                 />
               });
             },
-          })
+          });
           itemId++;
         }
         navItems.push({
@@ -65,7 +65,8 @@ export class Main extends React.Component {
         <EuiPageSideBar>
           <EuiSideNav
             mobileTitle="Checks"
-            items={this.state.navItems} />
+            items={this.state.navItems}
+          />
         </EuiPageSideBar>
         <EuiPageBody>
           <EuiPageContent>
