@@ -29,3 +29,14 @@ services:
       - ../:/home/scorestack/go/src/github.com/s-newman/scorestack
       - "/var/run/docker.sock:/var/run/docker.sock"
     user: scorestack
+
+  kibana-ci:
+    build:
+      context: .
+      dockerfile: kibana.Dockerfile
+      target: ci
+    image: kibana-ci:latest
+    volumes:
+      - "../kibana-plugin:/home/scorestack/kibana/plugins/scorestack"
+      - "./scripts/kibana:/scripts"
+    user: node
