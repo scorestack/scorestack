@@ -30,13 +30,13 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     user: scorestack
 
-  kibana-ci:
+  kibana-plugin-ci:
     build:
       context: .
-      dockerfile: kibana.Dockerfile
+      dockerfile: kibana-plugin.Dockerfile
       target: ci
-    image: kibana-ci:latest
+    image: kibana-plugin-ci:latest
     volumes:
       - "../kibana-plugin:/home/scorestack/kibana/plugins/scorestack"
-      - "./scripts/kibana:/scripts"
+      - "./scripts/kibana-plugin:/scripts"
     user: node
