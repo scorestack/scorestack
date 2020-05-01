@@ -20,17 +20,17 @@ export class Main extends React.Component {
         name: 'Loading...',
         id: 0,
       }],
-    }
+    };
   }
 
   componentDidMount() {
     const { httpClient } = this.props;
     httpClient.get('../api/scorestack/attribute').then((resp) => {
       this.setState({ checks: resp.data });
-      let navItems = []
+      let navItems = [];
       let itemId = 0;
       for (let group of Object.keys(this.state.checks)) {
-        let subItems = []
+        let subItems = [];
         for (let check of Object.keys(this.state.checks[group])) {
           subItems.push({
             name: this.state.checks[group][check].name,
@@ -41,7 +41,8 @@ export class Main extends React.Component {
                   id={check}
                   name={this.state.checks[group][check].name}
                   attributes={this.state.checks[group][check].attributes}
-                  httpClient={this.props.httpClient} />
+                  httpClient={this.props.httpClient}
+                />
               });
             },
           })
