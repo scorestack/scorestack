@@ -1,0 +1,15 @@
+language: node_js
+
+stages:
+  - Kibana Plugin
+
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: Kibana Plugin
+      name: Lint
+      script: docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/lint.sh
+    - name: Test
+      script: docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/test.sh
