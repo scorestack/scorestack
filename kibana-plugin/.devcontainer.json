@@ -11,5 +11,5 @@
     ],
     "postCreateCommand": "yarn kbn bootstrap",
     "remoteUser": "node",
-    "workspaceFolder": "/home/node/kibana/plugins/scorestack"
+    "workspaceFolder": "/home/node/kibana/plugins/kibana-plugin"
 }
