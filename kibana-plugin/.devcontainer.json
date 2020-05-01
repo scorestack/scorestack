@@ -3,6 +3,9 @@
     "dockerComposeFile": "../dockerfiles/docker-compose.yml",
     "service": "kibana-plugin-devcontainer",
     "shutdownAction": "none",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
     "extensions": [
         "dbaeumer.vscode-eslint"
     ],
