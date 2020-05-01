@@ -1,0 +1,28 @@
+---
+name: Kibana Plugin
+
+on: [push]
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fix file permissions
+        run: sudo chown -R 1000:1000 .
+      - name: Set up container
+        run: docker-compose -f dockerfiles/docker-compose.yml build kibana-plugin-ci
+      - name: Lint kibana plugin
+        run: docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/lint.sh
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fix file permissions
+        run: sudo chown -R 1000:1000 .
+      - name: Set up container
+        run: docker-compose -f dockerfiles/docker-compose.yml build kibana-plugin-ci
+      - name: Test kibana plugin
+        run: docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/test.sh
