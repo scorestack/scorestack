@@ -1,4 +1,6 @@
 language: node_js
+dist: bionic
+os: linux
 
 stages:
   - Kibana Plugin
