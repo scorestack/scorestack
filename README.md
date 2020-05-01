@@ -1,6 +1,6 @@
 # scorestack
 
-![Dynamicbeat CI](https://github.com/s-newman/scorestack/workflows/Dynamicbeat%20CI/badge.svg)
+![Dynamicbeat](https://github.com/s-newman/scorestack/workflows/Dynamicbeat/badge.svg)
 
 A security competition scoring system built on the Elastic stack.
 

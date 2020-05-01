@@ -1,5 +1,5 @@
 ---
-name: Dynamicbeat CI
+name: Dynamicbeat
 
 on: [push]
 
