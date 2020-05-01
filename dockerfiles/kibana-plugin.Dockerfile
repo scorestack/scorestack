@@ -35,4 +35,4 @@ RUN mkdir -p /home/$USERNAME/kibana/plugins
 RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/kibana
 
 # Bootstrap Kibana
-RUN cd /home/$USERNAME/kibana sudo -u $USERNAME yarn kbn bootstrap
+RUN cd /home/$USERNAME/kibana && sudo -u $USERNAME yarn kbn bootstrap
