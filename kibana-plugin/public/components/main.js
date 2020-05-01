@@ -3,11 +3,15 @@ import {
   EuiPage,
   EuiPageBody,
   EuiPageContent,
+  EuiPageContentHeader,
+  EuiPageContentHeaderSection,
+  EuiPageContentBody,
   EuiPageSideBar,
   EuiSideNav,
   EuiText,
+  EuiTitle,
 } from '@elastic/eui';
-import { Check } from './check';
+import { Attribute } from './attribute';
 
 export class Main extends React.Component {
   constructor(props) {
@@ -37,12 +41,31 @@ export class Main extends React.Component {
             id: itemId,
             onClick: () => {
               this.setState({
-                currentCheck: <Check
-                  id={check}
-                  name={this.state.checks[group][check].name}
-                  attributes={this.state.checks[group][check].attributes}
-                  httpClient={this.props.httpClient}
-                />
+                currentCheck: function () {
+                  const attributes = Object.keys(this.props.attributes).map((key) => (
+                    <Attribute
+                      key={`${key}-${this.props.id}`}
+                      id={this.props.id}
+                      name={key}
+                      value={this.props.attributes[key]}
+                      client={this.props.httpClient}
+                    />
+                  ));
+                  return (
+                    <div>
+                      <EuiPageContentHeader>
+                        <EuiPageContentHeaderSection>
+                          <EuiTitle>
+                            <h2>{this.props.name}</h2>
+                          </EuiTitle>
+                        </EuiPageContentHeaderSection>
+                      </EuiPageContentHeader>
+                      <EuiPageContentBody>
+                        {attributes}
+                      </EuiPageContentBody>
+                    </div>
+                  );
+                }
               });
             },
           });
