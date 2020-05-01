@@ -33,3 +33,7 @@ RUN cd /home/$USERNAME/kibana && git checkout v7.5.1
 # Set up plugin directory
 RUN mkdir -p /home/$USERNAME/kibana/plugins
 RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/kibana
+
+###############################################################################
+FROM ci as devcontainer
+###############################################################################

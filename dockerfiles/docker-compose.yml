@@ -40,3 +40,16 @@ services:
       - "../kibana-plugin:/home/node/kibana/plugins/scorestack"
       - "./scripts/kibana-plugin:/scripts"
     user: node
+
+  kibana-plugin-devcontainer:
+    build:
+      context: .
+      dockerfile: kibana-plugin.Dockerfile
+      target: devcontainer
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    image: kibana-plugin-devcontainer:latest
+    ports:
+      - 5601:5601
+    volumes:
+      - "../kibana-plugin:/home/node/kibana/plugins/scorestack"
+    user: node

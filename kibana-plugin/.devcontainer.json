@@ -1,0 +1,12 @@
+{
+    "name": "Kibana Plugin",
+    "dockerComposeFile": "../dockerfiles/docker-compose.yml",
+    "service": "kibana-plugin-devcontainer",
+    "shutdownAction": "none",
+    "extensions": [
+        "dbaeumer.vscode-eslint"
+    ],
+    "postCreateCommand": "yarn kbn bootstrap",
+    "remoteUser": "node",
+    "workspaceFolder": "/home/node/kibana/plugins/scorestack"
+}
