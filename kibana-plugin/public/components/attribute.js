@@ -29,7 +29,7 @@ export class Attribute extends React.Component {
     const httpClient = this.props.client;
     httpClient.post(`../api/scorestack/attribute/${this.props.id}/${this.props.name}`, JSON.stringify({
       'value': this.state.formValue,
-    }, { headers: { 'Content-Type': 'application/json' } })).then((resp) => {
+    }, { headers: { 'Content-Type': 'application/json' } })).then(() => {
       this.setState({
         isLoading: false,
         value: this.state.formValue,
@@ -57,8 +57,8 @@ export class Attribute extends React.Component {
   };
 
   render() {
-    const showButton = (<EuiButtonIcon iconType='eye' onClick={this.onShowButtonClick} />);
-    const saveButton = (<EuiButton isLoading={this.state.isLoading} onClick={this.onSaveButtonClick}>Save</EuiButton>)
+    const showButton = (<EuiButtonIcon iconType="eye" onClick={this.onShowButtonClick} />);
+    const saveButton = (<EuiButton isLoading={this.state.isLoading} onClick={this.onSaveButtonClick}>Save</EuiButton>);
     return (
       <EuiFlexGroup style={{ maxWidth: 600 }}>
         <EuiFlexItem>
@@ -73,7 +73,8 @@ export class Attribute extends React.Component {
               ownFocus
               button={showButton}
               isOpen={this.state.isShown}
-              closePopover={this.hideValue.bind(this)}>
+              closePopover={this.hideValue.bind(this)}
+            >
               <EuiText>
                 <code>{this.state.value}</code>
               </EuiText>
@@ -86,7 +87,6 @@ export class Attribute extends React.Component {
           </EuiFormRow>
         </EuiFlexItem>
       </EuiFlexGroup>
-    )
+    );
   }
-
 }

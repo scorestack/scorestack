@@ -1,0 +1,15 @@
+{
+    "name": "Kibana Plugin",
+    "dockerComposeFile": "../dockerfiles/docker-compose.yml",
+    "service": "kibana-plugin-devcontainer",
+    "shutdownAction": "none",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "dbaeumer.vscode-eslint"
+    ],
+    "postCreateCommand": "yarn kbn bootstrap",
+    "remoteUser": "node",
+    "workspaceFolder": "/home/node/kibana/plugins/kibana-plugin"
+}

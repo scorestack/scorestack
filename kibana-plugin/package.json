@@ -1,5 +1,5 @@
 {
-  "name": "scorestack",
+  "name": "kibana-plugin",
   "version": "0.0.0",
   "description": "A Kibana plugin for viewing and modifying ScoreStack checks and attributes.",
   "main": "index.js",

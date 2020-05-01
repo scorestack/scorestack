@@ -3,11 +3,15 @@ import {
   EuiPage,
   EuiPageBody,
   EuiPageContent,
+  EuiPageContentHeader,
+  EuiPageContentHeaderSection,
+  EuiPageContentBody,
   EuiPageSideBar,
   EuiSideNav,
   EuiText,
+  EuiTitle,
 } from '@elastic/eui';
-import { Check } from './check';
+import { Attribute } from './attribute';
 
 export class Main extends React.Component {
   constructor(props) {
@@ -20,31 +24,51 @@ export class Main extends React.Component {
         name: 'Loading...',
         id: 0,
       }],
-    }
+    };
   }
 
   componentDidMount() {
     const { httpClient } = this.props;
     httpClient.get('../api/scorestack/attribute').then((resp) => {
       this.setState({ checks: resp.data });
-      let navItems = []
+      const navItems = [];
       let itemId = 0;
-      for (let group of Object.keys(this.state.checks)) {
-        let subItems = []
-        for (let check of Object.keys(this.state.checks[group])) {
+      for (const group of Object.keys(this.state.checks)) {
+        const subItems = [];
+        for (const check of Object.keys(this.state.checks[group])) {
           subItems.push({
             name: this.state.checks[group][check].name,
             id: itemId,
             onClick: () => {
               this.setState({
-                currentCheck: <Check
-                  id={check}
-                  name={this.state.checks[group][check].name}
-                  attributes={this.state.checks[group][check].attributes}
-                  httpClient={this.props.httpClient} />
+                currentCheck: function () {
+                  const attributes = Object.keys(this.props.attributes).map((key) => (
+                    <Attribute
+                      key={`${key}-${this.props.id}`}
+                      id={this.props.id}
+                      name={key}
+                      value={this.props.attributes[key]}
+                      client={this.props.httpClient}
+                    />
+                  ));
+                  return (
+                    <div>
+                      <EuiPageContentHeader>
+                        <EuiPageContentHeaderSection>
+                          <EuiTitle>
+                            <h2>{this.props.name}</h2>
+                          </EuiTitle>
+                        </EuiPageContentHeaderSection>
+                      </EuiPageContentHeader>
+                      <EuiPageContentBody>
+                        {attributes}
+                      </EuiPageContentBody>
+                    </div>
+                  );
+                }
               });
             },
-          })
+          });
           itemId++;
         }
         navItems.push({
@@ -64,7 +88,8 @@ export class Main extends React.Component {
         <EuiPageSideBar>
           <EuiSideNav
             mobileTitle="Checks"
-            items={this.state.navItems} />
+            items={this.state.navItems}
+          />
         </EuiPageSideBar>
         <EuiPageBody>
           <EuiPageContent>

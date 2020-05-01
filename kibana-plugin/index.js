@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import { existsSync } from 'fs';
 
 
-import { i18n } from '@kbn/i18n';
+//import { i18n } from '@kbn/i18n';
 
 import attributeRoute from './server/routes/attribute';
 
@@ -33,7 +33,7 @@ export default function (kibana) {
     init(server, options) {
       const xpackMainPlugin = server.plugins.xpack_main;
       if (xpackMainPlugin) {
-        const featureId = 'scorestack';
+        //const featureId = 'scorestack';
 
         xpackMainPlugin.registerFeature({
           id: 'check_attributes',
