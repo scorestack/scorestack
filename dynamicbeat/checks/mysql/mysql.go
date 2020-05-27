@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"regexp"
+	"strconv"
 
 	// MySQL driver
 	_ "github.com/go-sql-driver/mysql"
@@ -21,7 +22,7 @@ type Definition struct {
 	Database     string             `optiontype:"required"`                      // Name of the database to access
 	Table        string             `optiontype:"required"`                      // Name of the table to access
 	Column       string             `optiontype:"required"`                      // Name of the column to access
-	MatchContent bool               `optiontype:"optional"`                      // Whether to perform a regex content match on the results of the query
+	MatchContent string             `optiontype:"optional"`                      // Whether to perform a regex content match on the results of the query
 	ContentRegex string             `optiontype:"optional" optiondefault:".*"`   // Regex to match on
 	Port         string             `optiontype:"optional" optiondefault:"3306"` // Port for the server
 }
@@ -62,7 +63,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	var val string
 
 	// Perform regex matching, if necessary
-	if d.MatchContent {
+	if matchContent, _ := strconv.ParseBool(d.MatchContent); matchContent {
 		// Compile the regex
 		regex, err := regexp.Compile(d.ContentRegex)
 		if err != nil {
