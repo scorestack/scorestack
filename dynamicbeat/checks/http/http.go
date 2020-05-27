@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,8 +22,8 @@ import (
 // The Definition configures the behavior of an HTTP check.
 type Definition struct {
 	Config               schema.CheckConfig // generic metadata about the check
-	Verify               bool               `optiontype:"optional"` // whether HTTPS certs should be validated
-	ReportMatchedContent bool               `optiontype:"optional"` // whether the matched content should be returned in the CheckResult
+	Verify               string             `optiontype:"optional"` // whether HTTPS certs should be validated
+	ReportMatchedContent string             `optiontype:"optional"` // whether the matched content should be returned in the CheckResult
 	Requests             []*Request         `optiontype:"list"`     // a list of requests to make
 }
 
@@ -47,6 +48,10 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Initialize empty result
 	result := schema.CheckResult{}
 
+	// Convert strings to booleans to allow templating
+	verify, _ := strconv.ParseBool(d.Verify)
+	reportMatchedContent, _ := strconv.ParseBool(d.ReportMatchedContent)
+
 	// Configure HTTP client
 	cookieJar, err := cookiejar.New(nil)
 	if err != nil {
@@ -60,7 +65,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		Transport: &http.Transport{
 			IdleConnTimeout: 10 * time.Second,
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: !d.Verify,
+				InsecureSkipVerify: !verify,
 			},
 		},
 	}
@@ -125,7 +130,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	details := make(map[string]string)
-	if d.ReportMatchedContent && lastMatch != nil {
+	if reportMatchedContent && lastMatch != nil {
 		details["matched_content"] = *lastMatch
 	}
 	result.Details = details
