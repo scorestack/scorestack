@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
+	"strconv"
 
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/jlaffaye/ftp"
@@ -25,7 +26,7 @@ type Definition struct {
 	HashContentMatch bool               `optiontype:"optional"`                    // Whether or not to match a hash of the file contents
 	Hash             string             `optiontype:"optional"`                    // The hash digest from sha3-256 to compare the hashed file contents to
 	Port             string             `optiontype:"optional" optiondefault:"21"` // The port to attempt an ftp connection on
-	Fucked           bool               `optiontype:"optional"`                    // Custom case for Cerealkiller ISTS2020
+	Simple           string             `optiontype:"optional"`                    // Very simple FTP check for older servers
 }
 
 // Run a single instance of the check
@@ -55,7 +56,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// ***********************************************
-	if d.Fucked {
+	if simple, _ := strconv.ParseBool(d.Simple); simple {
 		// Do check for cerealkiller
 		err = conn.ChangeDir(d.File)
 		if err != nil {
