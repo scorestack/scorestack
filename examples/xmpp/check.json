@@ -9,6 +9,6 @@
         "Port": "{{.Port}}",
         "Username": "{{.Username}}",
         "Password": "{{.Password}}",
-        "Encrypted": true
+        "Encrypted": "{{.Encrypted}}"
     }
 }
