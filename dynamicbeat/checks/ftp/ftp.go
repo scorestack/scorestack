@@ -23,7 +23,7 @@ type Definition struct {
 	Password         string             `optiontype:"required"`                    // The password for the user that you wish to login with
 	File             string             `optiontype:"required"`                    // The path to the file to access during the FTP check
 	ContentRegex     string             `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
-	HashContentMatch bool               `optiontype:"optional"`                    // Whether or not to match a hash of the file contents
+	HashContentMatch string             `optiontype:"optional"`                    // Whether or not to match a hash of the file contents
 	Hash             string             `optiontype:"optional"`                    // The hash digest from sha3-256 to compare the hashed file contents to
 	Port             string             `optiontype:"optional" optiondefault:"21"` // The port to attempt an ftp connection on
 	Simple           string             `optiontype:"optional"`                    // Very simple FTP check for older servers
@@ -92,7 +92,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Check if we are doing hash matching, non default
-	if d.HashContentMatch {
+	if matchHash, _ := strconv.ParseBool(d.HashContentMatch); matchHash {
 		// Get the file hash
 		digest := sha3.Sum256(content)
 
