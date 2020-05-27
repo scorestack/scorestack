@@ -10,7 +10,7 @@
         "Username": "{{.Username}}",
         "Password": "{{.Password}}",
         "Cmd": "{{.Cmd}}",
-        "MatchContent": true,
+        "MatchContent": "{{.MatchContent}}",
         "ContentRegex": "{{.ContentRegex}}"
     }
 }

@@ -3,5 +3,6 @@
     "Port": "22",
     "Username": "root",
     "Cmd": "id",
-    "ContentRegex": "root"
+    "ContentRegex": "root",
+    "MatchContent": "true"
 }
