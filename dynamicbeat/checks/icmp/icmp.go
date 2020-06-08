@@ -51,7 +51,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Check packet loss instead of count
 	if !passCount {
 		if stats.PacketLoss >= float64(d.Percent) {
-			result.Message = fmt.Sprint("Not all pings made it back!")
+			result.Message = "Not all pings made it back!"
 			return result
 		}
 
