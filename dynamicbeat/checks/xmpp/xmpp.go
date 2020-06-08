@@ -41,7 +41,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		},
 		Jid:        fmt.Sprintf("%s@%s", d.Username, d.Host),
 		Credential: xmpp.Password(d.Password),
-		Insecure:   encrypted,
+		Insecure:   !encrypted,
 		// ConnectTimeout: 20,
 	}
 
