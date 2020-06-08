@@ -57,7 +57,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// ***********************************************
 	if simple, _ := strconv.ParseBool(d.Simple); simple {
-		// Do check for cerealkiller
+		// Do a simple FTP check for servers that don't support a lot of FTP commands
 		err = conn.ChangeDir(d.File)
 		if err != nil {
 			result.Message = fmt.Sprintf("Changing to directory %s failed : %s", d.File, err)
