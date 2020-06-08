@@ -14,11 +14,11 @@ import (
 // The Definition configures the behavior of the ICMP check
 // it implements the "Check" interface
 type Definition struct {
-	Config    schema.CheckConfig // generic metadata about the check
-	Host      string             `optiontype:"required"`                       // IP or hostname of the host to run the ICMP check against
-	Count     int                `optiontype:"optional" optiondefault:"1"`     // The number of ICMP requests to send per check
-	PassCount string             `optiontype:"optional" optionadefault:"true"` // Pass check based on received pings matching Count; if false, will use percent packet loss
-	Percent   int                `optiontype:"optional" optiondefault:"100"`   // The percent threshold of dropped packets to fail a check
+	Config          schema.CheckConfig // generic metadata about the check
+	Host            string             `optiontype:"required"`                       // IP or hostname of the host to run the ICMP check against
+	Count           int                `optiontype:"optional" optiondefault:"1"`     // The number of ICMP requests to send per check
+	AllowPacketLoss string             `optiontype:"optional" optionadefault:"true"` // Pass check based on received pings matching Count; if false, will use percent packet loss
+	Percent         int                `optiontype:"optional" optiondefault:"100"`   // Percent of packets needed to come back to pass the check
 }
 
 // Run a single instance of the check
@@ -40,7 +40,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	pinger.Run()
 
 	// Convert PassCount to bool
-	passCount, err := strconv.ParseBool(d.PassCount)
+	passCount, err := strconv.ParseBool(d.AllowPacketLoss)
 	if err != nil {
 		result.Message = fmt.Sprintf("Failed to parse PassCount boolean from struct def : %s", err)
 		return result
