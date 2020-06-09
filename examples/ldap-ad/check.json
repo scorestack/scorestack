@@ -9,6 +9,6 @@
         "Password": "{{.Password}}",
         "Fqdn": "{{.Fqdn}}",
         "Port": "{{.Port}}",
-        "Ldaps": false
+        "Ldaps": "{{.Ldaps}}"
     }
 }

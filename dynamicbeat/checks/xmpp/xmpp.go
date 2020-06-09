@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"strconv"
 
 	"gosrc.io/xmpp/stanza"
 
@@ -19,7 +20,7 @@ type Definition struct {
 	Host      string             `optiontype:"required"`                      // IP or hostname of the xmpp server
 	Username  string             `optiontype:"required"`                      // Username to use for the xmpp server
 	Password  string             `optiontype:"required"`                      // Password for the user
-	Encrypted bool               `optiontype:"optional" optiondefault:"true"` // TLS support or not
+	Encrypted string             `optiontype:"optional" optiondefault:"true"` // TLS support or not
 	Port      string             `optiontype:"optional" optiondefault:"5222"` // Port for the xmpp server
 }
 
@@ -27,6 +28,9 @@ type Definition struct {
 func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Initialize empty result
 	result := schema.CheckResult{}
+
+	// Convert Encrypted to bool
+	encrypted, _ := strconv.ParseBool(d.Encrypted)
 
 	// Create xmpp config
 	config := xmpp.Config{
@@ -37,7 +41,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		},
 		Jid:        fmt.Sprintf("%s@%s", d.Username, d.Host),
 		Credential: xmpp.Password(d.Password),
-		Insecure:   d.Encrypted,
+		Insecure:   !encrypted,
 		// ConnectTimeout: 20,
 	}
 

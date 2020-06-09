@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/elastic/beats/libbeat/logp"
@@ -20,7 +21,7 @@ type Definition struct {
 	Username     string             `optiontype:"required"`                    // The user to login with over ssh
 	Password     string             `optiontype:"required"`                    // The password for the user that you wish to login with
 	Cmd          string             `optiontype:"required"`                    // The command to execute once ssh connection established
-	MatchContent bool               `optiontype:"optional"`                    // Whether or not to match content like checking files
+	MatchContent string             `optiontype:"optional"`                    // Whether or not to match content like checking files
 	ContentRegex string             `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
 	Port         string             `optiontype:"optional" optiondefault:"22"` // The port to attempt an ssh connection on
 }
@@ -75,7 +76,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Check if we are going to match content
-	if !d.MatchContent {
+	if matchContent, _ := strconv.ParseBool(d.MatchContent); matchContent {
 		// If we made it here the check passes
 		result.Message = fmt.Sprintf("Command %s executed successfully: %s", d.Cmd, output)
 		result.Passed = true

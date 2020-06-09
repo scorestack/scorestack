@@ -10,9 +10,8 @@
         "Username": "{{.Username}}",
         "Password": "{{.Password}}",
         "File": "{{.File}}",
-        "RegexContentMatch": false,
         "ContentRegex": "{{.ContentRegex}}",
-        "HashContentMatch": false,
+        "HashContentMatch": "{{.HashContentMatch}}",
         "Hash": "{{.Hash}}"
     }
 }

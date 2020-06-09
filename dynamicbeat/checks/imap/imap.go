@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net"
+	"strconv"
 	"time"
 
 	"github.com/elastic/beats/libbeat/logp"
@@ -20,7 +21,7 @@ type Definition struct {
 	Host      string             `optiontype:"required"`                     // IP or hostname for the imap server
 	Username  string             `optiontype:"required"`                     // Username for the imap server
 	Password  string             `optiontype:"required"`                     // Password for the user of the imap server
-	Encrypted bool               `optiontype:"optional"`                     // Whether or not to use TLS (IMAPS)
+	Encrypted string             `optiontype:"optional"`                     // Whether or not to use TLS (IMAPS)
 	Port      string             `optiontype:"optional" optiondefault:"143"` // Port for the imap server
 }
 
@@ -41,7 +42,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	var err error
 
 	// Connect to server with TLS or not
-	if d.Encrypted {
+	if encrypted, _ := strconv.ParseBool(d.Encrypted); encrypted {
 		c, err = client.DialWithDialerTLS(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port), &tls.Config{})
 	} else {
 		c, err = client.DialWithDialer(&dialer, fmt.Sprintf("%s:%s", d.Host, d.Port))

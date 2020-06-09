@@ -20,8 +20,8 @@ type Definition struct {
 	Username     string             `optiontype:"required"`                      // User to login as
 	Password     string             `optiontype:"required"`                      // Password for the user
 	Cmd          string             `optiontype:"required"`                      // Command that will be executed
-	Encrypted    bool               `optiontype:"optional" optiondefault:"true"` // Use TLS for connection
-	MatchContent bool               `optiontype:"optional"`                      // Turn this on to match content from the output of the cmd
+	Encrypted    string             `optiontype:"optional" optiondefault:"true"` // Use TLS for connection
+	MatchContent string             `optiontype:"optional"`                      // Turn this on to match content from the output of the cmd
 	ContentRegex string             `optiontype:"optional" optiondefault:".*"`   // Regexp for matching output of a command
 	Port         string             `optiontype:"optional" optiondefault:"5986"` // Port for WinRM
 }
@@ -41,9 +41,12 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Another timeout for the bois
 	params := *winrm.DefaultParameters
 
+	// Convert encrypted to bool
+	encrypted, _ := strconv.ParseBool(d.Encrypted)
+
 	// Login to winrm and create client
 	// endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 5*time.Second)
-	endpoint := winrm.NewEndpoint(d.Host, port, d.Encrypted, true, nil, nil, nil, 20*time.Second)
+	endpoint := winrm.NewEndpoint(d.Host, port, encrypted, true, nil, nil, nil, 20*time.Second)
 	client, err := winrm.NewClientWithParameters(endpoint, d.Username, d.Password, &params)
 	if err != nil {
 		result.Message = fmt.Sprintf("Login to WinRM host %s failed : %s", d.Host, err)
@@ -68,7 +71,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Check if we are going to regex
-	if !d.MatchContent {
+	if matchContent, _ := strconv.ParseBool(d.MatchContent); !matchContent {
 		// If we make it in here the check passes
 		result.Passed = true
 		return result

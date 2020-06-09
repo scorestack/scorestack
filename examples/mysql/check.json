@@ -11,7 +11,7 @@
         "Database": "{{.Database}}",
         "Table": "{{.Table}}",
         "Column": "{{.Column}}",
-        "MatchContent": true,
+        "MatchContent": "{{.MatchContent}}",
         "ContentRegex": "performance_schema"
     }
 }

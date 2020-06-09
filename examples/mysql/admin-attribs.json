@@ -3,5 +3,6 @@
     "Username": "root",
     "Database": "mysql",
     "Table": "db",
-    "Column": "Db"
+    "Column": "Db",
+    "MatchContent": "true"
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/smtp"
+	"strconv"
 	"time"
 
 	"github.com/elastic/beats/libbeat/logp"
@@ -22,7 +23,7 @@ type Definition struct {
 	Sender    string             `optiontype:"required"`                                       // Who is sending the email
 	Reciever  string             `optiontype:"required"`                                       // Who is receiving the email
 	Body      string             `optiontype:"optional" optiondefault:"Hello from ScoreStack"` // Body of the email
-	Encrypted bool               `optiontype:"optional"`                                       // Whether or not to use TLS
+	Encrypted string             `optiontype:"optional"`                                       // Whether or not to use TLS
 	Port      string             `optiontype:"optional" optiondefault:"25"`                    // Port of the smtp server
 }
 
@@ -66,7 +67,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	var conn net.Conn
 	var err error
 
-	if d.Encrypted {
+	if encrypted, _ := strconv.ParseBool(d.Encrypted); encrypted {
 		conn, err = tls.DialWithDialer(&dialer, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port), &tlsConfig)
 	} else {
 		conn, err = dialer.DialContext(ctx, "tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))

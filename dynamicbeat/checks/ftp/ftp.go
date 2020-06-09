@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
+	"strconv"
 
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/jlaffaye/ftp"
@@ -16,17 +17,16 @@ import (
 // The Definition configures the behavior of the FTP check
 // it implements the "check" interface
 type Definition struct {
-	Config            schema.CheckConfig // generic metadata about the check
-	Host              string             `optiontype:"required"`                      // IP or hostname of the host to run the FTP check against
-	Username          string             `optiontype:"required"`                      // The user to login with over FTP
-	Password          string             `optiontype:"required"`                      // The password for the user that you wish to login with
-	File              string             `optiontype:"required"`                      // The path to the file to access during the FTP check
-	RegexContentMatch bool               `optiontype:"optional" optiondefault:"true"` // Whether or not to match file content with regex
-	ContentRegex      string             `optiontype:"optional" optiondefault:".*"`   // Regex to match if reading a file
-	HashContentMatch  bool               `optiontype:"optional"`                      // Whether or not to match a hash of the file contents
-	Hash              string             `optiontype:"optional"`                      // The hash digest from sha3-256 to compare the hashed file contents to
-	Port              string             `optiontype:"optional" optiondefault:"21"`   // The port to attempt an ftp connection on
-	Fucked            bool               `optiontype:"optional"`                      // Custom case for Cerealkiller ISTS2020
+	Config           schema.CheckConfig // generic metadata about the check
+	Host             string             `optiontype:"required"`                    // IP or hostname of the host to run the FTP check against
+	Username         string             `optiontype:"required"`                    // The user to login with over FTP
+	Password         string             `optiontype:"required"`                    // The password for the user that you wish to login with
+	File             string             `optiontype:"required"`                    // The path to the file to access during the FTP check
+	ContentRegex     string             `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
+	HashContentMatch string             `optiontype:"optional"`                    // Whether or not to match a hash of the file contents
+	Hash             string             `optiontype:"optional"`                    // The hash digest from sha3-256 to compare the hashed file contents to
+	Port             string             `optiontype:"optional" optiondefault:"21"` // The port to attempt an ftp connection on
+	Simple           string             `optiontype:"optional"`                    // Very simple FTP check for older servers
 }
 
 // Run a single instance of the check
@@ -56,8 +56,8 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// ***********************************************
-	if d.Fucked {
-		// Do check for cerealkiller
+	if simple, _ := strconv.ParseBool(d.Simple); simple {
+		// Do a simple FTP check for servers that don't support a lot of FTP commands
 		err = conn.ChangeDir(d.File)
 		if err != nil {
 			result.Message = fmt.Sprintf("Changing to directory %s failed : %s", d.File, err)
@@ -92,7 +92,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Check if we are doing hash matching, non default
-	if d.HashContentMatch {
+	if matchHash, _ := strconv.ParseBool(d.HashContentMatch); matchHash {
 		// Get the file hash
 		digest := sha3.Sum256(content)
 

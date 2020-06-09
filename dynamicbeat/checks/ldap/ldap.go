@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
@@ -17,7 +18,7 @@ type Definition struct {
 	User     string             `optiontype:"required"`                     // The user written in user@domain syntax
 	Password string             `optiontype:"required"`                     // the password for the user
 	Fqdn     string             `optiontype:"required"`                     // The Fqdn of the ldap server
-	Ldaps    bool               `optiontype:"optional"`                     // Whether or not to use LDAP+TLS
+	Ldaps    string             `optiontype:"optional"`                     // Whether or not to use LDAP+TLS
 	Port     string             `optiontype:"optional" optiondefault:"389"` // Port for ldap
 }
 
@@ -42,7 +43,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	lconn.SetTimeout(5 * time.Second)
 
 	// Add TLS if needed
-	if d.Ldaps {
+	if ldaps, _ := strconv.ParseBool(d.Ldaps); ldaps {
 		err = lconn.StartTLS(&tls.Config{InsecureSkipVerify: true})
 		if err != nil {
 			result.Message = fmt.Sprintf("TLS session creation failed : %s", err)
