@@ -2,14 +2,15 @@
     "name": "Kibana Plugin",
     "dockerComposeFile": "../dockerfiles/docker-compose.yml",
     "service": "kibana-plugin-devcontainer",
-    "shutdownAction": "none",
-    "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash"
-    },
+    "workspaceFolder": "/home/node/kibana/plugins/kibana-plugin",
     "extensions": [
-        "dbaeumer.vscode-eslint"
-    ],
-    "postCreateCommand": "yarn kbn bootstrap",
-    "remoteUser": "node",
-    "workspaceFolder": "/home/node/kibana/plugins/kibana-plugin"
+        "dbaeumer.vscode-eslint",
+        "mgmcdermott.vscode-language-babel",
+        "ryanluker.vscode-coverage-gutters",
+        "oderwat.indent-rainbow",
+        "yzhang.markdown-all-in-one",
+        "voldemortensen.rainbow-tags",
+        "gruntfuggly.todo-tree",
+        "rido3.wordcount"
+    ]
 }
