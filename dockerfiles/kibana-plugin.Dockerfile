@@ -1,5 +1,5 @@
 ###############################################################################
-FROM node:10.15.2 as ci
+FROM node:10.19.0 as ci
 # ARGS: KIBANA_VERSION, USER_GID, USER_UID, USERNAME
 ###############################################################################
 
@@ -29,7 +29,7 @@ RUN npm install -g \
     eslint
 
 # Clone correct version of Kibana
-ARG KIBANA_VERSION=7.5.1
+ARG KIBANA_VERSION=7.7.1
 RUN git clone -b v${KIBANA_VERSION} --depth 1 https://github.com/elastic/kibana.git /home/${USERNAME}/kibana
 
 # Set up plugin directory
