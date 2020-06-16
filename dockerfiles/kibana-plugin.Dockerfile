@@ -25,7 +25,6 @@ RUN apt-get install -y \
     git \
     libnss3
 RUN npm install -g \
-    yarn \
     eslint
 
 # Clone correct version of Kibana
