@@ -1,0 +1,10 @@
+{
+    "id": "scorestack",
+    "version": "7.7.1",
+    "server": true,
+    "ui": true,
+    "requiredPlugins": [
+        "navigation"
+    ],
+    "optionalPlugins": []
+}
