@@ -6,10 +6,12 @@ import {
   Logger,
 } from '../../../src/core/server';
 
-import { ScorestackPluginSetup, ScorestackPluginStart } from './types';
+import { PLUGIN_ID, PLUGIN_NAME } from '../common';
+
+import { ScoreStackPluginSetup, ScoreStackPluginStart } from './types';
 import { defineRoutes } from './routes';
 
-export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, ScorestackPluginStart> {
+export class ScoreStackPlugin implements Plugin<ScoreStackPluginSetup, ScoreStackPluginStart> {
   private readonly logger: Logger;
 
   constructor(initializerContext: PluginInitializerContext) {
@@ -17,7 +19,7 @@ export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, Scorestac
   }
 
   public setup(core: CoreSetup) {
-    this.logger.debug('scorestack: Setup');
+    this.logger.debug(`${PLUGIN_ID}: Setup`);
     const router = core.http.createRouter();
 
     // Register server side APIs
@@ -27,9 +29,11 @@ export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, Scorestac
   }
 
   public start(core: CoreStart) {
-    this.logger.debug('scorestack: Started');
+    this.logger.debug(`${PLUGIN_ID}: Started`);
     return {};
   }
 
-  public stop() {}
+  public stop() {
+    this.logger.debug(`${PLUGIN_ID}: Stopped`);
+  }
 }

@@ -1,10 +1,10 @@
 import './index.scss';
 
-import { ScorestackPlugin } from './plugin';
+import { ScoreStackPlugin } from './plugin';
 
 // This exports static code and TypeScript types,
 // as well as, Kibana Platform `plugin()` initializer.
 export function plugin() {
-  return new ScorestackPlugin();
+  return new ScoreStackPlugin();
 }
-export { ScorestackPluginSetup, ScorestackPluginStart } from './types';
+export { ScoreStackPluginSetup, ScoreStackPluginStart } from './types';

@@ -1,6 +1,6 @@
-# scorestack
+# ScoreStack Kibana Plugin
 
-> Manage and interact with ScoreStack checks.
+Manage and interact with your ScoreStack checks through Kibana.
 
 ---
 

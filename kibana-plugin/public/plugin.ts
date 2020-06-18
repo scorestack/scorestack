@@ -1,13 +1,14 @@
-import { i18n } from '@kbn/i18n';
 import { AppMountParameters, CoreSetup, CoreStart, Plugin } from '../../../src/core/public';
-import { ScorestackPluginSetup, ScorestackPluginStart, AppPluginStartDependencies } from './types';
-import { PLUGIN_NAME } from '../common';
 
-export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, ScorestackPluginStart> {
-  public setup(core: CoreSetup): ScorestackPluginSetup {
+import { PLUGIN_ID, PLUGIN_NAME } from '../common';
+
+import { ScoreStackPluginSetup, ScoreStackPluginStart, AppPluginStartDependencies } from './types';
+
+export class ScoreStackPlugin implements Plugin<ScoreStackPluginSetup, ScoreStackPluginStart> {
+  public setup(core: CoreSetup): ScoreStackPluginSetup {
     // Register an application into the side navigation menu
     core.application.register({
-      id: 'scorestack',
+      id: `${PLUGIN_ID}`,
       title: PLUGIN_NAME,
       async mount(params: AppMountParameters) {
         // Load application bundle
@@ -20,21 +21,10 @@ export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, Scorestac
     });
 
     // Return methods that should be available to other plugins
-    return {
-      getGreeting() {
-        return i18n.translate('scorestack.greetingText', {
-          defaultMessage: 'Hello from {name}!',
-          values: {
-            name: PLUGIN_NAME,
-          },
-        });
-      },
-    };
-  }
-
-  public start(core: CoreStart): ScorestackPluginStart {
     return {};
   }
 
-  public stop() {}
+  public start(core: CoreStart): ScoreStackPluginStart {
+    return {};
+  }
 }

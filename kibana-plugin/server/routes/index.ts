@@ -1,9 +1,11 @@
 import { IRouter } from '../../../../src/core/server';
 
+import { PLUGIN_API_BASEURL } from '../../common';
+
 export function defineRoutes(router: IRouter) {
   router.get(
     {
-      path: '/api/scorestack/example',
+      path: `${PLUGIN_API_BASEURL}/example`,
       validate: false,
     },
     async (context, request, response) => {
