@@ -1,0 +1,19 @@
+{
+    "name": "Kibana Plugin",
+    "dockerComposeFile": "../dockerfiles/docker-compose.yml",
+    "service": "kibana-plugin-devcontainer",
+    "runServices": [
+        "kibana-plugin-devcontainer"
+    ],
+    "workspaceFolder": "/home/node/kibana/plugins/kibana-plugin",
+    "extensions": [
+        "dbaeumer.vscode-eslint",
+        "mgmcdermott.vscode-language-babel",
+        "ryanluker.vscode-coverage-gutters",
+        "oderwat.indent-rainbow",
+        "yzhang.markdown-all-in-one",
+        "voldemortensen.rainbow-tags",
+        "gruntfuggly.todo-tree",
+        "rido3.wordcount"
+    ]
+}
