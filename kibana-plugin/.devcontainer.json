@@ -3,7 +3,8 @@
     "dockerComposeFile": "../dockerfiles/docker-compose.yml",
     "service": "kibana-plugin-devcontainer",
     "runServices": [
-        "kibana-plugin-devcontainer"
+        "kibana-plugin-devcontainer",
+        "elasticsearch"
     ],
     "workspaceFolder": "/home/node/kibana/plugins/kibana-plugin",
     "extensions": [
