@@ -1,0 +1,184 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ScoreStack Check API",
+    "description": "A common API for ScoreStack components to share check information with each other.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "{schema}://{hostname}:{port}/api/scorestack",
+      "description": "Kibana Plugin API endpoint (external connections)",
+      "variables": {
+        "schema": {
+          "enum": [
+            "http",
+            "https"
+          ],
+          "default": "https",
+          "description": "Whether to connect to Kibana using HTTP or HTTPS."
+        },
+        "hostname": {
+          "default": "localhost",
+          "description": "The hostname of the Kibana server to connect to."
+        },
+        "port": {
+          "default": "5601",
+          "description": "The TCP port the Kibana server is listening on."
+        }
+      }
+    },
+    {
+      "url": "/api/scorestack",
+      "description": "Kibana Plugin API endpoint (internal connections)"
+    }
+  ],
+  "paths": {
+    "/checks": {
+      "get": {
+        "summary": "Find all checks",
+        "description": "Returns all checks that the user can access.",
+        "operationId": "getAllChecks",
+        "responses": {
+          "200": {
+            "description": "All available checks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Check"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/check/{checkId}": {
+      "get": {
+        "summary": "Find a check by ID",
+        "description": "Returns the check that matches the provided check ID.",
+        "operationId": "getCheckById",
+        "parameters": [
+          {
+            "name": "checkId",
+            "in": "path",
+            "description": "The check ID of the check to find.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Check was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Check"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Check was not found or is unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "title": "API Error Message",
+        "description": "An error message returned from API functions.",
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "description": "The HTTP status code of the response.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 600
+          },
+          "message": {
+            "description": "A brief description of the error.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message"
+        ]
+      },
+      "CheckMetadata": {
+        "title": "Check Metadata",
+        "description": "Metadata about a check that applies to all protocol types.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "A unique, URL-safe identifier for this check.",
+            "type": "string"
+          },
+          "name": {
+            "description": "A human-readable name for this check for display in UIs.",
+            "type": "string"
+          },
+          "protocolType": {
+            "description": "Which protocol this check uses.",
+            "type": "string"
+          },
+          "group": {
+            "description": "A group to assign the check to for access control purposes.",
+            "type": "string",
+            "default": "admin"
+          },
+          "scoreWeight": {
+            "description": "A relative weight to other checks. Used to make a specific check worth more or less than others in an overall score calculation.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 1
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "protocolType"
+        ]
+      },
+      "Ftp": {
+        "$ref": "ftp.json"
+      }
+    }
+  }
+}
