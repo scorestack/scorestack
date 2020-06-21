@@ -51,6 +51,7 @@
         }
     },
     "required": [
+        "metadata",
         "host",
         "username",
         "password",
