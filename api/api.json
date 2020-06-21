@@ -179,7 +179,46 @@
       "Check": {
         "oneOf": [
           {
-            "$ref": "#/components/schemas/Ftp"
+            "$ref": "#/components/schemas/DNS"
+          },
+          {
+            "$ref": "#/components/schemas/FTP"
+          },
+          {
+            "$ref": "#/components/schemas/HTTP"
+          },
+          {
+            "$ref": "#/components/schemas/ICMP"
+          },
+          {
+            "$ref": "#/components/schemas/IMAP"
+          },
+          {
+            "$ref": "#/components/schemas/LDAP"
+          },
+          {
+            "$ref": "#/components/schemas/MySQL"
+          },
+          {
+            "$ref": "#/components/schemas/Noop"
+          },
+          {
+            "$ref": "#/components/schemas/SMB"
+          },
+          {
+            "$ref": "#/components/schemas/SMTP"
+          },
+          {
+            "$ref": "#/components/schemas/SSH"
+          },
+          {
+            "$ref": "#/components/schemas/VNC"
+          },
+          {
+            "$ref": "#/components/schemas/WinRM"
+          },
+          {
+            "$ref": "#/components/schemas/XMPP"
           }
         ]
       },
@@ -193,13 +232,13 @@
         "$ref": "schemas/http.json"
       },
       "ICMP": {
-        "$ref": "schemas/Icmp.json"
+        "$ref": "schemas/icmp.json"
       },
       "IMAP": {
-        "$ref": "schemas/Imap.json"
+        "$ref": "schemas/imap.json"
       },
       "LDAP": {
-        "$ref": "schemas/Ldap.json"
+        "$ref": "schemas/ldap.json"
       },
       "MySQL": {
         "$ref": "schemas/mysql.json"
