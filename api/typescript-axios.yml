@@ -1,0 +1,3 @@
+npmVersion: 0.1.0
+#jksupportsES6: true
+withSeparateModelsAndApi: true
