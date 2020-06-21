@@ -3,3 +3,6 @@
 # Generated go code
 dynamicbeat/types/*
 !dynamicbeat/types/.openapi-generator-ignore
+
+# Generated typescript code
+kibana-plugin/common/checks/*
