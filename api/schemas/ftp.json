@@ -1,60 +1,63 @@
 {
-    "title": "FTP Check",
-    "description": "A configuration for a check that uses the FTP protocol.",
-    "type": "object",
-    "properties": {
-        "metadata": {
-            "$ref": "../../api.json#/components/schemas/CheckMetadata"
-        },
-        "host": {
-            "description": "The IP or hostname of the host to run the FTP check against.",
-            "type": "string"
-        },
-        "username": {
-            "description": "The user to log in with over FTP",
-            "type": "string"
-        },
-        "password": {
-            "description": "The password for the user that you wish to log in with.",
-            "type": "string",
-            "format": "password"
-        },
-        "file": {
-            "description": "The path to a file to read on the FTP server.",
-            "type": "string"
-        },
-        "contentRegex": {
-            "description": "A regex that the file content must match for the check to pass.",
-            "type": "string",
-            "default": ".*"
-        },
-        "hashContentMatch": {
-            "description": "Whether the file content must match a given hash for the check to pass.",
-            "type": "boolean",
-            "default": false
-        },
-        "hash": {
-            "description": "A SHA3-256 hash that the file content must match if `hashContentMatch` is set to `true`.",
-            "type": "string"
-        },
-        "port": {
-            "description": "The TCP port the FTP server should be listening on.",
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 65535,
-            "default": 21
-        },
-        "simple": {
-            "description": "Whether simplified FTP behavior should be used. Allows the check to work with very old FTP servers. If set to `true`, the check will only attempt to navigate to the directory specified by the `file` option.",
-            "type": "boolean",
-            "default": false
-        }
+  "title": "FTP Check",
+  "description": "A configuration for a check that uses the FTP protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
     },
-    "required": [
-        "metadata",
-        "host",
-        "username",
-        "password",
-        "file"
-    ]
+    "host": {
+      "description": "The IP or hostname of the host to run the FTP check against.",
+      "type": "string"
+    },
+    "username": {
+      "description": "The user to log in to the FTP server with.",
+      "type": "string"
+    },
+    "password": {
+      "description": "The password for the user you wish to log in with.",
+      "type": "string",
+      "format": "password"
+    },
+    "port": {
+      "description": "The TCP port the FTP server should be listening on.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "default": 21
+    },
+    "file": {
+      "description": "The path to a file to read on the FTP server.",
+      "type": "string"
+    },
+    "matchContent": {
+      "description": "Whether the file content must match a defined regex for for the check to pass."
+    },
+    "contentRegex": {
+      "description": "A regex to be matched by the file content.",
+      "type": "string",
+      "default": ".*"
+    },
+    "hashContentMatch": {
+      "description": "Whether the file content must match a given hash for the check to pass.",
+      "type": "boolean",
+      "default": false
+    },
+    "hash": {
+      "description": "A SHA3-256 hash to be matched by the file content.",
+      "type": "string"
+    },
+    "simple": {
+      "description": "Whether simplified FTP behavior should be used. Allows the check to work with very old FTP servers. If set to `true`, the check will only attempt to navigate to the directory specified by the `file` option.",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "metadata",
+    "host",
+    "username",
+    "password",
+    "file"
+  ]
 }

@@ -1,0 +1,31 @@
+{
+  "title": "VNC Check",
+  "description": "A configuration for a check that uses the VNC protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
+    },
+    "host": {
+      "description": "The IP or hostname of the host to run the VNC check against.",
+      "type": "string"
+    },
+    "password": {
+      "description": "The password for the VNC server.",
+      "type": "string",
+      "format": "password"
+    },
+    "port": {
+      "description": "The TCP port the VNC server should be listening on.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    }
+  },
+  "required": [
+    "metadata",
+    "host",
+    "password",
+    "port"
+  ]
+}

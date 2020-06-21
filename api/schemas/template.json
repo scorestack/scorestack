@@ -1,0 +1,41 @@
+{
+  "title": "$protocol Check",
+  "description": "A configuration for a check that uses the $protocol protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
+    },
+    "host": {
+      "description": "The IP or hostname of the host to run the $protocol check against.",
+      "type": "string"
+    },
+    "username": {
+      "description": "The user to log in to the $protocol server with.",
+      "type": "string"
+    },
+    "password": {
+      "description": "The password for the user you wish to log in with.",
+      "type": "string",
+      "format": "password"
+    },
+    "port": {
+      "description": "The $transport port the $protocol server should be listening on.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "default": $port
+    },
+    "encrypted": {
+      "description": "Whether to use TLS when connecting to the $protocol server.",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "metadata",
+    "host",
+    "username",
+    "password"
+  ]
+}

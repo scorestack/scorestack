@@ -1,0 +1,36 @@
+{
+  "title": "ICMP Check",
+  "description": "A configuration for a check that uses the ICMP protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
+    },
+    "host": {
+      "description": "The IP or hostname of the host to run the ICMP check against.",
+      "type": "string"
+    },
+    "count": {
+      "description": "The number of ICMP echo requests to send per check.",
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "allowPacketLoss": {
+      "description": "Whether an echo reply must be received for every echo request sent in order for the check to pass. If false, a certain percentage of requests do not have to receive replies for the check to still pass.",
+      "type": "boolean",
+      "default": false
+    },
+    "percent": {
+      "description": "The minimum percentage of echo requests that must receive echo replies for the check to pass.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 100
+    }
+  },
+  "required": [
+    "metadata",
+    "host"
+  ]
+}

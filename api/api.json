@@ -128,7 +128,7 @@
             "description": "The HTTP status code of the response.",
             "type": "integer",
             "minimum": 100,
-            "maximum": 600
+            "exclusiveMaximum": 600
           },
           "message": {
             "description": "A brief description of the error.",
@@ -183,8 +183,47 @@
           }
         ]
       },
-      "Ftp": {
+      "DNS": {
+        "$ref": "schemas/dns.json"
+      },
+      "FTP": {
         "$ref": "schemas/ftp.json"
+      },
+      "HTTP": {
+        "$ref": "schemas/http.json"
+      },
+      "ICMP": {
+        "$ref": "schemas/Icmp.json"
+      },
+      "IMAP": {
+        "$ref": "schemas/Imap.json"
+      },
+      "LDAP": {
+        "$ref": "schemas/Ldap.json"
+      },
+      "MySQL": {
+        "$ref": "schemas/mysql.json"
+      },
+      "Noop": {
+        "$ref": "schemas/noop.json"
+      },
+      "SMB": {
+        "$ref": "schemas/smb.json"
+      },
+      "SMTP": {
+        "$ref": "schemas/smtp.json"
+      },
+      "SSH": {
+        "$ref": "schemas/ssh.json"
+      },
+      "VNC": {
+        "$ref": "schemas/vnc.json"
+      },
+      "WinRM": {
+        "$ref": "schemas/winrm.json"
+      },
+      "XMPP": {
+        "$ref": "schemas/xmpp.json"
       }
     }
   }

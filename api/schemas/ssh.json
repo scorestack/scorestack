@@ -1,0 +1,51 @@
+{
+  "title": "SSH Check",
+  "description": "A configuration for a check that uses the SSH protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
+    },
+    "host": {
+      "description": "The IP or hostname of the host to run the SSH check against.",
+      "type": "string"
+    },
+    "username": {
+      "description": "The user to log in to the SSH server with.",
+      "type": "string"
+    },
+    "password": {
+      "description": "The password for the user you wish to log in with.",
+      "type": "string",
+      "format": "password"
+    },
+    "port": {
+      "description": "The TCP port the SSH server should be listening on.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "default": 22
+    },
+    "cmd": {
+      "description": "A command to execute once the SSH connection is established.",
+      "type": "string"
+    },
+    "matchContent": {
+      "description": "Whether the command output must match a defined regex for the check to pass.",
+      "type": "boolean",
+      "default": false
+    },
+    "contentRegex": {
+      "description": "A regex to be matched by the command output.",
+      "type": "string",
+      "default": ".*"
+    }
+  },
+  "required": [
+    "metadata",
+    "host",
+    "username",
+    "password",
+    "cmd"
+  ]
+}
