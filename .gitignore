@@ -1,1 +1,5 @@
 .env
+
+# Generated go code
+dynamicbeat/types
+!dynamicbeat/types/.openapi-generator-ignore
