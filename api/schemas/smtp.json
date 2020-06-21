@@ -1,0 +1,56 @@
+{
+  "title": "SMTP Check",
+  "description": "A configuration for a check that uses the SMTP protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
+    },
+    "host": {
+      "description": "The IP or hostname of the host to run the SMTP check against.",
+      "type": "string"
+    },
+    "username": {
+      "description": "The user to log in to the SMTP server with.",
+      "type": "string"
+    },
+    "password": {
+      "description": "The password for the user you wish to log in with.",
+      "type": "string",
+      "format": "password"
+    },
+    "port": {
+      "description": "The TCP port the SMTP server should be listening on.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "default": 25
+    },
+    "encrypted": {
+      "description": "Whether to use TLS when connecting to the SMTP server.",
+      "type": "boolean",
+      "default": false
+    },
+    "sender": {
+      "description": "Who is sending the email.",
+      "type": "string"
+    },
+    "receiver": {
+      "description": "Who is receiving the email.",
+      "type": "string"
+    },
+    "body": {
+      "description": "The body of the email.",
+      "type": "string",
+      "default": "Hello from ScoreStack"
+    }
+  },
+  "required": [
+    "metadata",
+    "host",
+    "username",
+    "password",
+    "sender",
+    "receiver"
+  ]
+}

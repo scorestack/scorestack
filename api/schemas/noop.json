@@ -1,0 +1,23 @@
+{
+    "title": "Noop Check",
+    "description": "A configuration for the noop check, which does nothing.",
+    "type": "object",
+    "properties": {
+        "metadata": {
+            "$ref": "../../api.json#/components/schemas/CheckMetadata"
+        },
+        "dynamic": {
+            "description": "A string containing attributes that could be modified by admins or users.",
+            "type": "string"
+        },
+        "static": {
+            "description": "A string containing no attributes.",
+            "type": "string"
+        }
+    },
+    "required": [
+        "metadata",
+        "dynamic",
+        "static"
+    ]
+}
