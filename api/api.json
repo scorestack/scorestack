@@ -184,7 +184,7 @@
         ]
       },
       "Ftp": {
-        "$ref": "ftp.json"
+        "$ref": "schemas/ftp.json"
       }
     }
   }

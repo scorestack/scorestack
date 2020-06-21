@@ -4,7 +4,7 @@
     "type": "object",
     "properties": {
         "metadata": {
-            "$ref": "../api.json#/components/schemas/CheckMetadata"
+            "$ref": "../../api.json#/components/schemas/CheckMetadata"
         },
         "host": {
             "description": "The IP or hostname of the host to run the FTP check against.",
