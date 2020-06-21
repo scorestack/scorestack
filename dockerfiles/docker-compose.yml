@@ -13,6 +13,13 @@ services:
       - "../:/mnt"
     user: 1000:1000
 
+  api-generator-typescript:
+    command: generate -i /mnt/api/api.json -g typescript-axios -o /mnt/kibana-plugin/common -c /mnt/api/typescript-axios.yml --api-package scorestack-api --model-package checks -Dmodels
+    image: openapitools/openapi-generator-cli:v4.3.1
+    volumes:
+      - "../:/mnt"
+    user: 1000:1000
+
   dynamicbeat-ci:
     build:
       context: .
