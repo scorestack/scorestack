@@ -176,6 +176,13 @@
           "protocolType"
         ]
       },
+      "Check": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Ftp"
+          }
+        ]
+      },
       "Ftp": {
         "$ref": "ftp.json"
       }
