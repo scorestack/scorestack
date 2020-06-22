@@ -1,6 +1,24 @@
 ---
-version: '3.7'
+version: "3.7"
 services:
+  api-generator-go:
+    build:
+      context: .
+      dockerfile: api-generator.Dockerfile
+    command: generate -i /mnt/api/api.json -g go -o /mnt/dynamicbeat/types -c /mnt/api/go.yml -Dmodels --enable-post-process-file
+    environment:
+      GO_POST_PROCESS_FILE: /usr/bin/gofmt -w
+    image: api-generator:latest
+    volumes:
+      - "../:/mnt"
+    user: 1000:1000
+
+  api-generator-typescript:
+    command: generate -i /mnt/api/api.json -g typescript-axios -o /mnt/kibana-plugin/common -c /mnt/api/typescript-axios.yml --api-package scorestack-api --model-package checks -Dmodels
+    image: openapitools/openapi-generator-cli:v4.3.1
+    volumes:
+      - "../:/mnt"
+    user: 1000:1000
 
   dynamicbeat-ci:
     build:

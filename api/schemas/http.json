@@ -1,0 +1,114 @@
+{
+  "title": "HTTP Check",
+  "description": "A configuration for a check that uses the HTTP protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
+    },
+    "verify": {
+      "description": "Whether certificates should be validated if TLS is used.",
+      "type": "boolean",
+      "default": false
+    },
+    "reportMatchedContent": {
+      "description": "Whether the content the check matches on should be returned to users in the check result.",
+      "type": "boolean",
+      "default": false
+    },
+    "requests": {
+      "description": "A list of requests to make, in the sequence they should be made.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "Request",
+        "description": "A representation of a single HTTP request to make.",
+        "type": "object",
+        "properties": {
+          "host": {
+            "description": "The IP or hostname of the host to run the HTTP check against.",
+            "type": "string"
+          },
+          "port": {
+            "description": "The TCP port the HTTP server should be listening on.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535,
+            "default": 80
+          },
+          "encrypted": {
+            "description": "Whether to use TLS when connecting to the HTTP server.",
+            "type": "boolean",
+            "default": false
+          },
+          "path": {
+            "description": "The path to request (see RFC3986, section 3.3 for more information).",
+            "type": "string"
+          },
+          "method": {
+            "description": "The HTTP method to use.",
+            "type": "string",
+            "enum": [
+              "GET",
+              "HEAD",
+              "POST",
+              "PUT",
+              "DELETE",
+              "CONNECT",
+              "OPTIONS",
+              "TRACE",
+              "PATCH"
+            ],
+            "default": "GET"
+          },
+          "headers": {
+            "description": "Name-value pairs of header fields to add or override.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "body": {
+            "description": "Data to send in the request body.",
+            "type": "string"
+          },
+          "matchCode": {
+            "description": "Whether the HTTP response code must match a defined value for the check to pass.",
+            "type": "boolean",
+            "default": false
+          },
+          "code": {
+            "description": "An HTTP response code to be matched.",
+            "type": "integer",
+            "minimum": 100,
+            "exclusiveMaximum": 600,
+            "default": 200
+          },
+          "matchContent": {
+            "description": "Whether the HTTP response body must match a defined regex for the check to pass.",
+            "type": "boolean",
+            "default": false
+          },
+          "contentRegex": {
+            "description": "A regex to be matched by the HTTP response body.",
+            "type": "string",
+            "default": ".*"
+          },
+          "storeValue": {
+            "description": "Whether the matched content should be saved for use in a later request.",
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "host",
+          "path"
+        ]
+      }
+    }
+  },
+  "required": [
+    "metadata",
+    "requests"
+  ]
+}

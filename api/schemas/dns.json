@@ -1,0 +1,36 @@
+{
+  "title": "DNS Check",
+  "description": "A configuration for a check that uses the DNS protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
+    },
+    "host": {
+      "description": "The IP or hostname of the host to run the DNS check against.",
+      "type": "string"
+    },
+    "port": {
+      "description": "The UDP port the DNS server should be listening on.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "default": 53
+    },
+    "recordName": {
+      "description": "The full name of the resource record to query for.",
+      "type": "string"
+    },
+    "recordValue": {
+      "description": "The expected value of the queried resource record.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "metadata",
+    "host",
+    "port",
+    "recordName",
+    "recordValue"
+  ]
+}

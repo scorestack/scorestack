@@ -1,0 +1,61 @@
+{
+  "title": "SMB Check",
+  "description": "A configuration for a check that uses the SMB protocol.",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "../../api.json#/components/schemas/CheckMetadata"
+    },
+    "host": {
+      "description": "The IP or hostname of the host to run the SMB check against.",
+      "type": "string"
+    },
+    "username": {
+      "description": "The user to log in to the SMB server with.",
+      "type": "string"
+    },
+    "password": {
+      "description": "The password for the user you wish to log in with.",
+      "type": "string",
+      "format": "password"
+    },
+    "port": {
+      "description": "The TCP port the SMB server should be listening on.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "default": 445
+    },
+    "share": {
+      "description": "The name of the share to connect to.",
+      "type": "string"
+    },
+    "domain": {
+      "description": "The first label of the domain name for the domain the SMB server is connected to. For example, `CORP` would be the appropriate value for a domain named `corp.contoso.com`.",
+      "type": "string"
+    },
+    "file": {
+      "description": "The path to a file to read on the SMB server.",
+      "type": "string"
+    },
+    "matchContent": {
+      "description": "Whether the file content must match a defined regex for the check to pass.",
+      "type": "boolean",
+      "default": false
+    },
+    "contentRegex": {
+      "description": "A regex to be matched by the file content.",
+      "type": "string",
+      "default": ".*"
+    }
+  },
+  "required": [
+    "metadata",
+    "host",
+    "username",
+    "password",
+    "share",
+    "domain",
+    "file"
+  ]
+}

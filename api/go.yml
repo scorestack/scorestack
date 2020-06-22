@@ -1,0 +1,4 @@
+isGoSubmodule: true
+packageName: types
+packageVersion: 0.1.0
+withGoCodegenComment: true

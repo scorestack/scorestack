@@ -4,13 +4,14 @@ name: Dynamicbeat
 on: [push]
 
 jobs:
-
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Fix file permissions
         run: sudo chown -R 1000:1000 .
+      - name: Generate check types
+        run: docker-compose -f dockerfiles/docker-compose.yml up api-generator-go
       - name: Set up container
         run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
       - name: Lint dynamicbeat
@@ -22,6 +23,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Fix file permissions
         run: sudo chown -R 1000:1000 .
+      - name: Generate check types
+        run: docker-compose -f dockerfiles/docker-compose.yml up api-generator-go
       - name: Set up container
         run: docker-compose -f dockerfiles/docker-compose.yml build dynamicbeat-ci
       - name: Test dynamicbeat
