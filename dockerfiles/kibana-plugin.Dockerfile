@@ -40,4 +40,10 @@ RUN cd /home/${USERNAME}/kibana && sudo -u node yarn kbn bootstrap
 
 ###############################################################################
 FROM ci as devcontainer
+# ARGS: USERNAME
 ###############################################################################
+
+ARG USERNAME=node
+
+# Set up cluster
+COPY files/kibana.dev.yml /home/${USERNAME}/kibana/config/kibana.dev.yml

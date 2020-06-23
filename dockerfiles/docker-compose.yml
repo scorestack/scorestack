@@ -77,5 +77,4 @@ services:
       - 5601:5601
     volumes:
       - "../:/home/node/kibana/plugins"
-      - "./files/kibana.dev.yml:/home/node/kibana/config/kibana.dev.yml"
     user: node
