@@ -179,22 +179,22 @@
       "Check": {
         "oneOf": [
           {
-            "$ref": "#/components/schemas/DNS"
+            "$ref": "#/components/schemas/Dns"
           },
           {
-            "$ref": "#/components/schemas/FTP"
+            "$ref": "#/components/schemas/Ftp"
           },
           {
-            "$ref": "#/components/schemas/HTTP"
+            "$ref": "#/components/schemas/Http"
           },
           {
-            "$ref": "#/components/schemas/ICMP"
+            "$ref": "#/components/schemas/Icmp"
           },
           {
-            "$ref": "#/components/schemas/IMAP"
+            "$ref": "#/components/schemas/Imap"
           },
           {
-            "$ref": "#/components/schemas/LDAP"
+            "$ref": "#/components/schemas/Ldap"
           },
           {
             "$ref": "#/components/schemas/MySQL"
@@ -203,41 +203,60 @@
             "$ref": "#/components/schemas/Noop"
           },
           {
-            "$ref": "#/components/schemas/SMB"
+            "$ref": "#/components/schemas/Smb"
           },
           {
-            "$ref": "#/components/schemas/SMTP"
+            "$ref": "#/components/schemas/Smtp"
           },
           {
-            "$ref": "#/components/schemas/SSH"
+            "$ref": "#/components/schemas/Ssh"
           },
           {
-            "$ref": "#/components/schemas/VNC"
+            "$ref": "#/components/schemas/Vnc"
           },
           {
             "$ref": "#/components/schemas/WinRM"
           },
           {
-            "$ref": "#/components/schemas/XMPP"
+            "$ref": "#/components/schemas/Xmpp"
           }
         ]
       },
-      "DNS": {
+      "Protocol": {
+        "type": "string",
+        "enum": [
+          "DNS",
+          "FTP",
+          "HTTP",
+          "ICMP",
+          "IMAP",
+          "LDAP",
+          "MySQL",
+          "Noop",
+          "SMB",
+          "SMTP",
+          "SSH",
+          "VNC",
+          "WinRM",
+          "XMPP"
+        ]
+      },
+      "Dns": {
         "$ref": "schemas/dns.json"
       },
-      "FTP": {
+      "Ftp": {
         "$ref": "schemas/ftp.json"
       },
-      "HTTP": {
+      "Http": {
         "$ref": "schemas/http.json"
       },
-      "ICMP": {
+      "Icmp": {
         "$ref": "schemas/icmp.json"
       },
-      "IMAP": {
+      "Imap": {
         "$ref": "schemas/imap.json"
       },
-      "LDAP": {
+      "Ldap": {
         "$ref": "schemas/ldap.json"
       },
       "MySQL": {
@@ -246,22 +265,22 @@
       "Noop": {
         "$ref": "schemas/noop.json"
       },
-      "SMB": {
+      "Smb": {
         "$ref": "schemas/smb.json"
       },
-      "SMTP": {
+      "Smtp": {
         "$ref": "schemas/smtp.json"
       },
-      "SSH": {
+      "Ssh": {
         "$ref": "schemas/ssh.json"
       },
-      "VNC": {
+      "Vnc": {
         "$ref": "schemas/vnc.json"
       },
       "WinRM": {
         "$ref": "schemas/winrm.json"
       },
-      "XMPP": {
+      "Xmpp": {
         "$ref": "schemas/xmpp.json"
       }
     }
