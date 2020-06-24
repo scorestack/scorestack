@@ -1,23 +1,26 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import {
+  EuiBasicTable,
+  EuiBasicTableColumn,
   EuiButton,
-  EuiHorizontalRule,
+  EuiEmptyPrompt,
+  EuiLink,
   EuiPage,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentBody,
   EuiPageContentHeader,
-  EuiPageHeader,
+  EuiPageContentHeaderSection,
   EuiTitle,
-  EuiText,
 } from '@elastic/eui';
 
 import { CoreStart } from '../../../../src/core/public';
 import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
 import { PLUGIN_ID, PLUGIN_NAME } from '../../common';
+import { Protocol } from '../../common/checks/protocol';
 
 interface ScoreStackAppProps {
   basename: string;
@@ -26,53 +29,133 @@ interface ScoreStackAppProps {
   navigation: NavigationPublicPluginStart;
 }
 
-export const ScoreStackApp = (props: ScoreStackAppProps) => {
-  const [timestamp, setTimestamp] = useState<string | undefined>();
+interface Template {
+  id: string;
+  title: string;
+  description: string;
+  protocol: Protocol;
+}
 
-  const onClickHandler = () => {
-    // Use the core http service to make a response to the server API.
-    props.http.get('/api/scorestack/example').then((res) => {
-      setTimestamp(res.time);
-      // Use the core notifications service to display a success message.
-      props.notifications.toasts.addSuccess('Data updated');
-    });
-  };
+export const ScoreStackApp = (props: ScoreStackAppProps) => {
+  function createVisualizationClickHandler() {
+    props.notifications.toasts.addInfo('Added visualization');
+  }
+
+  function editVisualizationClickHandler(item: Template) {
+    props.notifications.toasts.addInfo(`Editing template: ${item.title}`);
+  }
+
+  function copyVisualizationClickHandler(item: Template) {
+    props.notifications.toasts.addInfo(`Copied template: ${item.title}`);
+  }
+
+  function renderTitle(item: Template): React.ReactNode {
+    return <EuiLink href={`${props.basename}/${item.id}`}>{item.title}</EuiLink>;
+  }
+
+  function renderTable(
+    items: Template[],
+    columns: Array<EuiBasicTableColumn<Template>>
+  ): React.ReactNode {
+    // If there are no items, instead render an EuiEmptyPrompt
+    if (items.length === 0) {
+      return (
+        <EuiEmptyPrompt
+          iconType="document"
+          title={<h2>Create your first check template</h2>}
+          body={
+            <Fragment>
+              <p>
+                A template is used to configure most of the parameters for a check protocol to make
+                it easy to create new checks.
+              </p>
+              <p>
+                Templates can have attributes, which are parameters that are configured at runtime.
+                Attributes allow you to reuse the same template for multiple checks if you only need
+                to change a few simple things, like an IP address or a username.
+              </p>
+              <p>
+                Once you create a template, you can start adding checks for the template by
+                configuring values for the template&rsquo;s attributes.
+              </p>
+            </Fragment>
+          }
+          actions={
+            <EuiButton fill onClick={createVisualizationClickHandler} iconType="plusInCircle">
+              Create new template
+            </EuiButton>
+          }
+        />
+      );
+    } else {
+      return (
+        <EuiPageContent>
+          <EuiPageContentHeader>
+            <EuiPageContentHeaderSection>
+              <EuiTitle>
+                <h1>Check Templates</h1>
+              </EuiTitle>
+            </EuiPageContentHeaderSection>
+            <EuiPageContentHeaderSection>
+              <EuiButton fill onClick={createVisualizationClickHandler} iconType="plusInCircle">
+                Create template
+              </EuiButton>
+            </EuiPageContentHeaderSection>
+          </EuiPageContentHeader>
+          <EuiPageContentBody>
+            <EuiBasicTable items={[]} columns={columns} noItemsMessage="No templates found." />
+          </EuiPageContentBody>
+        </EuiPageContent>
+      );
+    }
+  }
+
+  const columns: Array<EuiBasicTableColumn<Template>> = [
+    {
+      name: 'Title',
+      render: renderTitle,
+    },
+    {
+      field: 'protocol',
+      name: 'Protocol',
+    },
+    {
+      field: 'description',
+      name: 'Description',
+    },
+    {
+      name: 'Actions',
+      actions: [
+        {
+          name: 'Edit',
+          description: 'Edit Template',
+          onClick: editVisualizationClickHandler,
+          type: 'icon',
+          icon: 'pencil',
+        },
+        {
+          name: 'Copy',
+          description: 'Copy Template',
+          onClick: copyVisualizationClickHandler,
+          type: 'icon',
+          icon: 'copy',
+        },
+      ],
+    },
+  ];
 
   // Render the application DOM.
   return (
     <Router basename={props.basename}>
-      <>
+      <Fragment>
         <props.navigation.ui.TopNavMenu appName={PLUGIN_ID} />
+        {/* TODO: make page resize to be smaller when displaying an empty prompt */}
         <EuiPage restrictWidth="1000px">
           <EuiPageBody>
-            <EuiPageHeader>
-              <EuiTitle size="l">
-                <h1>{PLUGIN_NAME}</h1>
-              </EuiTitle>
-            </EuiPageHeader>
-            <EuiPageContent>
-              <EuiPageContentHeader>
-                <EuiTitle>
-                  <h2>Congratulations, you have successfully created a new Kibana Plugin!</h2>
-                </EuiTitle>
-              </EuiPageContentHeader>
-              <EuiPageContentBody>
-                <EuiText>
-                  <p>
-                    Look through the generated code and check out the plugin development
-                    documentation.
-                  </p>
-                  <EuiHorizontalRule />
-                  <p>Last timestamp: {timestamp ? timestamp : 'Unknown'}</p>
-                  <EuiButton type="primary" size="s" onClick={onClickHandler}>
-                    Get data
-                  </EuiButton>
-                </EuiText>
-              </EuiPageContentBody>
-            </EuiPageContent>
+            <EuiPageContent>{renderTable([], columns)}</EuiPageContent>
           </EuiPageBody>
         </EuiPage>
-      </>
+      </Fragment>
     </Router>
   );
 };
