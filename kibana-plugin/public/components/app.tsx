@@ -36,9 +36,21 @@ interface Template {
   protocol: Protocol;
 }
 
+const startingTemplates: Template[] = [
+  {
+    id: '0001',
+    title: 'Wordpress - Twenty Twenty',
+    description:
+      'Checks the content of the index page for the Wordpress default Twenty Twenty theme.',
+    protocol: Protocol.HTTP,
+  },
+];
+
 export const ScoreStackApp = (props: ScoreStackAppProps) => {
+  const [templates, setTemplates] = useState(startingTemplates);
+
   function createVisualizationClickHandler() {
-    props.notifications.toasts.addInfo('Added visualization');
+    props.notifications.toasts.addInfo('Added template');
   }
 
   function editVisualizationClickHandler(item: Template) {
@@ -89,7 +101,7 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
       );
     } else {
       return (
-        <EuiPageContent>
+        <Fragment>
           <EuiPageContentHeader>
             <EuiPageContentHeaderSection>
               <EuiTitle>
@@ -103,9 +115,14 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
             </EuiPageContentHeaderSection>
           </EuiPageContentHeader>
           <EuiPageContentBody>
-            <EuiBasicTable items={[]} columns={columns} noItemsMessage="No templates found." />
+            <EuiBasicTable
+              items={items}
+              columns={columns}
+              tableLayout="auto"
+              noItemsMessage="No templates found."
+            />
           </EuiPageContentBody>
-        </EuiPageContent>
+        </Fragment>
       );
     }
   }
@@ -152,7 +169,7 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
         {/* TODO: make page resize to be smaller when displaying an empty prompt */}
         <EuiPage restrictWidth="1000px">
           <EuiPageBody>
-            <EuiPageContent>{renderTable([], columns)}</EuiPageContent>
+            <EuiPageContent>{renderTable(templates, columns)}</EuiPageContent>
           </EuiPageBody>
         </EuiPage>
       </Fragment>
