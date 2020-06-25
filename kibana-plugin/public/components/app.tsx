@@ -49,15 +49,15 @@ const startingTemplates: Template[] = [
 export const ScoreStackApp = (props: ScoreStackAppProps) => {
   const [templates, setTemplates] = useState(startingTemplates);
 
-  function createVisualizationClickHandler() {
+  function createTemplateClickHandler() {
     props.notifications.toasts.addInfo('Added template');
   }
 
-  function editVisualizationClickHandler(item: Template) {
+  function editTemplateClickHandler(item: Template) {
     props.notifications.toasts.addInfo(`Editing template: ${item.title}`);
   }
 
-  function copyVisualizationClickHandler(item: Template) {
+  function copyTemplateClickHandler(item: Template) {
     props.notifications.toasts.addInfo(`Copied template: ${item.title}`);
   }
 
@@ -93,7 +93,7 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
             </Fragment>
           }
           actions={
-            <EuiButton fill onClick={createVisualizationClickHandler} iconType="plusInCircle">
+            <EuiButton fill onClick={createTemplateClickHandler} iconType="plusInCircle">
               Create new template
             </EuiButton>
           }
@@ -109,7 +109,7 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
               </EuiTitle>
             </EuiPageContentHeaderSection>
             <EuiPageContentHeaderSection>
-              <EuiButton fill onClick={createVisualizationClickHandler} iconType="plusInCircle">
+              <EuiButton fill onClick={createTemplateClickHandler} iconType="plusInCircle">
                 Create template
               </EuiButton>
             </EuiPageContentHeaderSection>
@@ -146,14 +146,14 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
         {
           name: 'Edit',
           description: 'Edit Template',
-          onClick: editVisualizationClickHandler,
+          onClick: editTemplateClickHandler,
           type: 'icon',
           icon: 'pencil',
         },
         {
           name: 'Copy',
           description: 'Copy Template',
-          onClick: copyVisualizationClickHandler,
+          onClick: copyTemplateClickHandler,
           type: 'icon',
           icon: 'copy',
         },
