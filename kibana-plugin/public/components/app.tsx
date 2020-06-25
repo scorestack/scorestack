@@ -5,7 +5,6 @@ import {
   EuiBasicTable,
   EuiBasicTableColumn,
   EuiButton,
-  EuiEmptyPrompt,
   EuiLink,
   EuiPage,
   EuiPageBody,
@@ -20,7 +19,11 @@ import { CoreStart } from '../../../../src/core/public';
 import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
 import { PLUGIN_ID, PLUGIN_NAME } from '../../common';
+import { ITemplate } from '../../common/types';
 import { Protocol } from '../../common/checks/protocol';
+
+import { NoTemplatePrompt } from './no-template-prompt';
+import { TemplateTable } from './template-table';
 
 interface ScoreStackAppProps {
   basename: string;
@@ -29,14 +32,7 @@ interface ScoreStackAppProps {
   navigation: NavigationPublicPluginStart;
 }
 
-interface Template {
-  id: string;
-  title: string;
-  description: string;
-  protocol: Protocol;
-}
-
-const startingTemplates: Template[] = [
+const startingTemplates: ITemplate[] = [
   {
     id: '0001',
     title: 'Wordpress - Twenty Twenty',
@@ -53,113 +49,23 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
     props.notifications.toasts.addInfo('Added template');
   }
 
-  function editTemplateClickHandler(item: Template) {
-    props.notifications.toasts.addInfo(`Editing template: ${item.title}`);
-  }
-
-  function copyTemplateClickHandler(item: Template) {
-    props.notifications.toasts.addInfo(`Copied template: ${item.title}`);
-  }
-
-  function renderTitle(item: Template): React.ReactNode {
-    return <EuiLink href={`${props.basename}/${item.id}`}>{item.title}</EuiLink>;
-  }
-
-  function renderTable(
-    items: Template[],
-    columns: Array<EuiBasicTableColumn<Template>>
-  ): React.ReactNode {
+  function renderTable(items: ITemplate[]): React.ReactNode {
     // If there are no items, instead render an EuiEmptyPrompt
     if (items.length === 0) {
-      return (
-        <EuiEmptyPrompt
-          iconType="document"
-          title={<h2>Create your first check template</h2>}
-          body={
-            <Fragment>
-              <p>
-                A template is used to configure most of the parameters for a check protocol to make
-                it easy to create new checks.
-              </p>
-              <p>
-                Templates can have attributes, which are parameters that are configured at runtime.
-                Attributes allow you to reuse the same template for multiple checks if you only need
-                to change a few simple things, like an IP address or a username.
-              </p>
-              <p>
-                Once you create a template, you can start adding checks for the template by
-                configuring values for the template&rsquo;s attributes.
-              </p>
-            </Fragment>
-          }
-          actions={
-            <EuiButton fill onClick={createTemplateClickHandler} iconType="plusInCircle">
-              Create new template
-            </EuiButton>
-          }
-        />
-      );
+      return <NoTemplatePrompt onClick={createTemplateClickHandler} />;
     } else {
       return (
-        <Fragment>
-          <EuiPageContentHeader>
-            <EuiPageContentHeaderSection>
-              <EuiTitle>
-                <h1>Check Templates</h1>
-              </EuiTitle>
-            </EuiPageContentHeaderSection>
-            <EuiPageContentHeaderSection>
-              <EuiButton fill onClick={createTemplateClickHandler} iconType="plusInCircle">
-                Create template
-              </EuiButton>
-            </EuiPageContentHeaderSection>
-          </EuiPageContentHeader>
-          <EuiPageContentBody>
-            <EuiBasicTable
-              items={items}
-              columns={columns}
-              tableLayout="auto"
-              noItemsMessage="No templates found."
-            />
-          </EuiPageContentBody>
-        </Fragment>
+        <TemplateTable
+          basename={props.basename}
+          items={items}
+          onCreateTemplate={createTemplateClickHandler}
+          addToast={(toast) => {
+            return props.notifications.toasts.add(toast);
+          }}
+        />
       );
     }
   }
-
-  const columns: Array<EuiBasicTableColumn<Template>> = [
-    {
-      name: 'Title',
-      render: renderTitle,
-    },
-    {
-      field: 'protocol',
-      name: 'Protocol',
-    },
-    {
-      field: 'description',
-      name: 'Description',
-    },
-    {
-      name: 'Actions',
-      actions: [
-        {
-          name: 'Edit',
-          description: 'Edit Template',
-          onClick: editTemplateClickHandler,
-          type: 'icon',
-          icon: 'pencil',
-        },
-        {
-          name: 'Copy',
-          description: 'Copy Template',
-          onClick: copyTemplateClickHandler,
-          type: 'icon',
-          icon: 'copy',
-        },
-      ],
-    },
-  ];
 
   // Render the application DOM.
   return (
@@ -169,7 +75,7 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
         {/* TODO: make page resize to be smaller when displaying an empty prompt */}
         <EuiPage restrictWidth="1000px">
           <EuiPageBody>
-            <EuiPageContent>{renderTable(templates, columns)}</EuiPageContent>
+            <EuiPageContent>{renderTable(templates)}</EuiPageContent>
           </EuiPageBody>
         </EuiPage>
       </Fragment>
