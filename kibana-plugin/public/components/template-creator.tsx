@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import uuid from 'uuid';
 
 import {
   EuiButton,
@@ -26,7 +27,6 @@ interface TemplateCreatorProps {
   onCreate: (template: ITemplate) => void;
 }
 
-
 function optionsFromProtocol(): EuiSelectOption[] {
   // Get a list of string values from the members of the Protocol enum
   const protocolValues: string[] = Object.values(Protocol).filter(x => typeof x === 'string');
@@ -50,7 +50,7 @@ export function TemplateCreator(props: TemplateCreatorProps) {
 
   function createTemplate() {
     props.onCreate({
-      id: '1234',
+      id: uuid.v4(),
       title: title,
       description: description,
       protocol: protocol,
