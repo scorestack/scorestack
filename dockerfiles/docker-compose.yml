@@ -60,7 +60,7 @@ services:
       context: .
       dockerfile: kibana-plugin.Dockerfile
       target: ci
-    image: kibana-plugin-ci:latest
+    image: neonspandex/kibana-dev:7.7.1
     volumes:
       - "../kibana-plugin:/home/node/kibana/plugins/scorestack"
       - "./scripts/kibana-plugin:/scripts"

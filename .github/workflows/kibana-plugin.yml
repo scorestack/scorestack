@@ -13,7 +13,7 @@ jobs:
       - name: Generate check types
         run: docker-compose -f dockerfiles/docker-compose.yml up api-generator-typescript
       - name: Set up container
-        run: docker-compose -f dockerfiles/docker-compose.yml build kibana-plugin-ci
+        run: docker pull neonspandex/kibana-dev:7.7.1
       - name: Lint kibana plugin
         run: docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/lint.sh
 
@@ -26,6 +26,6 @@ jobs:
       - name: Generate check types
         run: docker-compose -f dockerfiles/docker-compose.yml up api-generator-typescript
       - name: Set up container
-        run: docker-compose -f dockerfiles/docker-compose.yml build kibana-plugin-ci
+        run: docker pull neonspandex/kibana-dev:7.7.1
       - name: Test kibana plugin
         run: docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/test.sh
