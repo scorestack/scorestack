@@ -16,7 +16,13 @@ export interface {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{
      */
     {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}};
 {{/vars}}
-}{{#hasEnums}}
+}
+
+{{#vars}}
+export const {{name}}Description: string = "{{{description}}}";
+{{/vars}}
+
+{{#hasEnums}}
 
 {{#vars}}
 {{#isEnum}}
