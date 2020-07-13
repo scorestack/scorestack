@@ -4,3 +4,5 @@
  * @export
  */
 export type {{classname}} = {{#oneOf}}{{{.}}}{{^-last}} | {{/-last}}{{/oneOf}};
+
+export const {{classname}}Schema = `{{& modelJson}}`;

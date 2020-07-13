@@ -18,9 +18,7 @@ export interface {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{
 {{/vars}}
 }
 
-{{#vars}}
-export const {{name}}Description: string = "{{{description}}}";
-{{/vars}}
+export const {{classname}}Schema = `{{& modelJson}}`;
 
 {{#hasEnums}}
 

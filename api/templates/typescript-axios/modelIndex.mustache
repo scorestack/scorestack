@@ -1,2 +1,8 @@
-{{#models}}{{#model}}export * from './{{classFilename}}';{{/model}}
+{{#models}}{{#model}}import { {{classname}}, {{classname}}Schema } from './{{classFilename}}';
+export * from './{{classFilename}}';{{/model}}
 {{/models}}
+
+export const schemaMap = {
+    {{#models}}{{#model}}'{{name}}': {{classname}}Schema,
+    {{/model}}{{/models}}
+}
