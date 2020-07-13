@@ -6,3 +6,4 @@ dynamicbeat/types/*
 
 # Generated typescript code
 kibana-plugin/common/checks/*
+kibana-plugin/common/.openapi-generator/*
