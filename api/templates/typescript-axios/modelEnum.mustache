@@ -1,1 +1,16 @@
+/**
+ * {{{description}}}
+ * @export
+ * @enum {string}
+ */
+export enum {{classname}} {
+{{#allowableValues}}
+{{#enumVars}}
+    {{{name}}} = {{{value}}}{{^-last}},{{/-last}}
+{{/enumVars}}
+{{/allowableValues}}
+}
+
+export const {{classname}}List = [{{#allowableValues}}{{#enumVars}}'{{{name}}}', {{/enumVars}}{{/allowableValues}}];
+
 export const {{classname}}Schema = `{{& modelJson}}`;
