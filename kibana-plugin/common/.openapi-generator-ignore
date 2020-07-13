@@ -1,0 +1,9 @@
+/scorestack-api/
+/.gitignore
+/.npmignore
+/.openapi-generator-ignore
+/api.ts
+/base.ts
+/configuration.ts
+/git_push.sh
+/index.ts
