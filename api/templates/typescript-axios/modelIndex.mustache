@@ -6,3 +6,9 @@ export const schemaMap = {
     {{#models}}{{#model}}'{{name}}': {{classname}}Schema,
     {{/model}}{{/models}}
 }
+
+import { Protocol } from './protocol';
+
+export function schemaFromProtocol(protocol: Protocol): string {
+    return schemaMap[Protocol[protocol].toLowerCase()];
+}
