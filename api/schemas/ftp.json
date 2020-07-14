@@ -48,7 +48,7 @@
       "type": "string"
     },
     "simple": {
-      "description": "Whether simplified FTP behavior should be used. Allows the check to work with very old FTP servers. If set to `true`, the check will only attempt to navigate to the directory specified by the `file` option.",
+      "description": "Whether simplified FTP behavior should be used. Allows the check to work with very old FTP servers. If set to 'true', the check will only attempt to navigate to the directory specified by the 'file' option.",
       "type": "boolean",
       "default": false
     }

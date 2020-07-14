@@ -31,7 +31,7 @@
       "type": "string"
     },
     "domain": {
-      "description": "The first label of the domain name for the domain the SMB server is connected to. For example, `CORP` would be the appropriate value for a domain named `corp.contoso.com`.",
+      "description": "The first label of the domain name for the domain the SMB server is connected to. For example, 'CORP' would be the appropriate value for a domain named 'corp.contoso.com'.",
       "type": "string"
     },
     "file": {
