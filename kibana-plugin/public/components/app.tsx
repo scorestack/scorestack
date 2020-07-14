@@ -1,8 +1,19 @@
 import React, { Fragment, useState } from 'react';
 import { HashRouter, Route, Switch, useParams } from 'react-router-dom';
 
-import { EuiPage, EuiPageBody, EuiPageContent } from '@elastic/eui';
+import {
+  EuiLink,
+  EuiPageHeader,
+  EuiPage,
+  EuiPageBody,
+  EuiPageContent,
+  EuiPageContentBody,
+  EuiPageContentHeader,
+  EuiText,
+  EuiTitle,
+} from '@elastic/eui';
 
+import { EuiPageContentHeaderSection } from '@elastic/eui';
 import { CoreStart } from '../../../../src/core/public';
 import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
@@ -42,8 +53,27 @@ function Template({ templates }: TemplateProps) {
   })[0];
   return (
     <Fragment>
-      <h1>{tmpl.title}</h1>
-      <p>{tmpl.description}</p>
+      <EuiPage restrictWidth="1000px">
+        <EuiPageBody>
+          <EuiPageHeader>
+            <EuiLink href="/app/scorestack#/">Home</EuiLink>
+          </EuiPageHeader>
+          <EuiPageContent>
+            <EuiPageContentHeader>
+              <EuiPageContentHeaderSection>
+                <EuiTitle>
+                  <h1>{tmpl.title}</h1>
+                </EuiTitle>
+              </EuiPageContentHeaderSection>
+            </EuiPageContentHeader>
+            <EuiPageContentBody>
+              <EuiText>
+                <p>{tmpl.description}</p>
+              </EuiText>
+            </EuiPageContentBody>
+          </EuiPageContent>
+        </EuiPageBody>
+      </EuiPage>
     </Fragment>
   );
 }
@@ -92,20 +122,20 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
   // Render the application DOM.
   return (
     <HashRouter basename={props.basename}>
-      <EuiPage restrictWidth="1000px">
-        <Switch>
-          <Route exact path="/">
-            {/* TODO: make page resize to be smaller when displaying an empty prompt */}
+      <Switch>
+        <Route exact path="/">
+          {/* TODO: make page resize to be smaller when displaying an empty prompt */}
+          <EuiPage restrictWidth="1000px">
             <EuiPageBody>
               <EuiPageContent>{renderTable(templates)}</EuiPageContent>
             </EuiPageBody>
             {creator}
-          </Route>
-          <Route path="/:id">
-            <Template templates={templates} />
-          </Route>
-        </Switch>
-      </EuiPage>
+          </EuiPage>
+        </Route>
+        <Route path="/:id">
+          <Template templates={templates} />
+        </Route>
+      </Switch>
     </HashRouter>
   );
 };
