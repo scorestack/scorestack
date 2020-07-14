@@ -1,11 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import {
-  EuiPage,
-  EuiPageBody,
-  EuiPageContent,
-} from '@elastic/eui';
+import { EuiPage, EuiPageBody, EuiPageContent } from '@elastic/eui';
 
 import { CoreStart } from '../../../../src/core/public';
 import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
@@ -73,7 +69,7 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
   let creator: React.ReactNode;
 
   if (showingCreator) {
-    creator = <TemplateCreator onClose={onCloseTemplateCreator} onCreate={saveNewTemplate} />
+    creator = <TemplateCreator onClose={onCloseTemplateCreator} onCreate={saveNewTemplate} />;
   }
 
   // Render the application DOM.

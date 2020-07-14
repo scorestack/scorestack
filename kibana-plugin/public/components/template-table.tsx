@@ -23,7 +23,6 @@ interface TemplateTableProps {
 }
 
 export function TemplateTable(props: TemplateTableProps) {
-
   function renderTitle(item: ITemplate): React.ReactNode {
     return <EuiLink href={`${props.basename}/${item.id}`}>{item.title}</EuiLink>;
   }
