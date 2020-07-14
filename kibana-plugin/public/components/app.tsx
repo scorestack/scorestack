@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { BrowserRouter, Route, useParams } from 'react-router-dom';
+import { HashRouter, Route, Switch, useParams } from 'react-router-dom';
 
 import { EuiPage, EuiPageBody, EuiPageContent } from '@elastic/eui';
 
@@ -91,20 +91,21 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
 
   // Render the application DOM.
   return (
-    <BrowserRouter basename={props.basename} forceRefresh={false}>
-      <Route exact path="/">
-        <props.navigation.ui.TopNavMenu appName={PLUGIN_ID} />
-        {/* TODO: make page resize to be smaller when displaying an empty prompt */}
-        <EuiPage restrictWidth="1000px">
-          <EuiPageBody>
-            <EuiPageContent>{renderTable(templates)}</EuiPageContent>
-          </EuiPageBody>
-        </EuiPage>
-        {creator}
-      </Route>
-      <Route path="/:id">
-        <Template templates={templates} />
-      </Route>
-    </BrowserRouter>
+    <HashRouter basename={props.basename}>
+      <EuiPage restrictWidth="1000px">
+        <Switch>
+          <Route exact path="/">
+            {/* TODO: make page resize to be smaller when displaying an empty prompt */}
+            <EuiPageBody>
+              <EuiPageContent>{renderTable(templates)}</EuiPageContent>
+            </EuiPageBody>
+            {creator}
+          </Route>
+          <Route path="/:id">
+            <Template templates={templates} />
+          </Route>
+        </Switch>
+      </EuiPage>
+    </HashRouter>
   );
 };

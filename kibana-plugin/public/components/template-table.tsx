@@ -24,7 +24,7 @@ interface TemplateTableProps {
 
 export function TemplateTable(props: TemplateTableProps) {
   function renderTitle(item: ITemplate): React.ReactNode {
-    return <EuiLink href={`${props.basename}/${item.id}`}>{item.title}</EuiLink>;
+    return <EuiLink href={`${props.basename}#/${item.id}`}>{item.title}</EuiLink>;
   }
 
   function onEditTemplate(item: ITemplate): void {
