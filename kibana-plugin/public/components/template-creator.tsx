@@ -18,7 +18,7 @@ import {
   EuiTextArea,
 } from '@elastic/eui';
 
-import { Protocol } from '../../common/checks/protocol';
+import { Protocol, ProtocolList } from '../../common/checks';
 
 import { ITemplate, protocolFromString } from '../../common/types';
 
@@ -28,17 +28,14 @@ interface TemplateCreatorProps {
 }
 
 function optionsFromProtocol(): EuiSelectOption[] {
-  // Get a list of string values from the members of the Protocol enum
-  const protocolValues: string[] = Object.values(Protocol).filter(x => typeof x === 'string');
-
   // Create the option objects from the list
   const protocolOptions: EuiSelectOption[] = [];
-  protocolValues.forEach((proto) => {
+  ProtocolList.forEach((proto) => {
     protocolOptions.push({
       value: proto,
       text: proto,
     });
-  })
+  });
 
   return protocolOptions;
 }
@@ -51,9 +48,9 @@ export function TemplateCreator(props: TemplateCreatorProps) {
   function createTemplate() {
     props.onCreate({
       id: uuid.v4(),
-      title: title,
-      description: description,
-      protocol: protocol,
+      title,
+      description,
+      protocol,
     });
   }
 
@@ -66,23 +63,37 @@ export function TemplateCreator(props: TemplateCreatorProps) {
         <EuiModalBody>
           <EuiForm>
             <EuiFormRow label="Title">
-              <EuiFieldText name="title" value={title} onChange={event => setTitle(event.target.value)} />
+              <EuiFieldText
+                name="title"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+              />
             </EuiFormRow>
             <EuiFormRow label="Description">
-              <EuiTextArea name="description" value={description} onChange={event => setDescription(event.target.value)} />
+              <EuiTextArea
+                name="description"
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+              />
             </EuiFormRow>
             <EuiFormRow label="Protocol">
-              <EuiSelect options={optionsFromProtocol()} value={protocol} onChange={(event) => {
-                setProtocol(protocolFromString(event.target.value));
-              }} />
+              <EuiSelect
+                options={optionsFromProtocol()}
+                value={protocol}
+                onChange={(event) => {
+                  setProtocol(protocolFromString(event.target.value));
+                }}
+              />
             </EuiFormRow>
           </EuiForm>
         </EuiModalBody>
         <EuiModalFooter>
           <EuiButtonEmpty onClick={props.onClose}>Cancel</EuiButtonEmpty>
-          <EuiButton onClick={createTemplate} fill>Save</EuiButton>
+          <EuiButton onClick={createTemplate} fill>
+            Save
+          </EuiButton>
         </EuiModalFooter>
       </EuiModal>
     </EuiOverlayMask>
-  )
+  );
 }
