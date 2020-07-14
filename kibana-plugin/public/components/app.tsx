@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter, Route, useParams } from 'react-router-dom';
 
 import { EuiPage, EuiPageBody, EuiPageContent } from '@elastic/eui';
 
@@ -30,6 +30,23 @@ const startingTemplates: ITemplate[] = [
     protocol: Protocol.HTTP,
   },
 ];
+
+interface TemplateProps {
+  templates: ITemplate[];
+}
+
+function Template({ templates }: TemplateProps) {
+  const { id } = useParams();
+  const tmpl = templates.filter((t) => {
+    return t.id === id;
+  })[0];
+  return (
+    <Fragment>
+      <h1>{tmpl.title}</h1>
+      <p>{tmpl.description}</p>
+    </Fragment>
+  );
+}
 
 export const ScoreStackApp = (props: ScoreStackAppProps) => {
   const [templates, setTemplates] = useState(startingTemplates);
@@ -74,8 +91,8 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
 
   // Render the application DOM.
   return (
-    <Router basename={props.basename}>
-      <Fragment>
+    <BrowserRouter basename={props.basename} forceRefresh={false}>
+      <Route exact path="/">
         <props.navigation.ui.TopNavMenu appName={PLUGIN_ID} />
         {/* TODO: make page resize to be smaller when displaying an empty prompt */}
         <EuiPage restrictWidth="1000px">
@@ -84,7 +101,10 @@ export const ScoreStackApp = (props: ScoreStackAppProps) => {
           </EuiPageBody>
         </EuiPage>
         {creator}
-      </Fragment>
-    </Router>
+      </Route>
+      <Route path="/:id">
+        <Template templates={templates} />
+      </Route>
+    </BrowserRouter>
   );
 };
