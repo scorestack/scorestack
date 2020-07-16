@@ -6,6 +6,7 @@
         "typescriptreact"
     ],
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.addMissingImports": true,
+        "source.fixAll.eslint": true,
     }
 }
