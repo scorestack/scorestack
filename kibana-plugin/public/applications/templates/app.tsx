@@ -4,11 +4,12 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import uuid from 'uuid';
 import { HttpStart, NotificationsStart } from '../../../../../src/core/public';
 import { ITemplate } from '../../../common/types';
+import { Home } from './home';
 import { Template } from './template';
 import { ActionType, TemplateAction } from './types';
 
 interface TemplatesAppProps {
-  basename: string;
+  basepath: string;
   http: HttpStart;
   notifs: NotificationsStart;
 }
@@ -52,13 +53,14 @@ export function TemplatesApp(props: TemplatesAppProps): React.ReactElement {
   }
 
   return (
-    <HashRouter basename={props.basename}>
+    <HashRouter basename={props.basepath}>
       <EuiPage restrictWidth="1000px">
         <EuiPageBody>
           <Switch>
-            <Route exact path="/" />
-            {/* Figure out how to redirect to the templates page if an ID isn't found */}
-            <Route path="/:id">
+            <Route exact path="/">
+              <Home basepath={props.basepath} templates={templates} copyTemplate={copyTemplate} />
+            </Route>
+            <Route path="/template/:id">
               <Template
                 get={getTemplate}
                 copy={copyTemplate}
