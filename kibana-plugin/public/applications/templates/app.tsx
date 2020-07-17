@@ -53,7 +53,7 @@ export function TemplatesApp(props: TemplatesAppProps): React.ReactElement {
   }
 
   return (
-    <HashRouter basename={props.basepath}>
+    <HashRouter>
       <EuiPage restrictWidth="1000px">
         <EuiPageBody>
           <Switch>
