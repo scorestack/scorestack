@@ -12,11 +12,11 @@ export class ScoreStackPlugin implements Plugin<ScoreStackPluginSetup, ScoreStac
       title: PLUGIN_NAME,
       async mount(params: AppMountParameters) {
         // Load application bundle
-        const { renderApp } = await import('./application');
+        const { render } = await import('./applications/templates');
         // Get start services as specified in kibana.json
         const [coreStart, depsStart] = await core.getStartServices();
         // Render the application
-        return renderApp(coreStart, depsStart as AppPluginStartDependencies, params);
+        return render(params, coreStart.http, coreStart.notifications);
       },
     });
 
