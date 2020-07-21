@@ -6,7 +6,3 @@ export interface ITemplate {
   description: string;
   protocol: Protocol;
 }
-
-export function protocolFromString(protocol: string): Protocol {
-  return (<any>Protocol)[protocol];
-}
