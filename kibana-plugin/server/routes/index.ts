@@ -41,7 +41,7 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       const client = context.scorestack.getTemplatesClient();
 
       return response.ok({
-        body: await client.get(request.query.id),
+        body: await client.get('template', request.query.id),
       });
     }
   );
