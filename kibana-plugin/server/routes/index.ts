@@ -1,9 +1,12 @@
 import { schema } from '@kbn/config-schema';
-import { IRouter } from '../../../../src/core/server';
+import { EuiDataGridBody } from '@elastic/eui/src/components/datagrid/data_grid_body';
+import { IRouter, SavedObjectsServiceSetup } from '../../../../src/core/server';
 
 import { PLUGIN_API_BASEURL } from '../../common';
 
-export function defineRoutes(router: IRouter) {
+import { SavedTemplateObject } from '../saved_objects';
+
+export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServiceSetup*/) {
   router.get(
     {
       path: `${PLUGIN_API_BASEURL}/example`,
@@ -31,10 +34,14 @@ export function defineRoutes(router: IRouter) {
       },
     },
     async (context, request, response) => {
+      /*
+      const client = savedObjects.getScopedClient(request);
+      const template = await client.get('template', request.query.id);
+      */
+      const client = context.scorestack.getTemplatesClient();
+
       return response.ok({
-        body: {
-          message: `yeet ${request.query.id}`,
-        },
+        body: await client.get(request.query.id),
       });
     }
   );
@@ -58,10 +65,15 @@ export function defineRoutes(router: IRouter) {
       },
     },
     async (context, request, response) => {
+      /*
+      const client = savedObjects.getScopedClient(request);
+      const resp = await client.create('template', { ...request.body });
+      */
+      const client = context.scorestack.getTemplatesClient();
+      const res = await client.create('template', { ...request.body });
+
       return response.ok({
-        body: {
-          message: `yeet ${JSON.stringify(request.body)}`,
-        },
+        body: res,
       });
     }
   );

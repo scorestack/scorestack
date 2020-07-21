@@ -4,6 +4,8 @@ import {
   CoreStart,
   Plugin,
   Logger,
+  IContextProvider,
+  RequestHandler,
 } from '../../../src/core/server';
 
 import { FeatureConfig } from '../../../x-pack/plugins/features/common';
@@ -14,6 +16,7 @@ import { SavedTemplateObject } from './saved_objects';
 
 import { ScoreStackPluginSetup, ScoreStackPluginStart, ScoreStackPluginDeps } from './types';
 import { defineRoutes } from './routes';
+import { unknown } from '../../../src/legacy/ui/ui_exports/ui_export_types';
 
 export const TemplateFeature: FeatureConfig = {
   id: 'template-management', // TODO: make const somewhere
@@ -58,6 +61,16 @@ export class ScoreStackPlugin implements Plugin<ScoreStackPluginSetup, ScoreStac
 
     // Register features
     plugins.features.registerFeature(TemplateFeature);
+
+    // Customize route handler context
+    core.http.registerRouteHandlerContext('scorestack', async (context, request) => {
+      const [{ savedObjects }, _] = await core.getStartServices();
+      return {
+        getTemplatesClient: () => {
+          return savedObjects.getScopedClient(request);
+        },
+      };
+    });
 
     // Register server side APIs
     const router = core.http.createRouter();
