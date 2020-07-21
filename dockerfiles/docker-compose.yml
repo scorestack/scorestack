@@ -49,9 +49,15 @@ services:
     user: scorestack
 
   elasticsearch:
+    build:
+      context: .
+      dockerfile: elasticsearch.Dockerfile
     environment:
       - discovery.type=single-node
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
+      - xpack.security.enabled=true
+      - xpack.security.authc.realms.native.native1.order=0
+      - xpack.security.authc.realms.file.file1.order=1
+    image: custom-elasticsearch:latest
     ports:
       - 9200:9200
 
