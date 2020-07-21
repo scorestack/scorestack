@@ -18,6 +18,13 @@ export const SavedTemplateObject: SavedObjectsType = {
       protocol: {
         type: 'keyword',
       },
+      score_weight: {
+        type: 'integer',
+      },
+      definition: {
+        type: 'object',
+        dynamic: 'true',
+      },
     },
   },
 };
