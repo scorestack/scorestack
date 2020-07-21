@@ -8,6 +8,8 @@ import {
 
 import { PLUGIN_ID, PLUGIN_NAME } from '../common';
 
+import { SavedTemplateObject } from './saved_objects';
+
 import { ScoreStackPluginSetup, ScoreStackPluginStart } from './types';
 import { defineRoutes } from './routes';
 
@@ -21,6 +23,9 @@ export class ScoreStackPlugin implements Plugin<ScoreStackPluginSetup, ScoreStac
   public setup(core: CoreSetup) {
     this.logger.debug(`${PLUGIN_ID}: Setup`);
     const router = core.http.createRouter();
+
+    // Register saved object types
+    core.savedObjects.registerType(SavedTemplateObject);
 
     // Register server side APIs
     defineRoutes(router);
