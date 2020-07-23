@@ -40,6 +40,20 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       */
       const client = context.scorestack.getTemplatesClient();
 
+      let res;
+      try {
+        res = await client.get('template', request.query.id);
+      } catch (err) {
+        const payload = err.output.payload;
+        if (payload.statusCode === 404) {
+          return response.notFound({ body: payload });
+        } else {
+          return response.internalError({
+            body: err,
+          });
+        }
+      }
+
       return response.ok({
         body: await client.get('template', request.query.id),
       });
@@ -70,7 +84,15 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       const resp = await client.create('template', { ...request.body });
       */
       const client = context.scorestack.getTemplatesClient();
-      const res = await client.create('template', { ...request.body });
+
+      let res;
+      try {
+        res = await client.create('template', { ...request.body });
+      } catch (err) {
+        return response.internalError({
+          body: err,
+        });
+      }
 
       return response.ok({
         body: res,

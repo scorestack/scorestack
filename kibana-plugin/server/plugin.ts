@@ -16,7 +16,6 @@ import { SavedTemplateObject } from './saved_objects';
 
 import { ScoreStackPluginSetup, ScoreStackPluginStart, ScoreStackPluginDeps } from './types';
 import { defineRoutes } from './routes';
-import { unknown } from '../../../src/legacy/ui/ui_exports/ui_export_types';
 
 export const TemplateFeature: FeatureConfig = {
   id: 'template-management', // TODO: make const somewhere
