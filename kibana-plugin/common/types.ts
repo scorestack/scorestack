@@ -11,6 +11,16 @@ export interface Template {
   id: string;
   title: string;
   description: string;
+  protocol: Protocol;
+  score_weight: number;
+  definition: {
+    [index: string]: any;
+  };
+}
+
+export interface TemplateSavedObject {
+  title: string;
+  description: string;
   protocol: string;
   score_weight: number;
   definition: {

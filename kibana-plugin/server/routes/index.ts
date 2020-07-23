@@ -9,7 +9,8 @@ import {
 } from '../../../../src/core/server';
 
 import { PLUGIN_API_BASEURL } from '../../common';
-import { Template } from '../../common/types';
+import { Template, TemplateSavedObject } from '../../common/types';
+import { Protocol } from '../../common/checks';
 
 import { SavedTemplateObject } from '../saved_objects';
 
@@ -47,13 +48,9 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       },
     },
     async (context: ScoreStackContext, request, response) => {
-      /*
-      const client = savedObjects.getScopedClient(request);
-      const template = await client.get('template', request.query.id);
-      */
       const client = context.scorestack.getTemplatesClient();
 
-      let res: SavedObject<Template>;
+      let res: SavedObject<TemplateSavedObject>;
       try {
         res = await client.get('template', request.query.id);
       } catch (err) {
@@ -79,7 +76,6 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       validate: {
         // TODO: fix this schema object
         body: schema.object({
-          id: schema.string(),
           title: schema.string(),
           description: schema.string(),
           protocol: schema.string(),
@@ -92,13 +88,10 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       },
     },
     async (context: ScoreStackContext, request, response) => {
-      /*
-      const client = savedObjects.getScopedClient(request);
-      const resp = await client.create('template', { ...request.body });
-      */
+      // TODO: Validate the protocol
       const client = context.scorestack.getTemplatesClient();
 
-      let res: SavedObject<Template>;
+      let res: SavedObject<TemplateSavedObject>;
       try {
         res = await client.create('template', { ...request.body });
       } catch (err) {

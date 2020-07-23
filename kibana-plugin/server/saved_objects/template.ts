@@ -6,9 +6,6 @@ export const SavedTemplateObject: SavedObjectsType = {
   namespaceAgnostic: false,
   mappings: {
     properties: {
-      id: {
-        type: 'text',
-      },
       title: {
         type: 'text',
       },
