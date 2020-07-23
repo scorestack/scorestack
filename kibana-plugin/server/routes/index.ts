@@ -64,8 +64,14 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
         }
       }
 
+      const template: Template = {
+        id: res.id,
+        protocol: Protocol[res.attributes.protocol],
+        ...res.attributes,
+      };
+
       return response.ok({
-        body: await client.get('template', request.query.id),
+        body: JSON.stringify(template),
       });
     }
   );
