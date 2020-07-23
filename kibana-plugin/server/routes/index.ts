@@ -94,7 +94,16 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       },
     },
     async (context: ScoreStackContext, request, response) => {
-      // TODO: Validate the protocol
+      // Validate the protocol
+      const protocol: Protocol = Protocol[request.body.protocol];
+      if (protocol === undefined) {
+        return response.badRequest({
+          body: {
+            message: `'${request.body.protocol}' is not a valid protocol`,
+          },
+        });
+      }
+
       const client = context.scorestack.getTemplatesClient();
 
       let res: SavedObject<TemplateSavedObject>;
