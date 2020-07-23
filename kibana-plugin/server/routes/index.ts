@@ -1,10 +1,23 @@
 import { schema } from '@kbn/config-schema';
 import { EuiDataGridBody } from '@elastic/eui/src/components/datagrid/data_grid_body';
-import { IRouter, SavedObjectsServiceSetup } from '../../../../src/core/server';
+import {
+  IRouter,
+  SavedObjectsServiceSetup,
+  RequestHandlerContext,
+  SavedObjectsClient,
+  SavedObject,
+} from '../../../../src/core/server';
 
 import { PLUGIN_API_BASEURL } from '../../common';
+import { Template } from '../../common/types';
 
 import { SavedTemplateObject } from '../saved_objects';
+
+interface ScoreStackContext extends RequestHandlerContext {
+  scorestack: {
+    getTemplatesClient(): SavedObjectsClient;
+  };
+}
 
 export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServiceSetup*/) {
   router.get(
@@ -33,14 +46,14 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
         tags: ['access:template_management-read'],
       },
     },
-    async (context, request, response) => {
+    async (context: ScoreStackContext, request, response) => {
       /*
       const client = savedObjects.getScopedClient(request);
       const template = await client.get('template', request.query.id);
       */
       const client = context.scorestack.getTemplatesClient();
 
-      let res;
+      let res: SavedObject<Template>;
       try {
         res = await client.get('template', request.query.id);
       } catch (err) {
@@ -78,14 +91,14 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
         tags: ['access:template_management-admin'],
       },
     },
-    async (context, request, response) => {
+    async (context: ScoreStackContext, request, response) => {
       /*
       const client = savedObjects.getScopedClient(request);
       const resp = await client.create('template', { ...request.body });
       */
       const client = context.scorestack.getTemplatesClient();
 
-      let res;
+      let res: SavedObject<Template>;
       try {
         res = await client.create('template', { ...request.body });
       } catch (err) {

@@ -6,3 +6,14 @@ export interface ITemplate {
   description: string;
   protocol: Protocol;
 }
+
+export interface Template {
+  id: string;
+  title: string;
+  description: string;
+  protocol: string;
+  score_weight: number;
+  definition: {
+    [index: string]: any;
+  };
+}
