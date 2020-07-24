@@ -87,17 +87,15 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       }
 
       // If the client requested a template by ID, don't return it in an array
-      let respBody: Template | Template[];
       if (getTemplateById) {
-        respBody = templateFromSaved(savedObjects[0]);
+        return response.ok({
+          body: savedObjects.map((obj) => templateFromSaved(obj)),
+        });
       } else {
-        respBody = savedObjects.map((obj) => templateFromSaved(obj));
+        return response.ok({
+          body: templateFromSaved(savedObjects[0]),
+        });
       }
-
-      // Return the template(s)
-      return response.ok({
-        body: JSON.stringify(respBody),
-      });
     }
   );
 
