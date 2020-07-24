@@ -131,7 +131,7 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
 
       const client = context.scorestack.getTemplatesClient();
 
-      let res: SavedObject<TemplateSavedObject>;
+      let res: SavedObject<TemplateRaw>;
       try {
         res = await client.create('template', { ...request.body });
       } catch (err) {
