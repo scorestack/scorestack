@@ -8,5 +8,12 @@
     "editor.codeActionsOnSave": {
         "source.addMissingImports": true,
         "source.fixAll.eslint": true,
+    },
+    "rest-client.environmentVariables": {
+        "Local": {
+            "basePath": "http://localhost:5601",
+            "username": "root",
+            "password": "changeme"
+        }
     }
 }

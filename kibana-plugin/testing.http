@@ -1,0 +1,27 @@
+POST {{basePath}}/api/scorestack/template
+kbn-xsrf: true
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "title": "Wordpress - Twenty Twenty",
+  "description": "Checks the content of the default homepage for Wordpress's Twenty Twenty theme.",
+  "protocol": "HTTP",
+  "score_weight": 1,
+  "definition": {
+    "method": "GET",
+    "route": "/index.html"
+  }
+}
+
+###
+
+GET {{basePath}}/api/scorestack/template/439d8990-cd5a-11ea-b9e6-0bfd16a9da8c
+kbn-xsrf: true
+Authorization: Basic {{username}}:{{password}}
+
+###
+
+GET {{basePath}}/api/scorestack/template
+kbn-xsrf: true
+Authorization: Basic {{username}}:{{password}}
