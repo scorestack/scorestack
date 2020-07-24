@@ -64,7 +64,7 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       validate: {
         query: schema.object({
           page: schema.maybe(schema.number({ min: 1 })),
-          perPage: schema.maybe(schema.number({ min: 1 })),
+          per_page: schema.maybe(schema.number({ min: 1 })),
         }),
       },
       options: {
@@ -81,8 +81,8 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       if (request.query.page !== undefined) {
         options.page = request.query.page;
       }
-      if (request.query.perPage !== undefined) {
-        options.perPage = request.query.perPage;
+      if (request.query.per_page !== undefined) {
+        options.perPage = request.query.per_page;
       }
 
       // Get the templates from the saved objects API
