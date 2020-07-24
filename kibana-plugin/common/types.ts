@@ -18,7 +18,7 @@ export interface Template {
   };
 }
 
-export interface TemplateSavedObject {
+export interface TemplateRaw {
   title: string;
   description: string;
   protocol: string;

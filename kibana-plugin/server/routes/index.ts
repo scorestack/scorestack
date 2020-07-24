@@ -1,15 +1,15 @@
 import { schema } from '@kbn/config-schema';
-import { EuiDataGridBody } from '@elastic/eui/src/components/datagrid/data_grid_body';
 import {
   IRouter,
   SavedObjectsServiceSetup,
   RequestHandlerContext,
   SavedObjectsClient,
   SavedObject,
+  SavedObjectsFindResponse,
 } from '../../../../src/core/server';
 
 import { PLUGIN_API_BASEURL } from '../../common';
-import { Template, TemplateSavedObject } from '../../common/types';
+import { Template, TemplateRaw } from '../../common/types';
 import { Protocol } from '../../common/checks';
 
 import { SavedTemplateObject } from '../saved_objects';
@@ -17,6 +17,14 @@ import { SavedTemplateObject } from '../saved_objects';
 interface ScoreStackContext extends RequestHandlerContext {
   scorestack: {
     getTemplatesClient(): SavedObjectsClient;
+  };
+}
+
+function templateFromSaved(saved: SavedObject<TemplateRaw>): Template {
+  return {
+    id: saved.id,
+    protocol: Protocol[saved.attributes.protocol],
+    ...saved.attributes,
   };
 }
 
@@ -37,10 +45,10 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
 
   router.get(
     {
-      path: `${PLUGIN_API_BASEURL}/template`,
+      path: `${PLUGIN_API_BASEURL}/template/{id}`,
       validate: {
-        query: schema.object({
-          id: schema.string(),
+        params: schema.object({
+          id: schema.maybe(schema.string()),
         }),
       },
       options: {
@@ -49,29 +57,46 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
     },
     async (context: ScoreStackContext, request, response) => {
       const client = context.scorestack.getTemplatesClient();
+      const getTemplateById: boolean = request.params.id === undefined;
 
-      let res: SavedObject<TemplateSavedObject>;
+      let savedObjects: Array<SavedObject<TemplateRaw>>;
       try {
-        res = await client.get('template', request.query.id);
+        if (getTemplateById) {
+          // If no ID was specified, just get all the templates
+          const resp: SavedObjectsFindResponse<TemplateRaw> = await client.find({
+            type: 'template',
+          });
+          savedObjects = resp.saved_objects;
+        } else {
+          // Only get the template of the specified ID
+          const resp: SavedObject<TemplateRaw> = await client.get('template', request.params.id);
+          savedObjects = [resp];
+        }
       } catch (err) {
         const payload = err.output.payload;
+
+        // Determine if we can accurately report the error to the client
         if (payload.statusCode === 404) {
           return response.notFound({ body: payload });
         } else {
+          // This will dump an error log to Kibana, and I'm not sure if that's ideal
           return response.internalError({
             body: err,
           });
         }
       }
 
-      const template: Template = {
-        id: res.id,
-        protocol: Protocol[res.attributes.protocol],
-        ...res.attributes,
-      };
+      // If the client requested a template by ID, don't return it in an array
+      let respBody: Template | Template[];
+      if (getTemplateById) {
+        respBody = templateFromSaved(savedObjects[0]);
+      } else {
+        respBody = savedObjects.map((obj) => templateFromSaved(obj));
+      }
 
+      // Return the template(s)
       return response.ok({
-        body: JSON.stringify(template),
+        body: JSON.stringify(respBody),
       });
     }
   );
