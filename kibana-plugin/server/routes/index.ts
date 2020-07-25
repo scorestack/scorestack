@@ -1,10 +1,10 @@
 import { schema } from '@kbn/config-schema';
 import {
   IRouter,
-  SavedObjectsServiceSetup,
   RequestHandlerContext,
   SavedObjectsClient,
   SavedObject,
+  SavedObjectsCreateOptions,
   SavedObjectsFindResponse,
   SavedObjectsFindOptions,
 } from '../../../../src/core/server';
@@ -12,8 +12,6 @@ import {
 import { PLUGIN_API_BASEURL } from '../../common';
 import { Template, TemplateRaw } from '../../common/types';
 import { Protocol } from '../../common/checks';
-
-import { SavedTemplateObject } from '../saved_objects';
 
 interface ScoreStackContext extends RequestHandlerContext {
   scorestack: {
@@ -51,6 +49,36 @@ function handleClientError(err, response) {
       body: err,
     });
   }
+}
+
+async function createTemplateHelper(
+  template: TemplateRaw,
+  client: SavedObjectsClient,
+  response,
+  options?: SavedObjectsCreateOptions
+) {
+  // Validate the protocol
+  const protocol: Protocol = Protocol[template.protocol];
+  if (protocol === undefined) {
+    return response.badRequest({
+      body: {
+        message: `'${template.protocol}' is not a valid protocol`,
+      },
+    });
+  }
+
+  let res: SavedObject<TemplateRaw>;
+  try {
+    res = await client.create('template', { ...template }, options);
+  } catch (err) {
+    return response.internalError({
+      body: err,
+    });
+  }
+
+  return response.ok({
+    body: res,
+  });
 }
 
 export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServiceSetup*/) {
@@ -144,44 +172,6 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
 
   router.post(
     {
-      path: `${PLUGIN_API_BASEURL}/template/{id}`,
-      validate: {
-        body: templateBodySchema,
-      },
-      options: {
-        tags: ['access:template_management-admin'],
-      },
-    },
-    async (context: ScoreStackContext, request, response) => {
-      // Validate the protocol
-      const protocol: Protocol = Protocol[request.body.protocol];
-      if (protocol === undefined) {
-        return response.badRequest({
-          body: {
-            message: `'${request.body.protocol}' is not a valid protocol`,
-          },
-        });
-      }
-
-      const client = context.scorestack.getTemplatesClient();
-
-      let res: SavedObject<TemplateRaw>;
-      try {
-        res = await client.create('template', { ...request.body });
-      } catch (err) {
-        return response.internalError({
-          body: err,
-        });
-      }
-
-      return response.ok({
-        body: res,
-      });
-    }
-  );
-
-  router.put(
-    {
       path: `${PLUGIN_API_BASEURL}/template`,
       validate: {
         body: templateBodySchema,
@@ -191,9 +181,35 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
       },
     },
     async (context: ScoreStackContext, request, response) => {
-      return response.ok({
-        body: 'yeet',
-      });
+      return await createTemplateHelper(
+        request.body,
+        context.scorestack.getTemplatesClient(),
+        response
+      );
+    }
+  );
+
+  router.put(
+    {
+      path: `${PLUGIN_API_BASEURL}/template/{id}`,
+      validate: {
+        body: templateBodySchema,
+        params: idParamSchema,
+      },
+      options: {
+        tags: ['access:template_management-admin'],
+      },
+    },
+    async (context: ScoreStackContext, request, response) => {
+      return await createTemplateHelper(
+        request.body,
+        context.scorestack.getTemplatesClient(),
+        response,
+        {
+          id: request.params.id,
+          overwrite: true,
+        }
+      );
     }
   );
 }
