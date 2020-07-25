@@ -16,7 +16,25 @@ Content-Type: application/json
 
 ###
 
-GET {{basePath}}/api/scorestack/template/439d8990-cd5a-11ea-b9e6-0bfd16a9da8c
+PUT {{basePath}}/api/scorestack/template/12345
+kbn-xsrf: true
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "title": "Website DNS",
+  "description": "Checks the value of the A record for the company website.",
+  "protocol": "DNS",
+  "score_weight": 1,
+  "definition": {
+    "record": "www",
+    "value": "127.0.0.1"
+  }
+}
+
+###
+
+GET {{basePath}}/api/scorestack/template/12345
 kbn-xsrf: true
 Authorization: Basic {{username}}:{{password}}
 
