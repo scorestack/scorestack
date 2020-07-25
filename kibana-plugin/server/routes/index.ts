@@ -29,6 +29,8 @@ const templateBodySchema = schema.object({
   definition: schema.recordOf(schema.string(), schema.any()),
 });
 
+const idParamSchema = schema.object({ id: schema.string() });
+
 function templateFromSaved(saved: SavedObject<TemplateRaw>): Template {
   return {
     id: saved.id,
@@ -116,9 +118,7 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
     {
       path: `${PLUGIN_API_BASEURL}/template/{id}`,
       validate: {
-        params: schema.object({
-          id: schema.string(),
-        }),
+        params: idParamSchema,
       },
       options: {
         tags: ['access:template_management-read'],
@@ -144,7 +144,7 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
 
   router.post(
     {
-      path: `${PLUGIN_API_BASEURL}/template`,
+      path: `${PLUGIN_API_BASEURL}/template/{id}`,
       validate: {
         body: templateBodySchema,
       },
@@ -176,6 +176,23 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
 
       return response.ok({
         body: res,
+      });
+    }
+  );
+
+  router.put(
+    {
+      path: `${PLUGIN_API_BASEURL}/template`,
+      validate: {
+        body: templateBodySchema,
+      },
+      options: {
+        tags: ['access:template_management-admin'],
+      },
+    },
+    async (context: ScoreStackContext, request, response) => {
+      return response.ok({
+        body: 'yeet',
       });
     }
   );
