@@ -60,3 +60,9 @@ Authorization: Basic {{username}}:{{password}}
 GET {{basePath}}/api/scorestack/template
 kbn-xsrf: true
 Authorization: Basic {{username}}:{{password}}
+
+###
+
+DELETE {{basePath}}/api/scorestack/template/12345
+kbn-xsrf: true
+Authorization: Basic {{username}}:{{password}}
