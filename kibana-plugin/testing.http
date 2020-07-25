@@ -34,6 +34,23 @@ Content-Type: application/json
 
 ###
 
+POST {{basePath}}/api/scorestack/template
+kbn-xsrf: true
+Authorization: Basic {{username}}:{{password}}
+Content-Type: application/json
+
+{
+  "title": "Invalid Check",
+  "description": "This request should fail, because the protocol is invalid.",
+  "protocol": "asdfasdf",
+  "score_weight": 1,
+  "definition": {
+    "key": "value"
+  }
+}
+
+###
+
 GET {{basePath}}/api/scorestack/template/12345
 kbn-xsrf: true
 Authorization: Basic {{username}}:{{password}}
