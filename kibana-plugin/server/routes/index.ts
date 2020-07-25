@@ -21,6 +21,14 @@ interface ScoreStackContext extends RequestHandlerContext {
   };
 }
 
+const templateBodySchema = schema.object({
+  title: schema.string(),
+  description: schema.string(),
+  protocol: schema.string(),
+  score_weight: schema.number(),
+  definition: schema.recordOf(schema.string(), schema.any()),
+});
+
 function templateFromSaved(saved: SavedObject<TemplateRaw>): Template {
   return {
     id: saved.id,
@@ -138,14 +146,7 @@ export function defineRoutes(router: IRouter /* , savedObjects: SavedObjectsServ
     {
       path: `${PLUGIN_API_BASEURL}/template`,
       validate: {
-        // TODO: fix this schema object
-        body: schema.object({
-          title: schema.string(),
-          description: schema.string(),
-          protocol: schema.string(),
-          score_weight: schema.number(),
-          definition: schema.recordOf(schema.string(), schema.any()),
-        }),
+        body: templateBodySchema,
       },
       options: {
         tags: ['access:template_management-admin'],
