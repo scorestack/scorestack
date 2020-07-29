@@ -8,9 +8,10 @@ import {
   EuiPageContentHeaderSection,
   EuiTitle,
 } from '@elastic/eui';
-import React from 'react';
+import React, { useState } from 'react';
 import { EuiButtonIcon } from '@elastic/eui';
 import { EuiBasicTable } from '@elastic/eui';
+import { Criteria } from '@elastic/eui/src/components/basic_table/basic_table';
 import { ITemplate } from '../../../common/types';
 
 interface TemplateTableProps {
@@ -20,6 +21,9 @@ interface TemplateTableProps {
 }
 
 export function TemplateTable(props: TemplateTableProps): React.ReactElement {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
   /* The render prop for EuiBasicTable custom actions isn't React.ReactNode;
   it's some other weird thing, so we're just gonna let TS infer the return type
   for this function. It doesn't really matter anyway */
@@ -29,6 +33,11 @@ export function TemplateTable(props: TemplateTableProps): React.ReactElement {
 
   function renderTitle(item: ITemplate): React.ReactNode {
     return <EuiLink href={`${props.basepath}#/template/${item.id}`}>{item.title}</EuiLink>;
+  }
+
+  function onTableChange(criteria: Criteria<null>) {
+    setPageIndex(criteria.page.index);
+    setPageSize(criteria.page.size);
   }
 
   const columns: Array<EuiBasicTableColumn<ITemplate>> = [
@@ -81,6 +90,7 @@ export function TemplateTable(props: TemplateTableProps): React.ReactElement {
           columns={columns}
           tableLayout="auto"
           noItemsMessage="No templates found."
+          onChange={onTableChange}
         />
       </EuiPageContentBody>
     </EuiPageContent>
