@@ -37,7 +37,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	pinger.Count = 3
 	// TODO: change this to be relative to the parent context's timeout
 	pinger.Timeout = 25 * time.Second
-	pinger.Run()
+	_ := pinger.Run()
 
 	// Convert PassCount to bool
 	passCount, err := strconv.ParseBool(d.AllowPacketLoss)
