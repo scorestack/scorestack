@@ -231,3 +231,12 @@ This role provides full access to the `check*` indicies. This allows users to cr
 ### Group Roles
 
 A role is created for each group that gets added, which provides read access to the group results index for the group and read/write access to the group's user attributes index. This allows group users to see detailed check results for their group, view team-specific dashboards for their group, and modify user attributes for their group. This role should only be given to the associated group user.
+
+Notes
+-----
+
+This section explains things you may encounter while running Scorestack that don't really fit anywhere else.
+
+### Shard Failures
+
+When using a multi-node Elasticsearch cluster (like with the [Medium deployment](../deployment/medium/README.md)), the Elasticsearch nodes must be able to communicate with each other without any issues. If there are any network connectivity problems between the nodes such as packet loss, the Elasticsearch nodes may lose contact with each other and think all shards have failed. Usually after a little while, the Elasticsearch nodes will be able to resolve the issue themselves, but this will cause Scorestack to briefly become unavailable.
