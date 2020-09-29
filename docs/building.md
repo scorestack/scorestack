@@ -9,7 +9,7 @@ Dynamicbeat
 To build and test Dynamicbeat with the provided Docker container, run the following command:
 
 ```shell
-docker-compose -f dockerfiles/docker-compose.yml run dynamicbeat-ci /scripts/dynamicbeat/test.sh
+docker-compose -f dockerfiles/docker-compose.yml run dynamicbeat-ci /scripts/test.sh
 ```
 
 The compiled binary can be found at `dynamicbeat/dynamicbeat`.
