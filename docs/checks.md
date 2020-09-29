@@ -45,7 +45,7 @@ See the _examples_ folder for example `check.json` files.
 This file will contain the attributes that Administrators will be able to modify through the ScoreStack Kibana plugin during a competition. This allows dynamic updates to scoring such as changing an HTTP check to HTTPS after an inject to migrate a webserver to HTTPS. This is also useful for troubleshooting both during setup and during the competition. It does this my templating the JSON values in `admin-attribs.json` into `check.json`. Below are two example `check.json` files. One does not have Admin attributes and the other does.
 
 `check.json` without Admin attributes
-```
+```json
 {
     "id": "icmp",
     "name": "ICMP",
@@ -59,7 +59,7 @@ This file will contain the attributes that Administrators will be able to modify
 ```
 
 `check.json` with Admin attributes
-```
+```json
 {
     "id": "icmp",
     "name": "ICMP",
@@ -73,7 +73,7 @@ This file will contain the attributes that Administrators will be able to modify
 ```
 
 `admin-attribs.json` for the above example
-```
+```json
 {
     "Host": "localhost"
 }
@@ -85,6 +85,133 @@ As you can see, the values in `admin-attribs.json` will be used to fill in the t
 ### user-attribs.json
 
 Similar to `admin-attribs.json`, `user-attribs.json` will allow both Users and Admins to change attributes during a competition. The most common User attribute will be the password attribute so that Users can update passwords for scored users themselves. The use of `user-attribs.json` file is the same as the `admin-attribs.json` example above. The only difference comes in the permissions associated with the attributes in Elastic and the Kibana app.
+
+
+## Adding Teams
+
+Now that we know the folder structure for our checks as well as what attributes we want to make available to Admins and Users, we can now add a team and checks to Elastic and start scoring! To add a team with the checks you have configured, you will use the `add-team.sh` script. Before we run the script you will need to configure some values. Open the `add-team.sh` script in your editor of choice and modify the following values at the top of the file:
+
+```
+ELASTICSEARCH_HOST=localhost:9200
+KIBANA_HOST=localhost:5601
+CHECK_FOLDER=examples
+USERNAME=root
+PASSWORD=changeme
+```
+
+- `ELASTICSEARCH_HOST` --> Address and port of the Elastic host
+- `KIBANA_HOST` --> Address and port of the Kibana host
+- `CHECK_FOLDER` --> The top level folder containing all checks
+- `USERNAME` --> Default username for Admin user
+- `PASSWORD` --> Default password for Admin user
+
+Once these values are correct for your environment you can run `add-team.sh`.
+
+`add-team.sh TEAM_NAME`
+
+Where `TEAM_NAME` is the name you want the team to be. The script will go through and setup a User account, dashboard, and add the checks for the team you passed to the script.
+
+## Adding Multiple Teams at Once
+
+Up until this point we are now ready to add our checks to Elastic and start scoring! But there is a problem. We can only add one team at a time. What if we want to add multiple teams at once without having to change all of the JSON documents to work for each team? The answer: templating!
+
+`add-team.sh` allows you to pass multiple teams to it and it will configure the checks according to each team. This way you only have to write JSON once for the entire set of teams.
+
+Let's go through an example. We want to add 5 teams to ScoreStack for a competition. To do this we must configure our checks in a slightly different way. When specifying the `group` attribute you can use `${TEAM}` instead of the literal name of the team. The value `${TEAM}` will be replaced by `add-team.sh` with each team name you pass in as it adds teams and checks to Elastic. For example, say we have the following check definition:
+
+```json
+{
+    "id": "icmp",
+    "name": "ICMP",
+    "type": "icmp",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "host": "{{.Host}}"
+    }
+}
+```
+
+This will only add an ICMP check for the `example` team. To make it more generic we can do this:
+
+```json
+{
+    "id": "icmp",
+    "name": "ICMP",
+    "type": "icmp",
+    "group": "${TEAM}",
+    "score_weight": 1,
+    "definition": {
+        "host": "{{.Host}}"
+    }
+}
+```
+
+Now the value `${TEAM}` will be replaced with the team names you pass to the `add-team.sh` script. The `add-team.sh` also allows you to use the `${TEAM_NUM}` template. This can be used for templating IP addresses for all teams when configuring checks. For example, generally the IP address for a blue team would be in the format `192.168.X.0/24` where `X` is the team number. By using the `${TEAM_NUM}` template you can configure an IP like: `192.168.${TEAM_NUM}.0/24`
+
+Let's look at an example for a check definition. Consider the following DNS check definition and it's associated Admin attributes:
+
+`check.json`
+```json
+{
+    "id": "dns",
+    "name": "DNS",
+    "type": "dns",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "Server": "{{.Server}}",
+        "Port": "{{.Port}}",
+        "Fqdn": "{{.Fqdn}}",
+        "ExpectedIP": "{{.ExpectedIP}}"
+    }
+}
+```
+
+`admin-attribs.json`
+```json
+{
+    "Server": "192.168.1.10",
+    "Port": "53",
+    "Fqdn": "host1.com",
+    "ExpectedIP": "192.168.1.98"
+}
+```
+
+This DNS check will query Team1's DNS server `192.168.1.10` for the host `host1.com` and the expected IP for that host is `192.168.1.98`. We can template these values to work for all teams so that we only have to configure the JSON one time! The following is how we would do the templating:
+
+`check.json` with Team Number template
+```json
+{
+    "id": "dns",
+    "name": "DNS",
+    "type": "dns",
+    "group": "${TEAM}",
+    "score_weight": 1,
+    "definition": {
+        "Server": "{{.Server}}",
+        "Port": "{{.Port}}",
+        "Fqdn": "{{.Fqdn}}",
+        "ExpectedIP": "{{.ExpectedIP}}"
+    }
+}
+```
+
+`admin-attribs.json` with Team Number template
+```json
+{
+    "Server": "192.168.${TEAM_NUM}.10",
+    "Port": "53",
+    "Fqdn": "host${TEAM_NUM}.com",
+    "ExpectedIP": "192.168.${TEAM_NUM}.98"
+}
+```
+
+Now this check definition will work for all teams that are passed to `add-team.sh`. To take advantage of this templating feature you can add multiple teams like so:
+
+`add-team.sh blue_1 blue_2 blue_3 ...`
+
+The team name needs to be in the format of `blue_1` or `blue1` in order to take advantage of both the `${TEAM}` and `${TEAM_NUM}` templates.
 
 ## Check Specific Attributes
 
