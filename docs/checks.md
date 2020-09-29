@@ -1,25 +1,94 @@
 # Configuring Checks
-====================
 
 This document details the many attributes and nuances of configuring checks for ScoreStack. Creating a check involves making a JSON document which will contain metadata information for the check as well as the specific attributes needed for a successful check. If you would like to speedrun writing checks please see the example check definitions in the _examples_ folder.
 
+## Adding Checks
+
+In order to configure and add checks to ScoreStack, you will have to create a folder structure containing the JSON definitions for each check. 
+The following is the folder structure expected by `add-team.sh`.
+
+```
+myChecks
+├── dns-host1
+│   ├── admin-attribs.json
+│   └── check.json
+├── http-host2
+    ├── admin-attribs.json
+    ├── check.json
+    └── user-attribs.json
+```
+
+The top level directory (_myChecks_) contains subfolders for all of the desired checks (_dns-host1, http-host2, etc._). Each of these subfolders will contain up to three JSON files that will define the specifc check. The three JSON files are as follows:
+
+- `check.json`          --> The main JSON document that defines everything about a check
+- `admin-attribs.json`  --> The attributes of a check that only an Admin will be allowed to change during competition through Kibana
+- `user-attribs.json`   --> The attributes of a check that Users and Admins will be allowed to change during competition through Kibana
+
+### check.json
+
+This file contains the meat and potatoes for each check definition. Every `check.json` file **must** contain the following attributes:
+
+| Name          | Type        | Required | Description                                                                                        |
+|---------------|-------------|----------|----------------------------------------------------------------------------------------------------|
+| id            | String      | Y        | A unique identifier for the check. The `group` attribute will be appended to this value in Elastic |
+| name          | String      | Y        | This is the name of the check that will be displayed on the scoreboard                             |
+| type          | String      | Y        | The type of check (dns, ftp, http, etc.)                                                           |
+| group         | String      | Y        | The team associated with this check                                                                |
+| score\_weight | Int         | Y        | This is the number of points awarded for a successful check                                        |
+| def           | JSON Object | Y        | This contains the check specific attributes                                                        |
+
+See the _examples_ folder for example `check.json` files.
+
+
+### admin-attribs.json
+
+This file will contain the attributes that Administrators will be able to modify through the ScoreStack Kibana plugin during a competition. This allows dynamic updates to scoring such as changing an HTTP check to HTTPS after an inject to migrate a webserver to HTTPS. This is also useful for troubleshooting both during setup and during the competition. It does this my templating the JSON values in `admin-attribs.json` into `check.json`. Below are two example `check.json` files. One does not have Admin attributes and the other does.
+
+`check.json` without Admin attributes
+```
+{
+    "id": "icmp",
+    "name": "ICMP",
+    "type": "icmp",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "host": "127.0.0.1"
+    }
+}
+```
+
+`check.json` with Admin attributes
+```
+{
+    "id": "icmp",
+    "name": "ICMP",
+    "type": "icmp",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "host": "{{.Host}}"
+    }
+}
+```
+
+`admin-attribs.json` for the above example
+```
+{
+    "Host": "localhost"
+}
+```
+
+As you can see, the values in `admin-attribs.json` will be used to fill in the template inside `check.json`. This can be done with any check specific attribtue (see all [check specific attributes](#check-specific-attributes)).
+
+
+### user-attribs.json
+
+Similar to `admin-attribs.json`, `user-attribs.json` will allow both Users and Admins to change attributes during a competition. The most common User attribute will be the password attribute so that Users can update passwords for scored users themselves. The use of `user-attribs.json` file is the same as the `admin-attribs.json` example above. The only difference comes in the permissions associated with the attributes in Elastic and the Kibana app.
+
+## Check Specific Attributes
 
 **Note:** The _Type_ listed in the tables below refers to the type that must be used in the JSON document. For example, if the _type_ is _string_ then the JSON document must have that attribute value as a `"string"`.
-
-
-### Uniform Check Attributes
-
-| Name          | Type        | Required | Description |
-| ------------- | ----------- | -------- | ----------- |
-| id            | String      | Y        |             |
-| name          | String      | Y        |             |
-| type          | String      | Y        |             |
-| group         | String      | Y        |             |
-| score\_weight | Int         | Y        |             |
-| def           | JSON Object | Y        |             |
-
-The table above 
-
 
 ### DNS
 
