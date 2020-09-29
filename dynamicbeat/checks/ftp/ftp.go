@@ -10,7 +10,7 @@ import (
 
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/jlaffaye/ftp"
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 	"golang.org/x/crypto/sha3"
 )
 
