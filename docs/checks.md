@@ -213,6 +213,18 @@ Now this check definition will work for all teams that are passed to `add-team.s
 
 The team name needs to be in the format of `blue_1` or `blue1` in order to take advantage of both the `${TEAM}` and `${TEAM_NUM}` templates.
 
+## Updating All Check Definitions
+
+In order to update all check definitions at once follow the steps below:
+
+- Stop _Dynamicbeat_
+- Delete all indexes using Kibana developer console
+  - `DELETE /check*`
+  - `DELETE /attrib*`
+  - `DELETE /result*`
+- Rerun `add-team.sh` with the same teams you had originally
+
+
 ## Check Specific Attributes
 
 **Note:** The _Type_ listed in the tables below refers to the type that must be used in the JSON document. For example, if the _type_ is _string_ then the JSON document must have that attribute value as a `"string"`.
