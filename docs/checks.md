@@ -1,10 +1,10 @@
 # Configuring Checks
 
-This document details the many attributes and nuances of configuring checks for ScoreStack. Creating a check involves making a JSON document which will contain metadata information for the check as well as the specific attributes needed for a successful check. If you would like to speedrun writing checks please see the example check definitions in the _examples_ folder.
+This document details the many attributes and nuances of configuring checks for Scorestack. Creating a check involves making a JSON document which will contain metadata information for the check as well as the specific attributes needed for a successful check. If you would like to speedrun writing checks please see the example check definitions in the _examples_ folder.
 
 ## Adding Checks
 
-In order to configure and add checks to ScoreStack, you will have to create a folder structure containing the JSON definitions for each check. 
+In order to configure and add checks to Scorestack, you will have to create a folder structure containing the JSON definitions for each check. 
 The following is the folder structure expected by `add-team.sh`.
 
 ```
@@ -28,21 +28,21 @@ The top level directory (_myChecks_) contains subfolders for all of the desired 
 
 This file contains the meat and potatoes for each check definition. Every `check.json` file **must** contain the following attributes:
 
-| Name          | Type        | Required | Description                                                                                        |
-|---------------|-------------|----------|----------------------------------------------------------------------------------------------------|
-| id            | String      | Y        | A unique identifier for the check. The `group` attribute will be appended to this value in Elastic |
-| name          | String      | Y        | This is the name of the check that will be displayed on the scoreboard                             |
-| type          | String      | Y        | The type of check (dns, ftp, http, etc.)                                                           |
-| group         | String      | Y        | The team associated with this check                                                                |
-| score\_weight | Int         | Y        | This is the number of points awarded for a successful check                                        |
-| def           | JSON Object | Y        | This contains the check specific attributes                                                        |
+| Name          | Type        | Required | Description                                                                                              |
+| ------------- | ----------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| id            | String      | Y        | A unique identifier for the check. The `group` attribute will be appended to this value in Elasticsearch |
+| name          | String      | Y        | This is the name of the check that will be displayed on the scoreboard                                   |
+| type          | String      | Y        | The type of check (dns, ftp, http, etc.)                                                                 |
+| group         | String      | Y        | The team associated with this check                                                                      |
+| score\_weight | Int         | Y        | This is the number of points awarded for a successful check                                              |
+| definition    | JSON Object | Y        | This contains the check specific attributes                                                              |
 
 See the _examples_ folder for example `check.json` files.
 
 
 ### admin-attribs.json
 
-This file will contain the attributes that Administrators will be able to modify through the ScoreStack Kibana plugin during a competition. This allows dynamic updates to scoring such as changing an HTTP check to HTTPS after an inject to migrate a webserver to HTTPS. This is also useful for troubleshooting both during setup and during the competition. It does this my templating the JSON values in `admin-attribs.json` into `check.json`. Below are two example `check.json` files. One does not have Admin attributes and the other does.
+This file will contain the attributes that Administrators will be able to modify through the Scorestack Kibana plugin during a competition. This allows dynamic updates to scoring such as changing an HTTP check to HTTPS after an inject to migrate a webserver to HTTPS. This is also useful for troubleshooting both during setup and during the competition. It does this my templating the JSON values in `admin-attribs.json` into `check.json`. Below are two example `check.json` files. One does not have Admin attributes and the other does.
 
 `check.json` without Admin attributes
 ```json
@@ -117,7 +117,7 @@ Up until this point we are now ready to add our checks to Elastic and start scor
 
 `add-team.sh` allows you to pass multiple teams to it and it will configure the checks according to each team. This way you only have to write JSON once for the entire set of teams.
 
-Let's go through an example. We want to add 5 teams to ScoreStack for a competition. To do this we must configure our checks in a slightly different way. When specifying the `group` attribute you can use `${TEAM}` instead of the literal name of the team. The value `${TEAM}` will be replaced by `add-team.sh` with each team name you pass in as it adds teams and checks to Elastic. For example, say we have the following check definition:
+Let's go through an example. We want to add 5 teams to Scorestack for a competition. To do this we must configure our checks in a slightly different way. When specifying the `group` attribute you can use `${TEAM}` instead of the literal name of the team. The value `${TEAM}` will be replaced by `add-team.sh` with each team name you pass in as it adds teams and checks to Elastic. For example, say we have the following check definition:
 
 ```json
 {
@@ -351,7 +351,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | Password  | String | Y                            | Password for the SMTP server  |
 | Sender    | String | Y                            | Who is sending the email      |
 | Reciever  | String | Y                            | Who is receiving the email    |
-| Body      | String | N :: "Hello from ScoreStack" | Body of the email             |
+| Body      | String | N :: "Hello from Scorestack" | Body of the email             |
 | Encrypted | String | N :: False                   | Whether or not to use TLS     |
 | Port      | String | N :: "25"                    | Port of the SMTP server       |
 

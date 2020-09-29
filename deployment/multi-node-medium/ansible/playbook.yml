@@ -441,7 +441,7 @@
       register: kibana_status
       until: "'\"status\":{\"overall\":{\"state\":\"green\"' in kibana_status.content"
 
-    - name: Check if ScoreStack space has been added
+    - name: Check if Scorestack space has been added
       uri:
         url: https://kibana:5601/api/spaces/space/scorestack
         force_basic_auth: yes
@@ -454,10 +454,10 @@
       changed_when: no
       register: scorestack_space
 
-    - name: Add ScoreStack space
+    - name: Add Scorestack space
       uri:
         url: https://kibana:5601/api/spaces/space
-        body: '{"id":"scorestack","name":"ScoreStack","disabledFeatures":["visualize","dev_tools","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
+        body: '{"id":"scorestack","name":"Scorestack","disabledFeatures":["visualize","dev_tools","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
         body_format: json
         force_basic_auth: yes
         headers:

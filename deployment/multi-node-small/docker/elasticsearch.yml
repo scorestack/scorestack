@@ -1,5 +1,5 @@
 ---
-# Change this if you plan on having multiple separate instances of ScoreStack
+# Change this if you plan on having multiple separate instances of Scorestack
 # running at the same time in your environment.
 cluster.name: scorestack
 

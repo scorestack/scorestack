@@ -17,7 +17,7 @@ The compiled binary can be found at `dynamicbeat/dynamicbeat`.
 ## Running everything
 
 After dynamicbeat has been built, run the following commands to set up an
-instance of ScoreStack with the example check configurations loaded up and run
+instance of Scorestack with the example check configurations loaded up and run
 an instance of dynamicbeat against those checks.
 
 ```shell

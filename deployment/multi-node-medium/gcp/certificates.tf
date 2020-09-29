@@ -8,8 +8,8 @@ resource "tls_self_signed_cert" "ca_cert" {
     private_key_pem = tls_private_key.ca_key.private_key_pem
 
     subject {
-        common_name = "ScoreStack Root CA"
-        organization = "ScoreStack"
+        common_name = "Scorestack Root CA"
+        organization = "Scorestack"
     }
 
     validity_period_hours = 8760
@@ -52,7 +52,7 @@ resource "tls_cert_request" "elasticsearch1_csr" {
 
     subject {
         common_name = "elasticsearch1"
-        organization = "ScoreStack"
+        organization = "Scorestack"
     }
 
     dns_names = ["localhost", "elasticsearch1"]
@@ -103,7 +103,7 @@ resource "tls_cert_request" "elasticsearch2_csr" {
 
     subject {
         common_name = "elasticsearch2"
-        organization = "ScoreStack"
+        organization = "Scorestack"
     }
 
     dns_names = ["localhost", "elasticsearch2"]
@@ -154,7 +154,7 @@ resource "tls_cert_request" "elasticsearch3_csr" {
 
     subject {
         common_name = "elasticsearch3"
-        organization = "ScoreStack"
+        organization = "Scorestack"
     }
 
     dns_names = ["localhost", "elasticsearch3"]
@@ -205,7 +205,7 @@ resource "tls_cert_request" "elasticsearch4_csr" {
 
     subject {
         common_name = "elasticsearch4"
-        organization = "ScoreStack"
+        organization = "Scorestack"
     }
 
     dns_names = ["localhost", "elasticsearch4"]
@@ -256,7 +256,7 @@ resource "tls_cert_request" "logstash_csr" {
 
     subject {
         common_name = "logstash"
-        organization = "ScoreStack"
+        organization = "Scorestack"
     }
 
     dns_names = ["localhost", "logstash", var.fqdn]
@@ -307,7 +307,7 @@ resource "tls_cert_request" "kibana_csr" {
 
     subject {
         common_name = "kibana"
-        organization = "ScoreStack"
+        organization = "Scorestack"
     }
 
     dns_names = ["localhost", "kibana"]
@@ -358,7 +358,7 @@ resource "tls_cert_request" "nginx_csr" {
 
     subject {
         common_name = "nginx"
-        organization = "ScoreStack"
+        organization = "Scorestack"
     }
 
     dns_names = ["localhost", "nginx", var.fqdn]
@@ -409,7 +409,7 @@ resource "tls_cert_request" "dynamicbeat_csr" {
 
     subject {
         common_name = "dynamicbeat"
-        organization = "ScoreStack"
+        organization = "Scorestack"
     }
 }
 

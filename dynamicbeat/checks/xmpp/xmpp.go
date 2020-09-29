@@ -57,7 +57,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		Type: stanza.IQTypeGet,
 		From: d.Host,
 		To:   "localhost",
-		Id:   "ScoreStack-check",
+		Id:   "Scorestack-check",
 	})
 	if err != nil {
 		result.Message = fmt.Sprintf("Creating IQ message failed : %s", err)

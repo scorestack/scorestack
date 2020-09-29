@@ -1,6 +1,6 @@
 resource "google_compute_network" "internal_network" {
     name = "internal-network"
-    description = "Network for traffic in between ScoreStack nodes."
+    description = "Network for traffic in between Scorestack nodes."
 }
 
 resource "google_compute_address" "nginx" {

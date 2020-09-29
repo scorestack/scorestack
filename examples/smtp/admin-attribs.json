@@ -3,7 +3,7 @@
     "Username": "user@exmaple.com",
     "Sender": "user@example.com",
     "Reciever": "user@example.com",
-    "Body": "Hello from ScoreStack",
+    "Body": "Hello from Scorestack",
     "Port": "25",
     "Encrypted": "false"
 }

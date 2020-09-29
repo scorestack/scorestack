@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report an issue with ScoreStack to help improve the project.
+about: Report an issue with Scorestack to help improve the project.
 title: ''
 labels: bug, new
 assignees: ''

@@ -13,7 +13,7 @@ export default function (kibana) {
     uiExports: {
       app: {
         title: 'Check Attributes',
-        description: 'A Kibana plugin for viewing and modifying ScoreStack checks and attributes.',
+        description: 'A Kibana plugin for viewing and modifying Scorestack checks and attributes.',
         main: 'plugins/scorestack/app',
         euiIconType: 'documentEdit',
       },
