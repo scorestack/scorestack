@@ -279,6 +279,7 @@ Below are the **Request** Attribs
 | ContentRegex | String                  | N :: "\.\*" | Regex for the response body to match                                       |
 | StoreValue   | Bool                    | N :: false  | Whether the matched content should be saved for use in a later request     |
 
+An HTTP definition consists of as many _Requests_ as you would like to send for that check. See the _examples_ folder for clarification.
 
 ### ICMP
 
