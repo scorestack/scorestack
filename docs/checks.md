@@ -1,10 +1,13 @@
-# Configuring Checks
+Configuring Checks
+==================
 
 This document details the many attributes and nuances of configuring checks for Scorestack. Creating a check involves making a JSON document which will contain metadata information for the check as well as the specific attributes needed for a successful check. If you would like to speedrun writing checks please see the example check definitions in the _examples_ folder.
 
-## Adding Checks
+Adding Checks
+-------------
 
 In order to configure and add checks to Scorestack, you will have to create a folder structure containing the JSON definitions for each check. 
+
 The following is the folder structure expected by `add-team.sh`.
 
 ```
@@ -37,8 +40,9 @@ This file contains the meat and potatoes for each check definition. Every `check
 | score\_weight | Int         | Y        | This is the number of points awarded for a successful check                                              |
 | definition    | JSON Object | Y        | This contains the check specific attributes                                                              |
 
-See the _examples_ folder for example `check.json` files.
+Please note that the `id` attribute for a check _must_ be the same as the check's folder name.
 
+See the _examples_ folder for example `check.json` files.
 
 ### admin-attribs.json
 
@@ -81,13 +85,12 @@ This file will contain the attributes that Administrators will be able to modify
 
 As you can see, the values in `admin-attribs.json` will be used to fill in the template inside `check.json`. This can be done with any check specific attribtue (see all [check specific attributes](#check-specific-attributes)).
 
-
 ### user-attribs.json
 
 Similar to `admin-attribs.json`, `user-attribs.json` will allow both Users and Admins to change attributes during a competition. The most common User attribute will be the password attribute so that Users can update passwords for scored users themselves. The use of `user-attribs.json` file is the same as the `admin-attribs.json` example above. The only difference comes in the permissions associated with the attributes in Elastic and the Kibana app.
 
-
-## Adding Teams
+Adding Teams
+------------
 
 Now that we know the folder structure for our checks as well as what attributes we want to make available to Admins and Users, we can now add a team and checks to Elastic and start scoring! To add a team with the checks you have configured, you will use the `add-team.sh` script. Before we run the script you will need to configure some values. Open the `add-team.sh` script in your editor of choice and modify the following values at the top of the file:
 
@@ -111,7 +114,8 @@ Once these values are correct for your environment you can run `add-team.sh`.
 
 Where `TEAM_NAME` is the name you want the team to be. The script will go through and setup a User account, dashboard, and add the checks for the team you passed to the script.
 
-## Adding Multiple Teams at Once
+Adding Multiple Teams at Once
+-----------------------------
 
 Up until this point we are now ready to add our checks to Elastic and start scoring! But there is a problem. We can only add one team at a time. What if we want to add multiple teams at once without having to change all of the JSON documents to work for each team? The answer: templating!
 
@@ -213,7 +217,8 @@ Now this check definition will work for all teams that are passed to `add-team.s
 
 The team name needs to be in the format of `blue_1` or `blue1` in order to take advantage of both the `${TEAM}` and `${TEAM_NUM}` templates.
 
-## Updating All Check Definitions
+Updating All Check Definitions
+------------------------------
 
 In order to update all check definitions at once follow the steps below:
 
@@ -224,8 +229,8 @@ In order to update all check definitions at once follow the steps below:
   - `DELETE /result*`
 - Rerun `add-team.sh` with the same teams you had originally
 
-
-## Check Specific Attributes
+Check Specific Attributes
+-------------------------
 
 **Note:** The _Type_ listed in the tables below refers to the type that must be used in the JSON document. For example, if the _type_ is _string_ then the JSON document must have that attribute value as a `"string"`.
 
@@ -237,7 +242,6 @@ In order to update all check definitions at once follow the steps below:
 | Fqdn       | String | Y         | The FQDN of the host you are looking up        |
 | ExpectedIP | String | Y         | The expected IP of the host you are looking up |
 | Port       | String | N :: "53" | The port of the DNS server                     |
-
 
 ### FTP
 
@@ -252,7 +256,6 @@ In order to update all check definitions at once follow the steps below:
 | Hash             | String | N            | The hash digest from from sha3\-256 to compare the hashed |
 | Port             | String | N :: "21"    | The port to attempt an FTP connection on                  |
 | Simple           | String | N :: "false" | Very simple FTP check for older servers                   |
-
 
 ### HTTP
 
@@ -281,6 +284,16 @@ Below are the **Request** Attribs
 
 An HTTP definition consists of as many _Requests_ as you would like to send for that check. See the _examples_ folder for clarification.
 
+#### StoreValue
+
+When the `StoreValue` attribute is set to `true` and regex-based content matching is enabled, then the content in the response that matches the `ContentRegex` will be stored in the `SavedValue` variable. You can then use this value in later requests. This can be useful for multi-stage checks that require authentication, but do not use cookies to store the session ID.
+
+One example of using the `StoreValue` attribute is the `http-kolide` example check. Before you can use the Kolide API, you must log in. The API route to log in returns a Bearer token within the response body. This Bearer token must be presented in the `Bearer:` header in order to authenticate to the API routes.
+
+The saved value is made available through the same method as attributes - just insert `{{.SavedValue}}` into your check wherever you would like it to be used.
+
+Please note that only one value can be stored using `StoreValue`. If you already have a value saved, and attempt to save another one, then the original value will be overwritten.
+
 ### ICMP
 
 | Name            | Type   | Required     | Description                                                                               |
@@ -290,8 +303,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | AllowPacketLoss | String | N :: "false" | Pass check based on received pings matching Count; if false, will use percent packet loss |
 | Percent         | Int    | N :: 100     | Percent of packets needed to come back to pass the check                                  |
 
-
-## IMAP
+### IMAP
 
 | Name      | Type   | Required     | Description                         |
 | --------- | ------ | ------------ | ----------------------------------- |
@@ -301,8 +313,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | Encrypted | String | N :: "false" | Whether or not to use TLS \(IMAPS\) |
 | Port      | String | N :: "143"   | Port for the IMAP server            |
 
-
-## LDAP
+### LDAP
 
 | Name     | Type   | Required     | Description                            |
 | -------- | ------ | ------------ | -------------------------------------- |
@@ -312,8 +323,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | Ldaps    | String | N :: "false" | Whether or not to use LDAP\+TLS        |
 | Port     | String | N :: "389"   | Port for LDAP server                   |
 
-
-## MySQL
+### MySQL
 
 | Name         | Type   | Required     | Description                                                          |
 | ------------ | ------ | ------------ | -------------------------------------------------------------------- |
@@ -327,8 +337,14 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | ContentRegex | String | N :: "\.\*"  | Regex to match on                                                    |
 | Port         | String | N :: "3306"  | Port for the server                                                  |
 
+### Noop
 
-## SMB
+| Name    | Type   | Required | Description                                                 |
+| ------- | ------ | -------- | ----------------------------------------------------------- |
+| Dynamic | String | Y        | Contains attributes that can be modified by admins or users |
+| Static  | String | Y        | Contains attributes                                         |
+
+### SMB
 
 | Name         | Type   | Required    | Description                                                                       |
 | ------------ | ------ | ----------- | --------------------------------------------------------------------------------- |
@@ -341,8 +357,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | ContentRegex | String | N :: "\.\*" | Regex to match on                                                                 |
 | Port         | String | N :: "445"  | Port of the server                                                                |
 
-
-## SMTP
+### SMTP
 
 | Name      | Type   | Required                     | Description                   |
 | --------- | ------ | ---------------------------- | ----------------------------- |
@@ -355,8 +370,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | Encrypted | String | N :: False                   | Whether or not to use TLS     |
 | Port      | String | N :: "25"                    | Port of the SMTP server       |
 
-
-## SSH
+### SSH
 
 | Name         | Type   | Required     | Description                                            |
 | ------------ | ------ | ------------ | ------------------------------------------------------ |
@@ -368,8 +382,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | ContentRegex | String | N :: "\.\*"  | Tegex to match if reading a file                       |
 | Port         | String | N :: "22"    | The port to attempt an SSH connection on               |
 
-
-## VNC 
+### VNC 
 
 | Name     | Type   | Required | Description                                           |
 | -------- | ------ | -------- | ----------------------------------------------------- |
@@ -377,8 +390,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | Port     | String | Y        | The port for the VNC server                           |
 | Password | String | Y        | The password for the user that you wish to login with |
 
-
-## WinRM
+### WinRM
 
 | Name         | Type   | Required     | Description                                              |
 | ------------ | ------ | ------------ | -------------------------------------------------------- |
@@ -391,8 +403,7 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | ContentRegex | String | N :: "\.\*"  | Regexp for matching output of a command                  |
 | Port         | String | N :: "5986"  | Port for WinRM                                           |
 
-
-## XMPP
+### XMPP
 
 | Name      | Type   | Required    | Description                         |
 | --------- | ------ | ----------- | ----------------------------------- |
@@ -401,10 +412,3 @@ An HTTP definition consists of as many _Requests_ as you would like to send for 
 | Password  | String | Y           | Password for the user               |
 | Encrypted | String | N :: "true" | Whether or not to use TLS           |
 | Port      | String | N :: "5222" | The port for the XMPP server        |
-
-## NOOP
-
-| Name    | Type   | Required | Description                                                 |
-| ------- | ------ | -------- | ----------------------------------------------------------- |
-| Dynamic | String | Y        | Contains attributes that can be modified by admins or users |
-| Static  | String | Y        | Contains attributes                                         |
