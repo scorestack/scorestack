@@ -55,7 +55,7 @@ do
     if [ -f ${CHECK_FOLDER}/${check}/admin-attribs.json ]
     then
       cat ${CHECK_FOLDER}/${check}/admin-attribs.json | jq --arg TEAM "$TEAM" '.group = $TEAM | .id = "\(.id)-\($TEAM)"' | sed -e "s/\${TEAM_NUM}/${TEAM_NUM}/g" > ${CHECK_FOLDER}/${check}/admin-attribs.tmp.json
-      curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/attrib_admin_${TEAM}/_doc/${ID} -H "Content-Type: application/json" -d @${CHECK_FOLDER}/${check}/admin-attribs.json
+      curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/attrib_admin_${TEAM}/_doc/${ID} -H "Content-Type: application/json" -d @${CHECK_FOLDER}/${check}/admin-attribs.tmp.json
       rm -f ${CHECK_FOLDER}/${check}/admin-attribs.tmp.json
     fi
 
@@ -63,7 +63,7 @@ do
     if [ -f ${CHECK_FOLDER}/${check}/user-attribs.json ]
     then
       cat ${CHECK_FOLDER}/${check}/user-attribs.json | jq --arg TEAM "$TEAM" '.group = $TEAM | .id = "\(.id)-\($TEAM)"' | sed -e "s/\${TEAM_NUM}/${TEAM_NUM}/g" > ${CHECK_FOLDER}/${check}/user-attribs.tmp.json
-      curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/attrib_user_${TEAM}/_doc/${ID} -H "Content-Type: application/json" -d @${CHECK_FOLDER}/${check}/user-attribs.json
+      curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/attrib_user_${TEAM}/_doc/${ID} -H "Content-Type: application/json" -d @${CHECK_FOLDER}/${check}/user-attribs.tmp.json
       rm -f ${CHECK_FOLDER}/${check}/user-attribs.tmp.json
     fi
   done
