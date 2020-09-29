@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 	"gopkg.in/ldap.v2"
 )
 

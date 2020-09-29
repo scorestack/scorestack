@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
 // The Definition configures the behavior of a Noop check.

@@ -11,7 +11,7 @@ import (
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
 // The Definition configures the behavior of the imap check

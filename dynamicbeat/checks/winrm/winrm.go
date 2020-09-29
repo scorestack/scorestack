@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/oneNutW0nder/winrm"
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
 // The Definition configures the behavior of the WinRM check

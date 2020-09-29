@@ -9,7 +9,7 @@ import (
 
 	// MySQL driver
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
 // The Definition configures the behavior of the MySQL check

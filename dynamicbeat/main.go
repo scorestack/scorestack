@@ -6,9 +6,9 @@ import (
 	_ "net/http/pprof"
 	"os"
 
-	"github.com/s-newman/scorestack/dynamicbeat/cmd"
+	"github.com/scorestack/scorestack/dynamicbeat/cmd"
 
-	_ "github.com/s-newman/scorestack/dynamicbeat/include"
+	_ "github.com/scorestack/scorestack/dynamicbeat/include"
 )
 
 func run() error {

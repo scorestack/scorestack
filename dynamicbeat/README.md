@@ -3,7 +3,7 @@
 Welcome to Dynamicbeat.
 
 Ensure that this folder is at the following location:
-`${GOPATH}/src/gitlab.ritsec.cloud/newman/dynamicbeat`
+`${GOPATH}/src/github.com/scorestack/scorestack/dynamicbeat`
 
 ## Getting Started with Dynamicbeat
 
@@ -24,7 +24,7 @@ It will create a clean git history for each major step. Note that you can always
 To push Dynamicbeat in the git repository, run the following commands:
 
 ```
-git remote set-url origin https://gitlab.ritsec.cloud/newman/dynamicbeat
+git remote set-url origin https://github.com/scorestack/scorestack/dynamicbeat
 git push origin master
 ```
 
@@ -97,8 +97,8 @@ make clean
 To clone Dynamicbeat from the git repository, run the following commands:
 
 ```
-mkdir -p ${GOPATH}/src/gitlab.ritsec.cloud/newman/dynamicbeat
-git clone https://gitlab.ritsec.cloud/newman/dynamicbeat ${GOPATH}/src/gitlab.ritsec.cloud/newman/dynamicbeat
+mkdir -p ${GOPATH}/src/github.com/scorestack/scorestack/dynamicbeat
+git clone https://github.com/scorestack/scorestack/dynamicbeat ${GOPATH}/src/github.com/scorestack/scorestack/dynamicbeat
 ```
 
 

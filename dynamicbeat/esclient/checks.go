@@ -8,7 +8,7 @@ import (
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/go-elasticsearch"
 
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
 // UpdateCheckDefs will re-read all check definitions from a single index and

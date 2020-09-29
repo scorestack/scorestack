@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/elastic/beats/libbeat/logp"
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
 // The Definition configures the behavior of the SMTP check
@@ -22,7 +22,7 @@ type Definition struct {
 	Password  string             `optiontype:"required"`                                       // Password for the smtp server
 	Sender    string             `optiontype:"required"`                                       // Who is sending the email
 	Reciever  string             `optiontype:"required"`                                       // Who is receiving the email
-	Body      string             `optiontype:"optional" optiondefault:"Hello from ScoreStack"` // Body of the email
+	Body      string             `optiontype:"optional" optiondefault:"Hello from Scorestack"` // Body of the email
 	Encrypted string             `optiontype:"optional"`                                       // Whether or not to use TLS
 	Port      string             `optiontype:"optional" optiondefault:"25"`                    // Port of the smtp server
 }

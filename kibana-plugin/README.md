@@ -1,6 +1,6 @@
 # scorestack
 
-> A Kibana plugin for viewing and modifying ScoreStack checks and attributes.
+> A Kibana plugin for viewing and modifying Scorestack checks and attributes.
 
 ---
 

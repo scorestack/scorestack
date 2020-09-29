@@ -9,7 +9,7 @@ import (
 	"gosrc.io/xmpp/stanza"
 
 	"github.com/elastic/beats/libbeat/logp"
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 	"gosrc.io/xmpp"
 )
 
@@ -57,7 +57,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		Type: stanza.IQTypeGet,
 		From: d.Host,
 		To:   "localhost",
-		Id:   "ScoreStack-check",
+		Id:   "Scorestack-check",
 	})
 	if err != nil {
 		result.Message = fmt.Sprintf("Creating IQ message failed : %s", err)

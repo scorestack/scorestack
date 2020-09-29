@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/s-newman/scorestack/dynamicbeat/beater"
+	"github.com/scorestack/scorestack/dynamicbeat/beater"
 
 	cmd "github.com/elastic/beats/libbeat/cmd"
 	"github.com/elastic/beats/libbeat/cmd/instance"

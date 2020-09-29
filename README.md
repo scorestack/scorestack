@@ -1,28 +1,26 @@
-# scorestack
+Scorestack
+==========
 
-![Dynamicbeat](https://github.com/s-newman/scorestack/workflows/Dynamicbeat/badge.svg)
+![Dynamicbeat](https://github.com/scorestack/scorestack/workflows/Dynamicbeat/badge.svg)
+![Kibana Plugin](https://github.com/scorestack/scorestack/workflows/Kibana%20Plugin/badge.svg)
 
 A security competition scoring system built on the Elastic stack.
 
-## Building dynamicbeat
+Installation
+------------
 
-Run the following command to build and test dynamicbeat with docker:
+Please see the [deployment documentation](./deployment/README.md) to review your options for deploying Scorestack.
 
-```shell
-docker-compose -f dockerfiles/docker-compose.yml run dynamicbeat-ci /scripts/dynamicbeat-test.sh
-```
+The administration documentation has a section on [running Dynamicbeat](./docs/administration.md#running-dynamicbeat) that provides everything you need to know in order to successfully deploy Dynamicbeat.
 
-The compiled binary can be found at `dynamicbeat/dynamicbeat`.
+The rest of the [administration documentation](./docs/administration.md) explains some of the details of how Scorestack works under the hood, and can be a useful read for anyone responsible for Scorestack at a competition.
 
-## Running everything
+Writing Checks
+--------------
 
-After dynamicbeat has been built, run the following commands to set up an
-instance of ScoreStack with the example check configurations loaded up and run
-an instance of dynamicbeat against those checks.
+For information on how to write checks, please see the [checks documentation](./docs/checks.md).
 
-```shell
-sudo sysctl -w vm.max_map_count=262144
-docker-compose -f deployment/multi-node-small/docker/docker-compose.yml up -d
-./add-team.sh example
-dynamicbeat/dynamicbeat -e
-```
+Building
+--------
+
+Prebuilt binaries are attached to each release. If you would like to build your own binaries, please see the [building documentation](./docs/building.md).

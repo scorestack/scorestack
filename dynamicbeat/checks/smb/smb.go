@@ -10,7 +10,7 @@ import (
 
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/hirochachacha/go-smb2"
-	"github.com/s-newman/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
 // The Definition configures the behavior of the SMB check
@@ -50,7 +50,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Dial SMB server for SMB connection
-	c, err := smbConn.DialContext(conn, ctx)
+	c, err := smbConn.DialContext(ctx, conn)
 	if err != nil {
 		result.Message = fmt.Sprintf("Error connecting to smb server : %s", err)
 		return result
