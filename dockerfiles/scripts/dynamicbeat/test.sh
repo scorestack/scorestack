@@ -7,4 +7,4 @@ go get
 go get github.com/kardianos/govendor
 make setup
 make
-make testsuite
+#make testsuite
