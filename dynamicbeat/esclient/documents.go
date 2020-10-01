@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/elastic/go-elasticsearch"
+	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 )
 
 // The SearchResults struct is used to parse search results from Elasticsearch

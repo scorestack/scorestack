@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/elastic/beats/libbeat/logp"
-	"github.com/elastic/go-elasticsearch"
+	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
