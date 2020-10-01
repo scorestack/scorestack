@@ -20,7 +20,9 @@ replace (
 )
 
 require (
+	github.com/Bowery/prompt v0.0.0-20190916142128-fa8279994f75 // indirect
 	github.com/akavel/rsrc v0.9.0 // indirect
+	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185 // indirect
 	github.com/dlclark/regexp2 v1.2.1 // indirect
 	github.com/dop251/goja v0.0.0-20200929101608-beb0a9a01fbc // indirect
 	github.com/dop251/goja_nodejs v0.0.0-20200811150831-9bc458b4bbeb // indirect
@@ -33,10 +35,12 @@ require (
 	github.com/go-ping/ping v0.0.0-20200918120429-e8ae07c3cec8
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hirochachacha/go-smb2 v1.0.3
 	github.com/jlaffaye/ftp v0.0.0-20200812143550-39e3779af0db
 	github.com/josephspurrier/goversioninfo v1.2.0 // indirect
+	github.com/kardianos/govendor v1.0.9 // indirect
 	github.com/magefile/mage v1.10.0
 	github.com/mattn/go-colorable v0.1.7 // indirect
 	github.com/miekg/dns v1.1.31
