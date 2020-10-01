@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/sparrc/go-ping"
+	"github.com/go-ping/ping"
 
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
