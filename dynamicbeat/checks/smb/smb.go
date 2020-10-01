@@ -8,7 +8,7 @@ import (
 	"net"
 	"regexp"
 
-	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/v7/libbeat/logp"
 	"github.com/hirochachacha/go-smb2"
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )

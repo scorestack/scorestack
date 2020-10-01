@@ -24,7 +24,6 @@ require (
 	github.com/dlclark/regexp2 v1.2.1 // indirect
 	github.com/dop251/goja v0.0.0-20200929101608-beb0a9a01fbc // indirect
 	github.com/dop251/goja_nodejs v0.0.0-20200811150831-9bc458b4bbeb // indirect
-	github.com/elastic/beats v7.6.2+incompatible
 	github.com/elastic/beats/v7 v7.0.0-alpha2.0.20201001160411-075696e6a142
 	github.com/elastic/go-elasticsearch/v7 v7.9.0
 	github.com/elastic/go-sysinfo v1.4.0 // indirect

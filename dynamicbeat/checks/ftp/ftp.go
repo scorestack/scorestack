@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/v7/libbeat/logp"
 	"github.com/jlaffaye/ftp"
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 	"golang.org/x/crypto/sha3"

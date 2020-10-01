@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/v7/libbeat/logp"
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"

@@ -8,7 +8,7 @@ import (
 
 	"gosrc.io/xmpp/stanza"
 
-	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/v7/libbeat/logp"
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 	"gosrc.io/xmpp"
 )
