@@ -29,6 +29,7 @@ require (
 	github.com/elastic/go-sysinfo v1.4.0 // indirect
 	github.com/emersion/go-imap v1.0.5
 	github.com/fatih/color v1.9.0 // indirect
+	github.com/go-ldap/ldap/v3 v3.2.3
 	github.com/go-ping/ping v0.0.0-20200918120429-e8ae07c3cec8
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.5.0
@@ -58,7 +59,6 @@ require (
 	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/tools v0.0.0-20201001104356-43ebab892c4c
 	gopkg.in/asn1-ber.v1 v1.0.0-20181015200546-f715ec2f112d // indirect
-	gopkg.in/ldap.v2 v2.5.1
 	gosrc.io/xmpp v0.5.1
 	honnef.co/go/tools v0.0.1-2020.1.5 // indirect
 	howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5 // indirect
