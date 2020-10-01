@@ -22,16 +22,9 @@ First, install the required go dependencies:
 
 ```shell
 go get
-go get github.com/kardianos/govendor
 ```
 
-Then, run the pre-build setup tasks:
-
-```shell
-make setup
-```
-
-Finally, build the binary:
+Then, build the binary:
 
 ```shell
 make
