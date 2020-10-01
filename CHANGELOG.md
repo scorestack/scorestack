@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [0.5.0] - 2020-09-29
 --------------------
 
+This is the first public release of Scorestack.
+
 ### General
 
 #### Added
@@ -46,6 +48,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [0.4.0] - 2020-04-25
 --------------------
 
+This release implements features for IRSeC 2020.
+
 ### General
 
 #### Added
@@ -62,6 +66,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 [0.3.0] - 2020-04-07
 --------------------
+
+This release focuses on some housekeeping tasks and Dynamicbeat bugfixes.
 
 ### General
 
@@ -100,6 +106,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 [0.2.0] - 2020-02-28
 --------------------
+
+This release is in preparation for ISTS 2020.
 
 ### General
 
@@ -185,11 +193,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [0.1.0] - 2020-02-13
 --------------------
 
-- Initial release of Scorestack
+The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.5.0...HEAD
-[0.5.0]: https://github.com/scorestack/scorestack/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/scorestack/scorestack/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/scorestack/scorestack/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/scorestack/scorestack/compare/v0.1.0...v0.2.0
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/scorestack/scorestack/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/scorestack/scorestack/compare/v0.4...v0.5.0
+[0.4.0]: https://github.com/scorestack/scorestack/compare/v0.3...v0.4
+[0.3.0]: https://github.com/scorestack/scorestack/compare/v0.2...v0.3
+[0.2.0]: https://github.com/scorestack/scorestack/compare/v0.1...v0.2
 [0.1.0]: https://github.com/scorestack/scorestack/releases/tag/v0.1.0
