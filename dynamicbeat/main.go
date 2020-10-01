@@ -1,9 +1,6 @@
 package main
 
 import (
-	"log"
-	"net/http"
-	_ "net/http/pprof"
 	"os"
 
 	"github.com/scorestack/scorestack/dynamicbeat/cmd"
@@ -11,16 +8,8 @@ import (
 	_ "github.com/scorestack/scorestack/dynamicbeat/include"
 )
 
-func run() error {
-	// defer profile.Start(profile.ThreadcreationProfile).Stop()
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
-	return cmd.RootCmd.Execute()
-}
-
 func main() {
-	if err := run(); err != nil {
+	if err := cmd.RootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
