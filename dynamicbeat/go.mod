@@ -39,7 +39,7 @@ require (
 	github.com/josephspurrier/goversioninfo v1.2.0 // indirect
 	github.com/magefile/mage v1.10.0
 	github.com/mattn/go-colorable v0.1.7 // indirect
-	github.com/miekg/dns v1.1.15
+	github.com/miekg/dns v1.1.31
 	github.com/mitchellh/go-vnc v0.0.0-20150629162542-723ed9867aed
 	github.com/mitchellh/gox v1.0.1
 	github.com/mitchellh/hashstructure v1.0.0 // indirect
@@ -52,13 +52,12 @@ require (
 	go.elastic.co/ecszap v0.2.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
-	golang.org/x/crypto v0.0.0-20200930160638-afb6bcd081ae
+	golang.org/x/crypto v0.0.0-20201001193750-eb9a90e9f9cb
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 	golang.org/x/net v0.0.0-20200930145003-4acb6c075d10 // indirect
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
 	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/tools v0.0.0-20201001104356-43ebab892c4c
-	gopkg.in/asn1-ber.v1 v1.0.0-20181015200546-f715ec2f112d // indirect
 	gosrc.io/xmpp v0.5.1
 	honnef.co/go/tools v0.0.1-2020.1.5 // indirect
 	howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5 // indirect
