@@ -9,7 +9,6 @@
     "extensions": [
         "dbaeumer.vscode-eslint"
     ],
-    "postCreateCommand": "yarn kbn bootstrap",
     "remoteUser": "node",
     "workspaceFolder": "/home/node/kibana/plugins/kibana-plugin"
 }
