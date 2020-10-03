@@ -19,11 +19,15 @@ export class Main extends React.Component {
 
     this.state = {
       checks: {},
-      currentCheck: <EuiText>Click on any of your checks to the left to configure their attributes.</EuiText>,
-      navItems: [{
-        name: 'Loading...',
-        id: 0,
-      }],
+      currentCheck: (
+        <EuiText>Click on any of your checks to the left to configure their attributes.</EuiText>
+      ),
+      navItems: [
+        {
+          name: 'Loading...',
+          id: 0,
+        },
+      ],
     };
   }
 
@@ -60,12 +64,10 @@ export class Main extends React.Component {
                           </EuiTitle>
                         </EuiPageContentHeaderSection>
                       </EuiPageContentHeader>
-                      <EuiPageContentBody>
-                        {attributes}
-                      </EuiPageContentBody>
+                      <EuiPageContentBody>{attributes}</EuiPageContentBody>
                     </div>
                   );
-                }
+                },
               });
             },
           });
@@ -86,17 +88,12 @@ export class Main extends React.Component {
     return (
       <EuiPage>
         <EuiPageSideBar>
-          <EuiSideNav
-            mobileTitle="Checks"
-            items={this.state.navItems}
-          />
+          <EuiSideNav mobileTitle="Checks" items={this.state.navItems} />
         </EuiPageSideBar>
         <EuiPageBody>
-          <EuiPageContent>
-            {this.state.currentCheck}
-          </EuiPageContent>
+          <EuiPageContent>{this.state.currentCheck}</EuiPageContent>
         </EuiPageBody>
-      </EuiPage >
+      </EuiPage>
     );
   }
 }

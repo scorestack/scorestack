@@ -27,16 +27,24 @@ export class Attribute extends React.Component {
       isLoading: true,
     });
     const httpClient = this.props.client;
-    httpClient.post(`../api/scorestack/attribute/${this.props.id}/${this.props.name}`, JSON.stringify({
-      'value': this.state.formValue,
-    }, { headers: { 'Content-Type': 'application/json' } })).then(() => {
-      this.setState({
-        isLoading: false,
-        value: this.state.formValue,
+    httpClient
+      .post(
+        `../api/scorestack/attribute/${this.props.id}/${this.props.name}`,
+        JSON.stringify(
+          {
+            value: this.state.formValue,
+          },
+          { headers: { 'Content-Type': 'application/json' } }
+        )
+      )
+      .then(() => {
+        this.setState({
+          isLoading: false,
+          value: this.state.formValue,
+        });
+        this.setState({ formValue: '' });
       });
-      this.setState({ formValue: '' });
-    });
-  }
+  };
 
   onShowButtonClick = () => {
     this.setState({
@@ -50,15 +58,19 @@ export class Attribute extends React.Component {
     });
   };
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       formValue: e.target.value,
     });
   };
 
   render() {
-    const showButton = (<EuiButtonIcon iconType="eye" onClick={this.onShowButtonClick} />);
-    const saveButton = (<EuiButton isLoading={this.state.isLoading} onClick={this.onSaveButtonClick}>Save</EuiButton>);
+    const showButton = <EuiButtonIcon iconType="eye" onClick={this.onShowButtonClick} />;
+    const saveButton = (
+      <EuiButton isLoading={this.state.isLoading} onClick={this.onSaveButtonClick}>
+        Save
+      </EuiButton>
+    );
     return (
       <EuiFlexGroup style={{ maxWidth: 600 }}>
         <EuiFlexItem>
@@ -82,9 +94,7 @@ export class Attribute extends React.Component {
           </EuiFormRow>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiFormRow hasEmptyLabelSpace>
-            {saveButton}
-          </EuiFormRow>
+          <EuiFormRow hasEmptyLabelSpace>{saveButton}</EuiFormRow>
         </EuiFlexItem>
       </EuiFlexGroup>
     );
