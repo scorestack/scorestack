@@ -34,6 +34,9 @@ RUN cd /home/$USERNAME/kibana && git checkout v7.5.1
 RUN mkdir -p /home/$USERNAME/kibana/plugins
 RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/kibana
 
+# Install Kibana dependencies
+RUN cd /home/$USERNAME/kibana && sudo -u $USERNAME yarn kbn bootstrap
+
 ###############################################################################
 FROM ci as devcontainer
 ###############################################################################
