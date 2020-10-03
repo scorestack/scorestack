@@ -4,9 +4,10 @@
   "description": "A Kibana plugin for viewing and modifying Scorestack checks and attributes.",
   "private": true,
   "scripts": {
-    "build": "yarn plugin-helpers build",
-    "plugin-helpers": "node ../../scripts/plugin_helpers",
-    "kbn": "node ../../scripts/kbn"
+    "kbn": "node ../../scripts/kbn",
+    "lint": "eslint --ignore-path .gitignore --color .",
+    "plugin-helpers": "plugin-helpers",
+    "start": "cd ../../ && node scripts/kibana --dev --no-base-path"
   },
   "dependencies": {
     "@kbn/config-schema": "link:../../packages/kbn-config-schema"
@@ -14,6 +15,8 @@
   "devDependencies": {
     "@elastic/eslint-config-kibana": "link:../../packages/elastic-eslint-config-kibana",
     "@kbn/eslint-plugin-eslint": "link:../../packages/kbn-eslint-plugin-eslint",
-    "babel-eslint": "^10.1.0"
+    "@kbn/plugin-helpers": "link:../../packages/kbn-plugin-helpers",
+    "babel-eslint": "^10.1.0",
+    "typescript": "^4.0.3"
   }
 }
