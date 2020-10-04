@@ -32,11 +32,7 @@ services:
     user: scorestack
 
   kibana-plugin-ci:
-    build:
-      context: .
-      dockerfile: kibana-plugin.Dockerfile
-      target: ci
-    image: kibana-plugin-ci:latest
+    image: scorestack/kibana:7.9.2
     volumes:
       - "../kibana-plugin:/home/node/kibana/plugins/scorestack"
       - "./scripts/kibana-plugin:/scripts"
