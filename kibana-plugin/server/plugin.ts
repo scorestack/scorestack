@@ -31,5 +31,7 @@ export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, Scorestac
     return {};
   }
 
-  public stop() { }
+  public stop() {
+    this.logger.debug('scorestack: Stopped');
+  }
 }

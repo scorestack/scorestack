@@ -85,8 +85,10 @@ export function ScorestackApp(props: ScorestackAppProps): React.ReactElement {
       })
       .catch((error) => {
         // TODO: handle this with a toast
+        /* eslint-disable no-console */
         console.log('Promise rejected - failed to load attributes');
         console.log(error);
+        /* eslint-ensable no-console */
       });
   }, [props.http]);
 

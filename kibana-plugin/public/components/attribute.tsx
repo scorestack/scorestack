@@ -44,8 +44,10 @@ export function Attribute(props: AttributeProps): React.ReactElement {
       })
       .catch((error) => {
         // TODO: handle this with a toast
+        /* eslint-disable no-console */
         console.log('Promise rejected - failed to save attribute value');
         console.log(error);
+        /* eslint-enable no-console */
       });
   }
 

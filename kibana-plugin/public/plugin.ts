@@ -26,5 +26,6 @@ export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, Scorestac
     return {};
   }
 
+  // eslint-disable-next-line prettier/prettier
   public stop() { }
 }
