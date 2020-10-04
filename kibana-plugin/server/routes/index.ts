@@ -34,53 +34,47 @@ export function defineRoutes(
       // All attributes will be returned in a single object
       const checks: CheckAttributes = {};
 
-      // Get all attribute indices
-      const attribIndices = await client.callAsCurrentUser('count', {
+      // Determine how many attribute documents there are
+      const { count }: { count: number } = await client.callAsCurrentUser('count', {
         index: 'attrib_*',
-        expand_wildcards: 'open',
       });
 
-      // Get attributes for each check
-      for (const index of Object.keys(attribIndices)) {
-        // Check how many documents are in the index
-        const countDoc = await client.callAsCurrentUser('count', { index });
+      // Get all the attribute documents
+      const searchResults = await client.callAsCurrentUser('search', {
+        index: 'attrib_*',
+        size: count,
+      });
 
-        // Search for all documents in the index
-        const searchResults = await client.callAsCurrentUser('search', {
-          index,
-          size: countDoc.count,
-        });
+      // Add each attribute to the response
+      for (const check of searchResults.hits.hits) {
+        // Parse the document ID to determine the group
+        // TODO: don't rely on parsing the document ID or index ID to determine the group, or ensure that unsafe characters are filtered from group names and check names
+        const group = check._id.split('-').slice(-1);
 
-        // Add each attribute to the object
-        for (const check of searchResults.hits.hits) {
-          // Parse the document ID to determine the group
-          // TODO: don't rely on parsing the document ID or index ID to determine the group, or ensure that unsafe characters are filtered from group names and check names
-          const group = check._id.split('-').slice(-1);
-
-          // Set up the checks object to receive the attributes in the right spot
-          if (group in checks === false) {
-            checks[group] = {};
-          }
-          if (check._id in checks[group] === false) {
-            // Add check name
-            const checkDoc = await client.callAsCurrentUser('get', {
-              id: check._id,
-              index: 'checks',
-              _source_includes: 'name',
-            });
-            checks[group][check._id] = {
-              attributes: {},
-              name: checkDoc._source.name,
-            };
-          }
-
-          // Add attribute contents
-          checks[group][check._id].attributes = Object.assign(
-            checks[group][check._id].attributes,
-            check._source
-          );
+        // Set up the checks object to receive the attributes in the right spot
+        if (group in checks === false) {
+          checks[group] = {};
         }
+        if (check._id in checks[group] === false) {
+          // Add check name
+          const checkDoc = await client.callAsCurrentUser('get', {
+            id: check._id,
+            index: 'checks',
+            _source_includes: 'name',
+          });
+          checks[group][check._id] = {
+            attributes: {},
+            name: checkDoc._source.name,
+          };
+        }
+
+        // Add attribute contents
+        checks[group][check._id].attributes = Object.assign(
+          checks[group][check._id].attributes,
+          check._source
+        );
       }
+
       return response.ok({
         body: checks,
       });
