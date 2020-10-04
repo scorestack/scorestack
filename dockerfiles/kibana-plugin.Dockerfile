@@ -26,8 +26,7 @@ RUN npm install -g \
     eslint
 
 # Clone correct version of Kibana
-RUN git clone https://github.com/elastic/kibana /home/$USERNAME/kibana
-RUN cd /home/$USERNAME/kibana && git checkout v7.9.2
+RUN git clone --branch v7.9.2 --depth 1 https://github.com/elastic/kibana /home/$USERNAME/kibana
 
 # Set up plugin directory
 RUN mkdir -p /home/$USERNAME/kibana/plugins
