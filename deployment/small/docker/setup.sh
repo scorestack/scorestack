@@ -65,7 +65,7 @@ EOF
 shred -uvz /tmp/cluster-passwords.txt
 
 # Install kibana plugin
-docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://tinyurl.com/scorestack-kibana-plugin-4"
+docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.5.0/kibana-plugin-v0.5.0.zip"
 
 # Create admin user
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/root -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"Extra Superuser","email":"root@example.com","roles":["superuser"]}'
