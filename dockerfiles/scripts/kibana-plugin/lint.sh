@@ -2,4 +2,4 @@
 set -euxo pipefail
 
 cd $HOME/kibana/plugins/scorestack
-eslint .
+yarn lint
