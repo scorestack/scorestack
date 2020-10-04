@@ -7,7 +7,7 @@
     "kbn": "node ../../scripts/kbn",
     "lint": "eslint --ignore-path .gitignore --color .",
     "plugin-helpers": "plugin-helpers",
-    "start": "cd ../../ && node scripts/kibana --dev --no-base-path"
+    "start": "cd ../../ && node scripts/kibana --dev --no-base-path -c plugins/kibana-plugin/kibana.dev.yml"
   },
   "dependencies": {
     "@kbn/config-schema": "link:../../packages/kbn-config-schema"
