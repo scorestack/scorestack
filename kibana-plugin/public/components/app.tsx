@@ -53,7 +53,7 @@ export function ScorestackApp(props: ScorestackAppProps): React.ReactElement {
                     id={checkId}
                     name={name}
                     value={value}
-                    client={props.http}
+                    http={props.http}
                   />
                 ));
 
