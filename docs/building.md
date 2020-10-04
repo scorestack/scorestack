@@ -66,7 +66,7 @@ The first time you run `yarn kbn bootstrap`, it can take several (20+) minutes t
 With the dependencies installed, you can build the zipfile.
 
 ```shell
-yarn plugin-helpers build
+yarn build
 ```
 
 The zipfile can be found at `kibana-plugin/build/kibana-plugin-0.0.0.zip`.
