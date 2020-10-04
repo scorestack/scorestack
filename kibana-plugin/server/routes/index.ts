@@ -2,16 +2,7 @@ import { schema } from '@kbn/config-schema';
 
 import { LegacyClusterClient, IRouter } from '../../../../src/core/server';
 
-interface CheckAttributes {
-  [index: string]: {
-    [index: string]: {
-      name: string;
-      attributes: {
-        [index: string]: string;
-      };
-    };
-  };
-}
+import { CheckAttributes } from '../../common';
 
 interface Attribute {
   [index: string]: string;
