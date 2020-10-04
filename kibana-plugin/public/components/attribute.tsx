@@ -32,7 +32,7 @@ export function Attribute(props: AttributeProps): React.ReactElement {
 
     props.http
       .post(`/api/scorestack/attribute/${props.id}/${props.name}`, {
-        body: JSON.stringify({ value }),
+        body: JSON.stringify({ value: formValue }),
         headers: {
           'Content-Type': 'application/json',
         },
