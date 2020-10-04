@@ -1,5 +1,5 @@
 ###############################################################################
-FROM node:10.15.2 as ci
+FROM node:10.22.1 as ci
 ###############################################################################
 
 RUN apt-get update
@@ -23,12 +23,11 @@ RUN chmod 0440 /etc/sudoers.d/$USERNAME
 RUN apt-get install -y \
     git
 RUN npm install -g \
-    yarn \
     eslint
 
 # Clone correct version of Kibana
 RUN git clone https://github.com/elastic/kibana /home/$USERNAME/kibana
-RUN cd /home/$USERNAME/kibana && git checkout v7.5.1
+RUN cd /home/$USERNAME/kibana && git checkout v7.9.2
 
 # Set up plugin directory
 RUN mkdir -p /home/$USERNAME/kibana/plugins

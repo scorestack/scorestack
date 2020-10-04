@@ -1,36 +1,23 @@
 {
-  "name": "kibana-plugin",
-  "version": "0.0.0",
+  "name": "scorestack",
+  "version": "0.5.1",
   "description": "A Kibana plugin for viewing and modifying Scorestack checks and attributes.",
-  "main": "index.js",
-  "kibana": {
-    "version": "7.5.1",
-    "templateVersion": "1.0.0"
-  },
+  "private": true,
   "scripts": {
-    "preinstall": "node ../../preinstall_check",
+    "build": "plugin-helpers build --build-version 0.5.1 --kibana-version 7.9.2",
     "kbn": "node ../../scripts/kbn",
-    "es": "node ../../scripts/es",
-    "lint": "eslint .",
-    "start": "plugin-helpers start",
-    "test:server": "plugin-helpers test:server",
-    "test:browser": "plugin-helpers test:browser",
-    "build": "plugin-helpers build"
+    "lint": "eslint --ignore-path .gitignore --color .",
+    "plugin-helpers": "plugin-helpers",
+    "start": "cd ../../ && node scripts/kibana --dev --no-base-path -c plugins/kibana-plugin/kibana.dev.yml"
+  },
+  "dependencies": {
+    "@kbn/config-schema": "link:../../packages/kbn-config-schema"
   },
   "devDependencies": {
-    "@elastic/eslint-config-kibana": "link:../../packages/eslint-config-kibana",
-    "@elastic/eslint-import-resolver-kibana": "link:../../packages/kbn-eslint-import-resolver-kibana",
-    "@kbn/expect": "link:../../packages/kbn-expect",
+    "@elastic/eslint-config-kibana": "link:../../packages/elastic-eslint-config-kibana",
+    "@kbn/eslint-plugin-eslint": "link:../../packages/kbn-eslint-plugin-eslint",
     "@kbn/plugin-helpers": "link:../../packages/kbn-plugin-helpers",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.16.0",
-    "eslint-plugin-babel": "^5.3.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-jest": "^22.4.1",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-mocha": "^5.3.0",
-    "eslint-plugin-no-unsanitized": "^3.0.2",
-    "eslint-plugin-prefer-object-spread": "^1.2.1",
-    "eslint-plugin-react": "^7.12.4"
+    "babel-eslint": "^10.1.0",
+    "typescript": "^4.0.3"
   }
 }
