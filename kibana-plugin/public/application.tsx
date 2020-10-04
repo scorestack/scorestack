@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppMountParameters, CoreStart } from '../../../src/core/public';
 import { AppPluginStartDependencies } from './types';
-import { Main } from './components/main';
+import { ScorestackApp } from './components/app';
 
 export const renderApp = (
   { notifications, http }: CoreStart,
   { navigation }: AppPluginStartDependencies,
   { appBasePath, element }: AppMountParameters
 ) => {
-  ReactDOM.render(<Main title="scorestack" httpClient={http} />, element);
+  ReactDOM.render(<ScorestackApp basename={appBasePath} http={http} />, element);
 
   return () => ReactDOM.unmountComponentAtNode(element);
 };
