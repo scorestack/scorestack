@@ -2,6 +2,21 @@ import { schema } from '@kbn/config-schema';
 
 import { LegacyClusterClient, IRouter } from '../../../../src/core/server';
 
+interface CheckAttributes {
+  [index: string]: {
+    [index: string]: {
+      name: string;
+      attributes: {
+        [index: string]: string;
+      };
+    };
+  };
+}
+
+interface Attribute {
+  [index: string]: string;
+}
+
 export function defineRoutes(
   router: IRouter,
   cluster: Pick<LegacyClusterClient, 'callAsInternalUser' | 'asScoped'>
@@ -17,7 +32,7 @@ export function defineRoutes(
       const client = cluster.asScoped(request);
 
       // All attributes will be returned in a single object
-      const checks = {};
+      const checks: CheckAttributes = {};
 
       // Get all attribute indices
       const attribIndices = await client.callAsCurrentUser('count', {
@@ -47,17 +62,16 @@ export function defineRoutes(
             checks[group] = {};
           }
           if (check._id in checks[group] === false) {
-            checks[group][check._id] = {
-              attributes: {},
-            };
-
             // Add check name
             const checkDoc = await client.callAsCurrentUser('get', {
               id: check._id,
               index: 'checks',
               _source_includes: 'name',
             });
-            checks[group][check._id].name = checkDoc._source.name;
+            checks[group][check._id] = {
+              attributes: {},
+              name: checkDoc._source.name,
+            };
           }
 
           // Add attribute contents
@@ -119,7 +133,7 @@ export function defineRoutes(
 
         // If the attribute exists in the document, update the document with the new value
         if (request.params.name in attribDoc._source) {
-          const newAttrib = {};
+          const newAttrib: Attribute = {};
           newAttrib[request.params.name] = request.body.value;
           await client.callAsCurrentUser('update', {
             id: request.params.id,
