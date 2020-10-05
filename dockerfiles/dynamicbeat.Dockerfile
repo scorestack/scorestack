@@ -31,10 +31,6 @@ RUN apt-get install -y \
     virtualenv \
     git
 
-# Clone go-elasticsearch repository
-RUN git clone https://github.com/elastic/go-elasticsearch.git $GOPATH/src/github.com/elastic/go-elasticsearch
-RUN cd $GOPATH/src/github.com/elastic/go-elasticsearch && git checkout v7.5.0
-
 # Install docker CLI
 RUN apt-get install -y \
     apt-transport-https \
