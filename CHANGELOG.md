@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [Unreleased]
 ------------
 
+[0.6.0-rc2] - 2020-10-04
+------------------------
+
 ### Kibana Plugin
 
 #### Fixed
@@ -253,7 +256,9 @@ This release is in preparation for ISTS 2020.
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc2...HEAD
+[0.6.0-rc2]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc1...v0.6.0-rc2
+[0.6.0-rc1]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0-rc1
 [0.5.1]: https://github.com/scorestack/scorestack/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/scorestack/scorestack/compare/v0.4...v0.5.0
 [0.4.0]: https://github.com/scorestack/scorestack/compare/v0.3...v0.4
