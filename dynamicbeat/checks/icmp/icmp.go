@@ -48,10 +48,13 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	stats := pinger.Statistics()
 
+	details := make(map[string]string)
 	// Check packet loss instead of count
 	if !passCount {
 		if stats.PacketLoss >= float64(d.Percent) {
 			result.Message = "Not all pings made it back!"
+			details["packetloss_percent"] = strconv.FormatFloat(stats.PacketLoss, 'f', -1, 64)
+			result.Details = details
 			return result
 		}
 
@@ -63,6 +66,9 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Check for failure of ICMP
 	if stats.PacketsRecv != d.Count {
 		result.Message = fmt.Sprint("Not all pings made it back!")
+		details["packets_received"] = fmt.Sprintf("%d", stats.PacketsRecv)
+		details["packets_expected"] = fmt.Sprintf("%d", d.Count)
+		result.Details = details
 		return result
 	}
 
