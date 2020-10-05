@@ -96,14 +96,22 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 func unpackDef(config schema.CheckConfig) schema.Check {
 	// Render any template strings in the definition
 	var renderedJSON []byte
-	templ := template.Must(template.New("definition").Parse(string(config.Definition)))
-	var buf bytes.Buffer
-	err := templ.Execute(&buf, config.Attribs)
+	templ := template.New("definition")
+	templ, err := templ.Parse(string(config.Definition))
 	if err != nil {
 		// If there was an error parsing the template, use the original string
+		logp.Warn("Failed to parse template for check '%s': %s", config.ID, err.Error())
 		renderedJSON = config.Definition
 	} else {
-		renderedJSON = buf.Bytes()
+		var buf bytes.Buffer
+		err := templ.Execute(&buf, config.Attribs)
+		if err != nil {
+			// If there was an error executing the template, use the original string
+			logp.Warn("Failed to execute template for check '%s': %s", config.ID, err.Error())
+			renderedJSON = config.Definition
+		} else {
+			renderedJSON = buf.Bytes()
+		}
 	}
 
 	// Create a Definition from the rendered JSON string
