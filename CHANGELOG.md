@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 #### Fixed
 
 - Updated small/docker setup script to properly parse kibana password
+- Updated SSL configuration paths in example Dynamicbeat config
 
 [0.6.0-rc2] - 2020-10-04
 ------------------------
