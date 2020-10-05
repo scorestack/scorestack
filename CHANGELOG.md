@@ -21,11 +21,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 #### Added
 
 - Report template failure errors in check results
+- Report ICMP packet statistics in check result details for failed checks
 
 #### Fixed
 
 - Don't panic on invalid templates
 - Remove typo in ICMP definition struct field tag
+- Don't ignore Count field in ICMP definition
 
 [0.6.0-rc2] - 2020-10-04
 ------------------------
