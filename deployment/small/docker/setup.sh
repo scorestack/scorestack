@@ -36,7 +36,7 @@ docker exec ${ELASTICSEARCH_CONTAINER} /bin/bash -c \
   --url ${ELASTICSEARCH_HOST}" | grep PASSWORD > /tmp/cluster-passwords.txt
 
 # Extract passwords from output
-kibana_pass=$(cat /tmp/cluster-passwords.txt | grep kibana | awk '{print $NF}')
+kibana_pass=$(cat /tmp/cluster-passwords.txt | grep 'kibana =' | awk '{print $NF}')
 elastic_pass=$(cat /tmp/cluster-passwords.txt | grep elastic | awk '{print $NF}')
 beats_pass=$(cat /tmp/cluster-passwords.txt | grep beats_system | awk '{print $NF}')
 logstash_pass=$(openssl rand -hex 20)
