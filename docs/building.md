@@ -63,7 +63,13 @@ yarn kbn bootstrap
 
 The first time you run `yarn kbn bootstrap`, it can take several (20+) minutes to install all the required dependencies. However, after the first time you run it, running the same command should be fairly quick later on.
 
-With the dependencies installed, you can build the zipfile.
+Next, compile the bundles for the frontend portion of the plugin.
+
+```shell
+yarn prebuild
+```
+
+Finally, build the plugin's zipfile.
 
 ```shell
 yarn build

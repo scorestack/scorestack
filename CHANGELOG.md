@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [Unreleased]
 ------------
 
+### Kibana Plugin
+
+#### Fixed
+
+- Build plugin bundles and include them in the plugin zipfile
+
 [0.6.0-rc1] - 2020-10-04
 ------------------------
 
