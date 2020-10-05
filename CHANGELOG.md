@@ -14,6 +14,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Updated small/docker setup script to properly parse kibana password
 - Updated SSL configuration paths in example Dynamicbeat config
+- Fix template syntax error in `http-kolide` example check
+
+### Dynamicbeat
+
+#### Added
+
+- Report template failure errors in check results
+
+#### Fixed
+
+- Don't panic on invalid templates
+- Remove typo in ICMP definition struct field tag
 
 [0.6.0-rc2] - 2020-10-04
 ------------------------
