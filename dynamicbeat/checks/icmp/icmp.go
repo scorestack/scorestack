@@ -34,7 +34,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Send ping
-	pinger.Count = 3
+	pinger.Count = d.Count
 	// TODO: change this to be relative to the parent context's timeout
 	pinger.Timeout = 25 * time.Second
 	_ = pinger.Run()
