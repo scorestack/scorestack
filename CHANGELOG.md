@@ -8,6 +8,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [Unreleased]
 ------------
 
+[0.6.0-rc1] - 2020-10-04
+------------------------
+
+Updating Scorestack to Elastic Stack 7.9.2.
+
+### General
+
+#### Added
+
+- Prebuild scorestack/kibana:7.9.2 container for CI and devcontainer
+
+#### Changed
+
+- Run `yarn kbn bootstrap` during Kibana plugin container build process
+- Update CI to use prebuilt Kibana container
+- Update Elastic Stack to 7.9.2
+
+### Dynamicbeat
+
+#### Changed
+
+- Swap github.com/sparrc/go-ping with github.com/go-ping/ping
+- Update dependencies
+- Update to libbeat 7.9.2
+
+#### Fixed
+
+- Re-add the check code that was accidentally removed in v0.5.1
+
+### Kibana Plugin
+
+#### Changed
+
+- Migrate plugin to Kibana New Platform
+- Update plugin to Kibana 7.9.2
+- Rewrite plugin in TypeScript
+
+#### Fixed
+
+- Replace TinyURL plugin link with GitHub Releases link
+
 [0.5.1] - 2020-10-01
 --------------------
 
