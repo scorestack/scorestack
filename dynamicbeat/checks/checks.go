@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"reflect"
 	"strconv"
@@ -51,7 +52,26 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 	for _, def := range defs {
 		// checkName := def.Name
 		names[def.ID] = false
-		check := unpackDef(def)
+		check, err := unpackDef(def)
+		if err != nil {
+			// Something was wrong with templating the check. Return a failed event with the error.
+			errorDetail := make(map[string]string)
+			errorDetail["error_message"] = err.Error()
+			eventQueue <- beat.Event{
+				Timestamp: time.Now(),
+				Fields: common.MapStr{
+					"type":         "dynamicbeat",
+					"id":           check.GetConfig().ID,
+					"name":         check.GetConfig().Name,
+					"check_type":   check.GetConfig().Type,
+					"group":        check.GetConfig().Group,
+					"score_weight": check.GetConfig().ScoreWeight,
+					"passed":       false,
+					"message":      "Encountered an error when unpacking check definition.",
+					"details":      errorDetail,
+				},
+			}
+		}
 
 		// Start check goroutine
 		wg.Add(1)
@@ -93,18 +113,22 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 	}
 }
 
-func unpackDef(config schema.CheckConfig) schema.Check {
+func unpackDef(config schema.CheckConfig) (schema.Check, error) {
 	// Render any template strings in the definition
 	var renderedJSON []byte
-	templ := template.Must(template.New("definition").Parse(string(config.Definition)))
-	var buf bytes.Buffer
-	err := templ.Execute(&buf, config.Attribs)
+	templ := template.New("definition")
+	templ, err := templ.Parse(string(config.Definition))
 	if err != nil {
-		// If there was an error parsing the template, use the original string
-		renderedJSON = config.Definition
-	} else {
-		renderedJSON = buf.Bytes()
+		return nil, fmt.Errorf("Failed to parse template for check: %s", err.Error())
 	}
+
+	var buf bytes.Buffer
+	err = templ.Execute(&buf, config.Attribs)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to execute template for check: %s", err.Error())
+	}
+
+	renderedJSON = buf.Bytes()
 
 	// Create a Definition from the rendered JSON string
 	var def schema.Check
@@ -146,7 +170,7 @@ func unpackDef(config schema.CheckConfig) schema.Check {
 		logp.Info("%s", err)
 	}
 
-	return def
+	return def, nil
 }
 
 func runCheck(ctx context.Context, check schema.Check) beat.Event {

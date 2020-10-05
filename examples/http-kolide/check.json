@@ -5,7 +5,7 @@
     "group": "example",
     "score_weight": 1,
     "definition": {
-        "reportmatchedcontent": ".{{reportmatchedcontent}}",
+        "reportmatchedcontent": "{{.reportmatchedcontent}}",
         "requests": [
             {
                 "host": "{{.Host}}",
