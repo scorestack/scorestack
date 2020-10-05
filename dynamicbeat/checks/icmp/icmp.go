@@ -15,10 +15,10 @@ import (
 // it implements the "Check" interface
 type Definition struct {
 	Config          schema.CheckConfig // generic metadata about the check
-	Host            string             `optiontype:"required"`                       // IP or hostname of the host to run the ICMP check against
-	Count           int                `optiontype:"optional" optiondefault:"1"`     // The number of ICMP requests to send per check
-	AllowPacketLoss string             `optiontype:"optional" optionadefault:"true"` // Pass check based on received pings matching Count; if false, will use percent packet loss
-	Percent         int                `optiontype:"optional" optiondefault:"100"`   // Percent of packets needed to come back to pass the check
+	Host            string             `optiontype:"required"`                      // IP or hostname of the host to run the ICMP check against
+	Count           int                `optiontype:"optional" optiondefault:"1"`    // The number of ICMP requests to send per check
+	AllowPacketLoss string             `optiontype:"optional" optiondefault:"true"` // Pass check based on received pings matching Count; if false, will use percent packet loss
+	Percent         int                `optiontype:"optional" optiondefault:"100"`  // Percent of packets needed to come back to pass the check
 }
 
 // Run a single instance of the check
