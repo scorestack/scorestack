@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [Unreleased]
 ------------
 
+[0.6.0] - 2020-10-17
+--------------------
+
+This release upgrades Scorestack to use Elastic Stack 7.9.2, the latest released version as of this writing. It also fixes some bugs with Dynamicbeat's check template system.
+
 ### General
 
 #### Fixed
@@ -277,7 +282,8 @@ This release is in preparation for ISTS 2020.
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc2...HEAD
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.0...dev
+[0.6.0]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc2...v0.6.0
 [0.6.0-rc2]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc1...v0.6.0-rc2
 [0.6.0-rc1]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0-rc1
 [0.5.1]: https://github.com/scorestack/scorestack/compare/v0.5.0...v0.5.1
