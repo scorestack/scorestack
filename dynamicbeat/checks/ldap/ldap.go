@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	ldap "github.com/go-ldap/ldap/v3"
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
-	"gopkg.in/ldap.v2"
 )
 
 // The Definition configures the behavior of the LDAP check

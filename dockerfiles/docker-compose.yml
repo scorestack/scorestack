@@ -25,17 +25,14 @@ services:
     environment:
       GOPATH: /home/scorestack/go
     image: dynamicbeat-devcontainer:latest
+    network_mode: host
     volumes:
       - "../:/home/scorestack/go/src/github.com/scorestack/scorestack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     user: scorestack
 
   kibana-plugin-ci:
-    build:
-      context: .
-      dockerfile: kibana-plugin.Dockerfile
-      target: ci
-    image: kibana-plugin-ci:latest
+    image: scorestack/kibana:7.9.2
     volumes:
       - "../kibana-plugin:/home/node/kibana/plugins/scorestack"
       - "./scripts/kibana-plugin:/scripts"
@@ -48,6 +45,7 @@ services:
       target: devcontainer
     command: /bin/sh -c "while sleep 1000; do :; done"
     image: kibana-plugin-devcontainer:latest
+    network_mode: host
     ports:
       - 5601:5601
     volumes:

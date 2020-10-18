@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/sparrc/go-ping"
+	"github.com/go-ping/ping"
 
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
@@ -15,10 +15,10 @@ import (
 // it implements the "Check" interface
 type Definition struct {
 	Config          schema.CheckConfig // generic metadata about the check
-	Host            string             `optiontype:"required"`                       // IP or hostname of the host to run the ICMP check against
-	Count           int                `optiontype:"optional" optiondefault:"1"`     // The number of ICMP requests to send per check
-	AllowPacketLoss string             `optiontype:"optional" optionadefault:"true"` // Pass check based on received pings matching Count; if false, will use percent packet loss
-	Percent         int                `optiontype:"optional" optiondefault:"100"`   // Percent of packets needed to come back to pass the check
+	Host            string             `optiontype:"required"`                      // IP or hostname of the host to run the ICMP check against
+	Count           int                `optiontype:"optional" optiondefault:"1"`    // The number of ICMP requests to send per check
+	AllowPacketLoss string             `optiontype:"optional" optiondefault:"true"` // Pass check based on received pings matching Count; if false, will use percent packet loss
+	Percent         int                `optiontype:"optional" optiondefault:"100"`  // Percent of packets needed to come back to pass the check
 }
 
 // Run a single instance of the check
@@ -34,7 +34,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Send ping
-	pinger.Count = 3
+	pinger.Count = d.Count
 	// TODO: change this to be relative to the parent context's timeout
 	pinger.Timeout = 25 * time.Second
 	_ = pinger.Run()
@@ -48,10 +48,13 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	stats := pinger.Statistics()
 
+	details := make(map[string]string)
 	// Check packet loss instead of count
 	if !passCount {
 		if stats.PacketLoss >= float64(d.Percent) {
 			result.Message = "Not all pings made it back!"
+			details["packetloss_percent"] = strconv.FormatFloat(stats.PacketLoss, 'f', -1, 64)
+			result.Details = details
 			return result
 		}
 
@@ -63,6 +66,9 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Check for failure of ICMP
 	if stats.PacketsRecv != d.Count {
 		result.Message = fmt.Sprint("Not all pings made it back!")
+		details["packets_received"] = fmt.Sprintf("%d", stats.PacketsRecv)
+		details["packets_expected"] = fmt.Sprintf("%d", d.Count)
+		result.Details = details
 		return result
 	}
 

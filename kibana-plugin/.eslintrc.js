@@ -1,24 +1,9 @@
 module.exports = {
   root: true,
   extends: ['@elastic/eslint-config-kibana', 'plugin:@elastic/eui/recommended'],
-  settings: {
-    'import/resolver': {
-      '@kbn/eslint-import-resolver-kibana': {
-        rootPackageName: 'kibana-plugin',
-      }
-    },
+  rules: {
+    '@kbn/eslint/require-license-header': 'off',
+    '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/class-name-casing': 'off',
   },
-  overrides: [
-    {
-      files: ['**/public/**/*'],
-      settings: {
-        'import/resolver': {
-          '@kbn/eslint-import-resolver-kibana': {
-            forceNode: false,
-            rootPackageName: 'kibana-plugin',
-          },
-        },
-      },
-    },
-  ]
 };

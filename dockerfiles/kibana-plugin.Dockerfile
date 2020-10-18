@@ -1,5 +1,5 @@
 ###############################################################################
-FROM node:10.15.2 as ci
+FROM node:10.22.1 as ci
 ###############################################################################
 
 RUN apt-get update
@@ -23,16 +23,17 @@ RUN chmod 0440 /etc/sudoers.d/$USERNAME
 RUN apt-get install -y \
     git
 RUN npm install -g \
-    yarn \
     eslint
 
 # Clone correct version of Kibana
-RUN git clone https://github.com/elastic/kibana /home/$USERNAME/kibana
-RUN cd /home/$USERNAME/kibana && git checkout v7.5.1
+RUN git clone --branch v7.9.2 --depth 1 https://github.com/elastic/kibana /home/$USERNAME/kibana
 
 # Set up plugin directory
 RUN mkdir -p /home/$USERNAME/kibana/plugins
 RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/kibana
+
+# Install Kibana dependencies
+RUN cd /home/$USERNAME/kibana && sudo -u $USERNAME yarn kbn bootstrap
 
 ###############################################################################
 FROM ci as devcontainer

@@ -8,8 +8,97 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [Unreleased]
 ------------
 
+[0.6.0] - 2020-10-17
+--------------------
+
+This release upgrades Scorestack to use Elastic Stack 7.9.2, the latest released version as of this writing. It also fixes some bugs with Dynamicbeat's check template system.
+
+### General
+
+#### Fixed
+
+- Updated small/docker setup script to properly parse kibana password
+- Updated SSL configuration paths in example Dynamicbeat config
+- Fix template syntax error in `http-kolide` example check
+
+### Dynamicbeat
+
+#### Added
+
+- Report template failure errors in check results
+- Report ICMP packet statistics in check result details for failed checks
+
+#### Fixed
+
+- Don't panic on invalid templates
+- Remove typo in ICMP definition struct field tag
+- Don't ignore Count field in ICMP definition
+
+[0.6.0-rc2] - 2020-10-04
+------------------------
+
+### Kibana Plugin
+
+#### Fixed
+
+- Build plugin bundles and include them in the plugin zipfile
+
+[0.6.0-rc1] - 2020-10-04
+------------------------
+
+Updating Scorestack to Elastic Stack 7.9.2.
+
+### General
+
+#### Added
+
+- Prebuild scorestack/kibana:7.9.2 container for CI and devcontainer
+
+#### Changed
+
+- Run `yarn kbn bootstrap` during Kibana plugin container build process
+- Update CI to use prebuilt Kibana container
+- Update Elastic Stack to 7.9.2
+
+### Dynamicbeat
+
+#### Changed
+
+- Swap github.com/sparrc/go-ping with github.com/go-ping/ping
+- Update dependencies
+- Update to libbeat 7.9.2
+
+#### Fixed
+
+- Re-add the check code that was accidentally removed in v0.5.1
+
+### Kibana Plugin
+
+#### Changed
+
+- Migrate plugin to Kibana New Platform
+- Update plugin to Kibana 7.9.2
+- Rewrite plugin in TypeScript
+
+#### Fixed
+
+- Replace TinyURL plugin link with GitHub Releases link
+
+[0.5.1] - 2020-10-01
+--------------------
+
+An intermediate release to support the transition of Dynamicbeat to go mod.
+
+### Dynamicbeat
+
+#### Changed
+
+- Migrate to go mod
+
 [0.5.0] - 2020-09-29
 --------------------
+
+This is the first public release of Scorestack.
 
 ### General
 
@@ -46,6 +135,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [0.4.0] - 2020-04-25
 --------------------
 
+This release implements features for IRSeC 2020.
+
 ### General
 
 #### Added
@@ -62,6 +153,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 [0.3.0] - 2020-04-07
 --------------------
+
+This release focuses on some housekeeping tasks and Dynamicbeat bugfixes.
 
 ### General
 
@@ -100,6 +193,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 [0.2.0] - 2020-02-28
 --------------------
+
+This release is in preparation for ISTS 2020.
 
 ### General
 
@@ -185,11 +280,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [0.1.0] - 2020-02-13
 --------------------
 
-- Initial release of Scorestack
+The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.5.0...HEAD
-[0.5.0]: https://github.com/scorestack/scorestack/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/scorestack/scorestack/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/scorestack/scorestack/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/scorestack/scorestack/compare/v0.1.0...v0.2.0
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.0...dev
+[0.6.0]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc2...v0.6.0
+[0.6.0-rc2]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc1...v0.6.0-rc2
+[0.6.0-rc1]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0-rc1
+[0.5.1]: https://github.com/scorestack/scorestack/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/scorestack/scorestack/compare/v0.4...v0.5.0
+[0.4.0]: https://github.com/scorestack/scorestack/compare/v0.3...v0.4
+[0.3.0]: https://github.com/scorestack/scorestack/compare/v0.2...v0.3
+[0.2.0]: https://github.com/scorestack/scorestack/compare/v0.1...v0.2
 [0.1.0]: https://github.com/scorestack/scorestack/releases/tag/v0.1.0

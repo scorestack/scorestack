@@ -1,0 +1,8 @@
+---
+elasticsearch.hosts: ["https://localhost:9200"]
+elasticsearch.ssl.verificationMode: "none"
+elasticsearch.username: root
+elasticsearch.password: changeme
+server.host: "0.0.0.0"
+server.ssl.enabled: false
+xpack.reporting.capture.browser.chromium.disableSandbox: true

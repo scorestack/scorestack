@@ -1,5 +1,5 @@
-= Dynamicbeat Docs
+= {Beat} Docs
 
-Welcome to the Dynamicbeat documentation.
+Welcome to the {Beat} documentation.
 
 

@@ -1,11 +1,13 @@
-# Dynamicbeat
+Dynamicbeat
+===========
 
 Welcome to Dynamicbeat.
 
 Ensure that this folder is at the following location:
 `${GOPATH}/src/github.com/scorestack/scorestack/dynamicbeat`
 
-## Getting Started with Dynamicbeat
+Getting Started with Dynamicbeat
+--------------------------------
 
 ### Requirements
 
@@ -32,7 +34,7 @@ For further development, check out the [beat developer guide](https://www.elasti
 
 ### Build
 
-To build the binary for Dynamicbeat run the command below. This will generate a binary
+To build the binary for {Beat} run the command below. This will generate a binary
 in the same directory with the name dynamicbeat.
 
 ```
@@ -79,7 +81,7 @@ make update
 
 ### Cleanup
 
-To clean  Dynamicbeat source code, run the following command:
+To clean Dynamicbeat source code, run the following command:
 
 ```
 make fmt
