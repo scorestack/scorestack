@@ -1,11 +1,11 @@
 {
   "name": "scorestack",
-  "version": "0.6.0-rc2",
+  "version": "0.6.0",
   "description": "A Kibana plugin for viewing and modifying Scorestack checks and attributes.",
   "private": true,
   "scripts": {
     "prebuild": "node ../../scripts/build_kibana_platform_plugins --verbose --dist --filter scorestack",
-    "build": "plugin-helpers build --build-version 0.6.0-rc2 --kibana-version 7.9.2",
+    "build": "plugin-helpers build --build-version 0.6.0 --kibana-version 7.9.2",
     "kbn": "node ../../scripts/kbn",
     "lint": "eslint --ignore-path .gitignore --color .",
     "plugin-helpers": "plugin-helpers",
