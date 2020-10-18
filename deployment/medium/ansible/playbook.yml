@@ -400,7 +400,7 @@
         - Restart Kibana
 
     - name: Install plugin
-      command: /usr/share/kibana/bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.6.0-rc2/kibana-plugin-v0.6.0-rc2.zip
+      command: /usr/share/kibana/bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.6.0/kibana-plugin-v0.6.0.zip
       args:
         creates: /usr/share/kibana/plugins/scorestack
       become_user: kibana
