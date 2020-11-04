@@ -2,13 +2,14 @@
 name: Feature request
 about: Suggest a new feature for Scorestack.
 title: ''
-labels: feature, new
+labels: type:feature, status:pending
 assignees: ''
 
 ---
 
-**What do you want Scorestack to do that it cannot currently do?**
-A clear and consise description of the feature you would like to be added.
+Feature Request
+---------------
 
-**How would you like Scorestack to do that?**
-A clear and concise description of how you would like Scorestack to implement the feature.
+What new thing would you like added to Scorestack?
+
+If you have some ideas of how it could be added, feel free to add them here or in the comments!

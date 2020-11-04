@@ -2,11 +2,12 @@
 name: Check protocol
 about: Request a protocol to be supported by Dynamicbeat.
 title: ''
-labels: check protocol, dynamicbeat, feature, new
+labels: type:feature, status:pending, area:dynamicbeat
 assignees: ''
 
 ---
 
-**What application or protocol would you like to be added? Links to RFCs or other documentation can be helpful.**
+Check Protocol Request
+----------------------
 
-**Please explain why this protocol cannot be monitored by the existing check types that Dynamicbeat supports.**
+What application or protocol would you like Dynamicbeat to support? Links to RFCs or other documentation about how it works is quite helpful.
