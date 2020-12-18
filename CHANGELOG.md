@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 [Unreleased]
 ------------
 
+### General
+
+#### Fixed
+
+- Documented `add-team.sh`'s dependency on `jq` (#261)
+
 [0.6.0] - 2020-10-17
 --------------------
 
