@@ -92,7 +92,9 @@ Similar to `admin-attribs.json`, `user-attribs.json` will allow both Users and A
 Adding Teams
 ------------
 
-Now that we know the folder structure for our checks as well as what attributes we want to make available to Admins and Users, we can now add a team and checks to Elastic and start scoring! To add a team with the checks you have configured, you will use the `add-team.sh` script. Before we run the script you will need to configure some values. Open the `add-team.sh` script in your editor of choice and modify the following values at the top of the file:
+Now that we know the folder structure for our checks as well as what attributes we want to make available to Admins and Users, we can now add a team and checks to Elastic and start scoring! To add a team with the checks you have configured, you will use the `add-team.sh` script. Please note that the `add-team.sh` script requires the [`jq`](https://stedolan.github.io/jq/) binary to be installed on your system.
+
+Before we run the script you will need to configure some values. Open the `add-team.sh` script in your editor of choice and modify the following values at the top of the file:
 
 ```
 ELASTICSEARCH_HOST=localhost:9200
