@@ -1,7 +1,11 @@
 Summary
 =======
 
-- [Introduction](./introduction.md)
+[Introduction]()
+
+Checks
+------
+
 - [Checks](./checks.md)
   - [Adding Checks](./checks/adding_checks.md)
   - [`check.json`](./checks/check_json.md)
@@ -9,7 +13,23 @@ Summary
   - [Adding Teams](./checks/adding_teams.md)
   - [Updating Checks](./checks/updating.md)
 - [Check Reference](./reference.md)
-- [Administration](./administration.md)
-- [Building](./building.md)
-- [Appendix](./appendix.md)
-  - [Glossary](./appendix/glossary.md)
+
+Administration
+--------------
+
+- [Administration]()
+
+Development
+-----------
+
+- [Building]()
+
+Appendix
+--------
+
+- [Appendix]()
+  - [Glossary]()
+
+---
+
+[Contributors]()

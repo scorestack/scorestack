@@ -1,2 +1,0 @@
-Scorestack Administration
-=========================
