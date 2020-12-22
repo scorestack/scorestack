@@ -2,5 +2,5 @@
 authors = ["Sean Newman", "Simon Buchheit"]
 language = "en"
 multilingual = false
-src = "src"
+src = "docs"
 title = "Scorestack Documentation"

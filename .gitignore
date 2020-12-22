@@ -1,1 +1,5 @@
+# mdbook build artifacts
+/book/
+
+# Docker-compose environment file
 .env

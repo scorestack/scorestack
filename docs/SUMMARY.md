@@ -31,7 +31,7 @@ Checks
 Administration
 --------------
 
-- [Administration]()
+- [Administration](./administration.md)
 
 Development
 -----------
