@@ -50,7 +50,7 @@ Development Documentation
 Appendix
 --------
 
-- [Appendix A - FAQ]()
+- [Appendix A - FAQ](./appendix/faq.md)
 - [Appendix B - Glossary]()
 - [Appendix C - Developer Processes]()
 
