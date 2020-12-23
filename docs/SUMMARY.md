@@ -28,21 +28,30 @@ Checks
   - [WinRM](./reference/winrm.md)
   - [XMPP](./reference/xmpp.md)
 
-Administration
---------------
-
-- [Administration](./administration.md)
-
-Development
+User Guides
 -----------
 
+- [Deployment](./deployment.md)
+  - [Obtaining Binaries](./deployment/binaries.md)
+  - [Cloning the Repository](./deployment/cloning.md)
+  - [Small Architecture](./deployment/small.md)
+  - [Medium Architecture](./deployment/medium.md)
+  - [Dynamicbeat](./deployment/dynamicbeat.md)
+
+Development Documentation
+-------------------------
+
+- [Design](./design.md)
+  - [Elastic Stack Architecture](./design/architecture.md)
+  - [User Roles](./design/permissions.md)
+  - [Life of a Check](./design/check.md)
 - [Building]()
 
 Appendix
 --------
 
-- [Appendix]()
-  - [Glossary]()
+- [Appendix A - Glossary]()
+- [Appendix B - Developer Processes]()
 
 ---
 
