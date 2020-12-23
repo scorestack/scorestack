@@ -45,13 +45,14 @@ Development Documentation
   - [Elastic Stack Architecture](./design/architecture.md)
   - [User Roles](./design/permissions.md)
   - [Life of a Check](./design/check.md)
-- [Building]()
+- [Building Binaries](./building.md)
 
 Appendix
 --------
 
-- [Appendix A - Glossary]()
-- [Appendix B - Developer Processes]()
+- [Appendix A - FAQ]()
+- [Appendix B - Glossary]()
+- [Appendix C - Developer Processes]()
 
 ---
 
