@@ -1,7 +1,7 @@
 Summary
 =======
 
-[Introduction]()
+[Introduction](./introduction.md)
 
 Checks
 ------
