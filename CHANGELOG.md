@@ -28,6 +28,7 @@ Each section organizes entries into the following subsections:
 #### Changed
 
 - Migrated documentation to `mdbook`
+- Changed WinRM example check's command to `whoami`
 
 #### Fixed
 
