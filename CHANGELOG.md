@@ -25,6 +25,10 @@ Each section organizes entries into the following subsections:
 
 ### General
 
+#### Changed
+
+- Migrated documentation to `mdbook`
+
 #### Fixed
 
 - Documented `add-team.sh`'s dependency on `jq` (#261)
