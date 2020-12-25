@@ -14,4 +14,9 @@ WinRM
 
 > This check will _only_ work with local users using basic authentication, because [the WinRM library used only supports that authentication method](https://github.com/masterzen/winrm#preparing-the-remote-windows-machine-for-basic-authentication).
 
-Sometimes this check will fail even if you can connect to the system over WinRM using other tools, like Ansible or PowerShell. This is because the library used for this check only supports certain WinRM configurations, and configurations that are valid for other tools may not work with this one. To 
+Troubleshooting
+---------------
+
+Sometimes this check will fail even if you can connect to the system over WinRM using other tools, like Ansible or PowerShell. This is because the library used for this check only supports certain WinRM configurations, and configurations that are valid for other tools may not work with this one.
+
+When troubleshooting this check, it may be useful to use [winrm-cli](https://github.com/masterzen/winrm-cli), a WinRM command-line client written in golang. The tool uses the same library as this check, and is written by the same author. If you are able to make a connection using winrm-cli, then this check should be passing. If you're still having issues, open an issue! In that case, there may be an issue with the Dynamicbeat code.
