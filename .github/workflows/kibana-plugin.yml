@@ -1,7 +1,10 @@
 ---
 name: Kibana Plugin
 
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - gh-pages
 
 jobs:
 
