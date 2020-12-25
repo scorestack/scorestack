@@ -14,6 +14,13 @@ WinRM
 
 > This check will _only_ work with local users using basic authentication, because [the WinRM library used only supports that authentication method](https://github.com/masterzen/winrm#preparing-the-remote-windows-machine-for-basic-authentication).
 
+Picking a Command
+-----------------
+
+While the `Cmd` parameter can generally be used for whatever you'd like, it is recommended to avoid the `netstat` command. Some Windows systems can have spurious check failures if check runs the `netstat` command. Other systems may take 2-3 seconds to print each line of `netstat` output, impacting usability for blueteamers and possibly causing checks to fail due to timeout issues. 
+
+Issues with the `netstat` command _may_ be infrastructure-specific. If you'd really like to check a user's ability to run the `netstat` command, just make sure to test the check thoroughly before the competition _on your competition infrastructure_. One good way of doing this would be running a Dynamicbeat instance against all your checks with a very low period, such as 5-10 seconds. If you have no issues with using `netstat` as your checked command, you should be fine!
+
 Troubleshooting
 ---------------
 
