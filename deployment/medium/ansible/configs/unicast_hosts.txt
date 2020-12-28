@@ -1,5 +1,0 @@
-{% for host in ["elasticsearch1", "elasticsearch2", "elasticsearch3"] %}
-{% if host != inventory_hostname %}
-{{ host }}
-{% endif %}
-{% endfor %}

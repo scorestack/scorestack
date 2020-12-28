@@ -1,8 +1,0 @@
-/.idea
-/build
-/data
-
-.DS_Store
-/dynamicbeat
-/dynamicbeat.test
-*.pyc

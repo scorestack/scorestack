@@ -1,0 +1,277 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Elastic Stack Architecture - Scorestack Documentation</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../favicon.png">
+        
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../checks.html"><strong aria-hidden="true">1.</strong> Checks</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../checks/adding_checks.html"><strong aria-hidden="true">1.1.</strong> Adding Checks</a></li><li class="chapter-item expanded "><a href="../checks/check_json.html"><strong aria-hidden="true">1.2.</strong> check.json</a></li><li class="chapter-item expanded "><a href="../checks/attributes.html"><strong aria-hidden="true">1.3.</strong> Attributes</a></li><li class="chapter-item expanded "><a href="../checks/adding_teams.html"><strong aria-hidden="true">1.4.</strong> Adding Teams</a></li><li class="chapter-item expanded "><a href="../checks/updating.html"><strong aria-hidden="true">1.5.</strong> Updating Checks</a></li></ol></li><li class="chapter-item expanded "><a href="../reference.html"><strong aria-hidden="true">2.</strong> Check Reference</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/dns.html"><strong aria-hidden="true">2.1.</strong> DNS</a></li><li class="chapter-item expanded "><a href="../reference/ftp.html"><strong aria-hidden="true">2.2.</strong> FTP</a></li><li class="chapter-item expanded "><a href="../reference/http.html"><strong aria-hidden="true">2.3.</strong> HTTP</a></li><li class="chapter-item expanded "><a href="../reference/icmp.html"><strong aria-hidden="true">2.4.</strong> ICMP</a></li><li class="chapter-item expanded "><a href="../reference/imap.html"><strong aria-hidden="true">2.5.</strong> IMAP</a></li><li class="chapter-item expanded "><a href="../reference/ldap.html"><strong aria-hidden="true">2.6.</strong> LDAP</a></li><li class="chapter-item expanded "><a href="../reference/mysql.html"><strong aria-hidden="true">2.7.</strong> MySQL</a></li><li class="chapter-item expanded "><a href="../reference/noop.html"><strong aria-hidden="true">2.8.</strong> Noop</a></li><li class="chapter-item expanded "><a href="../reference/smb.html"><strong aria-hidden="true">2.9.</strong> SMB</a></li><li class="chapter-item expanded "><a href="../reference/smtp.html"><strong aria-hidden="true">2.10.</strong> SMTP</a></li><li class="chapter-item expanded "><a href="../reference/ssh.html"><strong aria-hidden="true">2.11.</strong> SSH</a></li><li class="chapter-item expanded "><a href="../reference/vnc.html"><strong aria-hidden="true">2.12.</strong> VNC</a></li><li class="chapter-item expanded "><a href="../reference/winrm.html"><strong aria-hidden="true">2.13.</strong> WinRM</a></li><li class="chapter-item expanded "><a href="../reference/xmpp.html"><strong aria-hidden="true">2.14.</strong> XMPP</a></li></ol></li><li class="chapter-item expanded "><a href="../deployment.html"><strong aria-hidden="true">3.</strong> Deployment</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../deployment/binaries.html"><strong aria-hidden="true">3.1.</strong> Obtaining Binaries</a></li><li class="chapter-item expanded "><a href="../deployment/cloning.html"><strong aria-hidden="true">3.2.</strong> Cloning the Repository</a></li><li class="chapter-item expanded "><a href="../deployment/small.html"><strong aria-hidden="true">3.3.</strong> Small Architecture</a></li><li class="chapter-item expanded "><a href="../deployment/medium.html"><strong aria-hidden="true">3.4.</strong> Medium Architecture</a></li><li class="chapter-item expanded "><a href="../deployment/dynamicbeat.html"><strong aria-hidden="true">3.5.</strong> Dynamicbeat</a></li></ol></li><li class="chapter-item expanded "><a href="../design.html"><strong aria-hidden="true">4.</strong> Design</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../design/architecture.html" class="active"><strong aria-hidden="true">4.1.</strong> Elastic Stack Architecture</a></li><li class="chapter-item expanded "><a href="../design/permissions.html"><strong aria-hidden="true">4.2.</strong> User Roles</a></li><li class="chapter-item expanded "><a href="../design/check.html"><strong aria-hidden="true">4.3.</strong> Life of a Check</a></li></ol></li><li class="chapter-item expanded "><a href="../building.html"><strong aria-hidden="true">5.</strong> Building Binaries</a></li><li class="chapter-item expanded "><a href="../appendix/faq.html"><strong aria-hidden="true">6.</strong> Appendix A - FAQ</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">7.</strong> Appendix B - Glossary</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">8.</strong> Appendix C - Developer Processes</div></li><li class="spacer"></li><li class="chapter-item expanded affix "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Scorestack Documentation</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#elastic-stack-architectural-overview" id="elastic-stack-architectural-overview">Elastic Stack Architectural Overview</a></h1>
+<p>Scorestack is based around a customized deployment of the Elastic Stack that includes Elasticsearch, Kibana, Logstash, a Kibana plugin, and a custom Beat named Dynamicbeat. All of these components are configured with X-Pack security enabled, and TLS mutual authentication is used for all inter-cluster communications.</p>
+<p>This document provides an overview of each of the Elastic Stack components used in Scorestack, what they are used for, and what they do. It has mostly the same information as the <a href="check.html">Life of a Check</a> document, but presented as an explanation of components rather than a timeline.</p>
+<h2><a class="header" href="#elasticsearch" id="elasticsearch">Elasticsearch</a></h2>
+<p>The Elasticsearch instance (or cluster, depending on the deployment configuration) is used as a database to contain all check definitions, attributes, and check results. Several indices are created in Elasticsearch to store this information.</p>
+<p>In the <code>checkdef</code> and <code>check</code> indices and the <code>attrib_admin_*</code> and <code>attrib_user_*</code> index patterns, each document represents a single check, and will have a document ID equal to the <code>id</code> field in the check's definition.</p>
+<p>For example, if a check has an <code>id</code> of <code>dns-active-directory-team01</code>, then the documents related to that check in the above indices and index patterns will all have document IDs of <code>dns-active-directory-team01</code>.</p>
+<h3><a class="header" href="#checkdef" id="checkdef"><code>checkdef</code></a></h3>
+<p>This index is the source of check definitions for Dynamicbeat.</p>
+<h3><a class="header" href="#checks" id="checks"><code>checks</code></a></h3>
+<p>This index is a source of generic check information that contains only the <code>id</code>, <code>name</code>, <code>type</code>, and <code>group</code> fields of each check definition. This is used for some visualizations that require teams to be able to see what checks are running. This index is useful in addition to the <code>checkdef</code> index, because it does not give teams any information about how the checks are configured.</p>
+<h3><a class="header" href="#attrib_admin_" id="attrib_admin_"><code>attrib_admin_*</code></a></h3>
+<p>This index pattern contains attributes that can only be read and modified by attribute administrators. Each team has their own admin attribute index. The group name is appended to the index name. For example, a group named <code>team01</code> would have an admin attribute index of <code>attrib_admin_team01</code>.</p>
+<h3><a class="header" href="#attrib_user_" id="attrib_user_"><code>attrib_user_*</code></a></h3>
+<p>This index pattern is the same as <code>attrib_admin_*</code>, except these attributes can also be read and modified by the team's members. To clarify, only members of <code>team01</code> can view and modify the attributes in <code>attrib_user_team01</code>.</p>
+<h3><a class="header" href="#results-admin-" id="results-admin-"><code>results-admin-*</code></a></h3>
+<p>This index pattern contains detailed check results for all checks that are running. It makes it easier for competition organizers to search for any check from any team within the Discover app in Kibana and see why a check may have failed.</p>
+<p>This index pattern, along with the rest of the <code>results-*</code> index patterns, appends a timestamp to the index with the current date in <code>YYYY.MM.dd</code> format.</p>
+<h3><a class="header" href="#results-all-" id="results-all-"><code>results-all-*</code></a></h3>
+<p>This index pattern also contains the check results for all checks, but the <code>message</code> and <code>details</code> fields are removed. This lets anybody see what checks are passing for each team (which is required for some dashboards). However, nobody consulting this index pattern would be able to see the details explaining why a check failed.</p>
+<h3><a class="header" href="#results-team-" id="results-team-"><code>results-TEAM-*</code></a></h3>
+<p>These index patterns contain detailed check results for a single team's checks, and gives teams a starting point for troubleshooting their failing checks. <code>TEAM</code> is just a placeholder for the team's name. For example, <code>team01</code>'s results index pattern would be <code>results-team01-*</code>.</p>
+<h2><a class="header" href="#kibana" id="kibana">Kibana</a></h2>
+<p>The stock Kibana application is what teams use to view the current and past status of their checks, get information about why their checks are failing, and compare themselves to the other teams.</p>
+<p>The Kibana instance is configured with two Spaces: Default and Scorestack. The Default space is the normal Kibana default space, and all Kibana applications are enabled in it. The Default space should only be accessible by Scorestack administrators. The Scorestack space only enables the Kibana features that are needed for Scorestack. This is to reduce clutter in the sidebar and prevent confusion for new Scorestack users.</p>
+<p>Since dashboards, visualizations, index patterns, and other Kibana saved objects aren't shared across spaces, these saved objects are duplicated across the two spaces. The practical effect of this is that any changes made to an object (like a dashboard) in one space must also be made to the same object in the other space.</p>
+<h2><a class="header" href="#logstash" id="logstash">Logstash</a></h2>
+<p>Logstash is where check results are ingested from Dynamicbeat, processed, and then indexed into Elasticsearch. The logstash pipeline performs the following processing steps on every check result:</p>
+<ol>
+<li>Remove any unneeded fields in the check result.</li>
+<li>Convert the boolean <code>passed</code> field to an integer in the new <code>passed_int</code> field. If a check has passed, <code>passed_int</code> will be 1, otherwise it will be 0.</li>
+<li>Create an <code>epoch</code> field that contains the integer value of the check result's <code>@timestamp</code> converted to <a href="https://en.wikipedia.org/wiki/Unix_time">Epoch time</a>.</li>
+</ol>
+<p>After those processing steps, the check result is cloned and indexed into the <code>results-*</code> index patterns in Elasticsearch.</p>
+<h2><a class="header" href="#kibana-plugin" id="kibana-plugin">Kibana Plugin</a></h2>
+<p>The Kibana plugin adds a new application to Kibana that allows admins and users to view and modify check attributes. The application allows you to view the attributes for your checks, see their current values, and change their values at any time. Once an attribute value has been updated through the plugin application it will immediately update the value in Elasticsearch, but it may take a few rounds of checks for Dynamicbeat to re-read the check definitions and the change to take effect.</p>
+<h2><a class="header" href="#dynamicbeat" id="dynamicbeat">Dynamicbeat</a></h2>
+<p>Dynamicbeat is the program that runs check definitions. It built using the libbeat library from Elastic, which is the same library used for other beats like Filebeat, Winlogbeat, and Journalbeat.</p>
+<p>Dynamicbeat uses periods to separate &quot;rounds&quot; of checks. A period is a certain amount of time to wait before starting the next round. By default, Dynamicbeat's period is 30 seconds, so every 30 seconds another &quot;round&quot; of checks will be started.</p>
+<p>At startup, Dynamicbeat will first query Elasticsearch for all check definitions and check attributes, and then cache the results. This process will then be repeated every so often as defined by the <code>update_period</code> parameter in the Dynamicbeat configuration.</p>
+<p>Every period, Dynamicbeat will start all checks that it knows about at the same time and run them asynchronously. Once all checks have been completed or a timeout has been hit, whichever happens first, the check results will be created and ingested into Logstash. By default, the global timeout for all checks is 30 seconds. If a check does not finish within those 30 seconds, the check will be automatically marked as failing.</p>
+<p>If Dynamicbeat has already loaded check definitions and attributes, but cannot reach Elasticsearch for some reason, then it will continue using the check definitions and attributes that it already knows about. If Dynamicbeat cannot reach Elasticsearch during startup, then it will retry periodically until it is able to load all check information and start execution.</p>
+<p>If Dynamicbeat is unable to contact Logstash at any point in time, all check results will be cached in memory until a connection to Logstash can be reestablished. If Dynamicbeat is stopped while some check results are cached in memory, then those results will be lost. Please note that if Dynamicbeat is stopped with check results cached in memory, there is no guarantee that each &quot;round&quot; of check results is complete. In this case, some checks may have more or less check results than other checks.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../design.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../design/permissions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../design.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../design/permissions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

@@ -1,9 +1,0 @@
----
-- hosts: all
-  gather_facts: no
-  become: yes
-  tasks:
-    - name: Stop dynamicbeat
-      systemd:
-        name: dynamicbeat
-        state: stopped

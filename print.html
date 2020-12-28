@@ -1,0 +1,984 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Scorestack Documentation</title>
+        
+        <meta name="robots" content="noindex" />
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="checks.html"><strong aria-hidden="true">1.</strong> Checks</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="checks/adding_checks.html"><strong aria-hidden="true">1.1.</strong> Adding Checks</a></li><li class="chapter-item expanded "><a href="checks/check_json.html"><strong aria-hidden="true">1.2.</strong> check.json</a></li><li class="chapter-item expanded "><a href="checks/attributes.html"><strong aria-hidden="true">1.3.</strong> Attributes</a></li><li class="chapter-item expanded "><a href="checks/adding_teams.html"><strong aria-hidden="true">1.4.</strong> Adding Teams</a></li><li class="chapter-item expanded "><a href="checks/updating.html"><strong aria-hidden="true">1.5.</strong> Updating Checks</a></li></ol></li><li class="chapter-item expanded "><a href="reference.html"><strong aria-hidden="true">2.</strong> Check Reference</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reference/dns.html"><strong aria-hidden="true">2.1.</strong> DNS</a></li><li class="chapter-item expanded "><a href="reference/ftp.html"><strong aria-hidden="true">2.2.</strong> FTP</a></li><li class="chapter-item expanded "><a href="reference/http.html"><strong aria-hidden="true">2.3.</strong> HTTP</a></li><li class="chapter-item expanded "><a href="reference/icmp.html"><strong aria-hidden="true">2.4.</strong> ICMP</a></li><li class="chapter-item expanded "><a href="reference/imap.html"><strong aria-hidden="true">2.5.</strong> IMAP</a></li><li class="chapter-item expanded "><a href="reference/ldap.html"><strong aria-hidden="true">2.6.</strong> LDAP</a></li><li class="chapter-item expanded "><a href="reference/mysql.html"><strong aria-hidden="true">2.7.</strong> MySQL</a></li><li class="chapter-item expanded "><a href="reference/noop.html"><strong aria-hidden="true">2.8.</strong> Noop</a></li><li class="chapter-item expanded "><a href="reference/smb.html"><strong aria-hidden="true">2.9.</strong> SMB</a></li><li class="chapter-item expanded "><a href="reference/smtp.html"><strong aria-hidden="true">2.10.</strong> SMTP</a></li><li class="chapter-item expanded "><a href="reference/ssh.html"><strong aria-hidden="true">2.11.</strong> SSH</a></li><li class="chapter-item expanded "><a href="reference/vnc.html"><strong aria-hidden="true">2.12.</strong> VNC</a></li><li class="chapter-item expanded "><a href="reference/winrm.html"><strong aria-hidden="true">2.13.</strong> WinRM</a></li><li class="chapter-item expanded "><a href="reference/xmpp.html"><strong aria-hidden="true">2.14.</strong> XMPP</a></li></ol></li><li class="chapter-item expanded "><a href="deployment.html"><strong aria-hidden="true">3.</strong> Deployment</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="deployment/binaries.html"><strong aria-hidden="true">3.1.</strong> Obtaining Binaries</a></li><li class="chapter-item expanded "><a href="deployment/cloning.html"><strong aria-hidden="true">3.2.</strong> Cloning the Repository</a></li><li class="chapter-item expanded "><a href="deployment/small.html"><strong aria-hidden="true">3.3.</strong> Small Architecture</a></li><li class="chapter-item expanded "><a href="deployment/medium.html"><strong aria-hidden="true">3.4.</strong> Medium Architecture</a></li><li class="chapter-item expanded "><a href="deployment/dynamicbeat.html"><strong aria-hidden="true">3.5.</strong> Dynamicbeat</a></li></ol></li><li class="chapter-item expanded "><a href="design.html"><strong aria-hidden="true">4.</strong> Design</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="design/architecture.html"><strong aria-hidden="true">4.1.</strong> Elastic Stack Architecture</a></li><li class="chapter-item expanded "><a href="design/permissions.html"><strong aria-hidden="true">4.2.</strong> User Roles</a></li><li class="chapter-item expanded "><a href="design/check.html"><strong aria-hidden="true">4.3.</strong> Life of a Check</a></li></ol></li><li class="chapter-item expanded "><a href="building.html"><strong aria-hidden="true">5.</strong> Building Binaries</a></li><li class="chapter-item expanded "><a href="appendix/faq.html"><strong aria-hidden="true">6.</strong> Appendix A - FAQ</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">7.</strong> Appendix B - Glossary</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">8.</strong> Appendix C - Developer Processes</div></li><li class="spacer"></li><li class="chapter-item expanded affix "><a href="contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Scorestack Documentation</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#scorestack" id="scorestack">Scorestack</a></h1>
+<p><img src="https://github.com/scorestack/scorestack/workflows/Dynamicbeat/badge.svg" alt="Dynamicbeat" />
+<img src="https://github.com/scorestack/scorestack/workflows/Kibana%20Plugin/badge.svg" alt="Kibana Plugin" /></p>
+<p>A security competition scoring system built on the Elastic stack.</p>
+<h2><a class="header" href="#quickstart" id="quickstart">Quickstart</a></h2>
+<p>To get up and running checking your services with Scorestack as fast as possible, follow the deployment guide for the <a href="./deployment/small.html#docker-deployment">small deployment with Docker</a>. After that, read up on <a href="./checks/adding_checks.html">adding checks</a>, and then take a look at the example checks in the <a href="https://github.com/scorestack/scorestack/tree/stable/examples"><code>examples</code> folder in the repository</a> - you should be able to find examples to get you started for several of your services! After you've added some checks, check out the <a href="./deployment/dynamicbeat.html">Dynamicbeat deployment guide</a> to get Dynamicbeat up and running.</p>
+<h2><a class="header" href="#documentation-overview" id="documentation-overview">Documentation Overview</a></h2>
+<p>This documentation is split into sections based on overall topics and audiences. Each section starts with a brief introduction that explains in more detail its intended audience and what it covers.</p>
+<h3><a class="header" href="#checks" id="checks">Checks</a></h3>
+<p>The <a href="./checks.html">check guide</a> and <a href="./reference.html">check reference</a> cover pretty much everything you need to know about writing and adding checks to Scorestack. These sections are written for anyone who is writing checks for Scorestack - not just people who are managing a Scorestack instance.</p>
+<h3><a class="header" href="#user-guides" id="user-guides">User Guides</a></h3>
+<p>The <a href="./deployment.html">deployment guide</a> covers everything you need to know about deploying a Scorestack instance. It also explains the various automation and architectures that are maintained by the Scorestack developers.</p>
+<h3><a class="header" href="#development-documentation" id="development-documentation">Development Documentation</a></h3>
+<p>The development documentation consists of the <a href="./design.html">design docs</a> and the <a href="./building.html">binary building guide</a>. These sections are primarily written for Scorestack contributors, but Scorestack administrators may also find them useful. The binary building guide explains how to build your own copies of the binaries provided in the Scorestack releases. The design docs attempt to comprehensively describe how Scorestack works.</p>
+<h3><a class="header" href="#appendices" id="appendices">Appendices</a></h3>
+<p>The appendices are the catch-all for any other content that doesn't fall into any of the above categories. For now this includes an <a href="./appendix/faq.html">FAQ</a>, but other topics will be added over time.</p>
+<h1><a class="header" href="#configuring-checks" id="configuring-checks">Configuring Checks</a></h1>
+<p>This section provides an overview of how to write Scorestack checks for your infrastructure.</p>
+<p>Creating a check involves writing a JSON document which will configure the arguments for a check and define any necessary metadata information about the check. This document, which is called a <strong>check definition</strong> (or just <strong>definition</strong> for short) can optionally configure <strong>attributes</strong>. An attribute is a named variable with a string value that will be templated into the check at runtime by Dynamicbeat.</p>
+<p>Attribute values can be changed during a competition by users and administrators through the Kibana UI. They are mainly useful for values that are likely to change frequently, such as service account credentials.</p>
+<p>Once a definition document has been written, any attributes referenced in the definition must be configured with a permission level and default values.</p>
+<p>As you read, it may be useful to consult the example check definitions in the <a href="https://github.com/scorestack/scorestack/tree/stable/examples"><code>examples/</code> folder of the repository</a>.</p>
+<h1><a class="header" href="#adding-new-checks" id="adding-new-checks">Adding New Checks</a></h1>
+<p>In order to configure and add checks to Scorestack, you will have to create a folder structure containing the JSON definitions for each check. The <code>add-team.sh</code> script, which is used to add new checks to Scorestack or update existing checks, expects the following folder structure.</p>
+<pre><code>myChecks
+├── dns-host1
+│   ├── admin-attribs.json
+│   └── check.json
+└── http-host2
+    ├── admin-attribs.json
+    ├── check.json
+    └── user-attribs.json
+</code></pre>
+<p>The top level directory (<code>myChecks</code>) contains subfolders for all of the desired checks (<code>dns-host1</code>, <code>http-host2</code>, etc.). Each of these subfolders will contain up to three JSON files that will define the specific check. The three JSON files are as follows:</p>
+<ul>
+<li><code>check.json</code>: The main JSON document that provides values for any of a check's required arguments, and optionally overrides the defaults for a some of a check's optional arguments.</li>
+<li><code>admin-attribs.json</code>: The attributes of a check that only an administrator (such as a competition volunteer) will be allowed to change during a competition through Kibana.</li>
+<li><code>user-attribs.json</code>: The attributes of a check that both users and administrators will be allowed to change during a competition through Kibana.</li>
+</ul>
+<h1><a class="header" href="#checkjson" id="checkjson"><code>check.json</code></a></h1>
+<p>This file contains the meat and potatoes for each check definition. Every <code>check.json</code> file <strong>must</strong> contain the following parameters:</p>
+<table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>id</td><td>String</td><td>A unique identifier for the check. The <code>group</code> attribute will be appended to this value in Elasticsearch. The value of this parameter <em>must</em> be the same as the check's folder name.</td></tr>
+<tr><td>name</td><td>String</td><td>This is the name of the check that will be displayed on the scoreboard.</td></tr>
+<tr><td>type</td><td>String</td><td>The type of check (dns, ftp, http, etc.)</td></tr>
+<tr><td>group</td><td>String</td><td>The team associated with this check.</td></tr>
+<tr><td>score_weight</td><td>Int</td><td>This is the number of points awarded for a successful check.</td></tr>
+<tr><td>definition</td><td>JSON Object</td><td>This contains parameters that are specific to the kind of check being defined.</td></tr>
+</tbody></table>
+<p>The content of the <code>definition</code> parameter depends on what kind of check is being defined. Please see <a href="checks/../reference.html">the check reference</a> for information on what parameters are expected within the <code>definition</code> parameter for each check type.</p>
+<h2><a class="header" href="#example" id="example">Example</a></h2>
+<p>This is a minimal ICMP check definition that doesn't define any attributes.</p>
+<pre><code class="language-json">{
+    &quot;id&quot;: &quot;icmp&quot;,
+    &quot;name&quot;: &quot;ICMP&quot;,
+    &quot;type&quot;: &quot;icmp&quot;,
+    &quot;group&quot;: &quot;example&quot;,
+    &quot;score_weight&quot;: 1,
+    &quot;definition&quot;: {
+        &quot;host&quot;: &quot;127.0.0.1&quot;
+    }
+}
+</code></pre>
+<h1><a class="header" href="#attributes" id="attributes">Attributes</a></h1>
+<p>Attributes are named variables referenced within a check definition that allow string values to be inserted into a definition at runtime. This allows for dynamic updates to scoring through the Kibana UI during a competition, and is typically useful for things that change a lot - like usernames and/or passwords.</p>
+<p>Attributes work using <a href="https://golang.org/pkg/html/template/">golang templates</a> to insert attribute values into the check definitions before they are parsed by Dynamicbeat.</p>
+<p>To define an attribute, you just have to use the <code>{{.Name}}</code> syntax somewhere within a check definition, where <code>Name</code> is the name of the attribute you are defining. Then, you must give the attribute an initial value in one of two files: <code>admin-attribs.json</code> or <code>user-attribs.json</code>.</p>
+<p>The format of these two attribute files is a flat JSON object of key-value pairs. Each key is the name of an attribute, and each value is the string that will be inserted into the check definition at the location where it is referenced.</p>
+<h2><a class="header" href="#permissions" id="permissions">Permissions</a></h2>
+<p>The only difference between the two attribute files is the permissions on the attributes defined within them. Which file an attribute is defined in determines which users are able to view and modify the attribute.</p>
+<p>The <code>admin-attribs.json</code> file contains <em>administrator</em> attributes. These attributes can only be viewed and changed by users with the <code>attribute-admin</code> role. Administrator attributes can be useful for updating checks to react to injects, such as changing a check from HTTP to HTTPS. They can also be a method of tweaking and debugging checks as they are being written, but this is generally not recommended.</p>
+<p>The <code>user-attribs.json</code> file contains <em>user</em> or <em>team</em> attributes. These attributes can only be viewed and changed by members of the same group as the check. For example, the attributes for a check in the <code>blue</code> group is restricted to users that are also in the <code>blue</code> group. These attributes are useful for values that may be changed by blueteamers, such as service account credentials.</p>
+<h2><a class="header" href="#examples" id="examples">Examples</a></h2>
+<p>Here's the same definition <a href="checks/./check_json.html">from the <code>check.json</code> page</a>, except the <code>host</code> argument references an attribute named <code>Host</code>.</p>
+<pre><code class="language-json">{
+    &quot;id&quot;: &quot;icmp&quot;,
+    &quot;name&quot;: &quot;ICMP&quot;,
+    &quot;type&quot;: &quot;icmp&quot;,
+    &quot;group&quot;: &quot;example&quot;,
+    &quot;score_weight&quot;: 1,
+    &quot;definition&quot;: {
+        &quot;host&quot;: &quot;{{.Host}}&quot;
+    }
+}
+</code></pre>
+<p>An <code>admin-attribs.json</code> file for this check could look like this.</p>
+<pre><code class="language-json">{
+  &quot;Host&quot;: &quot;localhost&quot;
+}
+</code></pre>
+<p>Note that the <code>Host</code> key is case-sensitive. Also, if the <code>Host</code> attribute should be a user attribute, the file would have the same format, but it would be named <code>user-attribs.json</code> instead.</p>
+<h1><a class="header" href="#adding-teams" id="adding-teams">Adding Teams</a></h1>
+<p>Once you've written your <a href="checks/./check_json.html">check definitions</a> and <a href="checks/./attributes.html">defined their attributes</a>, you need to add the checks to Scorestack so they can start running. We have written an <code>add-team.sh</code> script that will parse the check folder and file structure and add the checks to Scorestack one team at a time.</p>
+<blockquote>
+<p>Please note that the <code>add-team.sh</code> script assumes that all checks will be run by all of the teams. If you have some checks that will only be run by specific teams, you will have to add them manually. If this is a use case that you'd like to see implemented, <a href="https://github.com/scorestack/scorestack/issues/new/choose">open an issue</a> and we'd be happy to take a look.</p>
+</blockquote>
+<p>The <code>add-team.sh</code> script performs the following actions:</p>
+<ol>
+<li>Add the all-team scoreboard if it does not already exist</li>
+<li>Configure the default index template for Scorestack indices</li>
+<li>For each team name passed as an argument:
+<ol>
+<li>Add the checks for the team</li>
+<li>Add a role for the team</li>
+<li>Add the team user</li>
+<li>Add the team's dashboard</li>
+</ol>
+</li>
+</ol>
+<p>These actions can all be performed manually by interacting with the Elasticsearch API, but the <code>add-team.sh</code> script abstracts over those operations for you.</p>
+<blockquote>
+<p>Please note the <code>add-team.sh</code> script depends on the <a href="https://stedolan.github.io/jq/"><code>jq</code></a> tool. If this tool is not available on your system or you cannot install it, consider running the script within a docker container.</p>
+</blockquote>
+<p>Before running the script, you will need to configure some values. Open the script in a text editor and modify the following values at the top of the file:</p>
+<pre><code>ELASTICSEARCH_HOST=localhost:9200
+KIBANA_HOST=localhost:5601
+CHECK_FOLDER=examples
+USERNAME=root
+PASSWORD=changeme
+</code></pre>
+<ul>
+<li><code>ELASTICSEARCH_HOST</code>: The address and port of the Elasticsearch server.</li>
+<li><code>KIBANA_HOST</code>: The address and port of the Kibana server.</li>
+<li><code>CHECK_FOLDER</code>: The top level folder containing all checks.</li>
+<li><code>USERNAME</code>: The username of the Scorestack admin user. This should usually be left as <code>root</code>, unless you have added another user to the Elastic cluster with the <code>superuser</code> role.</li>
+<li><code>PASSWORD</code>: The password for the user referenced in <code>USERNAME</code>.</li>
+</ul>
+<p>Once these values are correct for your environment, you can run <code>add-team.sh</code>. Each argument after the script name is the name of a team you would like to add.</p>
+<pre><code class="language-shell">./add-team.sh team01 team02 team03
+</code></pre>
+<p>In this case, three teams will be added: <code>team01</code>, <code>team02</code>, and <code>team03</code>.</p>
+<h2><a class="header" href="#adding-multiple-teams" id="adding-multiple-teams">Adding Multiple Teams</a></h2>
+<p>Thanks to some additional templating configured in the <code>add-team.sh</code> script, each check only has to be written once for multiple teams.</p>
+<p>When adding checks for a team, the script will make the following modifications to a definition or attribute file:</p>
+<ul>
+<li>Append <code>-GROUP</code> to the <code>id</code> parameter, where <code>GROUP</code> is the name of the group</li>
+<li>Replace <code>${TEAM}</code> wherever it occurs with the name of the group</li>
+<li>Replace <code>${TEAM_NUM}</code> wherever it occurs with the group's number</li>
+</ul>
+<h3><a class="header" href="#team_num" id="team_num"><code>${TEAM_NUM}</code></a></h3>
+<p>When a team name is passed to the <code>add-team.sh</code> script, any numbers found at the end of the team name will be parsed as the team's number. For example, <code>team10</code> would have a team number of <code>10</code>.</p>
+<p>Also, any leading zeros in the team number will be removed. For example, <code>team04</code> would have a team number of <code>4</code>, <strong>not</strong> <code>04</code>.</p>
+<p>This can be useful for templating the team's number into a domain or IP address to customize the target of a check for each team.</p>
+<h3><a class="header" href="#example-1" id="example-1">Example</a></h3>
+<p>Let's go through an example of adding multiple teams to Scorestack to see how we can use the features of the <code>add-team.sh</code> script to our advantage.</p>
+<p>We want to add 5 teams to Scorestack for a competition. Let's use an example DNS check definition with some associated administrator attributes.</p>
+<p><code>check.json</code></p>
+<pre><code class="language-json">{
+    &quot;id&quot;: &quot;dns&quot;,
+    &quot;name&quot;: &quot;DNS&quot;,
+    &quot;type&quot;: &quot;dns&quot;,
+    &quot;group&quot;: &quot;example&quot;,
+    &quot;score_weight&quot;: 1,
+    &quot;definition&quot;: {
+        &quot;Server&quot;: &quot;{{.Server}}&quot;,
+        &quot;Port&quot;: &quot;{{.Port}}&quot;,
+        &quot;Fqdn&quot;: &quot;{{.Fqdn}}&quot;,
+        &quot;ExpectedIP&quot;: &quot;{{.ExpectedIP}}&quot;
+    }
+}
+</code></pre>
+<p><code>admin-attribs.json</code></p>
+<pre><code class="language-json">{
+    &quot;Server&quot;: &quot;192.168.1.10&quot;,
+    &quot;Port&quot;: &quot;53&quot;,
+    &quot;Fqdn&quot;: &quot;www.team01.com&quot;,
+    &quot;ExpectedIP&quot;: &quot;192.168.1.98&quot;
+}
+</code></pre>
+<p>This DNS check will query the DNS server at <code>192.168.1.10</code> for the host <code>host1.com</code>, and will expect the response to report the host's IP as <code>192.168.1.98</code>. We can use the <code>${TEAM}</code> and <code>${TEAM_NUM}</code> templates to make this check a bit more generic so it'll work for all of the teams! The following is how we would do the templating:</p>
+<p><code>check.json</code> with Team templates</p>
+<pre><code class="language-json">{
+    &quot;id&quot;: &quot;dns&quot;,
+    &quot;name&quot;: &quot;DNS&quot;,
+    &quot;type&quot;: &quot;dns&quot;,
+    &quot;group&quot;: &quot;${TEAM}&quot;,
+    &quot;score_weight&quot;: 1,
+    &quot;definition&quot;: {
+        &quot;Server&quot;: &quot;{{.Server}}&quot;,
+        &quot;Port&quot;: &quot;{{.Port}}&quot;,
+        &quot;Fqdn&quot;: &quot;{{.Fqdn}}&quot;,
+        &quot;ExpectedIP&quot;: &quot;{{.ExpectedIP}}&quot;
+    }
+}
+</code></pre>
+<p><code>admin-attribs.json</code> with Team templates</p>
+<pre><code class="language-json">{
+    &quot;Server&quot;: &quot;192.168.${TEAM_NUM}.10&quot;,
+    &quot;Port&quot;: &quot;53&quot;,
+    &quot;Fqdn&quot;: &quot;www.${TEAM}.com&quot;,
+    &quot;ExpectedIP&quot;: &quot;192.168.${TEAM_NUM}.98&quot;
+}
+</code></pre>
+<p>Finally, let's see what the checks will look like once the script performs the initial templating and modifications. In this example, we'll assume the script was run with one argument - <code>team05</code>.</p>
+<p><code>check.json</code> modified for <code>team05</code></p>
+<pre><code class="language-json">{
+    &quot;id&quot;: &quot;dns-team05&quot;,
+    &quot;name&quot;: &quot;DNS&quot;,
+    &quot;type&quot;: &quot;dns&quot;,
+    &quot;group&quot;: &quot;team05&quot;,
+    &quot;score_weight&quot;: 1,
+    &quot;definition&quot;: {
+        &quot;Server&quot;: &quot;{{.Server}}&quot;,
+        &quot;Port&quot;: &quot;{{.Port}}&quot;,
+        &quot;Fqdn&quot;: &quot;{{.Fqdn}}&quot;,
+        &quot;ExpectedIP&quot;: &quot;{{.ExpectedIP}}&quot;
+    }
+}
+</code></pre>
+<p><code>admin-attribs.json</code> modified for <code>team05</code></p>
+<pre><code class="language-json">{
+    &quot;Server&quot;: &quot;192.168.5.10&quot;,
+    &quot;Port&quot;: &quot;53&quot;,
+    &quot;Fqdn&quot;: &quot;www.team05.com&quot;,
+    &quot;ExpectedIP&quot;: &quot;192.168.5.98&quot;
+}
+</code></pre>
+<h1><a class="header" href="#updating-check-definitions" id="updating-check-definitions">Updating Check Definitions</a></h1>
+<p>If you are just developing your check definitions and not actively running a competition, you can update check definitions by just running the <code>add-team.sh</code> script. It is rare, however possible, that this can cause Dynamicbeat to take longer than normal to pull the latest check definitions from Scorestack if you are updating them at the same time that Dynamicbeat tries to pull them.</p>
+<h1><a class="header" href="#check-reference" id="check-reference">Check Reference</a></h1>
+<p>This section of the documentation contains a reference to each of the check types available in Dynamicbeat. Each page within this section covers the available parameters for a specific check type. Example check definitions for all check types can be found under <a href="https://github.com/scorestack/scorestack/tree/stable/examples">the <code>examples</code> folder in the Scorestack repository</a>.</p>
+<p>Please note that the <em>Type</em> listed in the tables on these pages refers to the type that must be used in the JSON document. For example, if the <em>type</em> is <em>string</em>, then value for that parameter in the JSON document must be a <code>&quot;string&quot;</code>.</p>
+<h2><a class="header" href="#required-vs-optional" id="required-vs-optional">Required vs. Optional</a></h2>
+<p>Some parameters are required for a check type. These <em>must</em> be defined, otherwise the check definition is invalid and will not run.</p>
+<p>Other parameters are not required, and have default values. If the default value for an optional parameter is acceptable for your check, you can omit the parameter from your check definition for the sake of brevity.</p>
+<h1><a class="header" href="#dns" id="dns">DNS</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Server</td><td>String</td><td>Y</td><td>IP of the DNS server to query</td></tr>
+<tr><td>Fqdn</td><td>String</td><td>Y</td><td>The FQDN of the host you are looking up</td></tr>
+<tr><td>ExpectedIP</td><td>String</td><td>Y</td><td>The expected IP of the host you are looking up</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;53&quot;</td><td>The port of the DNS server</td></tr>
+</tbody></table>
+<h1><a class="header" href="#ftp" id="ftp">FTP</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or hostname of the host to run the FTP check against</td></tr>
+<tr><td>Username</td><td>String</td><td>Y</td><td>The user to login with over FTP</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>The password for the user that you wish to login with</td></tr>
+<tr><td>File</td><td>String</td><td>Y</td><td>The path to the file to access during the FTP check</td></tr>
+<tr><td>ContentRegex</td><td>String</td><td>N :: &quot;.*&quot;</td><td>The regex to use to match against the file contents</td></tr>
+<tr><td>HashContentMatch</td><td>String</td><td>N :: &quot;false&quot;</td><td>Whether to use hash-based matching to check the file contents</td></tr>
+<tr><td>Hash</td><td>String</td><td>N</td><td>The sha3-256 hash to use when checking the file contents with hash-based matching</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;21&quot;</td><td>The port to attempt an FTP connection on</td></tr>
+<tr><td>Simple</td><td>String</td><td>N :: &quot;false&quot;</td><td>Very simple FTP check for older servers</td></tr>
+</tbody></table>
+<p>The <code>simple</code> parameter should usually be left as the default unless you are running a check against an FTP server that is very old and supports a limited set of FTP commands. When <code>simple</code> is set to <code>&quot;true&quot;</code>, the check will only change to the directory specified in the <code>file</code> parameter and then query for the current working directory. If both of these operations succeed, then the check will pass. All other parameters will be ignored.</p>
+<p>Note that if you are using the simple version of the FTP check, the <code>file</code> parameter should point to a directory, <em>not</em> a file on the system.</p>
+<h1><a class="header" href="#http" id="http">HTTP</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Verify</td><td>String</td><td>N :: &quot;false&quot;</td><td>Whether HTTPS certs should be validated</td></tr>
+<tr><td>ReportMatchedContent</td><td>String</td><td>N :: &quot;false&quot;</td><td>Whether the matched content should be returned in the CheckResult</td></tr>
+<tr><td>Requests</td><td>[]list of requests</td><td>Y</td><td>A list of requests to make</td></tr>
+</tbody></table>
+<p>Below are the parameters found within a single <strong>request</strong>.</p>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN of the HTTP server</td></tr>
+<tr><td>Path</td><td>String</td><td>Y</td><td>Path to request - see RFC3986, section 3.3</td></tr>
+<tr><td>HTTPS</td><td>Bool</td><td>N :: false</td><td>Whether or not HTTPS should be used</td></tr>
+<tr><td>Port</td><td>UInt16</td><td>N :: 80</td><td>TCP port number the HTTP server is listening on</td></tr>
+<tr><td>Method</td><td>String</td><td>N :: &quot;GET&quot;</td><td>HTTP method to use</td></tr>
+<tr><td>Headers</td><td>map[string][string]</td><td>N</td><td>Name-Value pairs of header fields to add/override</td></tr>
+<tr><td>Body</td><td>String</td><td>N</td><td>The request body</td></tr>
+<tr><td>MatchCode</td><td>Bool</td><td>N :: false</td><td>Whether the response code must match a defined value for the check to pass</td></tr>
+<tr><td>Code</td><td>Int</td><td>N :: 200</td><td>The response status code to match</td></tr>
+<tr><td>MatchContent</td><td>Bool</td><td>N :: false</td><td>Whether the response body must match a defined regex for the check to pass</td></tr>
+<tr><td>ContentRegex</td><td>String</td><td>N :: &quot;.*&quot;</td><td>Regex for the response body to match</td></tr>
+<tr><td>StoreValue</td><td>Bool</td><td>N :: false</td><td>Whether the matched content should be saved for use in a later request</td></tr>
+</tbody></table>
+<p>An HTTP definition consists of as many <em>Requests</em> as you would like to send for that check. See the <em>examples</em> folder for clarification.</p>
+<h2><a class="header" href="#storevalue-parameter" id="storevalue-parameter"><code>StoreValue</code> Parameter</a></h2>
+<p>When the <code>StoreValue</code> attribute is set to <code>true</code> and regex-based content matching is enabled, then the content in the response that matches the <code>ContentRegex</code> will be stored in the <code>SavedValue</code> variable. You can then use this value in later requests. This can be useful for multi-stage checks that require authentication, but do not use cookies to store the session ID.</p>
+<p>One example of using the <code>StoreValue</code> attribute is the <code>http-kolide</code> example check. Before you can use the Kolide API, you must log in. The API route to log in returns a Bearer token within the response body. This Bearer token must be presented in the <code>Bearer:</code> header in order to authenticate to the API routes.</p>
+<p>The saved value is made available through the same method as attributes - just insert <code>{{.SavedValue}}</code> into your check wherever you would like it to be used.</p>
+<p>Please note that only one value can be stored using <code>StoreValue</code>. If you already have a value saved, and attempt to save another one, then the original value will be overwritten.</p>
+<h1><a class="header" href="#icmp" id="icmp">ICMP</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN of the host to run the ICMP check against</td></tr>
+<tr><td>Count</td><td>Int</td><td>N :: 1</td><td>The number of ICMP requests to send per check</td></tr>
+<tr><td>AllowPacketLoss</td><td>String</td><td>N :: &quot;false&quot;</td><td>Pass check based on received pings matching Count; if false, will use percent packet loss</td></tr>
+<tr><td>Percent</td><td>Int</td><td>N :: 100</td><td>Percent of packets needed to come back to pass the check</td></tr>
+</tbody></table>
+<h1><a class="header" href="#imap" id="imap">IMAP</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN for the IMAP server</td></tr>
+<tr><td>Username</td><td>String</td><td>Y</td><td>Username for the IMAP server</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>Password for the user</td></tr>
+<tr><td>Encrypted</td><td>String</td><td>N :: &quot;false&quot;</td><td>Whether or not to use TLS (IMAPS)</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;143&quot;</td><td>Port for the IMAP server</td></tr>
+</tbody></table>
+<h1><a class="header" href="#ldap" id="ldap">LDAP</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>User</td><td>String</td><td>Y</td><td>The user written in user@domain syntax</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>The password for the user</td></tr>
+<tr><td>Fqdn</td><td>String</td><td>Y</td><td>The FQDN of the LDAP server</td></tr>
+<tr><td>Ldaps</td><td>String</td><td>N :: &quot;false&quot;</td><td>Whether or not to use LDAP+TLS</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;389&quot;</td><td>Port for LDAP server</td></tr>
+</tbody></table>
+<h1><a class="header" href="#mysql" id="mysql">MySQL</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN for the MySQL server</td></tr>
+<tr><td>Username</td><td>String</td><td>Y</td><td>Username for the database</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>Password for the user</td></tr>
+<tr><td>Database</td><td>String</td><td>Y</td><td>Name of the database to access</td></tr>
+<tr><td>Table</td><td>String</td><td>Y</td><td>Name of the table to access</td></tr>
+<tr><td>Column</td><td>String</td><td>Y</td><td>Name of the column to access</td></tr>
+<tr><td>MatchContent</td><td>String</td><td>N :: &quot;false&quot;</td><td>Whether to perform a regex content match on the results of the query</td></tr>
+<tr><td>ContentRegex</td><td>String</td><td>N :: &quot;.*&quot;</td><td>Regex to match on</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;3306&quot;</td><td>Port for the server</td></tr>
+</tbody></table>
+<h1><a class="header" href="#noop" id="noop">Noop</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Dynamic</td><td>String</td><td>Y</td><td>Contains attributes that can be modified by admins or users</td></tr>
+<tr><td>Static</td><td>String</td><td>Y</td><td>Contains attributes</td></tr>
+</tbody></table>
+<p>The Noop check does basically nothing. Dynamicbeat will load the check definition and attributes, template them into the check, pass the check, and then return the templated check definition in the check result's details field.</p>
+<p>Noop can be useful to verify that your Dynamicbeat and Scorestack configurations are correct. It can also be used to play around with the templating and attributes systems.</p>
+<h1><a class="header" href="#smb" id="smb">SMB</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN for the SMB server</td></tr>
+<tr><td>Username</td><td>String</td><td>Y</td><td>Username for SMB share</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>Password for the user</td></tr>
+<tr><td>Share</td><td>String</td><td>Y</td><td>Name of the SMB share</td></tr>
+<tr><td>Domain</td><td>String</td><td>Y</td><td>The domain found in front of a login (SMB\Administrator : SMB would be domain)</td></tr>
+<tr><td>File</td><td>String</td><td>Y</td><td>The file in SMB share</td></tr>
+<tr><td>ContentRegex</td><td>String</td><td>N :: &quot;.*&quot;</td><td>Regex to match on</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;445&quot;</td><td>Port of the server</td></tr>
+</tbody></table>
+<h1><a class="header" href="#smtp" id="smtp">SMTP</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN of the SMTP server</td></tr>
+<tr><td>Username</td><td>String</td><td>Y</td><td>Username for the SMTP server</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>Password for the SMTP server</td></tr>
+<tr><td>Sender</td><td>String</td><td>Y</td><td>Who is sending the email</td></tr>
+<tr><td>Reciever</td><td>String</td><td>Y</td><td>Who is receiving the email</td></tr>
+<tr><td>Body</td><td>String</td><td>N :: &quot;Hello from Scorestack&quot;</td><td>Body of the email</td></tr>
+<tr><td>Encrypted</td><td>String</td><td>N :: False</td><td>Whether or not to use TLS</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;25&quot;</td><td>Port of the SMTP server</td></tr>
+</tbody></table>
+<h1><a class="header" href="#ssh" id="ssh">SSH</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN of the host to run the SSH check against</td></tr>
+<tr><td>Username</td><td>String</td><td>Y</td><td>The user to login with over SSH</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>The password for the user that you wish to login with</td></tr>
+<tr><td>Cmd</td><td>String</td><td>Y</td><td>The command to execute once SSH connection established</td></tr>
+<tr><td>MatchContent</td><td>String</td><td>N :: &quot;false&quot;</td><td>Whether or not to match content like checking files</td></tr>
+<tr><td>ContentRegex</td><td>String</td><td>N :: &quot;.*&quot;</td><td>Tegex to match if reading a file</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;22&quot;</td><td>The port to attempt an SSH connection on</td></tr>
+</tbody></table>
+<h1><a class="header" href="#vnc" id="vnc">VNC</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN of the host to run the SSH check against</td></tr>
+<tr><td>Port</td><td>String</td><td>Y</td><td>The port for the VNC server</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>The password for the user that you wish to login with</td></tr>
+</tbody></table>
+<h1><a class="header" href="#winrm" id="winrm">WinRM</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN of the WinRM machine</td></tr>
+<tr><td>Username</td><td>String</td><td>Y</td><td>User to login as. Must be a local user</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>Password for the user</td></tr>
+<tr><td>Cmd</td><td>String</td><td>Y</td><td>Command that will be executed</td></tr>
+<tr><td>Encrypted</td><td>String</td><td>N :: &quot;true&quot;</td><td>Use TLS for connection</td></tr>
+<tr><td>MatchContent</td><td>String</td><td>N :: &quot;false&quot;</td><td>Turn this on to match content from the output of the cmd</td></tr>
+<tr><td>ContentRegex</td><td>String</td><td>N :: &quot;.*&quot;</td><td>Regexp for matching output of a command</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;5986&quot;</td><td>Port for WinRM</td></tr>
+</tbody></table>
+<blockquote>
+<p>This check will <em>only</em> work with local users using basic authentication, because <a href="https://github.com/masterzen/winrm#preparing-the-remote-windows-machine-for-basic-authentication">the WinRM library used only supports that authentication method</a>.</p>
+</blockquote>
+<h2><a class="header" href="#picking-a-command" id="picking-a-command">Picking a Command</a></h2>
+<p>While the <code>Cmd</code> parameter can generally be used for whatever you'd like, it is recommended to avoid the <code>netstat</code> command. Some Windows systems can have spurious check failures if check runs the <code>netstat</code> command. Other systems may take 2-3 seconds to print each line of <code>netstat</code> output, impacting usability for blueteamers and possibly causing checks to fail due to timeout issues. </p>
+<p>Issues with the <code>netstat</code> command <em>may</em> be infrastructure-specific. If you'd really like to check a user's ability to run the <code>netstat</code> command, just make sure to test the check thoroughly before the competition <em>on your competition infrastructure</em>. One good way of doing this would be running a Dynamicbeat instance against all your checks with a very low period, such as 5-10 seconds. If you have no issues with using <code>netstat</code> as your checked command, you should be fine!</p>
+<h2><a class="header" href="#troubleshooting" id="troubleshooting">Troubleshooting</a></h2>
+<p>Sometimes this check will fail even if you can connect to the system over WinRM using other tools, like Ansible or PowerShell. This is because the library used for this check only supports certain WinRM configurations, and configurations that are valid for other tools may not work with this one.</p>
+<p>When troubleshooting this check, it may be useful to use <a href="https://github.com/masterzen/winrm-cli">winrm-cli</a>, a WinRM command-line client written in golang. The tool uses the same library as this check, and is written by the same author. If you are able to make a connection using winrm-cli, then this check should be passing. If you're still having issues, open an issue! In that case, there may be an issue with the Dynamicbeat code.</p>
+<h1><a class="header" href="#xmpp" id="xmpp">XMPP</a></h1>
+<table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
+<tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN of the XMPP Server</td></tr>
+<tr><td>Username</td><td>String</td><td>Y</td><td>Username to use for the XMPP server</td></tr>
+<tr><td>Password</td><td>String</td><td>Y</td><td>Password for the user</td></tr>
+<tr><td>Encrypted</td><td>String</td><td>N :: &quot;true&quot;</td><td>Whether or not to use TLS</td></tr>
+<tr><td>Port</td><td>String</td><td>N :: &quot;5222&quot;</td><td>The port for the XMPP server</td></tr>
+</tbody></table>
+<h1><a class="header" href="#deployment" id="deployment">Deployment</a></h1>
+<p>This section explains how to deploy Scorestack using the preconfigured deployment options. It does not explain exactly how the deployment process works, however there should be plenty of information here for someone new to Scorestack to successfully deploy a new Scorestack instance and get scoring working for their competition.</p>
+<p>If have any problems at all deploying Scorestack while following this documentation, please <a href="https://github.com/scorestack/scorestack/issues/new/choose">open a new issue</a> so we can help you out!</p>
+<p>Deploying the Elastic Stack properly for Scorestack is a fairly involved task, so the Scorestack developers maintain automation to deploy Scorestack to a variety of platforms with multiple different possible architectures. An &quot;architecture&quot; is a description of how Scorestack is deployed, and usually just refers to the number of replicas that are deployed for different services. This section will also cover the available architectures, what they look like, and what methods are available for deploying those architectures.</p>
+<h1><a class="header" href="#obtaining-binaries" id="obtaining-binaries">Obtaining Binaries</a></h1>
+<p>In order to run Dynamicbeat and Scorestack's Kibana plugin, the binaries for these components must be obtained. The Dynamicbeat binary is a compiled Golang executable that runs Dynamicbeat. The Kibana plugin binary is a zipfile containing the compiled assets that are installed into the Kibana server and loaded at runtime.</p>
+<h2><a class="header" href="#prebuilt-binaries" id="prebuilt-binaries">Prebuilt Binaries</a></h2>
+<p>Most users will want to use the prebuilt binaries that are available on the <a href="https://github.com/scorestack/scorestack/releases">Scorestack Releases page</a>. The Kibana plugin zipfile and a zipped Dynamicbeat executable are attached to each release. This is the recommended way of obtaining the binaries.</p>
+<h2><a class="header" href="#building-your-own-binaries" id="building-your-own-binaries">Building Your Own Binaries</a></h2>
+<p>If you really want to, you can build these binaries yourself. Please see the <a href="deployment/../building.html">documentation on building</a> for more information on how to do this.</p>
+<h1><a class="header" href="#cloning-the-repository" id="cloning-the-repository">Cloning the Repository</a></h1>
+<p>Whenever you need to deploy Scorestack, you need to make sure you're cloning the right branch. In most cases, cloning directly from the <code>stable</code> branch (which is the default) is fine.</p>
+<pre><code class="language-shell">git clone --branch stable https://github.com/scorestack/scorestack.git
+</code></pre>
+<p>However, if you would like to deploy a specific version of Scorestack, just pass the tag of the version you want to deploy to the <code>--branch</code> argument of <code>git clone</code>. For example, to deploy Scorestack version 0.5.0, you would run <code>git clone --branch v0.5.0 https://github.com/scorestack/scorestack.git</code>.</p>
+<p>If you just want to use the latest release, the <code>stable</code> branch is fine - it always points at the latest stable release.</p>
+<p>If you want to live life on the edge and try out an unstable release or unreleased changes, try cloning the <code>dev</code> branch instead! Just note that it <code>dev</code> is the unstable development branch, so there's no guarantees that things will work for you.</p>
+<h1><a class="header" href="#small-architecture" id="small-architecture">Small Architecture</a></h1>
+<p>This architecture deploys three hosts:</p>
+<ul>
+<li><code>elasticsearch</code>: A single-node Elasticsearch cluster</li>
+<li><code>kibana</code>: The Kibana server</li>
+<li><code>logstash</code>: The Logstash server</li>
+</ul>
+<h2><a class="header" href="#docker-deployment" id="docker-deployment">Docker Deployment</a></h2>
+<p>The Small architecture can deployed on a single system using Docker. Before deploying with Docker, you must make sure that <code>docker</code>, <code>docker-compose</code>, and <code>git</code> are installed on your system. Then, <a href="deployment/cloning.html">clone the Scorestack repository</a> to the host you plan to use for running Scorestack.</p>
+<h3><a class="header" href="#deploying" id="deploying">Deploying</a></h3>
+<p>First, change into the Scorestack repository directory.</p>
+<pre><code class="language-shell">cd scorestack
+</code></pre>
+<p>Next, you need to increase the maximum number of memory map areas that a single process can use. This is required for Elasticsearch to function properly. If you forget to configure this setting, Elasticsearch will appear to start properly, but crash and exit before the APIs are available. This setting is configured via <code>sysctl</code> on Linux hosts.</p>
+<p>You can change this setting immediately with a <code>sysctl</code> command.</p>
+<pre><code class="language-shell">sudo sysctl -w vm.max_map_count=262144
+</code></pre>
+<p>Please note the changes made by the above command will not persist on reboot. In order to persistently make these changes, add the <code>vm.max_map_count</code> setting to your <code>/etc/sysctl.conf</code> file, or to a file under the <code>/etc/sysctl.d</code> directory. The proper location for these changes depends on your distribution.</p>
+<p>Now run <code>docker-compose</code> to deploy Scorestack. Make sure to include the <code>-d</code> parameter!</p>
+<pre><code class="language-shell">sudo docker-compose -f deployment/small/docker/docker-compose.yml up -d
+</code></pre>
+<p>Once all the containers have started, you can check on the progress of the deployment by following the logs of the setup container. You can do so with another <code>docker-compose</code> command.</p>
+<pre><code class="language-shell">sudo docker-compose -f deployment/small/docker/docker-compose.yml logs -f setup
+</code></pre>
+<p>If it looks like the setup container is getting hung up on waiting for Elasticsearch or Kibana, give it two to three minutes before troubleshooting. Sometimes it can take a while for these components to get ready. If it's still trying to connect after a few minutes have passed, check the logs for the Elasticsearch and Kibana containers to see what's wrong.</p>
+<p>Once the setup container has exited, Scorestack is fully deployed and ready to use!</p>
+<h3><a class="header" href="#dynamicbeat-certificates" id="dynamicbeat-certificates">Dynamicbeat Certificates</a></h3>
+<p>To deploy Dynamicbeat, you will need the Dynamicbeat client certificate and key and the Scorestack internal CA certificate. Once the deployment has finished, these files can be found at the following paths within the repository:</p>
+<ul>
+<li><code>deployment/small/docker/certificates/dynamicbeat/dynamicbeat.key</code></li>
+<li><code>deployment/small/docker/certificates/dynamicbeat/dynamicbeat.crt</code></li>
+<li><code>deployment/small/docker/certificates/ca/ca.crt</code></li>
+</ul>
+<p>See the <a href="deployment/dynamicbeat.html">Dynamicbeat deployment guide</a> for more information.</p>
+<h3><a class="header" href="#cleanupteardown" id="cleanupteardown">Cleanup/Teardown</a></h3>
+<p>If you just want to stop Scorestack and restart it later, you can do so with normal <code>docker-compose</code> commands.</p>
+<pre><code class="language-shell">sudo docker-compose -f deployment/small/docker/docker-compose.yml down
+sudo docker-compose -f deployment/small/docker/docker-compose.yml up -d
+</code></pre>
+<blockquote>
+<p>If you restart Scorestack, the <code>setup</code> container will also be restarted, and that's okay. It shouldn't make any changes to your cluster.</p>
+</blockquote>
+<p>To destroy the Scorestack cluster completely and remove all artifacts, you must stop and remove the containers, remove the volumes, and delete the certificates from disk.</p>
+<pre><code class="language-shell">sudo docker-compose -f deployment/small/docker/docker-compose.yml down -v
+rm -rf deployment/small/docker/certificates
+</code></pre>
+<h1><a class="header" href="#medium-architecture" id="medium-architecture">Medium Architecture</a></h1>
+<p>This architecture deploys seven hosts:</p>
+<ul>
+<li><code>elasticsearch1</code>, <code>elasticsearch2</code>, <code>elasticsearch3</code>: Elasticsearch master-eligible data nodes</li>
+<li><code>elasticsearch4</code>: An Elasticsearch coordinating-only node</li>
+<li><code>kibana</code>: The Kibana server</li>
+<li><code>logstash</code>: The Logstash server</li>
+<li><code>nginx</code>: An nginx server that proxies public requests to Kibana, Logstash, and the Elasticsearch cluster. Also used as an SSH jump box.</li>
+</ul>
+<h2><a class="header" href="#gcp-deployment" id="gcp-deployment">GCP Deployment</a></h2>
+<p>The Medium architecture can be deployed to GCP using multiple VMs using Terraform and Ansible. Before running the Terraform for the GCP deployment, make sure to <a href="https://www.terraform.io/docs/providers/google/guides/getting_started.html">set up Terraform with the Google Provider</a> and make sure <code>git</code> is installed on your system. Then, <a href="deployment/cloning.html">clone the Scorestack repository</a> to the host you plan to use for deploying Scorestack. This can be your laptop or wherever you're most comfortable - Scorestack itself will not be running in this host!</p>
+<blockquote>
+<p>Please note that new GCP accounts and projects have a per-region quota on CPU usage. This deployment will consume the entire quota.</p>
+</blockquote>
+<h3><a class="header" href="#deploying-1" id="deploying-1">Deploying</a></h3>
+<p>First, change into the GCP terraform directory.</p>
+<pre><code class="language-shell">cd scorestack/deployment/medium/gcp
+</code></pre>
+<p>Next, provide values for the five unset variables within <code>variables.tf</code>. Here is a brief description of the variables:</p>
+<ul>
+<li><code>project</code>: The GCP project ID to which Scorestack will be deployed</li>
+<li><code>credentials_file</code>: The path to the GCP credentials file - see the <a href="https://www.terraform.io/docs/providers/google/guides/provider_reference.html#credentials">GCP provider reference</a> for more information</li>
+<li><code>ssh_pub_key_file</code>, <code>ssh_priv_key_file</code>: The paths to the SSH keypair that will be added to the created instances - these must already be created</li>
+<li><code>fqdn</code>: The domain name that Scorestack will be served behind - the DNS record for this domain must be configured manually after deployment</li>
+</ul>
+<blockquote>
+<p>If you don't have a domain for Scorestack and were planning on accessing it via its public IP, you can set <code>fqdn</code> to an empty string.</p>
+</blockquote>
+<p>Finally, run Terraform to deploy Scorestack.</p>
+<pre><code class="language-shell">terraform init
+terraform apply
+</code></pre>
+<p>Once deployment is finished, configure the DNS record for your FQDN to point at the public IP of the <code>nginx</code> instance. Then, run the <a href="deployment/medium.html#ansible-deployment">ansible deployment</a> for the medium architecture.</p>
+<h3><a class="header" href="#cleanupteardown-1" id="cleanupteardown-1">Cleanup/Teardown</a></h3>
+<p>To destroy the Scorestack cluster completely and remove all artifacts, you must destroy the Terraform resources, the generated certificates, and the Ansible inventory file.</p>
+<pre><code class="language-shell">terraform destroy
+rm -rf ../ansible/certificates
+rm ../ansible/inventory.ini
+</code></pre>
+<h2><a class="header" href="#ansible-deployment" id="ansible-deployment">Ansible Deployment</a></h2>
+<p>Once the infrastructure for the medium architecture has been deployed by one of the available Terraform options, Ansible is used to deploy and configure Scorestack. You will need to install Ansible on your system for this deployment.</p>
+<h3><a class="header" href="#deploying-2" id="deploying-2">Deploying</a></h3>
+<p>Once your Terraform deployment is complete, change into the Ansible directory in the repository.</p>
+<pre><code class="language-shell"># If you're in one of the medium architecture Terraform folders
+cd ../ansible
+
+# If you're at the root level of the repository
+cd deployment/medium/ansible
+</code></pre>
+<p>Then, run the Ansible playbook to deploy Scorestack. The inventory file was generated for you by Terraform to properly configure SSH access for Ansible to all of the instances.</p>
+<pre><code class="language-shell">ansible-playbook playbook.yml -i inventory.ini
+</code></pre>
+<h3><a class="header" href="#dynamicbeat-certificates-1" id="dynamicbeat-certificates-1">Dynamicbeat Certificates</a></h3>
+<p>To deploy Dynamicbeat, you will need the Dynamicbeat client certificate and key and the Scorestack internal CA certificate. These certificates are generated by the Terraform deployment process. Once the deployment has finished, these files can be found at the following paths within the repository:</p>
+<ul>
+<li><code>deployment/medium/ansible/certificates/dynamicbeat/dynamicbeat.key</code></li>
+<li><code>deployment/medium/ansible/certificates/dynamicbeat/dynamicbeat.crt</code></li>
+<li><code>deployment/medium/ansible/certificates/ca/ca.crt</code></li>
+</ul>
+<p>See the <a href="deployment/dynamicbeat.html">Dynamicbeat deployment guide</a> for more information.</p>
+<h1><a class="header" href="#dynamicbeat" id="dynamicbeat">Dynamicbeat</a></h1>
+<p>Once Scorestack has been deployed and you have a Dynamicbeat binary, Dynamicbeat must be deployed to a host for checks to be run. Currently, the only supported way of deploying Dynamicbeat is by running it as a systemd service on a Linux system.</p>
+<h2><a class="header" href="#system-requirements" id="system-requirements">System Requirements</a></h2>
+<p>Currently, Dynamicbeat is only supported on Linux systems. Please note that Dynamicbeat can run checks <em>against</em> non-Linux systems (like Windows or Mac), but Dynamicbeat itself must run on Linux.</p>
+<p>The system that Dynamicbeat runs on must be able to access the Elasticsearch HTTP API and the Logstash Beat input endpoints. Additionally, the system should be able to access the services that Dynamicbeat will be running checks against. Varying the placement of Dynamicbeat on the network can help mask the check traffic slightly. For example, running Dynamicbeat on the same network that red team traffic originates from is a common practice.</p>
+<p>Dynamicbeat can typically run fine with minimal system resources. In the past, Dynamicbeat has worked fine with only 2 CPU cores and 2 GB of RAM, but you should always perform some testing to determine what will work best for your environment.</p>
+<h3><a class="header" href="#icmp-permissions" id="icmp-permissions">ICMP Permissions</a></h3>
+<p>The ICMP library that Dynamicbeat's ICMP protocol uses requires specific sysctl parameters to be set in order to work. The following command can be used to immediately set the sysctl parameter, but the change will not persist on a reboot. You should set the parameter in <code>/etc/sysctl.d</code> (or the equivalent on your distribution) in order for changes to persist on reboot.</p>
+<pre><code class="language-shell">sudo sysctl -w net.ipv4.ping_group_range=&quot;0   2147483647&quot;
+</code></pre>
+<p>For more information on the ICMP permissions required, see <a href="https://github.com/go-ping/ping#note-on-linux-support">the library's documentation</a>.</p>
+<h3><a class="header" href="#dynamicbeat-disk-impact" id="dynamicbeat-disk-impact">Dynamicbeat Disk Impact</a></h3>
+<p>When the systems that Dynamicbeat runs checks against are using shared network storage, the available IOPS is very important, especially for larger competitions. This is because each check that Dynamicbeat runs can trigger multiple disk I/O operations on the system being checked. Additionally, checks are executed nearly simultaneously, so a round of checks can have a serious impact on disk performance.</p>
+<p>If possible, try stress testing your infrastructure before the start of the competition by running multiple instances of Dynamicbeat simultaneously. While running this stress test, try interacting with the competition systems. If your competition has any &quot;Desktop Experience&quot; (GUI) Windows systems, try interacting with them - opening multiple programs, performing searches in the Start menu, etc. - since the experience on Windows systems can be particularly sensitive to a lack of sufficient IOPS.</p>
+<p>If you do experience IOPS issues, one possible solution is to increase the time between rounds. By default rounds run every 30 seconds, but increasing this to 2 or 3 minutes (or even more) can help.</p>
+<h2><a class="header" href="#configuring-dynamicbeat" id="configuring-dynamicbeat">Configuring Dynamicbeat</a></h2>
+<p>Dynamicbeat is configured via a YAML configuration file that is largely similar to configuration files for other Beats, like Filebeat and Metricbeat. The following section provides an overview of the most common configuration options:</p>
+<pre><code class="language-yaml">dynamicbeat:
+  # Defines how often checks will be executed
+  #period: 30s
+
+  # Defines how often check definitions and attributes will be read from elasticsearch
+  #update_period: 1m
+
+  # Where check definitions will be read from
+  #check_source:
+    # List of Elasticsearch hosts to query
+    #hosts: [&quot;https://localhost:9200&quot;]
+    
+    # Credentials used by this beat to read check definitions
+    #username: dynamicbeat
+    #password: changeme
+
+    # Whether to verify SSL/TLS certificates, if HTTPS is used
+    #verify_certs: true
+
+    # The index that check definitions will be read from
+    #index: checkdef
+
+output.logstash:
+  # The Logstash hosts
+  #hosts: [&quot;localhost:5454&quot;]
+
+  # Enable SSL.
+  ssl.enabled: true
+
+  # List of root certificates for HTTPS server verifications
+  #ssl.certificate_authorities: [&quot;/etc/pki/root/ca.pem&quot;]
+
+  # Certificate for SSL client authentication
+  #ssl.certificate: &quot;/etc/pki/client/cert.pem&quot;
+
+  # Client Certificate Key
+  #ssl.key: &quot;/etc/pki/client/cert.key&quot;
+</code></pre>
+<p>Please note that the port for <code>output.logstash.hosts</code> <em>should</em> be set to <code>5454</code>, not the default of <code>5044</code>. By default, the Dynamicbeat pipeline for Logstash listens on port 5454.</p>
+<p>Here is an example Dynamicbeat configuration:</p>
+<pre><code class="language-yaml">dynamicbeat:
+  check_source:
+    hosts: [&quot;https://demo.scorestack.io:9200&quot;]
+    username: dynamicbeat
+    password: example
+output.logstash:
+  hosts: [&quot;demo.scorestack.io:5454&quot;]
+  ssl.enabled: true
+  ssl.certificate_authorities: [&quot;/opt/dynamicbeat/ca.pem&quot;]
+  ssl.certificate: &quot;/opt/dynamicbeat/cert.pem&quot;
+  ssl.key: &quot;/opt/dynamicbeat/cert.key&quot;
+</code></pre>
+<h2><a class="header" href="#service-setup" id="service-setup">Service Setup</a></h2>
+<p>The recommended way of running Dynamicbeat is via a systemd service. To configure the service, you can use the following systemd unit file:</p>
+<pre><code>[Unit]
+Description=Dynamicbeat
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/dynamicbeat
+ExecStart=/opt/dynamicbeat/dynamicbeat
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>If using the above service file, you should save it to <code>/etc/systemd/system/dynamicbeat.service</code>. You can then start Dynamicbeat by running the following commands:</p>
+<pre><code class="language-shell">sudo systemctl daemon-reload
+sudo systemctl start dynamicbeat.service
+sudo systemctl enable dynamicbeat.service
+</code></pre>
+<p>Note that this service file assumes that the Dynamicbeat binary is placed at <code>/opt/dynamicbeat/dynamicbeat</code>, and that the configuration file is placed at <code>/opt/dynamicbeat/dynamicbeat.yml</code>. The key and certificates for Dynamicbeat should be stored at the locations referenced within the <code>output.logstash.ssl.*</code> options in the Dynamicbeat configuration file.</p>
+<h1><a class="header" href="#scorestack-design" id="scorestack-design">Scorestack Design</a></h1>
+<p>This section of the documentation explains the current design of the Scorestack implementation. This section intends to be <em>descriptive</em>, not <em>prescriptive</em>. That is to say, if something in this section is incorrect, the documentation should be updated to reflect the actual state of Scorestack, instead of updating Scorestack to match what the documentation says.</p>
+<p>If you just want to get Scorestack up and running for a competition, you can probably skip this section. The intended audience is current or future Scorestack developers. However, if you find that Scorestack doesn't <em>quite</em> cover your use case, then you might find something in this section that could assist you.</p>
+<h1><a class="header" href="#elastic-stack-architectural-overview" id="elastic-stack-architectural-overview">Elastic Stack Architectural Overview</a></h1>
+<p>Scorestack is based around a customized deployment of the Elastic Stack that includes Elasticsearch, Kibana, Logstash, a Kibana plugin, and a custom Beat named Dynamicbeat. All of these components are configured with X-Pack security enabled, and TLS mutual authentication is used for all inter-cluster communications.</p>
+<p>This document provides an overview of each of the Elastic Stack components used in Scorestack, what they are used for, and what they do. It has mostly the same information as the <a href="design/check.html">Life of a Check</a> document, but presented as an explanation of components rather than a timeline.</p>
+<h2><a class="header" href="#elasticsearch" id="elasticsearch">Elasticsearch</a></h2>
+<p>The Elasticsearch instance (or cluster, depending on the deployment configuration) is used as a database to contain all check definitions, attributes, and check results. Several indices are created in Elasticsearch to store this information.</p>
+<p>In the <code>checkdef</code> and <code>check</code> indices and the <code>attrib_admin_*</code> and <code>attrib_user_*</code> index patterns, each document represents a single check, and will have a document ID equal to the <code>id</code> field in the check's definition.</p>
+<p>For example, if a check has an <code>id</code> of <code>dns-active-directory-team01</code>, then the documents related to that check in the above indices and index patterns will all have document IDs of <code>dns-active-directory-team01</code>.</p>
+<h3><a class="header" href="#checkdef" id="checkdef"><code>checkdef</code></a></h3>
+<p>This index is the source of check definitions for Dynamicbeat.</p>
+<h3><a class="header" href="#checks-1" id="checks-1"><code>checks</code></a></h3>
+<p>This index is a source of generic check information that contains only the <code>id</code>, <code>name</code>, <code>type</code>, and <code>group</code> fields of each check definition. This is used for some visualizations that require teams to be able to see what checks are running. This index is useful in addition to the <code>checkdef</code> index, because it does not give teams any information about how the checks are configured.</p>
+<h3><a class="header" href="#attrib_admin_" id="attrib_admin_"><code>attrib_admin_*</code></a></h3>
+<p>This index pattern contains attributes that can only be read and modified by attribute administrators. Each team has their own admin attribute index. The group name is appended to the index name. For example, a group named <code>team01</code> would have an admin attribute index of <code>attrib_admin_team01</code>.</p>
+<h3><a class="header" href="#attrib_user_" id="attrib_user_"><code>attrib_user_*</code></a></h3>
+<p>This index pattern is the same as <code>attrib_admin_*</code>, except these attributes can also be read and modified by the team's members. To clarify, only members of <code>team01</code> can view and modify the attributes in <code>attrib_user_team01</code>.</p>
+<h3><a class="header" href="#results-admin-" id="results-admin-"><code>results-admin-*</code></a></h3>
+<p>This index pattern contains detailed check results for all checks that are running. It makes it easier for competition organizers to search for any check from any team within the Discover app in Kibana and see why a check may have failed.</p>
+<p>This index pattern, along with the rest of the <code>results-*</code> index patterns, appends a timestamp to the index with the current date in <code>YYYY.MM.dd</code> format.</p>
+<h3><a class="header" href="#results-all-" id="results-all-"><code>results-all-*</code></a></h3>
+<p>This index pattern also contains the check results for all checks, but the <code>message</code> and <code>details</code> fields are removed. This lets anybody see what checks are passing for each team (which is required for some dashboards). However, nobody consulting this index pattern would be able to see the details explaining why a check failed.</p>
+<h3><a class="header" href="#results-team-" id="results-team-"><code>results-TEAM-*</code></a></h3>
+<p>These index patterns contain detailed check results for a single team's checks, and gives teams a starting point for troubleshooting their failing checks. <code>TEAM</code> is just a placeholder for the team's name. For example, <code>team01</code>'s results index pattern would be <code>results-team01-*</code>.</p>
+<h2><a class="header" href="#kibana" id="kibana">Kibana</a></h2>
+<p>The stock Kibana application is what teams use to view the current and past status of their checks, get information about why their checks are failing, and compare themselves to the other teams.</p>
+<p>The Kibana instance is configured with two Spaces: Default and Scorestack. The Default space is the normal Kibana default space, and all Kibana applications are enabled in it. The Default space should only be accessible by Scorestack administrators. The Scorestack space only enables the Kibana features that are needed for Scorestack. This is to reduce clutter in the sidebar and prevent confusion for new Scorestack users.</p>
+<p>Since dashboards, visualizations, index patterns, and other Kibana saved objects aren't shared across spaces, these saved objects are duplicated across the two spaces. The practical effect of this is that any changes made to an object (like a dashboard) in one space must also be made to the same object in the other space.</p>
+<h2><a class="header" href="#logstash" id="logstash">Logstash</a></h2>
+<p>Logstash is where check results are ingested from Dynamicbeat, processed, and then indexed into Elasticsearch. The logstash pipeline performs the following processing steps on every check result:</p>
+<ol>
+<li>Remove any unneeded fields in the check result.</li>
+<li>Convert the boolean <code>passed</code> field to an integer in the new <code>passed_int</code> field. If a check has passed, <code>passed_int</code> will be 1, otherwise it will be 0.</li>
+<li>Create an <code>epoch</code> field that contains the integer value of the check result's <code>@timestamp</code> converted to <a href="https://en.wikipedia.org/wiki/Unix_time">Epoch time</a>.</li>
+</ol>
+<p>After those processing steps, the check result is cloned and indexed into the <code>results-*</code> index patterns in Elasticsearch.</p>
+<h2><a class="header" href="#kibana-plugin" id="kibana-plugin">Kibana Plugin</a></h2>
+<p>The Kibana plugin adds a new application to Kibana that allows admins and users to view and modify check attributes. The application allows you to view the attributes for your checks, see their current values, and change their values at any time. Once an attribute value has been updated through the plugin application it will immediately update the value in Elasticsearch, but it may take a few rounds of checks for Dynamicbeat to re-read the check definitions and the change to take effect.</p>
+<h2><a class="header" href="#dynamicbeat-1" id="dynamicbeat-1">Dynamicbeat</a></h2>
+<p>Dynamicbeat is the program that runs check definitions. It built using the libbeat library from Elastic, which is the same library used for other beats like Filebeat, Winlogbeat, and Journalbeat.</p>
+<p>Dynamicbeat uses periods to separate &quot;rounds&quot; of checks. A period is a certain amount of time to wait before starting the next round. By default, Dynamicbeat's period is 30 seconds, so every 30 seconds another &quot;round&quot; of checks will be started.</p>
+<p>At startup, Dynamicbeat will first query Elasticsearch for all check definitions and check attributes, and then cache the results. This process will then be repeated every so often as defined by the <code>update_period</code> parameter in the Dynamicbeat configuration.</p>
+<p>Every period, Dynamicbeat will start all checks that it knows about at the same time and run them asynchronously. Once all checks have been completed or a timeout has been hit, whichever happens first, the check results will be created and ingested into Logstash. By default, the global timeout for all checks is 30 seconds. If a check does not finish within those 30 seconds, the check will be automatically marked as failing.</p>
+<p>If Dynamicbeat has already loaded check definitions and attributes, but cannot reach Elasticsearch for some reason, then it will continue using the check definitions and attributes that it already knows about. If Dynamicbeat cannot reach Elasticsearch during startup, then it will retry periodically until it is able to load all check information and start execution.</p>
+<p>If Dynamicbeat is unable to contact Logstash at any point in time, all check results will be cached in memory until a connection to Logstash can be reestablished. If Dynamicbeat is stopped while some check results are cached in memory, then those results will be lost. Please note that if Dynamicbeat is stopped with check results cached in memory, there is no guarantee that each &quot;round&quot; of check results is complete. In this case, some checks may have more or less check results than other checks.</p>
+<h1><a class="header" href="#user-roles" id="user-roles">User Roles</a></h1>
+<p>Several roles are added to Scorestack during creation. These roles can be assigned to users to give them access to specific parts of the Scorestack components. This document describes the access given to each role, and explains their intended uses.</p>
+<h2><a class="header" href="#dynamicbeat_reader" id="dynamicbeat_reader"><code>dynamicbeat_reader</code></a></h2>
+<p>This role provides read-only access to the <code>checkdef*</code> and <code>attrib_*</code> indices. This role is intended to be used by the Dynamicbeat user, and provides Dynamicbeat with the least privilege required for proper operation.</p>
+<h2><a class="header" href="#logstash_writer" id="logstash_writer"><code>logstash_writer</code></a></h2>
+<p>This role provides access to the <code>results-*</code> indices and some cluster permissions that are required by Logstash to connect properly to Elasticsearch. This role provides the least privilege required for Logstash, and should only be used by the Logstash user.</p>
+<h2><a class="header" href="#common" id="common"><code>common</code></a></h2>
+<p>This role provides read-only access to the <code>results-all*</code> and <code>checks</code> indices, and provides read access to the <code>scorestack</code> space. This allows users to view the generic results and some generic checks, which is required for the overall dashboards to work properly. The <code>scorestack</code> space is a customized Kibana space that only includes Scorestack-specific components, reducing the clutter in the Kibana UI. Read-only access is provided to only that space so that users don't have to pick between it and the default space, which has several components included that are not needed for Scorestack.</p>
+<p>This role should be used for all Scorestack end-users that interact with Kibana.</p>
+<h2><a class="header" href="#spectator" id="spectator"><code>spectator</code></a></h2>
+<p>This role provides read-only access to the <code>results*</code> indices. This allows users to view team-specific dashboards and admin/group check results. This role should generally only be given to Scorestack administrators or &quot;spectator&quot; users like redteam and whiteteam.</p>
+<h2><a class="header" href="#attribute-admin" id="attribute-admin"><code>attribute-admin</code></a></h2>
+<p>This role provides full access to the <code>attrib_*</code> indices. This allows users to modify all attributes of all teams. This role should only be given to Scorestack administrators that need to modify administrator attributes, or assist teams with modifying their own attributes.</p>
+<h2><a class="header" href="#check-admin" id="check-admin"><code>check-admin</code></a></h2>
+<p>This role provides full access to the <code>check*</code> indices. This allows users to create, modify, and delete all check definitions. This role should only be given to Scorestack administrators that are managing checks.</p>
+<h2><a class="header" href="#team-roles" id="team-roles">Team Roles</a></h2>
+<p>A role is created for each team that gets added, which provides read access to the team results index for the team and read/write access to the team's user attributes index. This allows team users to see detailed check results for their team, view team-specific dashboards for their team, and modify user attributes for their team. This role should only be given to the user associated with a team.</p>
+<h1><a class="header" href="#life-of-a-check" id="life-of-a-check">Life of a Check</a></h1>
+<p>This document walks through the life of a check, starting at loading definitions from Elasticsearch and ending at indexing check results back into Elasticsearch. This has mostly the same information as the <a href="design/architecture.html">Elastic Stack Architecture</a> document, but presented as a timeline rather than an explanation of components.</p>
+<h2><a class="header" href="#running-checks" id="running-checks">Running Checks</a></h2>
+<p>A <strong>check</strong> is a single attempt to verify the functionality of a specific network service. Here are a few examples of basic checks that could be run:</p>
+<ul>
+<li>Send a series of ICMP Echo Requests to an IP address and expect a certain number or percentage of ICMP Echo Replies from that address.</li>
+<li>Send an HTTP GET request for a specific webpage to a webserver and check that the returned content matches the expected content.</li>
+<li>Log in to a system via SSH with a given set of credentials, run a specific command, and ensure the command printed the expected content.</li>
+</ul>
+<p>Each check is defined by a <strong>check definition</strong>, which is a JSON document stored in Elasticsearch that provides the necessary information for Dynamicbeat to run the check. Additionally, a check may have <strong>check attributes</strong>, which allow for on-the-fly modification of variables that are templated into the check definition. For more information on defining checks, see <a href="design/./checks.html">the check definition documentation</a>.</p>
+<p>When Dynamicbeat first starts, it pulls the check definitions stored in Elasticsearch and stores them in memory. Then every 30 seconds, Dynamicbeat will start a single check for each one of the check definitions that it currently has stored in memory. Additionally, every minute Dynamicbeat will refresh the check definition information that it has stored in memory by querying Elasticsearch for updates.</p>
+<h2><a class="header" href="#reporting-check-results" id="reporting-check-results">Reporting Check Results</a></h2>
+<p>As checks finish executing, their results (pass, fail, or timeout, with some additional information) are buffered to be sent to Logstash later on. Typically, Dynamicbeat will immediately send check results to Logstash. However, if there issues establishing a stable connection to Logstash, the results will stay in Dynamicbeat's buffer until it can reestablish the connection.</p>
+<p>Once Logstash receives a check result from Dynamicbeat, it will perform some basic processing on the event. First, fields are pruned from the event so that only Scorestack-specific fields are included; this removes a variety of metadata fields that the Beats framework adds to events, but aren't relevant to Scorestack.</p>
+<p>Then, the <code>passed</code> boolean field is converted to an integer in the <code>passed_int</code> field. If the check passed, <code>passed_int</code> will be set to <code>1</code>. Otherwise, <code>passed_int</code> will be <code>0</code>. This conversion allows for easy score calculation within Kibana dashboards.</p>
+<p>Next, the <code>@timestamp</code> field is converted to an integer representing the Unix epoch representation of the timestamp, which is stored in the <code>epoch</code> field. This conversion makes it simple to display only the latest check results within Kibana dashboards.</p>
+<p>Finally, three versions of the result event are created: generic, admin, and group. These events are then stored in an Elasticsearch index that matches the glob <code>results-*-TIMESTAMP</code>, where <code>TIMESTAMP</code> is a timestamp representing the current date in the format <code>YYYY.MM.DD</code>.</p>
+<h2><a class="header" href="#generic-results" id="generic-results">Generic Results</a></h2>
+<p>Generic results have the <code>message</code> and <code>details</code> fields removed, and are viewable by all Scorestack users. This allows teams to see how other teams are doing, but does not give them information on <em>why</em> other teams' checks may be failing. Since field-based access control is a premium feature of the Elastic Stack, this workaround is required for competition-wide dashboards to work without revealing details of check results to other teams.</p>
+<p>Generic results are stored in the <code>results-all-*</code> indices.</p>
+<h2><a class="header" href="#group-results" id="group-results">Group Results</a></h2>
+<p>The group results do not have the <code>message</code> and <code>details</code> fields removed, and are only viewable by members of the group the check belongs to. For example, the group results for a check in the Team 3 group can only be viewed by users who are in the Team 3 group. Group results allow users to get more detailed information about why their checks may be failing, which provides them a starting point for troubleshooting their services.</p>
+<p>Group results are stored in the <code>results-GROUP-*</code> indices, where <code>GROUP</code> is the group ID.</p>
+<h2><a class="header" href="#admin-results" id="admin-results">Admin Results</a></h2>
+<p>The admin results, like the group results, do not have the <code>message</code> and <code>details</code> fields removed. However, admin results are only viewable by members of the <code>spectator</code> group. Admin results are mainly useful for troubleshooting issues with service deployment prior to a competition, or for detecting issues with check definitions and/or Dynamicbeat. This is becase all the admin results are stored within a single set of indices, unlike the group events, which are stored across a variety of indices. Having all admin results in a single set of indices allows Scorestack administrators to search across all check results using a single index glob.</p>
+<p>The admin results are stored in the <code>results-admin-*</code> indices.</p>
+<h1><a class="header" href="#building-binaries" id="building-binaries">Building Binaries</a></h1>
+<p>Scorestack relies on two different binaries: a Golang executable for Dynamicbeat, and a zipfile for the Kibana plugin. While prebuilt versions of these binaries are attached to each release, this document provides an explanation of how to build your own binaries if you so choose.</p>
+<h2><a class="header" href="#dynamicbeat-2" id="dynamicbeat-2">Dynamicbeat</a></h2>
+<p>To build and test Dynamicbeat with the provided Docker container, run the following command:</p>
+<pre><code class="language-shell">docker-compose -f dockerfiles/docker-compose.yml run dynamicbeat-ci /scripts/test.sh
+</code></pre>
+<p>The compiled binary can be found at <code>dynamicbeat/dynamicbeat</code>.</p>
+<h3><a class="header" href="#building-during-development" id="building-during-development">Building During Development</a></h3>
+<p>If you are actively developing Dynamicbeat, you may wish to build Dynamicbeat within the devcontainer to test your changes. Instead of using the above docker-compose command, you can perform the following steps within the <code>dynamicbeat/</code> folder.</p>
+<p>First, install the required go dependencies:</p>
+<pre><code class="language-shell">go get
+</code></pre>
+<p>Then, build the binary:</p>
+<pre><code class="language-shell">make
+</code></pre>
+<p>The compiled binary will be named <code>dynamicbeat</code> within the <code>dynamicbeat/</code> folder.</p>
+<h2><a class="header" href="#kibana-plugin-1" id="kibana-plugin-1">Kibana Plugin</a></h2>
+<p>To build the Kibana plugin with the provided Docker container, run the following command:</p>
+<pre><code class="language-shell">docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/test.sh
+</code></pre>
+<p>Please note that this build process can take quite a long time (20-30 minutes).</p>
+<p>The zipfile can be found at <code>kibana-plugin/build/kibana-plugin-0.0.0.zip</code>.</p>
+<h3><a class="header" href="#building-during-development-1" id="building-during-development-1">Building During Development</a></h3>
+<p>Typically during Kibana plugin development, you will want to use the Kibana development server to test the plugin. However, sometimes it can be useful to build the zipfile during development to ensure it can properly install and run in a production version of Kibana. If working within the Kibana plugin devcontainer, you run the following commands in the <code>kibana-plugin/</code> folder.</p>
+<p>First, make sure you're in the right directory:</p>
+<pre><code class="language-shell">cd $HOME/kibana/plugins/scorestack
+</code></pre>
+<p>Next, install all the required dependencies.</p>
+<pre><code class="language-shell">yarn kbn bootstrap
+</code></pre>
+<p>The first time you run <code>yarn kbn bootstrap</code>, it can take several (20+) minutes to install all the required dependencies. However, after the first time you run it, running the same command should be fairly quick later on.</p>
+<p>Next, compile the bundles for the frontend portion of the plugin.</p>
+<pre><code class="language-shell">yarn prebuild
+</code></pre>
+<p>Finally, build the plugin's zipfile.</p>
+<pre><code class="language-shell">yarn build
+</code></pre>
+<p>The zipfile can be found at <code>kibana-plugin/build/kibana-plugin-0.0.0.zip</code>.</p>
+<h1><a class="header" href="#appendix-a---faq" id="appendix-a---faq">Appendix A - FAQ</a></h1>
+<h3><a class="header" href="#how-can-i-reset-my-scorestack-cluster-without-redeploying-it" id="how-can-i-reset-my-scorestack-cluster-without-redeploying-it">How can I &quot;reset&quot; my Scorestack cluster without redeploying it?</a></h3>
+<p>First, stop all running instances of Dynamicbeat. Once they have all exited, use the Discover app in Kibana to wait for all queued check results to finish processing in Logstash and indexing in Elasticsearch.</p>
+<p>Once all check results have been indexed, deleted all the Scorestack indices. You can use the Dev Tools app in Kibana to simplify this process. You need execute the following <code>DELETE</code> queries:</p>
+<ul>
+<li><code>DELETE /check*</code></li>
+<li><code>DELETE /attrib*</code></li>
+<li><code>DELETE /result*</code></li>
+</ul>
+<p>Finally, rerun the <code>add-team.sh</code> script with all the teams you want Scorestack to have. Once the script is finished, you can restart Dynamicbeat.</p>
+<h3><a class="header" href="#what-are-the-default-admin-credentials" id="what-are-the-default-admin-credentials">What are the default admin credentials?</a></h3>
+<p>The following credentials are the default <code>superuser</code> credentials for all Scorestack deployments:</p>
+<pre><code>Username: root
+Password: changeme
+</code></pre>
+<p>These credentials will give you the same access as the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html"><code>elastic</code> built-in user</a>, so be careful, and make sure to change the password after your first log-in!</p>
+<h3><a class="header" href="#what-are-the-default-dynamicbeat-credentials" id="what-are-the-default-dynamicbeat-credentials">What are the default Dynamicbeat credentials?</a></h3>
+<p>Dynamicbeat needs a username and password to connect to Elasticsearch and read the current check definitions and attributes. A user is created for you during all Scorestack deployments with the following default credentials:</p>
+<pre><code>Username: dynamicbeat
+Password: changeme
+</code></pre>
+<h1><a class="header" href="#contributors" id="contributors">Contributors</a></h1>
+<blockquote>
+<p>If you think you should be added to this list, awesome! Submit a pull request and add your name under the developers list, along with an optional link to your GitHub profile, Twitter page, personal website, etc. The ordering is alphabetic by last name (or handle, if you choose to omit your IRL name). Thanks for helping to improve Scorestack!</p>
+</blockquote>
+<p>Scorestack is currently maintained by the following individuals:</p>
+<ul>
+<li>Simon Buchheit (<a href="https://github.com/oneNutW0nder">@oneNutW0nder</a>)</li>
+<li>Sean Newman (<a href="https://github.com/s-newman/">@s-newman</a>)</li>
+</ul>
+<p>The following developers have also provided valuable assistance in the development of Scorestack:</p>
+<ul>
+<li>Kyle Carretto (<a href="https://github.com/KCarretto">@kcarretto</a>)</li>
+<li>Hulto (<a href="https://github.com/hulto">@hulto</a>)</li>
+</ul>
+<p>Additionally, Scorestack would not be possible without the feedback from many users and testers. Thank you!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>
