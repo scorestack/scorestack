@@ -34,6 +34,12 @@ Each section organizes entries into the following subsections:
 
 - Documented `add-team.sh`'s dependency on `jq` (#261)
 
+### Dynamicbeat
+
+#### Changed
+
+- Replaced Golang `html/template` library with `text/template` (#251)
+
 [0.6.0] - 2020-10-17
 --------------------
 
