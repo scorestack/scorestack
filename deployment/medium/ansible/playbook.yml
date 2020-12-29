@@ -35,8 +35,8 @@
 
     - name: Configure JVM
       template:
-        src: configs/elasticsearch.jvm.options
-        dest: /etc/elasticsearch/jvm.options
+        src: configs/elasticsearch-memory.jvm.options
+        dest: /etc/elasticsearch/jvm.options.d/elasticsearch-memory.jvm.options
         owner: root
         group: elasticsearch
         mode: '0660'
@@ -292,13 +292,6 @@
       copy:
         src: configs/logstash.yml
         dest: /etc/logstash/logstash.yml
-      notify:
-        - Restart Logstash
-
-    - name: Configure JVM
-      template:
-        src: configs/logstash.jvm.options
-        dest: /etc/logstash/jvm.options
       notify:
         - Restart Logstash
 
