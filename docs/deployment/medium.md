@@ -81,14 +81,10 @@ Once the infrastructure for the medium architecture has been deployed by one of 
 
 ### Deploying
 
-Once your Terraform deployment is complete, change into the Ansible directory in the repository.
+Once your Terraform deployment is complete, change from your Terraform directory to the Ansible directory in the repository.
 
 ```shell
-# If you're in one of the medium architecture Terraform folders
 cd ../ansible
-
-# If you're at the root level of the repository
-cd deployment/medium/ansible
 ```
 
 Then, run the Ansible playbook to deploy Scorestack. The inventory file was generated for you by Terraform to properly configure SSH access for Ansible to all of the instances.
