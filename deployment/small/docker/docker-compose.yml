@@ -24,7 +24,6 @@ services:
 
   elasticsearch:
     container_name: elasticsearch
-    env_file: elasticsearch.env
     environment:
       - bootstrap.memory_lock=true
       - discovery.type=single-node
