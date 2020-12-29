@@ -50,6 +50,7 @@ services:
       - ./certificates/ca:/usr/share/elasticsearch/config/certificates/ca
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch-healthcheck.sh:/bin/healthcheck.sh
+      - ./elasticsearch-memory.jvm.options:/usr/share/elasticsearch/config/jvm.options.d/elasticsearch-memory.jvm.options
       - /usr/share/elasticsearch/data
 
   kibana:
@@ -69,7 +70,7 @@ services:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
       - /usr/share/kibana/data
       - /usr/share/kibana/plugins
-  
+
   logstash:
     container_name: logstash
     environment:

@@ -1,0 +1,2 @@
+-Xms{{ ram_gb }}g
+-Xmx{{ ram_gb }}g

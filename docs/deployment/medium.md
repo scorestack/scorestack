@@ -24,19 +24,41 @@ First, change into the GCP terraform directory.
 cd scorestack/deployment/medium/gcp
 ```
 
-Next, provide values for the five unset variables within `variables.tf`. Here is a brief description of the variables:
+Next, in a new file named `terraform.tfvars`, provide values for the five unset variables defined in `variables.tf`. Here is a brief description of the required variables:
 
 - `project`: The GCP project ID to which Scorestack will be deployed
 - `credentials_file`: The path to the GCP credentials file - see the [GCP provider reference](https://www.terraform.io/docs/providers/google/guides/provider_reference.html#credentials) for more information
 - `ssh_pub_key_file`, `ssh_priv_key_file`: The paths to the SSH keypair that will be added to the created instances - these must already be created
-- `fqdn`: The domain name that Scorestack will be served behind - the DNS record for this domain must be configured manually after deployment
 
-> If you don't have a domain for Scorestack and were planning on accessing it via its public IP, you can set `fqdn` to an empty string.
+Here's an example of what your `terraform.tfvars` file might look like:
+
+```ini
+project = "scorestack-300023"
+credentials_file = "~/.config/gcloud/application_default_credentials.json"
+ssh_pub_key_file = "~/.ssh/scorestack.pub"
+ssh_priv_key_file = "~/.ssh/scorestack"
+```
+
+> If you have a domain that you'd like to point at Scorestack, make sure to set the `fqdn` variable to that domain. For example, if you were to run a Scorestack instance at `demo.scorestack.io`, you would add the following line to your `terraform.tfvars` file:
+> ```ini
+> fqdn = "demo.scorestack.io"
+> ```
+
+Next, install the necessary Terraform components to work with the GCP APIs.
+
+```shell
+terraform init
+```
+
+If you are using a brand-new GCP project, you will first have to [enable billing](https://cloud.google.com/billing/docs/how-to/modify-project) for the project. Once billing is enabled, you can enable the Compute Engine API, which is required for the Terraform to work properly.
+
+```shell
+gcloud services enable compute.googleapis.com
+```
 
 Finally, run Terraform to deploy Scorestack.
 
 ```shell
-terraform init
 terraform apply
 ```
 
@@ -59,14 +81,10 @@ Once the infrastructure for the medium architecture has been deployed by one of 
 
 ### Deploying
 
-Once your Terraform deployment is complete, change into the Ansible directory in the repository.
+Once your Terraform deployment is complete, change from your Terraform directory to the Ansible directory in the repository.
 
 ```shell
-# If you're in one of the medium architecture Terraform folders
 cd ../ansible
-
-# If you're at the root level of the repository
-cd deployment/medium/ansible
 ```
 
 Then, run the Ansible playbook to deploy Scorestack. The inventory file was generated for you by Terraform to properly configure SSH access for Ansible to all of the instances.
