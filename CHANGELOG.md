@@ -33,6 +33,13 @@ Each section organizes entries into the following subsections:
 #### Fixed
 
 - Documented `add-team.sh`'s dependency on `jq` (#261)
+- Removed outdated `jvm.options` configurations (#276)
+- Fixed permissions for Kibana plugin installation (#282)
+- Set default for `fqdn` Terraform variable (#282)
+
+#### Removed
+
+- Stop configuring JVM heap size for Logstash (#282)
 
 ### Dynamicbeat
 
