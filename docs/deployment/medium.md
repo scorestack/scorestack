@@ -33,10 +33,21 @@ Next, provide values for the five unset variables within `variables.tf`. Here is
 
 > If you don't have a domain for Scorestack and were planning on accessing it via its public IP, you can set `fqdn` to an empty string.
 
-Finally, run Terraform to deploy Scorestack.
+Next, install the necessary Terraform components to work with the GCP APIs.
 
 ```shell
 terraform init
+```
+
+If you are using a brand-new GCP project, you will first have to [enable billing](https://cloud.google.com/billing/docs/how-to/modify-project) for the project. Once billing is enabled, you can enable the Compute Engine API, which is required for the Terraform to work properly.
+
+```shell
+gcloud services enable compute.googleapis.com
+```
+
+Finally, run Terraform to deploy Scorestack.
+
+```shell
 terraform apply
 ```
 
