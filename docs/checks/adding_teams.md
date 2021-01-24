@@ -43,6 +43,10 @@ Once these values are correct for your environment, you can run `add-team.sh`. E
 
 In this case, three teams will be added: `team01`, `team02`, and `team03`.
 
+> Kibana sorts team names in alphabetical order. If your team names are numbered (i.e., `team01`, `team02`, `team03`, etc.) then you should left-pad with zeros so all teams have the same number of digits. If you don't left-pad, the order in which teams appear in Kibana will be counterintuitive.
+>
+> For example, if you have 12 teams you should number them like `team01`, `team05`, `team10`, etc. instead of `team1`, `team5`, `team10` for sorting to appear correctly.
+
 Adding Multiple Teams
 ---------------------
 
