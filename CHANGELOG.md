@@ -58,6 +58,16 @@ This release upgrades Scorestack to use Elastic Stack 7.9.2, the latest released
 
 ### General
 
+#### Added
+
+- Prebuild scorestack/kibana:7.9.2 container for CI and devcontainer
+
+#### Changed
+
+- Run `yarn kbn bootstrap` during Kibana plugin container build process
+- Update CI to use prebuilt Kibana container
+- Update Elastic Stack to 7.9.2
+
 #### Fixed
 
 - Updated small/docker setup script to properly parse kibana password
@@ -71,40 +81,6 @@ This release upgrades Scorestack to use Elastic Stack 7.9.2, the latest released
 - Report template failure errors in check results
 - Report ICMP packet statistics in check result details for failed checks
 
-#### Fixed
-
-- Don't panic on invalid templates
-- Remove typo in ICMP definition struct field tag
-- Don't ignore Count field in ICMP definition
-
-[0.6.0-rc2] - 2020-10-04
-------------------------
-
-### Kibana Plugin
-
-#### Fixed
-
-- Build plugin bundles and include them in the plugin zipfile
-
-[0.6.0-rc1] - 2020-10-04
-------------------------
-
-Updating Scorestack to Elastic Stack 7.9.2.
-
-### General
-
-#### Added
-
-- Prebuild scorestack/kibana:7.9.2 container for CI and devcontainer
-
-#### Changed
-
-- Run `yarn kbn bootstrap` during Kibana plugin container build process
-- Update CI to use prebuilt Kibana container
-- Update Elastic Stack to 7.9.2
-
-### Dynamicbeat
-
 #### Changed
 
 - Swap github.com/sparrc/go-ping with github.com/go-ping/ping
@@ -114,6 +90,9 @@ Updating Scorestack to Elastic Stack 7.9.2.
 #### Fixed
 
 - Re-add the check code that was accidentally removed in v0.5.1
+- Don't panic on invalid templates
+- Remove typo in ICMP definition struct field tag
+- Don't ignore Count field in ICMP definition
 
 ### Kibana Plugin
 
@@ -126,6 +105,7 @@ Updating Scorestack to Elastic Stack 7.9.2.
 #### Fixed
 
 - Replace TinyURL plugin link with GitHub Releases link
+- Build plugin bundles and include them in the plugin zipfile
 
 [0.5.1] - 2020-10-01
 --------------------
@@ -326,9 +306,7 @@ This release is in preparation for ISTS 2020.
 The initial release of Scorestack.
 
 [Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.0...dev
-[0.6.0]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc2...v0.6.0
-[0.6.0-rc2]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc1...v0.6.0-rc2
-[0.6.0-rc1]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0-rc1
+[0.6.0]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/scorestack/scorestack/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/scorestack/scorestack/compare/v0.4...v0.5.0
 [0.4.0]: https://github.com/scorestack/scorestack/compare/v0.3...v0.4
