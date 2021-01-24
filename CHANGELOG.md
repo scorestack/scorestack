@@ -29,6 +29,8 @@ Each section organizes entries into the following subsections:
 
 - Migrated documentation to `mdbook`
 - Changed WinRM example check's command to `whoami`
+- Adjusted default dashboard refresh time to 30 seconds (#284)
+- Standardized dashboard and visualization IDs (#284)
 
 #### Fixed
 
