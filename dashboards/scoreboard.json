@@ -2,7 +2,7 @@
   "version": "7.5.1",
   "objects": [
     {
-      "id": "${UUID_A}",
+      "id": "scorestack-scoreboard",
       "type": "dashboard",
       "updated_at": "2020-02-18T11:43:39.882Z",
       "version": "WzkzLDJd",
@@ -10,15 +10,15 @@
         "title": "Scoreboard",
         "hits": 0,
         "description": "",
-        "panelsJSON": "[{\"version\":\"7.5.1\",\"gridData\":{\"x\":12,\"y\":0,\"w\":23,\"h\":26,\"i\":\"${UUID_B}\"},\"panelIndex\":\"${UUID_B}\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.5.1\",\"gridData\":{\"x\":0,\"y\":26,\"w\":48,\"h\":5,\"i\":\"${UUID_C}\"},\"panelIndex\":\"${UUID_C}\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"}]",
+        "panelsJSON": "[{\"version\":\"7.5.1\",\"gridData\":{\"x\":12,\"y\":0,\"w\":23,\"h\":26,\"i\":\"scorestack-scoreboard-uuid-b\"},\"panelIndex\":\"scorestack-scoreboard-uuid-b\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.5.1\",\"gridData\":{\"x\":0,\"y\":26,\"w\":48,\"h\":5,\"i\":\"scorestack-scoreboard-uuid-c\"},\"panelIndex\":\"scorestack-scoreboard-uuid-c\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"}]",
         "optionsJSON": "{\"useMargins\":true,\"hidePanelTitles\":false}",
         "version": 1,
         "timeRestore": true,
         "timeTo": "now",
-        "timeFrom": "now-3d/d",
+        "timeFrom": "now-7d/d",
         "refreshInterval": {
           "pause": false,
-          "value": 1000
+          "value": 30000
         },
         "kibanaSavedObjectMeta": {
           "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
@@ -28,12 +28,12 @@
         {
           "name": "panel_0",
           "type": "visualization",
-          "id": "${UUID_D}"
+          "id": "scorestack-viz-all-team-status"
         },
         {
           "name": "panel_1",
           "type": "visualization",
-          "id": "${UUID_E}"
+          "id": "scorestack-viz-all-team-scores"
         }
       ],
       "migrationVersion": {
@@ -41,7 +41,7 @@
       }
     },
     {
-      "id": "${UUID_D}",
+      "id": "scorestack-viz-all-team-status",
       "type": "visualization",
       "updated_at": "2020-02-18T08:50:09.588Z",
       "version": "WzY3LDFd",
@@ -59,7 +59,7 @@
         {
           "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
           "type": "index-pattern",
-          "id": "${UUID_F}"
+          "id": "scorestack-index-pattern-results-all"
         }
       ],
       "migrationVersion": {
@@ -67,7 +67,7 @@
       }
     },
     {
-      "id": "${UUID_E}",
+      "id": "scorestack-viz-all-team-scores",
       "type": "visualization",
       "updated_at": "2020-02-18T08:36:46.200Z",
       "version": "WzYxLDFd",
@@ -85,7 +85,7 @@
         {
           "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
           "type": "index-pattern",
-          "id": "${UUID_F}"
+          "id": "scorestack-index-pattern-results-all"
         }
       ],
       "migrationVersion": {
@@ -93,7 +93,7 @@
       }
     },
     {
-      "id": "${UUID_F}",
+      "id": "scorestack-index-pattern-results-all",
       "type": "index-pattern",
       "updated_at": "2020-02-18T08:14:38.317Z",
       "version": "WzUzLDFd",
