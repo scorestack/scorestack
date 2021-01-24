@@ -23,6 +23,9 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+[0.6.1] - 2020-01-24
+--------------------
+
 ### General
 
 #### Changed
@@ -305,7 +308,8 @@ This release is in preparation for ISTS 2020.
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.0...dev
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.1...dev
+[0.6.1]: https://github.com/scorestack/scorestack/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/scorestack/scorestack/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/scorestack/scorestack/compare/v0.4...v0.5.0
