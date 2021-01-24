@@ -38,6 +38,8 @@ Each section organizes entries into the following subsections:
 - Removed outdated `jvm.options` configurations (#276)
 - Fixed permissions for Kibana plugin installation (#282)
 - Set default for `fqdn` Terraform variable (#282)
+- Explained Kibana sorting method (#285)
+- Documented FreeBSD's behavior with SSH check (#285)
 
 #### Removed
 
