@@ -69,7 +69,7 @@ do
   CHECKS=$(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | wc -l)
   cat dashboards/single-team-overview.json | sed -e "s/\${TEAM}/${TEAM}/g" | sed -e "s/\${INDEX}/${INDEX}/g" | sed -e "s/\${CHECKS}/${CHECKS}/g" > tmp-dashboard.json
   curl -ku ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
-  curl -kX POST -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"'scorestack-scoreboard'"}],"includeReferences":true}'
+  curl -kX POST -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"'scorestack-overview-${TEAM}'"}],"includeReferences":true}'
 done
 
 # Clean up
