@@ -24,7 +24,7 @@ First, change into the GCP terraform directory.
 cd scorestack/deployment/medium/gcp
 ```
 
-Next, in a new file named `terraform.tfvars`, provide values for the five unset variables defined in `variables.tf`. Here is a brief description of the required variables:
+Next, in a new file named `terraform.tfvars`, provide values for the four unset variables defined in `variables.tf`. Here is a brief description of the required variables:
 
 - `project`: The GCP project ID to which Scorestack will be deployed
 - `credentials_file`: The path to the GCP credentials file - see the [GCP provider reference](https://www.terraform.io/docs/providers/google/guides/provider_reference.html#credentials) for more information
