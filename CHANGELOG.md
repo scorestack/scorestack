@@ -5,8 +5,56 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+Each release in the changelog is divided into the following sections:
+
+- General: changes to anything other than the Dynamicbeat or Kibana plugin code
+- Dynamicbeat
+- Kibana plugin
+
+Each section organizes entries into the following subsections:
+
+- Added
+- Changed
+- Deprecated
+- Removed
+- Fixed
+- Security
+
 [Unreleased]
 ------------
+
+[0.6.1] - 2020-01-26
+--------------------
+
+This release mainly fixes deployment issues and improves the documentation.
+
+### General
+
+#### Changed
+
+- Migrated documentation to `mdbook`
+- Changed WinRM example check's command to `whoami`
+- Adjusted default dashboard refresh time to 30 seconds (#284)
+- Standardized dashboard and visualization IDs (#284)
+
+#### Fixed
+
+- Documented `add-team.sh`'s dependency on `jq` (#261)
+- Removed outdated `jvm.options` configurations (#276)
+- Fixed permissions for Kibana plugin installation (#282)
+- Set default for `fqdn` Terraform variable (#282)
+- Explained Kibana sorting method (#285)
+- Documented FreeBSD's behavior with SSH check (#285)
+
+#### Removed
+
+- Stop configuring JVM heap size for Logstash (#282)
+
+### Dynamicbeat
+
+#### Changed
+
+- Replaced Golang `html/template` library with `text/template` (#251)
 
 [0.6.0] - 2020-10-17
 --------------------
@@ -14,6 +62,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 This release upgrades Scorestack to use Elastic Stack 7.9.2, the latest released version as of this writing. It also fixes some bugs with Dynamicbeat's check template system.
 
 ### General
+
+#### Added
+
+- Prebuild scorestack/kibana:7.9.2 container for CI and devcontainer
+
+#### Changed
+
+- Run `yarn kbn bootstrap` during Kibana plugin container build process
+- Update CI to use prebuilt Kibana container
+- Update Elastic Stack to 7.9.2
 
 #### Fixed
 
@@ -28,40 +86,6 @@ This release upgrades Scorestack to use Elastic Stack 7.9.2, the latest released
 - Report template failure errors in check results
 - Report ICMP packet statistics in check result details for failed checks
 
-#### Fixed
-
-- Don't panic on invalid templates
-- Remove typo in ICMP definition struct field tag
-- Don't ignore Count field in ICMP definition
-
-[0.6.0-rc2] - 2020-10-04
-------------------------
-
-### Kibana Plugin
-
-#### Fixed
-
-- Build plugin bundles and include them in the plugin zipfile
-
-[0.6.0-rc1] - 2020-10-04
-------------------------
-
-Updating Scorestack to Elastic Stack 7.9.2.
-
-### General
-
-#### Added
-
-- Prebuild scorestack/kibana:7.9.2 container for CI and devcontainer
-
-#### Changed
-
-- Run `yarn kbn bootstrap` during Kibana plugin container build process
-- Update CI to use prebuilt Kibana container
-- Update Elastic Stack to 7.9.2
-
-### Dynamicbeat
-
 #### Changed
 
 - Swap github.com/sparrc/go-ping with github.com/go-ping/ping
@@ -71,6 +95,9 @@ Updating Scorestack to Elastic Stack 7.9.2.
 #### Fixed
 
 - Re-add the check code that was accidentally removed in v0.5.1
+- Don't panic on invalid templates
+- Remove typo in ICMP definition struct field tag
+- Don't ignore Count field in ICMP definition
 
 ### Kibana Plugin
 
@@ -83,6 +110,7 @@ Updating Scorestack to Elastic Stack 7.9.2.
 #### Fixed
 
 - Replace TinyURL plugin link with GitHub Releases link
+- Build plugin bundles and include them in the plugin zipfile
 
 [0.5.1] - 2020-10-01
 --------------------
@@ -282,10 +310,9 @@ This release is in preparation for ISTS 2020.
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.0...dev
-[0.6.0]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc2...v0.6.0
-[0.6.0-rc2]: https://github.com/scorestack/scorestack/compare/v0.6.0-rc1...v0.6.0-rc2
-[0.6.0-rc1]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0-rc1
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.1...dev
+[0.6.1]: https://github.com/scorestack/scorestack/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/scorestack/scorestack/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/scorestack/scorestack/compare/v0.4...v0.5.0
 [0.4.0]: https://github.com/scorestack/scorestack/compare/v0.3...v0.4

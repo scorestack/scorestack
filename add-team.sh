@@ -21,18 +21,8 @@ do
 done
 
 # Add scoreboard dashboard
-UUID_A=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
-UUID_B=$(uuidgen)
-UUID_C=$(uuidgen)
-UUID_D=dddddddd-dddd-dddd-dddd-dddddddddddd
-UUID_E=eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee
-UUID_F=ffffffff-ffff-ffff-ffff-ffffffffffff
-cat dashboards/scoreboard.json | sed -e "s/\${UUID_A}/${UUID_A}/g" | sed -e "s/\${UUID_B}/${UUID_B}/g" | sed -e "s/\${UUID_C}/${UUID_C}/g" | sed -e "s/\${UUID_D}/${UUID_D}/g" | sed -e "s/\${UUID_E}/${UUID_E}/g" | sed -e "s/\${UUID_F}/${UUID_F}/g" > tmp-dashboard.json
-curl -ku ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
-curl -kX POST -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"'${UUID_A}'"}],"includeReferences":true}'
-
-# Clean up
-rm tmp-dashboard.json
+curl -ku ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @dashboards/scoreboard.json
+curl -kX POST -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"'scorestack-scoreboard'"}],"includeReferences":true}'
 
 # Add default index template
 curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_template/default -H 'Content-Type: application/json' -d '{"index_patterns":["check*","attrib_*","results*"],"settings":{"number_of_replicas":"0"}}'
@@ -75,17 +65,11 @@ do
   curl -kX PUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_security/user/${TEAM} -H 'Content-Type: application/json' -d '{"password":"changeme","roles":["common","'${TEAM}'"]}'
 
   # Add team overview dashboard
-  UUID_A=$(uuidgen)
-  UUID_B=$(uuidgen)
-  UUID_C=$(uuidgen)
-  UUID_D=$(uuidgen)
-  UUID_E=$(uuidgen)
-  UUID_F=$(uuidgen)
   INDEX="results-${TEAM}*"
   CHECKS=$(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | wc -l)
-  cat dashboards/single-team-overview.json | sed -e "s/\${UUID_A}/${UUID_A}/g" | sed -e "s/\${UUID_B}/${UUID_B}/g" | sed -e "s/\${UUID_C}/${UUID_C}/g" | sed -e "s/\${UUID_D}/${UUID_D}/g" | sed -e "s/\${UUID_E}/${UUID_E}/g" | sed -e "s/\${UUID_F}/${UUID_F}/g" | sed -e "s/\${TEAM}/${TEAM}/g" | sed -e "s/\${INDEX}/${INDEX}/g" | sed -e "s/\${CHECKS}/${CHECKS}/g" > tmp-dashboard.json
+  cat dashboards/single-team-overview.json | sed -e "s/\${TEAM}/${TEAM}/g" | sed -e "s/\${INDEX}/${INDEX}/g" | sed -e "s/\${CHECKS}/${CHECKS}/g" > tmp-dashboard.json
   curl -ku ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
-  curl -kX POST -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"'${UUID_A}'"}],"includeReferences":true}'
+  curl -kX POST -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/spaces/_copy_saved_objects -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"spaces":["scorestack"],"objects":[{"type":"dashboard","id":"'scorestack-overview-${TEAM}'"}],"includeReferences":true}'
 done
 
 # Clean up

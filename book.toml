@@ -1,0 +1,6 @@
+[book]
+authors = ["Sean Newman", "Simon Buchheit"]
+language = "en"
+multilingual = false
+src = "docs"
+title = "Scorestack Documentation"

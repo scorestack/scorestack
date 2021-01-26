@@ -35,8 +35,8 @@
 
     - name: Configure JVM
       template:
-        src: configs/elasticsearch.jvm.options
-        dest: /etc/elasticsearch/jvm.options
+        src: configs/elasticsearch-memory.jvm.options
+        dest: /etc/elasticsearch/jvm.options.d/elasticsearch-memory.jvm.options
         owner: root
         group: elasticsearch
         mode: '0660'
@@ -295,13 +295,6 @@
       notify:
         - Restart Logstash
 
-    - name: Configure JVM
-      template:
-        src: configs/logstash.jvm.options
-        dest: /etc/logstash/jvm.options
-      notify:
-        - Restart Logstash
-
     - name: Configure Dynamicbeat pipeline
       template:
         src: configs/dynamicbeat-pipeline.conf
@@ -341,7 +334,7 @@
         path: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
         owner: root
         group: logstash
-        mode: 660
+        mode: 0660
 
     - name: Enable Logstash service
       systemd:
@@ -400,10 +393,9 @@
         - Restart Kibana
 
     - name: Install plugin
-      command: /usr/share/kibana/bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.6.0/kibana-plugin-v0.6.0.zip
+      command: /usr/share/kibana/bin/kibana-plugin --allow-root install https://github.com/scorestack/scorestack/releases/download/v0.6.1/kibana-plugin-v0.6.1.zip
       args:
         creates: /usr/share/kibana/plugins/scorestack
-      become_user: kibana
       notify:
         - Restart Kibana
 

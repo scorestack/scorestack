@@ -5,10 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"reflect"
 	"strconv"
 	"sync"
+	"text/template"
 	"time"
 
 	"github.com/elastic/beats/v7/libbeat/beat"

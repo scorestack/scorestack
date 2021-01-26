@@ -1,3 +1,8 @@
+# Don't track the `terraform init` file
+.terraform.lock.hcl
+
+# --- Terraform.gitignore -----------------------------------------------------
+
 # Local .terraform directories
 **/.terraform/*
 

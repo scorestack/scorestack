@@ -2,7 +2,7 @@
   "version": "7.5.1",
   "objects": [
     {
-      "id": "${UUID_A}",
+      "id": "scorestack-overview-${TEAM}",
       "type": "dashboard",
       "updated_at": "2020-02-18T11:41:27.708Z",
       "version": "WzkwLDJd",
@@ -10,7 +10,7 @@
         "title": "Overview - ${TEAM}",
         "hits": 0,
         "description": "",
-        "panelsJSON": "[{\"version\":\"7.5.1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":32,\"i\":\"${UUID_B}\"},\"panelIndex\":\"${UUID_B}\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.5.1\",\"gridData\":{\"x\":0,\"y\":32,\"w\":48,\"h\":13,\"i\":\"${UUID_C}\"},\"panelIndex\":\"${UUID_C}\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"}]",
+        "panelsJSON": "[{\"version\":\"7.5.1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":32,\"i\":\"scorestack-overview-${TEAM}-uuid-b\"},\"panelIndex\":\"scorestack-overview-${TEAM}-uuid-b\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.5.1\",\"gridData\":{\"x\":0,\"y\":32,\"w\":48,\"h\":13,\"i\":\"scorestack-overview-${TEAM}-uuid-c\"},\"panelIndex\":\"scorestack-overview-${TEAM}-uuid-c\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"}]",
         "optionsJSON": "{\"hidePanelTitles\":false,\"useMargins\":true}",
         "version": 1,
         "timeRestore": true,
@@ -18,7 +18,7 @@
         "timeFrom": "now-15m",
         "refreshInterval": {
           "pause": false,
-          "value": 1000
+          "value": 30000
         },
         "kibanaSavedObjectMeta": {
           "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
@@ -28,12 +28,12 @@
         {
           "name": "panel_0",
           "type": "visualization",
-          "id": "${UUID_D}"
+          "id": "scorestack-service-status-over-time-${TEAM}"
         },
         {
           "name": "panel_1",
           "type": "visualization",
-          "id": "${UUID_E}"
+          "id": "scorestack-check-results-overview-${TEAM}"
         }
       ],
       "migrationVersion": {
@@ -41,7 +41,7 @@
       }
     },
     {
-      "id": "${UUID_D}",
+      "id": "scorestack-service-status-over-time-${TEAM}",
       "type": "visualization",
       "updated_at": "2020-02-18T11:29:39.662Z",
       "version": "Wzg2LDJd",
@@ -59,7 +59,7 @@
         {
           "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
           "type": "index-pattern",
-          "id": "${UUID_F}"
+          "id": "scorestack-index-pattern-${TEAM}"
         }
       ],
       "migrationVersion": {
@@ -67,7 +67,7 @@
       }
     },
     {
-      "id": "${UUID_E}",
+      "id": "scorestack-check-results-overview-${TEAM}",
       "type": "visualization",
       "updated_at": "2020-02-18T11:36:10.747Z",
       "version": "Wzg4LDJd",
@@ -85,7 +85,7 @@
         {
           "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
           "type": "index-pattern",
-          "id": "${UUID_F}"
+          "id": "scorestack-index-pattern-${TEAM}"
         }
       ],
       "migrationVersion": {
@@ -93,7 +93,7 @@
       }
     },
     {
-      "id": "${UUID_F}",
+      "id": "scorestack-index-pattern-${TEAM}",
       "type": "index-pattern",
       "updated_at": "2020-02-18T11:25:48.753Z",
       "version": "WzgxLDJd",
