@@ -23,8 +23,10 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
-[0.6.1] - 2020-01-24
+[0.6.1] - 2020-01-26
 --------------------
+
+This release mainly fixes deployment issues and improves the documentation.
 
 ### General
 
