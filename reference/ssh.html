@@ -173,6 +173,8 @@
 <tr><td>ContentRegex</td><td>String</td><td>N :: &quot;.*&quot;</td><td>Tegex to match if reading a file</td></tr>
 <tr><td>Port</td><td>String</td><td>N :: &quot;22&quot;</td><td>The port to attempt an SSH connection on</td></tr>
 </tbody></table>
+<h2><a class="header" href="#notes-on-freebsd" id="notes-on-freebsd">Notes on FreeBSD</a></h2>
+<p>SSH checks will fail on standard FreeBSD installations. This is because by default, FreeBSD does not enable <code>password</code> authentication for SSH. In order to fix this issue, you must ensure that <code>PasswordAuthentication yes</code> is set in your <code>/etc/ssh/sshd_config</code> file.</p>
 
                     </main>
 

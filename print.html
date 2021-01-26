@@ -230,7 +230,7 @@
 </code></pre>
 <h1><a class="header" href="#attributes" id="attributes">Attributes</a></h1>
 <p>Attributes are named variables referenced within a check definition that allow string values to be inserted into a definition at runtime. This allows for dynamic updates to scoring through the Kibana UI during a competition, and is typically useful for things that change a lot - like usernames and/or passwords.</p>
-<p>Attributes work using <a href="https://golang.org/pkg/html/template/">golang templates</a> to insert attribute values into the check definitions before they are parsed by Dynamicbeat.</p>
+<p>Attributes work using <a href="https://golang.org/pkg/text/template/">golang templates</a> to insert attribute values into the check definitions before they are parsed by Dynamicbeat.</p>
 <p>To define an attribute, you just have to use the <code>{{.Name}}</code> syntax somewhere within a check definition, where <code>Name</code> is the name of the attribute you are defining. Then, you must give the attribute an initial value in one of two files: <code>admin-attribs.json</code> or <code>user-attribs.json</code>.</p>
 <p>The format of these two attribute files is a flat JSON object of key-value pairs. Each key is the name of an attribute, and each value is the string that will be inserted into the check definition at the location where it is referenced.</p>
 <h2><a class="header" href="#permissions" id="permissions">Permissions</a></h2>
@@ -296,6 +296,10 @@ PASSWORD=changeme
 <pre><code class="language-shell">./add-team.sh team01 team02 team03
 </code></pre>
 <p>In this case, three teams will be added: <code>team01</code>, <code>team02</code>, and <code>team03</code>.</p>
+<blockquote>
+<p>Kibana sorts team names in alphabetical order. If your team names are numbered (i.e., <code>team01</code>, <code>team02</code>, <code>team03</code>, etc.) then you should left-pad with zeros so all teams have the same number of digits. If you don't left-pad, the order in which teams appear in Kibana will be counterintuitive.</p>
+<p>For example, if you have 12 teams you should number them like <code>team01</code>, <code>team05</code>, <code>team10</code>, etc. instead of <code>team1</code>, <code>team5</code>, <code>team10</code> for sorting to appear correctly.</p>
+</blockquote>
 <h2><a class="header" href="#adding-multiple-teams" id="adding-multiple-teams">Adding Multiple Teams</a></h2>
 <p>Thanks to some additional templating configured in the <code>add-team.sh</code> script, each check only has to be written once for multiple teams.</p>
 <p>When adding checks for a team, the script will make the following modifications to a definition or attribute file:</p>
@@ -512,6 +516,8 @@ PASSWORD=changeme
 <tr><td>ContentRegex</td><td>String</td><td>N :: &quot;.*&quot;</td><td>Tegex to match if reading a file</td></tr>
 <tr><td>Port</td><td>String</td><td>N :: &quot;22&quot;</td><td>The port to attempt an SSH connection on</td></tr>
 </tbody></table>
+<h2><a class="header" href="#notes-on-freebsd" id="notes-on-freebsd">Notes on FreeBSD</a></h2>
+<p>SSH checks will fail on standard FreeBSD installations. This is because by default, FreeBSD does not enable <code>password</code> authentication for SSH. In order to fix this issue, you must ensure that <code>PasswordAuthentication yes</code> is set in your <code>/etc/ssh/sshd_config</code> file.</p>
 <h1><a class="header" href="#vnc" id="vnc">VNC</a></h1>
 <table><thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody>
 <tr><td>Host</td><td>String</td><td>Y</td><td>IP or FQDN of the host to run the SSH check against</td></tr>
@@ -627,19 +633,31 @@ rm -rf deployment/small/docker/certificates
 <p>First, change into the GCP terraform directory.</p>
 <pre><code class="language-shell">cd scorestack/deployment/medium/gcp
 </code></pre>
-<p>Next, provide values for the five unset variables within <code>variables.tf</code>. Here is a brief description of the variables:</p>
+<p>Next, in a new file named <code>terraform.tfvars</code>, provide values for the four unset variables defined in <code>variables.tf</code>. Here is a brief description of the required variables:</p>
 <ul>
 <li><code>project</code>: The GCP project ID to which Scorestack will be deployed</li>
 <li><code>credentials_file</code>: The path to the GCP credentials file - see the <a href="https://www.terraform.io/docs/providers/google/guides/provider_reference.html#credentials">GCP provider reference</a> for more information</li>
 <li><code>ssh_pub_key_file</code>, <code>ssh_priv_key_file</code>: The paths to the SSH keypair that will be added to the created instances - these must already be created</li>
-<li><code>fqdn</code>: The domain name that Scorestack will be served behind - the DNS record for this domain must be configured manually after deployment</li>
 </ul>
+<p>Here's an example of what your <code>terraform.tfvars</code> file might look like:</p>
+<pre><code class="language-ini">project = &quot;scorestack-300023&quot;
+credentials_file = &quot;~/.config/gcloud/application_default_credentials.json&quot;
+ssh_pub_key_file = &quot;~/.ssh/scorestack.pub&quot;
+ssh_priv_key_file = &quot;~/.ssh/scorestack&quot;
+</code></pre>
 <blockquote>
-<p>If you don't have a domain for Scorestack and were planning on accessing it via its public IP, you can set <code>fqdn</code> to an empty string.</p>
+<p>If you have a domain that you'd like to point at Scorestack, make sure to set the <code>fqdn</code> variable to that domain. For example, if you were to run a Scorestack instance at <code>demo.scorestack.io</code>, you would add the following line to your <code>terraform.tfvars</code> file:</p>
+<pre><code class="language-ini">fqdn = &quot;demo.scorestack.io&quot;
+</code></pre>
 </blockquote>
-<p>Finally, run Terraform to deploy Scorestack.</p>
+<p>Next, install the necessary Terraform components to work with the GCP APIs.</p>
 <pre><code class="language-shell">terraform init
-terraform apply
+</code></pre>
+<p>If you are using a brand-new GCP project, you will first have to <a href="https://cloud.google.com/billing/docs/how-to/modify-project">enable billing</a> for the project. Once billing is enabled, you can enable the Compute Engine API, which is required for the Terraform to work properly.</p>
+<pre><code class="language-shell">gcloud services enable compute.googleapis.com
+</code></pre>
+<p>Finally, run Terraform to deploy Scorestack.</p>
+<pre><code class="language-shell">terraform apply
 </code></pre>
 <p>Once deployment is finished, configure the DNS record for your FQDN to point at the public IP of the <code>nginx</code> instance. Then, run the <a href="deployment/medium.html#ansible-deployment">ansible deployment</a> for the medium architecture.</p>
 <h3><a class="header" href="#cleanupteardown-1" id="cleanupteardown-1">Cleanup/Teardown</a></h3>
@@ -651,12 +669,8 @@ rm ../ansible/inventory.ini
 <h2><a class="header" href="#ansible-deployment" id="ansible-deployment">Ansible Deployment</a></h2>
 <p>Once the infrastructure for the medium architecture has been deployed by one of the available Terraform options, Ansible is used to deploy and configure Scorestack. You will need to install Ansible on your system for this deployment.</p>
 <h3><a class="header" href="#deploying-2" id="deploying-2">Deploying</a></h3>
-<p>Once your Terraform deployment is complete, change into the Ansible directory in the repository.</p>
-<pre><code class="language-shell"># If you're in one of the medium architecture Terraform folders
-cd ../ansible
-
-# If you're at the root level of the repository
-cd deployment/medium/ansible
+<p>Once your Terraform deployment is complete, change from your Terraform directory to the Ansible directory in the repository.</p>
+<pre><code class="language-shell">cd ../ansible
 </code></pre>
 <p>Then, run the Ansible playbook to deploy Scorestack. The inventory file was generated for you by Terraform to properly configure SSH access for Ansible to all of the instances.</p>
 <pre><code class="language-shell">ansible-playbook playbook.yml -i inventory.ini

@@ -181,19 +181,31 @@
 <p>First, change into the GCP terraform directory.</p>
 <pre><code class="language-shell">cd scorestack/deployment/medium/gcp
 </code></pre>
-<p>Next, provide values for the five unset variables within <code>variables.tf</code>. Here is a brief description of the variables:</p>
+<p>Next, in a new file named <code>terraform.tfvars</code>, provide values for the four unset variables defined in <code>variables.tf</code>. Here is a brief description of the required variables:</p>
 <ul>
 <li><code>project</code>: The GCP project ID to which Scorestack will be deployed</li>
 <li><code>credentials_file</code>: The path to the GCP credentials file - see the <a href="https://www.terraform.io/docs/providers/google/guides/provider_reference.html#credentials">GCP provider reference</a> for more information</li>
 <li><code>ssh_pub_key_file</code>, <code>ssh_priv_key_file</code>: The paths to the SSH keypair that will be added to the created instances - these must already be created</li>
-<li><code>fqdn</code>: The domain name that Scorestack will be served behind - the DNS record for this domain must be configured manually after deployment</li>
 </ul>
+<p>Here's an example of what your <code>terraform.tfvars</code> file might look like:</p>
+<pre><code class="language-ini">project = &quot;scorestack-300023&quot;
+credentials_file = &quot;~/.config/gcloud/application_default_credentials.json&quot;
+ssh_pub_key_file = &quot;~/.ssh/scorestack.pub&quot;
+ssh_priv_key_file = &quot;~/.ssh/scorestack&quot;
+</code></pre>
 <blockquote>
-<p>If you don't have a domain for Scorestack and were planning on accessing it via its public IP, you can set <code>fqdn</code> to an empty string.</p>
+<p>If you have a domain that you'd like to point at Scorestack, make sure to set the <code>fqdn</code> variable to that domain. For example, if you were to run a Scorestack instance at <code>demo.scorestack.io</code>, you would add the following line to your <code>terraform.tfvars</code> file:</p>
+<pre><code class="language-ini">fqdn = &quot;demo.scorestack.io&quot;
+</code></pre>
 </blockquote>
-<p>Finally, run Terraform to deploy Scorestack.</p>
+<p>Next, install the necessary Terraform components to work with the GCP APIs.</p>
 <pre><code class="language-shell">terraform init
-terraform apply
+</code></pre>
+<p>If you are using a brand-new GCP project, you will first have to <a href="https://cloud.google.com/billing/docs/how-to/modify-project">enable billing</a> for the project. Once billing is enabled, you can enable the Compute Engine API, which is required for the Terraform to work properly.</p>
+<pre><code class="language-shell">gcloud services enable compute.googleapis.com
+</code></pre>
+<p>Finally, run Terraform to deploy Scorestack.</p>
+<pre><code class="language-shell">terraform apply
 </code></pre>
 <p>Once deployment is finished, configure the DNS record for your FQDN to point at the public IP of the <code>nginx</code> instance. Then, run the <a href="#ansible-deployment">ansible deployment</a> for the medium architecture.</p>
 <h3><a class="header" href="#cleanupteardown" id="cleanupteardown">Cleanup/Teardown</a></h3>
@@ -205,12 +217,8 @@ rm ../ansible/inventory.ini
 <h2><a class="header" href="#ansible-deployment" id="ansible-deployment">Ansible Deployment</a></h2>
 <p>Once the infrastructure for the medium architecture has been deployed by one of the available Terraform options, Ansible is used to deploy and configure Scorestack. You will need to install Ansible on your system for this deployment.</p>
 <h3><a class="header" href="#deploying-1" id="deploying-1">Deploying</a></h3>
-<p>Once your Terraform deployment is complete, change into the Ansible directory in the repository.</p>
-<pre><code class="language-shell"># If you're in one of the medium architecture Terraform folders
-cd ../ansible
-
-# If you're at the root level of the repository
-cd deployment/medium/ansible
+<p>Once your Terraform deployment is complete, change from your Terraform directory to the Ansible directory in the repository.</p>
+<pre><code class="language-shell">cd ../ansible
 </code></pre>
 <p>Then, run the Ansible playbook to deploy Scorestack. The inventory file was generated for you by Terraform to properly configure SSH access for Ansible to all of the instances.</p>
 <pre><code class="language-shell">ansible-playbook playbook.yml -i inventory.ini

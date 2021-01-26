@@ -203,6 +203,10 @@ PASSWORD=changeme
 <pre><code class="language-shell">./add-team.sh team01 team02 team03
 </code></pre>
 <p>In this case, three teams will be added: <code>team01</code>, <code>team02</code>, and <code>team03</code>.</p>
+<blockquote>
+<p>Kibana sorts team names in alphabetical order. If your team names are numbered (i.e., <code>team01</code>, <code>team02</code>, <code>team03</code>, etc.) then you should left-pad with zeros so all teams have the same number of digits. If you don't left-pad, the order in which teams appear in Kibana will be counterintuitive.</p>
+<p>For example, if you have 12 teams you should number them like <code>team01</code>, <code>team05</code>, <code>team10</code>, etc. instead of <code>team1</code>, <code>team5</code>, <code>team10</code> for sorting to appear correctly.</p>
+</blockquote>
 <h2><a class="header" href="#adding-multiple-teams" id="adding-multiple-teams">Adding Multiple Teams</a></h2>
 <p>Thanks to some additional templating configured in the <code>add-team.sh</code> script, each check only has to be written once for multiple teams.</p>
 <p>When adding checks for a team, the script will make the following modifications to a definition or attribute file:</p>

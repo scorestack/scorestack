@@ -165,7 +165,7 @@
                     <main>
                         <h1><a class="header" href="#attributes" id="attributes">Attributes</a></h1>
 <p>Attributes are named variables referenced within a check definition that allow string values to be inserted into a definition at runtime. This allows for dynamic updates to scoring through the Kibana UI during a competition, and is typically useful for things that change a lot - like usernames and/or passwords.</p>
-<p>Attributes work using <a href="https://golang.org/pkg/html/template/">golang templates</a> to insert attribute values into the check definitions before they are parsed by Dynamicbeat.</p>
+<p>Attributes work using <a href="https://golang.org/pkg/text/template/">golang templates</a> to insert attribute values into the check definitions before they are parsed by Dynamicbeat.</p>
 <p>To define an attribute, you just have to use the <code>{{.Name}}</code> syntax somewhere within a check definition, where <code>Name</code> is the name of the attribute you are defining. Then, you must give the attribute an initial value in one of two files: <code>admin-attribs.json</code> or <code>user-attribs.json</code>.</p>
 <p>The format of these two attribute files is a flat JSON object of key-value pairs. Each key is the name of an attribute, and each value is the string that will be inserted into the check definition at the location where it is referenced.</p>
 <h2><a class="header" href="#permissions" id="permissions">Permissions</a></h2>
