@@ -334,7 +334,7 @@
         path: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
         owner: root
         group: logstash
-        mode: 660
+        mode: 0660
 
     - name: Enable Logstash service
       systemd:
