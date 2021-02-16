@@ -76,7 +76,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// Check if we are going to match content
-	if matchContent, _ := strconv.ParseBool(d.MatchContent); matchContent {
+	if matchContent, _ := strconv.ParseBool(d.MatchContent); !matchContent {
 		// If we made it here the check passes
 		result.Message = fmt.Sprintf("Command %s executed successfully: %s", d.Cmd, output)
 		result.Passed = true
