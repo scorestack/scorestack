@@ -23,6 +23,13 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+### Dynamicbeat
+
+#### Fixed
+
+- SSH now matches content when MatchContent is true
+
+
 [0.6.1] - 2020-01-26
 --------------------
 
