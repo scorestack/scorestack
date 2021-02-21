@@ -9,5 +9,5 @@ SMTP
 | Sender    | String | Y                            | Who is sending the email      |
 | Reciever  | String | Y                            | Who is receiving the email    |
 | Body      | String | N :: "Hello from Scorestack" | Body of the email             |
-| Encrypted | String | N :: False                   | Whether or not to use TLS     |
+| Encrypted | String | N :: "false"                 | Whether or not to use TLS     |
 | Port      | String | N :: "25"                    | Port of the SMTP server       |
