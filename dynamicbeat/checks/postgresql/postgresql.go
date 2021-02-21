@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strconv"
 
-	// MySQL driver
+	// PostgreSQL driver
 	"github.com/jackc/pgx/v4"
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
