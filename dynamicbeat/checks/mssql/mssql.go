@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"strconv"
 
+	// MSSQL driver
+	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
@@ -29,7 +31,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	result := schema.CheckResult{}
 
 	// Create DB handle
-	db, err := sql.Open("mssql", fmt.Sprintf("sqlserver://%s:%s@%s/instance?database=%s", d.Username, d.Password, d.Host, d.Database))
+	db, err := sql.Open("mssql", fmt.Sprintf("sqlserver://%s:%s@%s:%s/instance?database=%s", d.Username, d.Password, d.Host, d.Port, d.Database))
 	if err != nil {
 		result.Message = fmt.Sprintf("Creating database handle failed : %s", err)
 		return result
