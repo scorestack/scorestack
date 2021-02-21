@@ -25,6 +25,10 @@ Each section organizes entries into the following subsections:
 
 ### Dynamicbeat
 
+#### Added
+
+- PostgreSQL check type (#294)
+
 #### Fixed
 
 - Spurious EOF errors when closing SSH connections are ignored (#292)

@@ -1,0 +1,8 @@
+{
+    "Host": "localhost",
+    "Username": "postgres",
+    "Database": "postgres",
+    "Table": "testtable",
+    "Column": "Name",
+    "MatchContent": "true"
+}
