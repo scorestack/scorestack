@@ -3,7 +3,7 @@ MSSQL
 
 | Name         | Type   | Required     | Description                                                          |
 | ------------ | ------ | ------------ | -------------------------------------------------------------------- |
-| Host         | String | Y            | IP or FQDN for the MySQL server                                      |
+| Host         | String | Y            | IP or FQDN for the MSSQL server                                      |
 | Username     | String | Y            | Username for the database                                            |
 | Password     | String | Y            | Password for the user                                                |
 | Database     | String | Y            | Name of the database to access                                       |
