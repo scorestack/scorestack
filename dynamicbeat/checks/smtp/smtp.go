@@ -23,7 +23,7 @@ type Definition struct {
 	Sender    string             `optiontype:"required"`                                       // Who is sending the email
 	Reciever  string             `optiontype:"required"`                                       // Who is receiving the email
 	Body      string             `optiontype:"optional" optiondefault:"Hello from Scorestack"` // Body of the email
-	Encrypted string             `optiontype:"optional"`                                       // Whether or not to use TLS
+	Encrypted string             `optiontype:"optional" optiondefault:"false"`                 // Whether or not to use TLS
 	Port      string             `optiontype:"optional" optiondefault:"25"`                    // Port of the smtp server
 }
 
