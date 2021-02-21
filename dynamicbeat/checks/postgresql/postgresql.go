@@ -90,7 +90,8 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 		return result
 	}
 
-	// Check fails if we reach here
+	// Check passes if we reach here
+	result.Passed = true
 	return result
 }
 
