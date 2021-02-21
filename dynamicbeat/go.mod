@@ -58,7 +58,6 @@ require (
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 	golang.org/x/net v0.0.0-20200930145003-4acb6c075d10 // indirect
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
-	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/tools v0.0.0-20201001104356-43ebab892c4c
 	gosrc.io/xmpp v0.5.1
 	honnef.co/go/tools v0.0.1-2020.1.5 // indirect
