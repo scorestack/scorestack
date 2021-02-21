@@ -15,7 +15,7 @@ import (
 // it implements the "check" interface
 type Definition struct {
 	Config       schema.CheckConfig // generic metadata about the check
-	Host         string             `optiontype:"required"`                      // IP of Hostname for the PostgreSQL server
+	Host         string             `optiontype:"required"`                      // IP or Hostname for the PostgreSQL server
 	Username     string             `optiontype:"required"`                      // Username for the database
 	Password     string             `optiontype:"required"`                      // Password for the user
 	Database     string             `optiontype:"required"`                      // Name of the database to access
