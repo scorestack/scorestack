@@ -28,6 +28,7 @@ Each section organizes entries into the following subsections:
 #### Added
 
 - PostgreSQL check type (#294)
+- MSSQL check type (#295)
 
 #### Fixed
 
