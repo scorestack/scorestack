@@ -23,6 +23,12 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+### Dynamicbeat
+
+#### Fixed
+
+- Spurious EOF errors when closing SSH connections are ignored (#292)
+
 [0.6.2] - 2020-02-16
 --------------------
 
