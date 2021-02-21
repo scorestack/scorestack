@@ -1,4 +1,4 @@
-package mysql
+package mssql
 
 import (
 	"context"
@@ -7,16 +7,14 @@ import (
 	"regexp"
 	"strconv"
 
-	// MySQL driver
-	_ "github.com/go-sql-driver/mysql"
+	// MSSQL driver
+	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
 )
 
-// The Definition configures the behavior of the MySQL check
-// it implements the "check" interface
 type Definition struct {
 	Config       schema.CheckConfig // generic metadata about the check
-	Host         string             `optiontype:"required"`                      // IP of Hostname for the MySQL server
+	Host         string             `optiontype:"required"`                      // IP or Hostname for the MSSQL server
 	Username     string             `optiontype:"required"`                      // Username for the database
 	Password     string             `optiontype:"required"`                      // Password for the user
 	Database     string             `optiontype:"required"`                      // Name of the database to access
@@ -24,7 +22,7 @@ type Definition struct {
 	Column       string             `optiontype:"required"`                      // Name of the column to access
 	MatchContent string             `optiontype:"optional"`                      // Whether to perform a regex content match on the results of the query
 	ContentRegex string             `optiontype:"optional" optiondefault:".*"`   // Regex to match on
-	Port         string             `optiontype:"optional" optiondefault:"3306"` // Port for the server
+	Port         string             `optiontype:"optional" optiondefault:"1433"` // Port for the server
 }
 
 // Run a single instance of the check
@@ -33,7 +31,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	result := schema.CheckResult{}
 
 	// Create DB handle
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", d.Username, d.Password, d.Host, d.Port, d.Database))
+	db, err := sql.Open("mssql", fmt.Sprintf("sqlserver://%s:%s@%s:%s/instance?database=%s", d.Username, d.Password, d.Host, d.Port, d.Database))
 	if err != nil {
 		result.Message = fmt.Sprintf("Creating database handle failed : %s", err)
 		return result
@@ -48,10 +46,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	err = db.PingContext(ctx)
 	if err != nil {
 		result.Message = fmt.Sprintf("Failed to ping database : %s", err)
+		return result
 	}
 
-	// Query the DB
-	// TODO: This is SQL injectable. Figure out Paramerterized queries
+	// Query the Db
+	// TODO: This is SQL injectable. FIgure out paramerterized queries
 	rows, err := db.QueryContext(ctx, fmt.Sprintf("SELECT %s FROM %s;", d.Column, d.Table))
 	if err != nil {
 		result.Message = fmt.Sprintf("Could not query database : %s", err)
@@ -62,7 +61,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Store the value from the column
 	var val string
 
-	// Perform regex matching, if necessary
+	// Perform regex matching if necessary
 	if matchContent, _ := strconv.ParseBool(d.MatchContent); matchContent {
 		// Compile the regex
 		regex, err := regexp.Compile(d.ContentRegex)
@@ -98,6 +97,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	// Check passes if we reach here
 	result.Passed = true
 	return result
+
 }
 
 // GetConfig returns the current CheckConfig struct this check has been

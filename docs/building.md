@@ -43,7 +43,7 @@ docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/t
 
 Please note that this build process can take quite a long time (20-30 minutes).
 
-The zipfile can be found at `kibana-plugin/build/kibana-plugin-0.0.0.zip`.
+The zipfile can be found at `kibana-plugin/build/scorestack-X.Y.Z.zip`, where `X.Y.Z` is the latest release version. Specifically, it is the value of the `--build-version` argument in the `build` script defined in `kibana-plugin/package.json`.
 
 ### Building During Development
 

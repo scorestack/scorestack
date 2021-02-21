@@ -393,7 +393,7 @@
         - Restart Kibana
 
     - name: Install plugin
-      command: /usr/share/kibana/bin/kibana-plugin --allow-root install https://github.com/scorestack/scorestack/releases/download/v0.6.2/kibana-plugin-v0.6.2.zip
+      command: /usr/share/kibana/bin/kibana-plugin --allow-root install https://github.com/scorestack/scorestack/releases/download/v0.7.0/kibana-plugin-v0.7.0.zip
       args:
         creates: /usr/share/kibana/plugins/scorestack
       notify:

@@ -23,6 +23,22 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+[0.7.0] - 2020-02-21
+--------------------
+
+This release adds two new check types and fixes a logging bug with the SSH check.
+
+### Dynamicbeat
+
+#### Added
+
+- PostgreSQL check type (#294)
+- MSSQL check type (#295)
+
+#### Fixed
+
+- Spurious EOF errors when closing SSH connections are ignored (#292)
+
 [0.6.2] - 2020-02-16
 --------------------
 
@@ -321,7 +337,8 @@ This release is in preparation for ISTS 2020.
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.6.2...dev
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.7.0...dev
+[0.7.0]: https://github.com/scorestack/scorestack/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/scorestack/scorestack/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/scorestack/scorestack/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/scorestack/scorestack/compare/v0.5.1...v0.6.0

@@ -21,6 +21,7 @@ replace (
 
 require (
 	github.com/akavel/rsrc v0.9.0 // indirect
+	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e
 	github.com/dlclark/regexp2 v1.2.1 // indirect
 	github.com/dop251/goja v0.0.0-20200929101608-beb0a9a01fbc // indirect
 	github.com/dop251/goja_nodejs v0.0.0-20200811150831-9bc458b4bbeb // indirect
@@ -35,6 +36,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hirochachacha/go-smb2 v1.0.3
+	github.com/jackc/pgx/v4 v4.10.1
 	github.com/jlaffaye/ftp v0.0.0-20200812143550-39e3779af0db
 	github.com/josephspurrier/goversioninfo v1.2.0 // indirect
 	github.com/magefile/mage v1.10.0
@@ -56,7 +58,6 @@ require (
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 	golang.org/x/net v0.0.0-20200930145003-4acb6c075d10 // indirect
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
-	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/tools v0.0.0-20201001104356-43ebab892c4c
 	gosrc.io/xmpp v0.5.1
 	honnef.co/go/tools v0.0.1-2020.1.5 // indirect

@@ -1,0 +1,17 @@
+{
+    "id": "postgres",
+    "name": "PostgreSQL",
+    "type": "postgresql",
+    "group": "example",
+    "score_weight": 1,
+    "definition": {
+        "Host": "{{.Host}}",
+        "Username": "{{.Username}}",
+        "Password": "{{.Password}}",
+        "Database": "{{.Database}}",
+        "Table": "{{.Table}}",
+        "Column": "{{.Column}}",
+        "MatchContent": "{{.MatchContent}}",
+        "ContentRegex": "scorestack"
+    }
+}
