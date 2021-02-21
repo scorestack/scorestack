@@ -503,7 +503,7 @@ PASSWORD=changeme
 <tr><td>Sender</td><td>String</td><td>Y</td><td>Who is sending the email</td></tr>
 <tr><td>Reciever</td><td>String</td><td>Y</td><td>Who is receiving the email</td></tr>
 <tr><td>Body</td><td>String</td><td>N :: &quot;Hello from Scorestack&quot;</td><td>Body of the email</td></tr>
-<tr><td>Encrypted</td><td>String</td><td>N :: False</td><td>Whether or not to use TLS</td></tr>
+<tr><td>Encrypted</td><td>String</td><td>N :: &quot;false&quot;</td><td>Whether or not to use TLS</td></tr>
 <tr><td>Port</td><td>String</td><td>N :: &quot;25&quot;</td><td>Port of the SMTP server</td></tr>
 </tbody></table>
 <h1><a class="header" href="#ssh" id="ssh">SSH</a></h1>
@@ -882,7 +882,7 @@ sudo systemctl enable dynamicbeat.service
 <pre><code class="language-shell">docker-compose -f dockerfiles/docker-compose.yml run kibana-plugin-ci /scripts/test.sh
 </code></pre>
 <p>Please note that this build process can take quite a long time (20-30 minutes).</p>
-<p>The zipfile can be found at <code>kibana-plugin/build/kibana-plugin-0.0.0.zip</code>.</p>
+<p>The zipfile can be found at <code>kibana-plugin/build/scorestack-X.Y.Z.zip</code>, where <code>X.Y.Z</code> is the latest release version. Specifically, it is the value of the <code>--build-version</code> argument in the <code>build</code> script defined in <code>kibana-plugin/package.json</code>.</p>
 <h3><a class="header" href="#building-during-development-1" id="building-during-development-1">Building During Development</a></h3>
 <p>Typically during Kibana plugin development, you will want to use the Kibana development server to test the plugin. However, sometimes it can be useful to build the zipfile during development to ensure it can properly install and run in a production version of Kibana. If working within the Kibana plugin devcontainer, you run the following commands in the <code>kibana-plugin/</code> folder.</p>
 <p>First, make sure you're in the right directory:</p>
