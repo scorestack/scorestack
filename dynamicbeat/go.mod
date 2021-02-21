@@ -35,6 +35,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hirochachacha/go-smb2 v1.0.3
+	github.com/jackc/pgx/v4 v4.10.1
 	github.com/jlaffaye/ftp v0.0.0-20200812143550-39e3779af0db
 	github.com/josephspurrier/goversioninfo v1.2.0 // indirect
 	github.com/magefile/mage v1.10.0
