@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/elastic/beats/libbeat/logp"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 	"golang.org/x/crypto/ssh"
 )
@@ -50,7 +49,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = client.Close()
 		if err != nil {
-			logp.Warn("Failed to close SSH connection: %s", err)
+			// logp.Warn("Failed to close SSH connection: %s", err)
 		}
 	}()
 
