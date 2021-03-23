@@ -38,7 +38,7 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 
 	// Recieve definitions from channel
 	defs := <-defPass
-	zap.S().Info("Recieved defs")
+	zap.S().Infof("Recieved defs")
 
 	// Make an event queue separate from the publisher queue so we can track
 	// which checks are still running
@@ -78,7 +78,7 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 			checkStart := time.Now()
 			checkName := check.GetConfig().Name
 			eventQueue <- runCheck(ctx, check)
-			zap.S().Info("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
+			zap.S().Infof("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
 		}()
 	}
 	// Send definitions back through channel
@@ -86,7 +86,7 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 
 	// Wait for checks to finish
 	defer wg.Wait()
-	zap.S().Info("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
+	zap.S().Infof("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
 	go func() {
 		for {
 			if names == nil {
@@ -95,10 +95,10 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 				break
 			} else {
 				time.Sleep(30 * time.Second)
-				zap.S().Info("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
+				zap.S().Infof("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
 			}
 		}
-		zap.S().Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
+		zap.S().Infof("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
 		close(eventQueue)
 	}()
 	for evt := range eventQueue {
@@ -163,12 +163,12 @@ func unpackDef(config schema.CheckConfig) (schema.Check, error) {
 	case "mssql":
 		def = &mssql.Definition{}
 	default:
-		zap.S().Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
+		zap.S().Warnf("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
 		def = &noop.Definition{}
 	}
 	err = initCheck(config, renderedJSON, def)
 	if err != nil {
-		zap.S().Info("%s", err)
+		zap.S().Infof("%s", err)
 	}
 
 	return def, nil

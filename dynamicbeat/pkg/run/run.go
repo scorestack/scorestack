@@ -24,7 +24,7 @@ const index = "checkdef"
 
 // Run starts dynamicbeat.
 func Run() error {
-	zap.S().Info("dynamicbeat is running! Hit CTRL-C to stop it.")
+	zap.S().Infof("dynamicbeat is running! Hit CTRL-C to stop it.")
 	c := config.Get()
 
 	// Create the Elasticsearch client
@@ -61,7 +61,7 @@ func Run() error {
 	var defs []schema.CheckConfig
 	doubleBreak := false
 	// TODO: Find a better way for looping until we can hit Elasticsearch
-	zap.S().Info("Getting initial check definitions...")
+	zap.S().Infof("Getting initial check definitions...")
 	for {
 		select {
 		// Case for catching Ctrl+C and gracfully exiting
@@ -71,8 +71,8 @@ func Run() error {
 			// Continue looping and sleeping till we can hit Elasticsearch
 			defs, err = esclient.UpdateCheckDefs(es, index)
 			if err != nil {
-				zap.S().Info("Failed to reach Elasticsearch. Waiting 5 seconds to try again...")
-				zap.S().Debug("dynamicbeat", "Connection error was: %s", err)
+				zap.S().Infof("Failed to reach Elasticsearch. Waiting 5 seconds to try again...")
+				zap.S().Debugf("dynamicbeat", "Connection error was: %s", err)
 				time.Sleep(5 * time.Second)
 			} else {
 				doubleBreak = true
@@ -109,8 +109,8 @@ func Run() error {
 			close(published)
 			return nil
 		case <-ticker.C:
-			zap.S().Info("Number of go-routines: %d", runtime.NumGoroutine())
-			zap.S().Info("Starting a series of %d checks", len(defs))
+			zap.S().Infof("Number of go-routines: %d", runtime.NumGoroutine())
+			zap.S().Infof("Starting a series of %d checks", len(defs))
 
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
 			defPass := make(chan []schema.CheckConfig)
@@ -128,12 +128,12 @@ func Run() error {
 			// Wait until we get the definitions back before we start the next course of checks
 			defs = <-defPass
 			close(defPass)
-			zap.S().Info("Started series of checks")
+			zap.S().Infof("Started series of checks")
 
 			// Update the check definitions for the next round
 			defs, err = esclient.UpdateCheckDefs(es, index)
 			if err != nil {
-				zap.S().Info("Failed to update check definitions : %s", err)
+				zap.S().Infof("Failed to update check definitions : %s", err)
 			}
 		}
 	}

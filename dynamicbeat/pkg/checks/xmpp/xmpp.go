@@ -77,7 +77,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = client.Disconnect()
 		if err != nil {
-			zap.S().Warn("Failed to close XMPP connection: %s", err)
+			zap.S().Warnf("Failed to close XMPP connection: %s", err)
 		}
 	}()
 

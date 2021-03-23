@@ -54,7 +54,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = c.Logout()
 		if err != nil {
-			zap.S().Warn("Failed to close IMAP connection: %s", err)
+			zap.S().Warnf("Failed to close IMAP connection: %s", err)
 		}
 	}()
 

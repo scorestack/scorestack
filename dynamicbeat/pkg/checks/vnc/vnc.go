@@ -45,7 +45,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = conn.Close()
 		if err != nil {
-			zap.S().Warn("Failed to close VNC connection: %s", err)
+			zap.S().Warnf("Failed to close VNC connection: %s", err)
 		}
 	}()
 
@@ -57,7 +57,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = vncClient.Close()
 		if err != nil {
-			zap.S().Warn("Failed to close VNC connection: %s", err)
+			zap.S().Warnf("Failed to close VNC connection: %s", err)
 		}
 	}()
 

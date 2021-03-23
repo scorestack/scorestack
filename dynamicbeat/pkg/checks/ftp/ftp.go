@@ -44,7 +44,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := conn.Quit()
 		if err != nil {
-			zap.S().Warn("Failed to close FTP connection: %s", err)
+			zap.S().Warnf("Failed to close FTP connection: %s", err)
 		}
 	}()
 

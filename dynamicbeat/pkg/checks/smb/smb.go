@@ -58,7 +58,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := c.Logoff()
 		if err != nil {
-			zap.S().Info("Error logging off from SMB server: %s", err)
+			zap.S().Infof("Error logging off from SMB server: %s", err)
 		}
 	}()
 
@@ -71,7 +71,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := fs.Umount()
 		if err != nil {
-			zap.S().Warn("Error unmounting remote file system: %s", err)
+			zap.S().Warnf("Error unmounting remote file system: %s", err)
 		}
 	}()
 

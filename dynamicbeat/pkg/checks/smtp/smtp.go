@@ -79,7 +79,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := conn.Close()
 		if err != nil {
-			zap.S().Warn("Failed to close SMTP connection: %s", err)
+			zap.S().Warnf("Failed to close SMTP connection: %s", err)
 		}
 	}()
 
@@ -92,7 +92,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = c.Quit()
 		if err != nil {
-			zap.S().Warn("Failed to close SMTP client connection: %s", err)
+			zap.S().Warnf("Failed to close SMTP client connection: %s", err)
 		}
 	}()
 
