@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/run"
 	"github.com/spf13/cobra"
-
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 )
 
 const runShort = `Interact with an instance of Scorestack to run checks and store results.`
@@ -21,8 +18,7 @@ var runCmd = &cobra.Command{
 	Short: runShort,
 	Long:  runLong,
 	Run: func(cmd *cobra.Command, args []string) {
-		c := config.Get()
-		fmt.Println(c)
+		run.Run()
 	},
 }
 
