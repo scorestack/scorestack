@@ -15,8 +15,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/elastic/beats/v7/libbeat/logp"
-	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 )
 
 // The Definition configures the behavior of an HTTP check.
@@ -86,7 +85,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 			// Re-encode definition to JSON string
 			def, err := json.Marshal(r)
 			if err != nil {
-				logp.Info("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
+				// logp.Info("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
 			} else {
 				attrs := storedValTempl{
 					SavedValue: *storedValue,
@@ -95,12 +94,12 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 				var buf bytes.Buffer
 				err := templ.Execute(&buf, attrs)
 				if err != nil {
-					logp.Info("Error templating HTTP definition for StoredValue templating: %s", err)
+					// logp.Info("Error templating HTTP definition for StoredValue templating: %s", err)
 				} else {
 					newReq := &Request{}
 					err := json.Unmarshal(buf.Bytes(), &newReq)
 					if err != nil {
-						logp.Info("Error decoding StoredValue-templated HTTP definition: %s", err)
+						// logp.Info("Error decoding StoredValue-templated HTTP definition: %s", err)
 					} else {
 						r = newReq
 					}

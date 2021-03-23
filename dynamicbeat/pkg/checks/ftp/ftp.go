@@ -8,9 +8,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/elastic/beats/v7/libbeat/logp"
 	"github.com/jlaffaye/ftp"
-	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -44,7 +43,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := conn.Quit()
 		if err != nil {
-			logp.Warn("Failed to close FTP connection: %s", err)
+			// logp.Warn("Failed to close FTP connection: %s", err)
 		}
 	}()
 

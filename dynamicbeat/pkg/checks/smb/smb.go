@@ -8,9 +8,8 @@ import (
 	"net"
 	"regexp"
 
-	"github.com/elastic/beats/v7/libbeat/logp"
 	"github.com/hirochachacha/go-smb2"
-	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 )
 
 // The Definition configures the behavior of the SMB check
@@ -58,7 +57,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := c.Logoff()
 		if err != nil {
-			logp.Info("Error logging off from SMB server: %s", err)
+			// logp.Info("Error logging off from SMB server: %s", err)
 		}
 	}()
 
@@ -71,7 +70,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := fs.Umount()
 		if err != nil {
-			logp.Warn("Error unmounting remote file system: %s", err)
+			// logp.Warn("Error unmounting remote file system: %s", err)
 		}
 	}()
 

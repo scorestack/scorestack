@@ -8,10 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/elastic/beats/v7/libbeat/logp"
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
-	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 )
 
 // The Definition configures the behavior of the imap check
@@ -54,7 +53,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = c.Logout()
 		if err != nil {
-			logp.Warn("Failed to close IMAP connection: %s", err)
+			// logp.Warn("Failed to close IMAP connection: %s", err)
 		}
 	}()
 

@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	// PostgreSQL driver
-	"github.com/jackc/pgx/v4"
-	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
+	pgx "github.com/jackc/pgx/v4"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 )
 
 // The Definition configures the behavior of the MySQL check

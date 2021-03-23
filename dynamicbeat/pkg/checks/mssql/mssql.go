@@ -9,7 +9,7 @@ import (
 
 	// MSSQL driver
 	_ "github.com/denisenkom/go-mssqldb"
-	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 )
 
 type Definition struct {

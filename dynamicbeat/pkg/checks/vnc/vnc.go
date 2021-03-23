@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/elastic/beats/v7/libbeat/logp"
-	"github.com/mitchellh/go-vnc"
-	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
+	vnc "github.com/mitchellh/go-vnc"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 )
 
 // The Definition configures the behavior of the VNC check
@@ -45,7 +44,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = conn.Close()
 		if err != nil {
-			logp.Warn("Failed to close VNC connection: %s", err)
+			// logp.Warn("Failed to close VNC connection: %s", err)
 		}
 	}()
 
@@ -57,7 +56,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = vncClient.Close()
 		if err != nil {
-			logp.Warn("Failed to close VNC connection: %s", err)
+			// logp.Warn("Failed to close VNC connection: %s", err)
 		}
 	}()
 
