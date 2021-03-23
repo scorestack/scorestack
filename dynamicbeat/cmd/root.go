@@ -40,7 +40,7 @@ func init() {
 	addFlag("round_time", "r", "30s", "time to wait between rounds of checks")
 	addFlag("elasticsearch", "e", "http://localhost:9200", "address of Elasticsearch host to pull checks from and store results in")
 	addFlag("username", "u", "dynamicbeat", "username for authentication with Elasticsearch")
-	addFlag("password", "p", "", "password for authentication with Elasticsearch")
+	addFlag("password", "p", "changeme", "password for authentication with Elasticsearch")
 	addBoolFlag("verify_certs", "v", false, "whether to verify the Elasticsearch TLS certificates")
 }
 
