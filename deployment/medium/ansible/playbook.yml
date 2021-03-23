@@ -238,7 +238,7 @@
     - name: Create Dynamicbeat role
       uri:
         url: "https://elasticsearch4:9200/_security/role/dynamicbeat_reader"
-        body: '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
+        body: '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}, {"names":["results-*"],"privileges":["write","create","create_index"]}]}'
         body_format: json
         force_basic_auth: yes
         method: PUT
