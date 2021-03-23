@@ -1,7 +1,6 @@
 package run
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -126,10 +125,13 @@ func Run() error {
 func publishEvents(es *elasticsearch.Client, queue <-chan event.Event, out chan<- uint64) {
 	published := uint64(0)
 	for event := range queue {
-		// TODO: publish events
-		// client.Publish(event)
-		fmt.Println(event)
-		published++
+		err := esclient.Index(es, event)
+		if err != nil {
+			zap.S().Error(err)
+			zap.S().Errorf("check that failed to index: %+v", event)
+		} else {
+			published++
+		}
 	}
 	out <- published
 }
