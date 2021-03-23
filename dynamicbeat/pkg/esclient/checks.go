@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/elastic/beats/v7/libbeat/logp"
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 
 	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
@@ -76,6 +75,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 		results = append(results, result)
 	}
 
-	logp.Info("Updated check definitions in %.2f seconds", time.Since(start).Seconds())
+	// logp.Info("Updated check definitions in %.2f seconds", time.Since(start).Seconds())
+	fmt.Printf("Updated check definitions in %.2f seconds\n", time.Since(start).Seconds())
 	return results, nil
 }
