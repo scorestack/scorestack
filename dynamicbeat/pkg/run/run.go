@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
+	"os/signal"
 	"sync"
 	"time"
 
@@ -49,6 +51,10 @@ func Run() error {
 		}
 	*/
 
+	// Set up CTRL+C handler
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+
 	// Get initial check definitions
 	var defs []schema.CheckConfig
 	doubleBreak := false
@@ -57,7 +63,7 @@ func Run() error {
 	for {
 		select {
 		// Case for catching Ctrl+C and gracfully exiting
-		case <-bt.done:
+		case <-quit:
 			return nil
 		default:
 			// Continue looping and sleeping till we can hit Elasticsearch
@@ -89,7 +95,7 @@ func Run() error {
 	var wg sync.WaitGroup
 	for {
 		select {
-		case <-bt.done:
+		case <-quit:
 			// Wait for all checks.RunChecks goroutines to exit
 			wg.Wait()
 
