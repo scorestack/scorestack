@@ -1,10 +1,7 @@
 package run
 
 import (
-	"crypto/tls"
 	"fmt"
-	"net"
-	"net/http"
 	"os"
 	"os/signal"
 	"runtime"
@@ -27,22 +24,9 @@ func Run() error {
 	zap.S().Infof("dynamicbeat is running! Hit CTRL-C to stop it.")
 	c := config.Get()
 
-	// Create the Elasticsearch client
-	clientConfig := elasticsearch.Config{
-		Addresses: []string{c.Elasticsearch},
-		Username:  c.Username,
-		Password:  c.Password,
-		Transport: &http.Transport{
-			MaxIdleConnsPerHost: 10,
-			DialContext:         (&net.Dialer{Timeout: 5 * time.Second}).DialContext,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: !c.VerifyCerts,
-			},
-		},
-	}
-	es, err := elasticsearch.NewClient(clientConfig)
+	es, err := esclient.New(c.Elasticsearch, c.Username, c.Password, c.VerifyCerts)
 	if err != nil {
-		return fmt.Errorf("Error creating client: %s", err)
+		return err
 	}
 
 	// Connect publisher client
