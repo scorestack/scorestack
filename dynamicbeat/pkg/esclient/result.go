@@ -16,6 +16,9 @@ func Index(c *elasticsearch.Client, check event.Event) error {
 	if err != nil {
 		return fmt.Errorf("failed to index admin result for %s: %s", check.Id, err)
 	}
+	if resp.IsError() {
+		return fmt.Errorf("error indexing admin result document for %s: %s", check.Id, resp.Status())
+	}
 	defer resp.Body.Close()
 
 	index, reader, err = event.Team(check)
@@ -26,6 +29,9 @@ func Index(c *elasticsearch.Client, check event.Event) error {
 	if err != nil {
 		return fmt.Errorf("failed to index team result for %s: %s", check.Id, err)
 	}
+	if resp.IsError() {
+		return fmt.Errorf("error indexing team result document for %s: %s", check.Id, resp.Status())
+	}
 	defer resp.Body.Close()
 
 	index, reader, err = event.Generic(check)
@@ -35,6 +41,9 @@ func Index(c *elasticsearch.Client, check event.Event) error {
 	resp, err = c.Index(index, reader)
 	if err != nil {
 		return fmt.Errorf("failed to index generic result for %s: %s", check.Id, err)
+	}
+	if resp.IsError() {
+		return fmt.Errorf("error indexing generic result document for %s: %s", check.Id, resp.Status())
 	}
 	defer resp.Body.Close()
 
