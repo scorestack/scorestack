@@ -28,12 +28,12 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/vnc"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/winrm"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/xmpp"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/run"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- run.Event) {
-	start := time.Now()
+func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
+	// start := time.Now()
 
 	// Recieve definitions from channel
 	defs := <-defPass
@@ -41,7 +41,7 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- run.Event) {
 
 	// Make an event queue separate from the publisher queue so we can track
 	// which checks are still running
-	eventQueue := make(chan run.Event, len(defs))
+	eventQueue := make(chan event.Event, len(defs))
 
 	// Iterate over each check
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
@@ -56,9 +56,9 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- run.Event) {
 			// Something was wrong with templating the check. Return a failed event with the error.
 			errorDetail := make(map[string]string)
 			errorDetail["error_message"] = err.Error()
-			eventQueue <- run.Event{
+			eventQueue <- event.Event{
 				Timestamp:   time.Now(),
-				Id:          check.GetConfig().Id,
+				Id:          check.GetConfig().ID,
 				Name:        check.GetConfig().Name,
 				CheckType:   check.GetConfig().Type,
 				Group:       check.GetConfig().Group,
@@ -99,13 +99,12 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- run.Event) {
 		// logp.Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
 		close(eventQueue)
 	}()
-	for event := range eventQueue {
+	for evt := range eventQueue {
 		// Record that the check has finished
-		id, _ := event.Fields.GetValue("id")
-		delete(names, id.(string))
+		delete(names, evt.Id)
 
 		// Publish the event to the publisher queue
-		pubQueue <- event
+		pubQueue <- evt
 	}
 }
 
@@ -173,11 +172,11 @@ func unpackDef(config schema.CheckConfig) (schema.Check, error) {
 	return def, nil
 }
 
-func runCheck(ctx context.Context, check schema.Check) run.Event {
+func runCheck(ctx context.Context, check schema.Check) event.Event {
 	// Initialize the event to be published
-	event := run.Event{
+	evt := event.Event{
 		Timestamp:   time.Now(),
-		Id:          check.GetConfig().Id,
+		Id:          check.GetConfig().ID,
 		Name:        check.GetConfig().Name,
 		CheckType:   check.GetConfig().Type,
 		Group:       check.GetConfig().Group,
@@ -201,14 +200,14 @@ func runCheck(ctx context.Context, check schema.Check) run.Event {
 		case <-ctx.Done():
 			// We already initialized the event with the correct values for a
 			// context timeout, so just return that.
-			return event
+			return evt
 		case result := <-recieveResult:
 			close(recieveResult)
 			// Set the passed, message, and details fields with the CheckResult
-			event.Passed = result.Passed
-			event.Message = result.Message
-			event.Details = result.Details
-			return event
+			evt.Passed = result.Passed
+			evt.Message = result.Message
+			evt.Details = result.Details
+			return evt
 		}
 	}
 }

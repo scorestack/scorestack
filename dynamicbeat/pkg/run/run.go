@@ -15,6 +15,7 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/esclient"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
 )
 
 const index = "checkdef"
@@ -84,7 +85,7 @@ func Run() error {
 	}
 
 	// Start publisher goroutine
-	pubQueue := make(chan run.Event)
+	pubQueue := make(chan event.Event)
 	published := make(chan uint64)
 	go publishEvents(es, pubQueue, published)
 
@@ -136,7 +137,7 @@ func Run() error {
 	}
 }
 
-func publishEvents(es *elasticsearch.Client, queue <-chan run.Event, out chan<- uint64) {
+func publishEvents(es *elasticsearch.Client, queue <-chan event.Event, out chan<- uint64) {
 	published := uint64(0)
 	for event := range queue {
 		// TODO: publish events
