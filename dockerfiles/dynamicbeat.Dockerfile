@@ -20,8 +20,12 @@ RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME
 RUN chmod 0440 /etc/sudoers.d/$USERNAME
 
 # Set up non-root user gopath
-RUN mkdir -p /home/$USERNAME/go/src/github.com/scorestack
+RUN mkdir -p /home/$USERNAME/go
 RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/go
+
+# Set up target directory
+RUN mkdir -p /home/$USERNAME/scorestack
+RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/scorestack
 
 # Install Packages ############################################################
 

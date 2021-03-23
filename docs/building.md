@@ -16,21 +16,9 @@ The compiled binary can be found at `dynamicbeat/dynamicbeat`.
 
 ### Building During Development
 
-If you are actively developing Dynamicbeat, you may wish to build Dynamicbeat within the devcontainer to test your changes. Instead of using the above docker-compose command, you can perform the following steps within the `dynamicbeat/` folder.
+If you are actively developing Dynamicbeat, you may wish to build Dynamicbeat within the devcontainer to test your changes. Instead of using the above docker-compose command, you can build Dynamicbeat manually using the Makefile provided in the `dynamicbeat/` folder. Just move into the `dynamicbeat/` directory and run `make`.
 
-First, install the required go dependencies:
-
-```shell
-go get
-```
-
-Then, build the binary:
-
-```shell
-make
-```
-
-The compiled binary will be named `dynamicbeat` within the `dynamicbeat/` folder.
+The compiled binary will be named `dynamicbeat` within the `dynamicbeat/` folder. You can remove it by running `make clean`.
 
 Kibana Plugin
 -------------
