@@ -77,6 +77,5 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 	}
 
 	zap.S().Infof("Updated check definitions in %.2f seconds", time.Since(start).Seconds())
-	fmt.Printf("Updated check definitions in %.2f seconds\n", time.Since(start).Seconds())
 	return results, nil
 }
