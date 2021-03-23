@@ -11,10 +11,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/elastic/beats/v7/libbeat/beat"
-	"github.com/elastic/beats/v7/libbeat/common"
-	"github.com/elastic/beats/v7/libbeat/logp"
-
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/dns"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/ftp"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/http"
@@ -32,19 +28,20 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/vnc"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/winrm"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/xmpp"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/run"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
+func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- run.Event) {
 	start := time.Now()
 
 	// Recieve definitions from channel
 	defs := <-defPass
-	logp.Info("Recieved defs")
+	// logp.Info("Recieved defs")
 
 	// Make an event queue separate from the publisher queue so we can track
 	// which checks are still running
-	eventQueue := make(chan beat.Event, len(defs))
+	eventQueue := make(chan run.Event, len(defs))
 
 	// Iterate over each check
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
@@ -59,19 +56,16 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 			// Something was wrong with templating the check. Return a failed event with the error.
 			errorDetail := make(map[string]string)
 			errorDetail["error_message"] = err.Error()
-			eventQueue <- beat.Event{
-				Timestamp: time.Now(),
-				Fields: common.MapStr{
-					"type":         "dynamicbeat",
-					"id":           check.GetConfig().ID,
-					"name":         check.GetConfig().Name,
-					"check_type":   check.GetConfig().Type,
-					"group":        check.GetConfig().Group,
-					"score_weight": check.GetConfig().ScoreWeight,
-					"passed":       false,
-					"message":      "Encountered an error when unpacking check definition.",
-					"details":      errorDetail,
-				},
+			eventQueue <- run.Event{
+				Timestamp:   time.Now(),
+				Id:          check.GetConfig().Id,
+				Name:        check.GetConfig().Name,
+				CheckType:   check.GetConfig().Type,
+				Group:       check.GetConfig().Group,
+				ScoreWeight: check.GetConfig().ScoreWeight,
+				Passed:      false,
+				Message:     "Encountered an error when unpacking check definition.",
+				Details:     errorDetail,
 			}
 		}
 
@@ -102,7 +96,7 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- beat.Event) {
 				// logp.Info("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
 			}
 		}
-		logp.Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
+		// logp.Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
 		close(eventQueue)
 	}()
 	for event := range eventQueue {
@@ -168,32 +162,29 @@ func unpackDef(config schema.CheckConfig) (schema.Check, error) {
 	case "mssql":
 		def = &mssql.Definition{}
 	default:
-		logp.Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
+		// logp.Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
 		def = &noop.Definition{}
 	}
 	err = initCheck(config, renderedJSON, def)
 	if err != nil {
-		logp.Info("%s", err)
+		// logp.Info("%s", err)
 	}
 
 	return def, nil
 }
 
-func runCheck(ctx context.Context, check schema.Check) beat.Event {
+func runCheck(ctx context.Context, check schema.Check) run.Event {
 	// Initialize the event to be published
-	event := beat.Event{
-		Timestamp: time.Now(),
-		Fields: common.MapStr{
-			"type":         "dynamicbeat",
-			"id":           check.GetConfig().ID,
-			"name":         check.GetConfig().Name,
-			"check_type":   check.GetConfig().Type,
-			"group":        check.GetConfig().Group,
-			"score_weight": check.GetConfig().ScoreWeight,
-			"passed":       false,
-			"message":      "Check timed out",
-			"details":      nil,
-		},
+	event := run.Event{
+		Timestamp:   time.Now(),
+		Id:          check.GetConfig().Id,
+		Name:        check.GetConfig().Name,
+		CheckType:   check.GetConfig().Type,
+		Group:       check.GetConfig().Group,
+		ScoreWeight: check.GetConfig().ScoreWeight,
+		Passed:      false,
+		Message:     "Check timed out",
+		Details:     nil,
 	}
 
 	// Set up the channel to recieve the CheckResult from the Check
@@ -214,9 +205,9 @@ func runCheck(ctx context.Context, check schema.Check) beat.Event {
 		case result := <-recieveResult:
 			close(recieveResult)
 			// Set the passed, message, and details fields with the CheckResult
-			_, _ = event.Fields.Put("passed", result.Passed)
-			_, _ = event.Fields.Put("message", result.Message)
-			_, _ = event.Fields.Put("details", result.Details)
+			event.Passed = result.Passed
+			event.Message = result.Message
+			event.Details = result.Details
 			return event
 		}
 	}

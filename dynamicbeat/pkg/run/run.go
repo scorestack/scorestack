@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/elastic/beats/libbeat/beat"
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
@@ -85,9 +84,9 @@ func Run() error {
 	}
 
 	// Start publisher goroutine
-	pubQueue := make(chan beat.Event)
+	pubQueue := make(chan run.Event)
 	published := make(chan uint64)
-	go publishEvents(bt.client, pubQueue, published)
+	go publishEvents(es, pubQueue, published)
 
 	// Start running checks
 	ticker := time.NewTicker(c.RoundTime)
@@ -137,10 +136,12 @@ func Run() error {
 	}
 }
 
-func publishEvents(es elasticsearch.Client, queue <-chan beat.Event, out chan<- uint64) {
+func publishEvents(es *elasticsearch.Client, queue <-chan run.Event, out chan<- uint64) {
 	published := uint64(0)
 	for event := range queue {
-		client.Publish(event)
+		// TODO: publish events
+		// client.Publish(event)
+		fmt.Println(event)
 		published++
 	}
 	out <- published
