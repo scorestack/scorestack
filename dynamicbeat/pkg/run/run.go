@@ -12,8 +12,8 @@ import (
 
 	"github.com/elastic/beats/libbeat/beat"
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"
-	"github.com/scorestack/scorestack/dynamicbeat/checks"
-	"github.com/scorestack/scorestack/dynamicbeat/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/esclient"
 )
