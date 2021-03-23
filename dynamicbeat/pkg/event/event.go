@@ -8,9 +8,15 @@ import (
 	"time"
 )
 
-// IndexDate is a layout string for time.Time.Format that is compatible with
+// INDEX_DATE is a layout string for time.Time.Format that is compatible with
 // the Elastic Stack convention of indexes named "index-YYYY.MM.DD".
 const INDEX_DATE = "2006.01.02"
+
+// TIMESTAMP_DATE is the layout string used by Elastic Beats for the @timestamp
+// field.
+// See for more details:
+// https://www.elastic.co/guide/en/beats/filebeat/current/processor-timestamp.html
+const TIMESTAMP_DATE = "Mon Jan 2 15:04:05 MST 2006"
 
 type Event struct {
 	Timestamp   time.Time
@@ -51,13 +57,8 @@ type generic struct {
 }
 
 func Admin(e Event) (string, io.Reader, error) {
-	timestamp, err := e.Timestamp.MarshalText()
-	if err != nil {
-		return "", nil, fmt.Errorf("failed to format timestamp as string: %s", err)
-	}
-
 	f := &full{
-		Timestamp:   string(timestamp[:]),
+		Timestamp:   e.Timestamp.Format(TIMESTAMP_DATE),
 		ID:          e.Id,
 		Name:        e.Name,
 		CheckType:   e.CheckType,
@@ -93,13 +94,8 @@ func Team(e Event) (string, io.Reader, error) {
 }
 
 func Generic(e Event) (string, io.Reader, error) {
-	timestamp, err := e.Timestamp.MarshalText()
-	if err != nil {
-		return "", nil, fmt.Errorf("failed to format timestamp as string: %s", err)
-	}
-
 	g := &generic{
-		Timestamp:   string(timestamp[:]),
+		Timestamp:   e.Timestamp.Format(TIMESTAMP_DATE),
 		ID:          e.Id,
 		Name:        e.Name,
 		CheckType:   e.CheckType,
