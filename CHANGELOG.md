@@ -25,6 +25,10 @@ Each section organizes entries into the following subsections:
 
 ### Dynamicbeat
 
+#### Changed
+
+- Dynamicbeat is now a standalone program that doesn't use libbeat
+
 #### Removed
 
 - Remove `update_period` setting, update configurations after starting each round
