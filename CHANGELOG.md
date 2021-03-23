@@ -23,6 +23,12 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+### Dynamicbeat
+
+#### Removed
+
+- Remove `update_period` setting, update configurations after starting each round
+
 [0.7.0] - 2020-02-21
 --------------------
 
