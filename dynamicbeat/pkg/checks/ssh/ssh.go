@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -49,7 +50,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = client.Close()
 		if err != nil {
-			// logp.Warn("Failed to close SSH connection: %s", err)
+			zap.S().Warn("Failed to close SSH connection: %s", err)
 		}
 	}()
 
@@ -62,7 +63,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = session.Close()
 		if err != nil && err.Error() != "EOF" {
-			// logp.Warn("Failed to close SSH session connection: %s", err)
+			zap.S().Warn("Failed to close SSH session connection: %s", err)
 		}
 	}()
 

@@ -10,6 +10,7 @@ import (
 
 	"github.com/jlaffaye/ftp"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -43,7 +44,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := conn.Quit()
 		if err != nil {
-			// logp.Warn("Failed to close FTP connection: %s", err)
+			zap.S().Warn("Failed to close FTP connection: %s", err)
 		}
 	}()
 

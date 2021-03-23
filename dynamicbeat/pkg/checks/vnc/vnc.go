@@ -7,6 +7,7 @@ import (
 
 	vnc "github.com/mitchellh/go-vnc"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"go.uber.org/zap"
 )
 
 // The Definition configures the behavior of the VNC check
@@ -44,7 +45,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = conn.Close()
 		if err != nil {
-			// logp.Warn("Failed to close VNC connection: %s", err)
+			zap.S().Warn("Failed to close VNC connection: %s", err)
 		}
 	}()
 
@@ -56,7 +57,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = vncClient.Close()
 		if err != nil {
-			// logp.Warn("Failed to close VNC connection: %s", err)
+			zap.S().Warn("Failed to close VNC connection: %s", err)
 		}
 	}()
 

@@ -10,6 +10,7 @@ import (
 
 	"github.com/hirochachacha/go-smb2"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"go.uber.org/zap"
 )
 
 // The Definition configures the behavior of the SMB check
@@ -57,7 +58,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := c.Logoff()
 		if err != nil {
-			// logp.Info("Error logging off from SMB server: %s", err)
+			zap.S().Info("Error logging off from SMB server: %s", err)
 		}
 	}()
 
@@ -70,7 +71,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err := fs.Umount()
 		if err != nil {
-			// logp.Warn("Error unmounting remote file system: %s", err)
+			zap.S().Warn("Error unmounting remote file system: %s", err)
 		}
 	}()
 

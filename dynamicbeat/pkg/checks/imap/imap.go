@@ -11,6 +11,7 @@ import (
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"go.uber.org/zap"
 )
 
 // The Definition configures the behavior of the imap check
@@ -53,7 +54,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = c.Logout()
 		if err != nil {
-			// logp.Warn("Failed to close IMAP connection: %s", err)
+			zap.S().Warn("Failed to close IMAP connection: %s", err)
 		}
 	}()
 

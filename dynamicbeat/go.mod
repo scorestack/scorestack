@@ -17,6 +17,7 @@ require (
 	github.com/oneNutW0nder/winrm v0.0.0-20200403191630-928a10cb3c1e
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
+	go.uber.org/zap v1.16.0 // indirect
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
 	gopkg.in/yaml.v2 v2.4.0
 	gosrc.io/xmpp v0.5.1

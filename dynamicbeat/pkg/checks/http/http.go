@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"go.uber.org/zap"
 )
 
 // The Definition configures the behavior of an HTTP check.
@@ -85,7 +86,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 			// Re-encode definition to JSON string
 			def, err := json.Marshal(r)
 			if err != nil {
-				// logp.Info("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
+				zap.S().Info("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
 			} else {
 				attrs := storedValTempl{
 					SavedValue: *storedValue,
@@ -94,12 +95,12 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 				var buf bytes.Buffer
 				err := templ.Execute(&buf, attrs)
 				if err != nil {
-					// logp.Info("Error templating HTTP definition for StoredValue templating: %s", err)
+					zap.S().Info("Error templating HTTP definition for StoredValue templating: %s", err)
 				} else {
 					newReq := &Request{}
 					err := json.Unmarshal(buf.Bytes(), &newReq)
 					if err != nil {
-						// logp.Info("Error decoding StoredValue-templated HTTP definition: %s", err)
+						zap.S().Info("Error decoding StoredValue-templated HTTP definition: %s", err)
 					} else {
 						r = newReq
 					}

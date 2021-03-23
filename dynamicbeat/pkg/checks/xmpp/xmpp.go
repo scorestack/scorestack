@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"go.uber.org/zap"
 	"gosrc.io/xmpp/stanza"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
@@ -76,7 +77,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	defer func() {
 		err = client.Disconnect()
 		if err != nil {
-			// logp.Warn("Failed to close XMPP connection: %s", err)
+			zap.S().Warn("Failed to close XMPP connection: %s", err)
 		}
 	}()
 

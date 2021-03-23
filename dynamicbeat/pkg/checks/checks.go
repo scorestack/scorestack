@@ -29,15 +29,16 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/winrm"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/xmpp"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
+	"go.uber.org/zap"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
 func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
-	// start := time.Now()
+	start := time.Now()
 
 	// Recieve definitions from channel
 	defs := <-defPass
-	// logp.Info("Recieved defs")
+	zap.S().Info("Recieved defs")
 
 	// Make an event queue separate from the publisher queue so we can track
 	// which checks are still running
@@ -74,9 +75,10 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 		go func() {
 			defer wg.Done()
 
-			// checkStart := time.Now()
+			checkStart := time.Now()
+			checkName := check.GetConfig().Name
 			eventQueue <- runCheck(ctx, check)
-			// logp.Info("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
+			zap.S().Info("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
 		}()
 	}
 	// Send definitions back through channel
@@ -84,7 +86,7 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 
 	// Wait for checks to finish
 	defer wg.Wait()
-	// logp.Info("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
+	zap.S().Info("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
 	go func() {
 		for {
 			if names == nil {
@@ -93,10 +95,10 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 				break
 			} else {
 				time.Sleep(30 * time.Second)
-				// logp.Info("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
+				zap.S().Info("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
 			}
 		}
-		// logp.Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
+		zap.S().Info("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
 		close(eventQueue)
 	}()
 	for evt := range eventQueue {
@@ -161,12 +163,12 @@ func unpackDef(config schema.CheckConfig) (schema.Check, error) {
 	case "mssql":
 		def = &mssql.Definition{}
 	default:
-		// logp.Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
+		zap.S().Warn("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
 		def = &noop.Definition{}
 	}
 	err = initCheck(config, renderedJSON, def)
 	if err != nil {
-		// logp.Info("%s", err)
+		zap.S().Info("%s", err)
 	}
 
 	return def, nil
