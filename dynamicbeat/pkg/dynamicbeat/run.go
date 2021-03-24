@@ -11,7 +11,6 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/esclient"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/run"
 	"go.uber.org/zap"
 )
@@ -70,9 +69,9 @@ func Run() error {
 	}
 
 	// Start publisher goroutine
-	pubQueue := make(chan event.Event)
+	results := make(chan check.Result)
 	published := make(chan uint64)
-	go publishEvents(es, pubQueue, published)
+	go publishEvents(es, results, published)
 
 	// Start running checks
 	ticker := time.NewTicker(c.RoundTime)
@@ -85,7 +84,7 @@ func Run() error {
 			wg.Wait()
 
 			// Close the event publishing queue so the publishEvents goroutine will exit
-			close(pubQueue)
+			close(results)
 
 			// Wait for all events to be published
 			<-published
@@ -100,7 +99,7 @@ func Run() error {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				run.Round(defs, pubQueue, started)
+				run.Round(defs, results, started)
 			}()
 
 			// Wait until all the checks have been started before we refresh
@@ -120,13 +119,13 @@ func Run() error {
 	}
 }
 
-func publishEvents(es *elasticsearch.Client, queue <-chan event.Event, out chan<- uint64) {
+func publishEvents(es *elasticsearch.Client, results <-chan check.Result, out chan<- uint64) {
 	published := uint64(0)
-	for event := range queue {
-		err := esclient.Index(es, event)
+	for result := range results {
+		err := esclient.Index(es, result)
 		if err != nil {
 			zap.S().Error(err)
-			zap.S().Errorf("check that failed to index: %+v", event)
+			zap.S().Errorf("check that failed to index: %+v", result)
 		} else {
 			published++
 		}

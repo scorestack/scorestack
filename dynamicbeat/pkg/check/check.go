@@ -3,7 +3,6 @@ package check
 import (
 	"context"
 	"fmt"
-	"time"
 )
 
 type Check interface {
@@ -13,25 +12,17 @@ type Check interface {
 }
 
 type Metadata struct {
-	ID          string
-	Name        string
-	Type        string
-	Group       string
-	ScoreWeight float64
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Type        string  `json:"type"`
+	Group       string  `json:"group"`
+	ScoreWeight float64 `json:"score_weight"`
 }
 
 type Config struct {
 	Metadata
 	Definition []byte
 	Attribs    map[string]string
-}
-
-type Result struct {
-	Timestamp time.Time
-	Metadata
-	Passed  bool
-	Message string
-	Details map[string]string
 }
 
 // A ValidationError represents an issue with a check definition.
