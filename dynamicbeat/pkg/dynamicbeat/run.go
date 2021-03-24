@@ -95,23 +95,20 @@ func Run() error {
 			zap.S().Infof("Number of go-routines: %d", runtime.NumGoroutine())
 			zap.S().Infof("Starting a series of %d checks", len(defs))
 
-			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
-			defPass := make(chan []check.Config)
-
 			// Start the goroutine
+			started := make(chan bool)
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				run.RunChecks(defPass, pubQueue)
+				run.Round(defs, pubQueue, started)
 			}()
 
-			// Give it the check definitions
-			defPass <- defs
-
-			// Wait until all the checks have been started before we start the
-			// next course of checks
-			<-defPass
-			close(defPass)
+			// Wait until all the checks have been started before we refresh
+			// the checks from Elasticsearch to make sure that we don't
+			// overwrite the check definitions while they're in use.
+			// TODO: determine if it's possible to overwrite the defs while
+			// they're in use by the above function
+			<-started
 			zap.S().Infof("Started series of checks")
 
 			// Update the check definitions for the next round
