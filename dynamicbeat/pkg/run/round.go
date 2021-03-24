@@ -43,7 +43,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 
 	// Wait for checks to finish
 	defer wg.Wait()
-	zap.S().Infof("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
+	// zap.S().Infof("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
 	go func() {
 		for {
 			if names == nil {
