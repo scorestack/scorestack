@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/run"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/dynamicbeat"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +18,7 @@ var runCmd = &cobra.Command{
 	Short: runShort,
 	Long:  runLong,
 	Run: func(cmd *cobra.Command, args []string) {
-		cobra.CheckErr(run.Run())
+		cobra.CheckErr(dynamicbeat.Run())
 	},
 }
 
