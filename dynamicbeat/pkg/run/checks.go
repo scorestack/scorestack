@@ -1,4 +1,4 @@
-package checks
+package run
 
 import (
 	"bytes"
@@ -11,29 +11,14 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/dns"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/ftp"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/http"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/icmp"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/imap"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/ldap"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/mssql"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/mysql"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/noop"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/postgresql"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/smb"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/smtp"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/ssh"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/vnc"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/winrm"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/xmpp"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
 	"go.uber.org/zap"
 )
 
 // RunChecks : Run a course of checks based on the currently-loaded configuration.
-func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
+func RunChecks(defPass chan []check.Config, pubQueue chan<- event.Event) {
 	start := time.Now()
 
 	// Recieve definitions from channel
@@ -51,19 +36,19 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 	var wg sync.WaitGroup
 	for _, def := range defs {
 		// checkName := def.Name
-		names[def.ID] = false
-		check, err := unpackDef(def)
+		names[def.Meta.ID] = false
+		chk, err := unpackDef(def)
 		if err != nil {
 			// Something was wrong with templating the check. Return a failed event with the error.
 			errorDetail := make(map[string]string)
 			errorDetail["error_message"] = err.Error()
 			eventQueue <- event.Event{
 				Timestamp:   time.Now(),
-				Id:          check.GetConfig().ID,
-				Name:        check.GetConfig().Name,
-				CheckType:   check.GetConfig().Type,
-				Group:       check.GetConfig().Group,
-				ScoreWeight: check.GetConfig().ScoreWeight,
+				Id:          chk.GetConfig().Meta.ID,
+				Name:        chk.GetConfig().Meta.Name,
+				CheckType:   chk.GetConfig().Meta.Type,
+				Group:       chk.GetConfig().Meta.Group,
+				ScoreWeight: chk.GetConfig().Meta.ScoreWeight,
 				Passed:      false,
 				Message:     "Encountered an error when unpacking check definition.",
 				Details:     errorDetail,
@@ -76,8 +61,8 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 			defer wg.Done()
 
 			checkStart := time.Now()
-			checkName := check.GetConfig().Name
-			eventQueue <- runCheck(ctx, check)
+			checkName := chk.GetConfig().Meta.Name
+			eventQueue <- runCheck(ctx, chk)
 			zap.S().Infof("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
 		}()
 	}
@@ -110,7 +95,7 @@ func RunChecks(defPass chan []schema.CheckConfig, pubQueue chan<- event.Event) {
 	}
 }
 
-func unpackDef(config schema.CheckConfig) (schema.Check, error) {
+func unpackDef(config check.Config) (check.Check, error) {
 	// Render any template strings in the definition
 	var renderedJSON []byte
 	templ := template.New("definition")
@@ -128,44 +113,7 @@ func unpackDef(config schema.CheckConfig) (schema.Check, error) {
 	renderedJSON = buf.Bytes()
 
 	// Create a Definition from the rendered JSON string
-	var def schema.Check
-	switch config.Type {
-	case "noop":
-		def = &noop.Definition{}
-	case "http":
-		def = &http.Definition{}
-	case "icmp":
-		def = &icmp.Definition{}
-	case "ssh":
-		def = &ssh.Definition{}
-	case "dns":
-		def = &dns.Definition{}
-	case "ftp":
-		def = &ftp.Definition{}
-	case "ldap":
-		def = &ldap.Definition{}
-	case "vnc":
-		def = &vnc.Definition{}
-	case "imap":
-		def = &imap.Definition{}
-	case "smtp":
-		def = &smtp.Definition{}
-	case "winrm":
-		def = &winrm.Definition{}
-	case "xmpp":
-		def = &xmpp.Definition{}
-	case "mysql":
-		def = &mysql.Definition{}
-	case "smb":
-		def = &smb.Definition{}
-	case "postgresql":
-		def = &postgresql.Definition{}
-	case "mssql":
-		def = &mssql.Definition{}
-	default:
-		zap.S().Warnf("Invalid check type found. Offending check : %s:%s", config.Name, config.Type)
-		def = &noop.Definition{}
-	}
+	def := checktypes.GetCheckType(config)
 	err = initCheck(config, renderedJSON, def)
 	if err != nil {
 		zap.S().Infof("%s", err)
@@ -174,26 +122,26 @@ func unpackDef(config schema.CheckConfig) (schema.Check, error) {
 	return def, nil
 }
 
-func runCheck(ctx context.Context, check schema.Check) event.Event {
+func runCheck(ctx context.Context, chk check.Check) event.Event {
 	// Initialize the event to be published
 	evt := event.Event{
 		Timestamp:   time.Now(),
-		Id:          check.GetConfig().ID,
-		Name:        check.GetConfig().Name,
-		CheckType:   check.GetConfig().Type,
-		Group:       check.GetConfig().Group,
-		ScoreWeight: check.GetConfig().ScoreWeight,
+		Id:          chk.GetConfig().Meta.ID,
+		Name:        chk.GetConfig().Meta.Name,
+		CheckType:   chk.GetConfig().Meta.Type,
+		Group:       chk.GetConfig().Meta.Group,
+		ScoreWeight: chk.GetConfig().Meta.ScoreWeight,
 		Passed:      false,
 		Message:     "Check timed out",
 		Details:     nil,
 	}
 
 	// Set up the channel to recieve the CheckResult from the Check
-	recieveResult := make(chan schema.CheckResult, 1)
+	recieveResult := make(chan check.Result, 1)
 
 	// Run the check
 	go func() {
-		recieveResult <- check.Run(ctx)
+		recieveResult <- chk.Run(ctx)
 	}()
 
 	// Wait for either the timeout or for the check to finish
@@ -214,18 +162,18 @@ func runCheck(ctx context.Context, check schema.Check) event.Event {
 	}
 }
 
-func initCheck(config schema.CheckConfig, def []byte, check schema.Check) error {
+func initCheck(config check.Config, def []byte, chk check.Check) error {
 	// Unpack definition JSON
-	err := json.Unmarshal(def, &check)
+	err := json.Unmarshal(def, &chk)
 	if err != nil {
 		return err
 	}
 
 	// Set generic values
-	check.SetConfig(config)
+	chk.SetConfig(config)
 
 	// Process the field options
-	return processFields(check, check.GetConfig().ID, check.GetConfig().Type)
+	return processFields(chk, chk.GetConfig().Meta.ID, chk.GetConfig().Meta.Type)
 }
 
 func processFields(s interface{}, id string, typ string) error {
@@ -249,7 +197,7 @@ func processFields(s interface{}, id string, typ string) error {
 		case "required":
 			// Make sure the value is nonzero
 			if value.IsZero() {
-				return schema.ValidationError{
+				return check.ValidationError{
 					ID:    id,
 					Type:  typ,
 					Field: field.Name,

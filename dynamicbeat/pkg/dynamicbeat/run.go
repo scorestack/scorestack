@@ -8,11 +8,11 @@ import (
 	"time"
 
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/esclient"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/run"
 	"go.uber.org/zap"
 )
 
@@ -41,7 +41,7 @@ func Run() error {
 	signal.Notify(quit, os.Interrupt)
 
 	// Get initial check definitions
-	var defs []schema.CheckConfig
+	var defs []check.Config
 	doubleBreak := false
 	// TODO: Find a better way for looping until we can hit Elasticsearch
 	zap.S().Infof("Getting initial check definitions...")
@@ -96,13 +96,13 @@ func Run() error {
 			zap.S().Infof("Starting a series of %d checks", len(defs))
 
 			// Make channel for passing check definitions to and fron the checks.RunChecks goroutine
-			defPass := make(chan []schema.CheckConfig)
+			defPass := make(chan []check.Config)
 
 			// Start the goroutine
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				checks.RunChecks(defPass, pubQueue)
+				run.RunChecks(defPass, pubQueue)
 			}()
 
 			// Give it the check definitions

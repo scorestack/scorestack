@@ -21,7 +21,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func GetCheckType(c check.Config) (check.Check, error) {
+func GetCheckType(c check.Config) check.Check {
 	var def check.Check
 	switch c.Meta.Type {
 	case "noop":
@@ -61,5 +61,5 @@ func GetCheckType(c check.Config) (check.Check, error) {
 		def = &noop.Definition{}
 	}
 
-	return def, nil
+	return def
 }
