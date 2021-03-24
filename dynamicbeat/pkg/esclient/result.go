@@ -43,10 +43,10 @@ func Index(c *elasticsearch.Client, result check.Result) error {
 
 		res, err := c.Index(doc.string, doc.Reader)
 		if err != nil {
-			return fmt.Errorf("failed to index result document for %s: %s", result.ID, doc.error)
+			return fmt.Errorf("failed to index result document for %s: %s", result.ID, err)
 		}
 		if res.IsError() {
-			return fmt.Errorf("failed to index result document for %s: %s", result.ID, doc.error)
+			return fmt.Errorf("failed to index result document for %s: %s", result.ID, res.Status())
 		}
 		defer res.Body.Close()
 	}
