@@ -23,7 +23,7 @@ type Definition struct {
 // For now we only support A record querries
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Setup for dns query
 	var msg dns.Msg

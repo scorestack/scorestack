@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/jlaffaye/ftp"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
@@ -32,7 +33,7 @@ type Definition struct {
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Connect to the ftp server
 	// TODO: create child context with deadline less than the parent context

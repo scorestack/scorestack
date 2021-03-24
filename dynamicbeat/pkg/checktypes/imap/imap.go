@@ -29,7 +29,7 @@ type Definition struct {
 // We are only supporting the listing of mailboxes as a check currently
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Create a dialer so we can set timeouts
 	// TODO: change this to be relative to the parent context's timeout

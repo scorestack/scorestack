@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net"
 	"regexp"
+	"time"
 
 	"github.com/hirochachacha/go-smb2"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
@@ -30,7 +31,7 @@ type Definition struct {
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Dial SMB server
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", d.Host, d.Port))

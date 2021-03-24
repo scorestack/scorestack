@@ -24,7 +24,7 @@ type Definition struct {
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Create pinger
 	pinger, err := ping.NewPinger(d.Host)

@@ -46,7 +46,7 @@ type Request struct {
 // Run a single instance of the check.
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Convert strings to booleans to allow templating
 	verify, _ := strconv.ParseBool(d.Verify)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"time"
 
 	vnc "github.com/mitchellh/go-vnc"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
@@ -22,7 +23,7 @@ type Definition struct {
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Configure the vnc client
 	config := vnc.ClientConfig{

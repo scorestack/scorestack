@@ -28,7 +28,7 @@ type Definition struct {
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Config SSH client
 	// TODO: change timeout to be relative to the parent context's timeout

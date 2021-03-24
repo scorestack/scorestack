@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"strconv"
+	"time"
 
 	"go.uber.org/zap"
 	"gosrc.io/xmpp/stanza"
@@ -27,7 +28,7 @@ type Definition struct {
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Convert Encrypted to bool
 	encrypted, _ := strconv.ParseBool(d.Encrypted)

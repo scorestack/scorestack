@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"time"
 
 	// MSSQL driver
 	_ "github.com/denisenkom/go-mssqldb"
@@ -28,7 +29,7 @@ type Definition struct {
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Create DB handle
 	db, err := sql.Open("mssql", fmt.Sprintf("sqlserver://%s:%s@%s:%s/instance?database=%s", d.Username, d.Password, d.Host, d.Port, d.Database))

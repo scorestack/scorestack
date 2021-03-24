@@ -43,7 +43,7 @@ func (a unencryptedAuth) Start(server *smtp.ServerInfo) (string, []byte, error) 
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{}
+	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
 
 	// Create a dialer
 	// TODO: change this to be relative to the parent context's timeout
