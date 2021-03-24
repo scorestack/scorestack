@@ -28,6 +28,7 @@ Each section organizes entries into the following subsections:
 #### Changed
 
 - Dynamicbeat is now a standalone program that doesn't use libbeat (#302)
+- Time-separated index patterns are no longer used for check results - each `results-*-*` pattern has been replaced by a single index (#310)
 
 #### Removed
 

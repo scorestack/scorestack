@@ -2,50 +2,56 @@ package esclient
 
 import (
 	"fmt"
+	"io"
 
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 )
 
-func Index(c *elasticsearch.Client, check event.Event) error {
-	index, reader, err := event.Admin(check)
-	if err != nil {
-		return err
-	}
-	resp, err := c.Index(index, reader)
-	if err != nil {
-		return fmt.Errorf("failed to index admin result for %s: %s", check.Id, err)
-	}
-	if resp.IsError() {
-		return fmt.Errorf("error indexing admin result document for %s: %s", check.Id, resp.Status())
-	}
-	defer resp.Body.Close()
+func Index(c *elasticsearch.Client, result check.Result) error {
+	docs := make([]struct {
+		string
+		io.Reader
+		error
+	}, 0)
 
-	index, reader, err = event.Team(check)
-	if err != nil {
-		return err
-	}
-	resp, err = c.Index(index, reader)
-	if err != nil {
-		return fmt.Errorf("failed to index team result for %s: %s", check.Id, err)
-	}
-	if resp.IsError() {
-		return fmt.Errorf("error indexing team result document for %s: %s", check.Id, resp.Status())
-	}
-	defer resp.Body.Close()
+	// Create the documents
+	index, reader, err := result.Admin()
+	docs = append(docs, struct {
+		string
+		io.Reader
+		error
+	}{index, reader, err})
+	index, reader, err = result.Team()
+	docs = append(docs, struct {
+		string
+		io.Reader
+		error
+	}{index, reader, err})
+	index, reader, err = result.Generic()
+	docs = append(docs, struct {
+		string
+		io.Reader
+		error
+	}{index, reader, err})
 
-	index, reader, err = event.Generic(check)
-	if err != nil {
-		return err
+	// Loop through the documents and index them
+	for _, doc := range docs {
+		if doc.error != nil {
+			return fmt.Errorf("failed to index result for %s: %s", result.ID, doc.error)
+		}
+
+		res, err := c.Index(doc.string, doc.Reader)
+		if err != nil {
+			return fmt.Errorf("failed to index result document for %s: %s", result.ID, err)
+		}
+		if res.IsError() {
+			// TODO: better error message here. res.String() is for testing or
+			// debugging only
+			return fmt.Errorf("failed to index result document for %s: %s", result.ID, res.String())
+		}
+		defer res.Body.Close()
 	}
-	resp, err = c.Index(index, reader)
-	if err != nil {
-		return fmt.Errorf("failed to index generic result for %s: %s", check.Id, err)
-	}
-	if resp.IsError() {
-		return fmt.Errorf("error indexing generic result document for %s: %s", check.Id, resp.Status())
-	}
-	defer resp.Body.Close()
 
 	return nil
 }

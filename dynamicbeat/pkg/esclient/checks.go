@@ -6,18 +6,17 @@ import (
 	"time"
 
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"go.uber.org/zap"
-
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
 )
 
 // UpdateCheckDefs will re-read all check definitions from a single index and
 // load the related attributes for each check.
-func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, error) {
+func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]check.Config, error) {
 	// Track how long it takes to update check definitions
 	start := time.Now()
 
-	results := make([]schema.CheckConfig, 0)
+	results := make([]check.Config, 0)
 
 	// Get list of checks
 	checks, err := GetAllDocuments(c, i)
@@ -49,14 +48,16 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]schema.CheckConfig, e
 		}
 
 		// Unpack check definition into CheckConfig struct
-		result := schema.CheckConfig{
-			ID:          doc.Source["id"].(string),
-			Name:        doc.Source["name"].(string),
-			Type:        doc.Source["type"].(string),
-			Group:       doc.Source["group"].(string),
-			ScoreWeight: doc.Source["score_weight"].(float64),
-			Definition:  def,
-			Attribs:     make(map[string]string),
+		result := check.Config{
+			Metadata: check.Metadata{
+				ID:          doc.Source["id"].(string),
+				Name:        doc.Source["name"].(string),
+				Type:        doc.Source["type"].(string),
+				Group:       doc.Source["group"].(string),
+				ScoreWeight: int64(doc.Source["score_weight"].(float64)),
+			},
+			Definition: def,
+			Attribs:    make(map[string]string),
 		}
 
 		// Add any template variables to the check

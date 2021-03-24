@@ -27,9 +27,16 @@ curl -kX POST -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/spaces/_copy
 # Add default index template
 curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_template/default -H 'Content-Type: application/json' -d '{"index_patterns":["check*","attrib_*","results*"],"settings":{"number_of_replicas":"0"}}'
 
+# Create results indices
+curl -k -XPUT -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/results-admin -H "Content-Type: application/json" -d "@results-admin.json"
+curl -k -XPUT -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/results-all -H "Content-Type: application/json" -d "@results-all.json"
+
 # Loop through all teams passed as arguments
 for TEAM in "${@}"
 do
+  # Add index for the team results
+  curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/results-${TEAM} -H "Content-Type: application/json" -d "@results-team.json"
+
   TEAM_NUM=$(echo $TEAM | sed "s/[a-zA-Z_]//g" | sed "s/^0//g")
   # Add example checks for the team
   for check in $(find ${CHECK_FOLDER} -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
@@ -65,7 +72,7 @@ do
   curl -kX PUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_security/user/${TEAM} -H 'Content-Type: application/json' -d '{"password":"changeme","roles":["common","'${TEAM}'"]}'
 
   # Add team overview dashboard
-  INDEX="results-${TEAM}*"
+  INDEX="results-${TEAM}"
   CHECKS=$(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | wc -l)
   cat dashboards/single-team-overview.json | sed -e "s/\${TEAM}/${TEAM}/g" | sed -e "s/\${INDEX}/${INDEX}/g" | sed -e "s/\${CHECKS}/${CHECKS}/g" > tmp-dashboard.json
   curl -ku ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json
