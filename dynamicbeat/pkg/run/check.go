@@ -21,7 +21,7 @@ func Check(ctx context.Context, def check.Config) check.Result {
 	if err != nil {
 		return check.Result{
 			Timestamp: time.Now(),
-			Meta:      def.Meta,
+			Metadata:  def.Metadata,
 			Passed:    false,
 			Message:   fmt.Sprintf("encountered an error when unpacking check definition: %s", err),
 			Details:   nil,
@@ -44,7 +44,7 @@ func Check(ctx context.Context, def check.Config) check.Result {
 			// context timeout, so just return that.
 			return check.Result{
 				Timestamp: time.Now(),
-				Meta:      def.Meta,
+				Metadata:  def.Metadata,
 				Passed:    false,
 				Message:   "check timed out",
 				Details:   nil,
@@ -94,7 +94,7 @@ func initCheck(config check.Config, def []byte, chk check.Check) error {
 	chk.SetConfig(config)
 
 	// Process the field options
-	return processFields(chk, chk.GetConfig().Meta.ID, chk.GetConfig().Meta.Type)
+	return processFields(chk, chk.GetConfig().ID, chk.GetConfig().Type)
 }
 
 func processFields(s interface{}, id string, typ string) error {

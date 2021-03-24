@@ -23,7 +23,7 @@ import (
 
 func GetCheckType(c check.Config) check.Check {
 	var def check.Check
-	switch c.Meta.Type {
+	switch c.Type {
 	case "noop":
 		def = &noop.Definition{}
 	case "http":
@@ -57,7 +57,7 @@ func GetCheckType(c check.Config) check.Check {
 	case "mssql":
 		def = &mssql.Definition{}
 	default:
-		zap.S().Warnf("check id %s had an invalid type: %s", c.Meta.ID, c.Meta.Type)
+		zap.S().Warnf("check id %s had an invalid type: %s", c.ID, c.Type)
 		def = &noop.Definition{}
 	}
 

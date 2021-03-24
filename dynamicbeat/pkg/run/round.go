@@ -24,7 +24,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 	var wg sync.WaitGroup
 	for _, d := range defs {
 		// Start check goroutine
-		names[d.Meta.ID] = false
+		names[d.ID] = false
 		wg.Add(1)
 
 		def := d
@@ -33,7 +33,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 
 			checkStart := time.Now()
 			result := Check(ctx, def)
-			zap.S().Infof("[%s] Finished after %.2f seconds", result.Meta.ID, time.Since(checkStart).Seconds())
+			zap.S().Infof("[%s] Finished after %.2f seconds", result.ID, time.Since(checkStart).Seconds())
 			finished <- result
 		}()
 	}
@@ -60,7 +60,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 	}()
 	for result := range finished {
 		// Record that the check has finished
-		delete(names, result.Meta.ID)
+		delete(names, result.ID)
 
 		// Publish the event to the publisher queue
 		results <- result

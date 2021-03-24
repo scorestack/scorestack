@@ -21,17 +21,17 @@ type Metadata struct {
 }
 
 type Config struct {
-	Meta       Metadata
+	Metadata
 	Definition []byte
 	Attribs    map[string]string
 }
 
 type Result struct {
 	Timestamp time.Time
-	Meta      Metadata
-	Passed    bool
-	Message   string
-	Details   map[string]string
+	Metadata
+	Passed  bool
+	Message string
+	Details map[string]string
 }
 
 // A ValidationError represents an issue with a check definition.

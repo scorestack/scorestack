@@ -49,7 +49,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]check.Config, error) 
 
 		// Unpack check definition into CheckConfig struct
 		result := check.Config{
-			Meta: check.Metadata{
+			Metadata: check.Metadata{
 				ID:          doc.Source["id"].(string),
 				Name:        doc.Source["name"].(string),
 				Type:        doc.Source["type"].(string),
@@ -61,7 +61,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]check.Config, error) 
 		}
 
 		// Add any template variables to the check
-		if val, ok := attribs[result.Meta.ID]; ok {
+		if val, ok := attribs[result.ID]; ok {
 			// Decode each attribute in each document
 			for _, doc := range val {
 				for k, v := range doc.Source {
