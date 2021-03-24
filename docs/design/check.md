@@ -19,11 +19,11 @@ When Dynamicbeat first starts, it pulls the check definitions stored in Elastics
 Reporting Check Results
 -----------------------
 
-As checks finish executing, their results (pass, fail, or timeout, with some additional information) are buffered to be sent to Logstash later on. Typically, Dynamicbeat will immediately send check results to Logstash. However, if there issues establishing a stable connection to Logstash, the results will stay in Dynamicbeat's buffer until it can reestablish the connection.
+As checks finish executing, their results (pass, fail, or timeout, with some additional information) are buffered to be sent to Elasticserach later on. Typically, Dynamicbeat will immediately send check results to Elasticsearch. However, if there issues establishing a stable connection to Elasticsearch, the results will stay in Dynamicbeat's buffer until it can reestablish the connection.
 
-Once Logstash receives a check result from Dynamicbeat, it will perform some basic processing on the event. First, fields are pruned from the event so that only Scorestack-specific fields are included; this removes a variety of metadata fields that the Beats framework adds to events, but aren't relevant to Scorestack.
+Before Dynamicbeat indexes a check result in Elasticsearch, it will perform some basic processing.
 
-Then, the `passed` boolean field is converted to an integer in the `passed_int` field. If the check passed, `passed_int` will be set to `1`. Otherwise, `passed_int` will be `0`. This conversion allows for easy score calculation within Kibana dashboards.
+First, the `passed` boolean field is converted to an integer in the `passed_int` field. If the check passed, `passed_int` will be set to `1`. Otherwise, `passed_int` will be `0`. This conversion allows for easy score calculation within Kibana dashboards.
 
 Next, the `@timestamp` field is converted to an integer representing the Unix epoch representation of the timestamp, which is stored in the `epoch` field. This conversion makes it simple to display only the latest check results within Kibana dashboards.
 

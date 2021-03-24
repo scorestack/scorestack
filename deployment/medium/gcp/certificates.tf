@@ -235,57 +235,6 @@ resource "null_resource" "elasticsearch4_cert" {
     }
 }
 
-resource "tls_private_key" "logstash_key" {
-    algorithm = "ECDSA"
-    ecdsa_curve = "P256"
-}
-
-resource "null_resource" "logstash_key" {
-    triggers = {
-        key_created = tls_private_key.logstash_key.private_key_pem
-    }
-
-    provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/logstash && echo '${tls_private_key.logstash_key.private_key_pem}' > ${var.certificate_destination}/logstash/logstash.key"
-    }
-}
-
-resource "tls_cert_request" "logstash_csr" {
-    key_algorithm = "ECDSA"
-    private_key_pem = tls_private_key.logstash_key.private_key_pem
-
-    subject {
-        common_name = "logstash"
-        organization = "Scorestack"
-    }
-
-    dns_names = ["localhost", "logstash", var.fqdn]
-    ip_addresses = ["127.0.0.1", google_compute_instance.logstash.network_interface.0.network_ip, google_compute_address.nginx.address]
-}
-
-resource "tls_locally_signed_cert" "logstash_cert" {
-    cert_request_pem = tls_cert_request.logstash_csr.cert_request_pem
-    ca_key_algorithm = "ECDSA"
-    ca_private_key_pem = tls_private_key.ca_key.private_key_pem
-    ca_cert_pem = tls_self_signed_cert.ca_cert.cert_pem
-    validity_period_hours = 8760
-
-    allowed_uses = [
-        "server_auth",
-        "client_auth",
-    ]
-}
-
-resource "null_resource" "logstash_cert" {
-    triggers = {
-        cert_created = tls_locally_signed_cert.logstash_cert.cert_pem
-    }
-
-    provisioner "local-exec" {
-        command = "mkdir -p ${var.certificate_destination}/logstash && echo '${tls_locally_signed_cert.logstash_cert.cert_pem}' > ${var.certificate_destination}/logstash/logstash.crt"
-    }
-}
-
 resource "tls_private_key" "kibana_key" {
     algorithm = "ECDSA"
     ecdsa_curve = "P256"

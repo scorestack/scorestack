@@ -1,7 +1,7 @@
 Elastic Stack Architectural Overview
 ====================================
 
-Scorestack is based around a customized deployment of the Elastic Stack that includes Elasticsearch, Kibana, Logstash, a Kibana plugin, and a service-checking program named Dynamicbeat. All of these components are configured with X-Pack security enabled, and TLS mutual authentication is used for all inter-cluster communications.
+Scorestack is based around a customized deployment of the Elastic Stack that includes Elasticsearch, Kibana, a Kibana plugin, and a service-checking program named Dynamicbeat. All of these components are configured with X-Pack security enabled, and TLS mutual authentication is used for all inter-cluster communications.
 
 This document provides an overview of each of the Elastic Stack components used in Scorestack, what they are used for, and what they do. It has mostly the same information as the [Life of a Check](check.md) document, but presented as an explanation of components rather than a timeline.
 
@@ -53,17 +53,6 @@ The Kibana instance is configured with two Spaces: Default and Scorestack. The D
 
 Since dashboards, visualizations, index patterns, and other Kibana saved objects aren't shared across spaces, these saved objects are duplicated across the two spaces. The practical effect of this is that any changes made to an object (like a dashboard) in one space must also be made to the same object in the other space.
 
-Logstash
---------
-
-Logstash is where check results are ingested from Dynamicbeat, processed, and then indexed into Elasticsearch. The logstash pipeline performs the following processing steps on every check result:
-
-1. Remove any unneeded fields in the check result.
-2. Convert the boolean `passed` field to an integer in the new `passed_int` field. If a check has passed, `passed_int` will be 1, otherwise it will be 0.
-3. Create an `epoch` field that contains the integer value of the check result's `@timestamp` converted to [Epoch time](https://en.wikipedia.org/wiki/Unix_time).
-
-After those processing steps, the check result is cloned and indexed into the `results-*` index patterns in Elasticsearch.
-
 Kibana Plugin
 -------------
 
@@ -76,10 +65,15 @@ Dynamicbeat is the program that runs check definitions. It built using the libbe
 
 Dynamicbeat uses periods to separate "rounds" of checks. A period is a certain amount of time to wait before starting the next round. By default, Dynamicbeat's period is 30 seconds, so every 30 seconds another "round" of checks will be started.
 
-At startup, Dynamicbeat will first query Elasticsearch for all check definitions and check attributes, and then cache the results. This process will then be repeated every so often as defined by the `update_period` parameter in the Dynamicbeat configuration.
+At startup, Dynamicbeat will first query Elasticsearch for all check definitions and check attributes, and then save the results.
 
-Every period, Dynamicbeat will start all checks that it knows about at the same time and run them asynchronously. Once all checks have been completed or a timeout has been hit, whichever happens first, the check results will be created and ingested into Logstash. By default, the global timeout for all checks is 30 seconds. If a check does not finish within those 30 seconds, the check will be automatically marked as failing.
+Every period, Dynamicbeat will start all checks that it knows about at the same time and run them asynchronously. Once all checks have been completed or a timeout has been hit, whichever happens first, the check results will be created and indexed into Elasticsearch. By default, the global timeout for all checks is 30 seconds. If a check does not finish within those 30 seconds, the check will be automatically marked as failing.
 
-If Dynamicbeat has already loaded check definitions and attributes, but cannot reach Elasticsearch for some reason, then it will continue using the check definitions and attributes that it already knows about. If Dynamicbeat cannot reach Elasticsearch during startup, then it will retry periodically until it is able to load all check information and start execution.
+Dynamicbeat performs the following steps to index a check result in Elasticsearch:
 
-If Dynamicbeat is unable to contact Logstash at any point in time, all check results will be cached in memory until a connection to Logstash can be reestablished. If Dynamicbeat is stopped while some check results are cached in memory, then those results will be lost. Please note that if Dynamicbeat is stopped with check results cached in memory, there is no guarantee that each "round" of check results is complete. In this case, some checks may have more or less check results than other checks.
+1. Convert the boolean `passed` field to an integer in the new `passed_int` field. If a check has passed, `passed_int` will be 1, otherwise it will be 0.
+2. Create an `epoch` field that contains the integer value of the check result's `@timestamp` converted to [Epoch time](https://en.wikipedia.org/wiki/Unix_time).
+3. Index a copy of the check result in both the `results-admin-*` and `results-GROUP-*` indicies, where `GROUP` is the value of the `group` field in the check definition.
+4. Index a copy of the check result with the `message` and `details` fields removed in the `results-all-*` index.
+
+Once Dynamicbeat has started a round, it will re-query Elasticsearch for the latest check definitions and check attributes, and save the results for the next round of checks. If Dynamicbeat has any issues loading the latest check definitions (for example, if Elasticsearch is unreachable), then it will reuse the check information from the previous round.

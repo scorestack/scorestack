@@ -8,7 +8,7 @@ System Requirements
 
 Currently, Dynamicbeat is only supported on Linux systems. Please note that Dynamicbeat can run checks _against_ non-Linux systems (like Windows or Mac), but Dynamicbeat itself must run on Linux.
 
-The system that Dynamicbeat runs on must be able to access the Elasticsearch HTTP API and the Logstash Beat input endpoints. Additionally, the system should be able to access the services that Dynamicbeat will be running checks against. Varying the placement of Dynamicbeat on the network can help mask the check traffic slightly. For example, running Dynamicbeat on the same network that red team traffic originates from is a common practice.
+The system that Dynamicbeat runs on must be able to access the Elasticsearch HTTP API endpoints. Additionally, the system should be able to access the services that Dynamicbeat will be running checks against. Varying the placement of Dynamicbeat on the network can help mask the check traffic slightly. For example, running Dynamicbeat on the same network that red team traffic originates from is a common practice.
 
 Dynamicbeat can typically run fine with minimal system resources. In the past, Dynamicbeat has worked fine with only 2 CPU cores and 2 GB of RAM, but you should always perform some testing to determine what will work best for your environment.
 

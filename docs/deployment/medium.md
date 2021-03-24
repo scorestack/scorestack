@@ -6,8 +6,7 @@ This architecture deploys seven hosts:
 - `elasticsearch1`, `elasticsearch2`, `elasticsearch3`: Elasticsearch master-eligible data nodes
 - `elasticsearch4`: An Elasticsearch coordinating-only node
 - `kibana`: The Kibana server
-- `logstash`: The Logstash server
-- `nginx`: An nginx server that proxies public requests to Kibana, Logstash, and the Elasticsearch cluster. Also used as an SSH jump box.
+- `nginx`: An nginx server that proxies public requests to Kibana and the Elasticsearch cluster. Also used as an SSH jump box.
 
 GCP Deployment
 --------------

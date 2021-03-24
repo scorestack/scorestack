@@ -127,31 +127,6 @@ resource "google_compute_instance" "kibana" {
     tags = ["default", "ssh", "kibana"]
 }
 
-resource "google_compute_instance" "logstash" {
-    name = "logstash"
-    description = "A Logstash node."
-
-    boot_disk {
-        initialize_params {
-            image = var.ubuntu
-        }
-    }
-
-    machine_type = "n1-standard-1"
-    zone = var.zone1
-
-    network_interface {
-        network = google_compute_network.internal_network.self_link
-        access_config {}
-    }
-
-    metadata = {
-        ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
-    }
-
-    tags = ["default", "ssh", "logstash"]
-}
-
 resource "google_compute_instance" "nginx" {
     name = "nginx"
     description = "An Nginx node that also serves as an SSH jump box."
@@ -176,5 +151,5 @@ resource "google_compute_instance" "nginx" {
         ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
     }
 
-    tags = ["default", "ssh-jump", "proxy", "logstash", "elasticsearch"]
+    tags = ["default", "ssh-jump", "proxy", "elasticsearch"]
 }
