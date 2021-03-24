@@ -46,7 +46,9 @@ func Index(c *elasticsearch.Client, result check.Result) error {
 			return fmt.Errorf("failed to index result document for %s: %s", result.ID, err)
 		}
 		if res.IsError() {
-			return fmt.Errorf("failed to index result document for %s: %s", result.ID, res.Status())
+			// TODO: better error message here. res.String() is for testing or
+			// debugging only
+			return fmt.Errorf("failed to index result document for %s: %s", result.ID, res.String())
 		}
 		defer res.Body.Close()
 	}
