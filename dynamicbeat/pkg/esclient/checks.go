@@ -54,7 +54,7 @@ func UpdateCheckDefs(c *elasticsearch.Client, i string) ([]check.Config, error) 
 				Name:        doc.Source["name"].(string),
 				Type:        doc.Source["type"].(string),
 				Group:       doc.Source["group"].(string),
-				ScoreWeight: doc.Source["score_weight"].(float64),
+				ScoreWeight: int64(doc.Source["score_weight"].(float64)),
 			},
 			Definition: def,
 			Attribs:    make(map[string]string),

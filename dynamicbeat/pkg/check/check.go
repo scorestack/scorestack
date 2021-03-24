@@ -16,7 +16,7 @@ type Metadata struct {
 	Name        string `json:"name"`
 	Type        string `json:"type"`
 	Group       string `json:"group"`
-	ScoreWeight int32  `json:"score_weight"`
+	ScoreWeight int64  `json:"score_weight"`
 }
 
 type Config struct {
