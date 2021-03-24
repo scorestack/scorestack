@@ -2,5 +2,5 @@
 set -euxo pipefail
 
 export PATH="$PATH:$GOPATH/bin"
-cd $HOME/scorestack
+cd $HOME/scorestack/dynamicbeat
 make
