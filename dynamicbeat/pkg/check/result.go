@@ -12,12 +12,6 @@ import (
 // the Elastic Stack convention of indexes named "index-YYYY.MM.DD".
 const INDEX_DATE = "2006.01.02"
 
-// TIMESTAMP_DATE is the layout string used by Elastic Beats for the @timestamp
-// field.
-// See for more details:
-// https://www.elastic.co/guide/en/beats/filebeat/current/processor-timestamp.html
-const TIMESTAMP_DATE = "Mon Jan 2 15:04:05 MST 2006"
-
 type Result struct {
 	Metadata
 	Timestamp time.Time
@@ -37,7 +31,7 @@ type generic struct {
 func newGeneric(r *Result) generic {
 	out := generic{
 		Metadata:  r.Metadata,
-		Timestamp: r.Timestamp.Format(TIMESTAMP_DATE),
+		Timestamp: r.Timestamp.Format(time.RFC3339),
 		Passed:    r.Passed,
 		PassedInt: 0,
 		Epoch:     r.Timestamp.Unix(),
