@@ -59,6 +59,9 @@ curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/r
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/role/dynamicbeat_reader -H "Content-Type: application/json" -d '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}, {"names":["results-*"],"privileges":["write","create","create_index"]}]}'
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/dynamicbeat -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"Dynamicbeat Definition-Reading User","email":"dynamicbeat@example.com","roles":["dynamicbeat_reader"]}'
 
+# Configure results index template
+curl -k -XPUT -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_index_template/results -H "Content-Type: application/json" -d "@config/template.json"
+
 # Restart kibana to reload credentials from keystore
 cd config
 docker-compose -p docker restart kibana

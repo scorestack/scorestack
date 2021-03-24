@@ -1,0 +1,50 @@
+{
+  "index_patterns": [
+    "results-*"
+  ],
+  "template": {
+    "settings": {
+      "number_of_shards": 1
+    },
+    "mappings": {
+      "_source": {
+        "enabled": true
+      },
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "type": {
+          "type": "keyword"
+        },
+        "group": {
+          "type": "keyword"
+        },
+        "score_weight": {
+          "type": "integer"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "passed_int": {
+          "type": "byte"
+        },
+        "epoch": {
+          "type": "long"
+        },
+        "message": {
+          "type": "text"
+        },
+        "details": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
