@@ -6,23 +6,23 @@ import (
 	"net"
 
 	vnc "github.com/mitchellh/go-vnc"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"go.uber.org/zap"
 )
 
 // The Definition configures the behavior of the VNC check
 // it implements the "check" interface
 type Definition struct {
-	Config   schema.CheckConfig // generic metadata about the check
-	Host     string             `optiontype:"required"` // The IP or hostname of the vnc server
-	Port     string             `optiontype:"required"` // The port for the vnc server
-	Password string             `optiontype:"required"` // The password for the vnc server
+	Config   check.Config // generic metadata about the check
+	Host     string       `optiontype:"required"` // The IP or hostname of the vnc server
+	Port     string       `optiontype:"required"` // The port for the vnc server
+	Password string       `optiontype:"required"` // The password for the vnc server
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := schema.CheckResult{}
+	result := check.Result{}
 
 	// Configure the vnc client
 	config := vnc.ClientConfig{
@@ -69,11 +69,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() schema.CheckConfig {
+func (d *Definition) GetConfig() check.Config {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(config schema.CheckConfig) {
-	d.Config = config
+func (d *Definition) SetConfig(c check.Config) {
+	d.Config = c
 }

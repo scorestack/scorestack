@@ -10,26 +10,26 @@ import (
 
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"go.uber.org/zap"
 )
 
 // The Definition configures the behavior of the imap check
 // it implements the "check" interface
 type Definition struct {
-	Config    schema.CheckConfig // generic metadata about the check
-	Host      string             `optiontype:"required"`                     // IP or hostname for the imap server
-	Username  string             `optiontype:"required"`                     // Username for the imap server
-	Password  string             `optiontype:"required"`                     // Password for the user of the imap server
-	Encrypted string             `optiontype:"optional"`                     // Whether or not to use TLS (IMAPS)
-	Port      string             `optiontype:"optional" optiondefault:"143"` // Port for the imap server
+	Config    check.Config // generic metadata about the check
+	Host      string       `optiontype:"required"`                     // IP or hostname for the imap server
+	Username  string       `optiontype:"required"`                     // Username for the imap server
+	Password  string       `optiontype:"required"`                     // Password for the user of the imap server
+	Encrypted string       `optiontype:"optional"`                     // Whether or not to use TLS (IMAPS)
+	Port      string       `optiontype:"optional" optiondefault:"143"` // Port for the imap server
 }
 
 // Run a single instance of the check
 // We are only supporting the listing of mailboxes as a check currently
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := schema.CheckResult{}
+	result := check.Result{}
 
 	// Create a dialer so we can set timeouts
 	// TODO: change this to be relative to the parent context's timeout
@@ -83,11 +83,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() schema.CheckConfig {
+func (d *Definition) GetConfig() check.Config {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(config schema.CheckConfig) {
-	d.Config = config
+func (d *Definition) SetConfig(c check.Config) {
+	d.Config = c
 }

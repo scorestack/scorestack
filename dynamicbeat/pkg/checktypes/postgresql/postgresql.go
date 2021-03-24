@@ -8,28 +8,28 @@ import (
 
 	// PostgreSQL driver
 	pgx "github.com/jackc/pgx/v4"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 )
 
 // The Definition configures the behavior of the MySQL check
 // it implements the "check" interface
 type Definition struct {
-	Config       schema.CheckConfig // generic metadata about the check
-	Host         string             `optiontype:"required"`                      // IP or Hostname for the PostgreSQL server
-	Username     string             `optiontype:"required"`                      // Username for the database
-	Password     string             `optiontype:"required"`                      // Password for the user
-	Database     string             `optiontype:"required"`                      // Name of the database to access
-	Table        string             `optiontype:"required"`                      // Name of the table to access
-	Column       string             `optiontype:"required"`                      // Name of the column to access
-	MatchContent string             `optiontype:"optional"`                      // Whether to perform a regex content match on the results of the query
-	ContentRegex string             `optiontype:"optional" optiondefault:".*"`   // Regex to match on
-	Port         string             `optiontype:"optional" optiondefault:"5432"` // Port for the server
+	Config       check.Config // generic metadata about the check
+	Host         string       `optiontype:"required"`                      // IP or Hostname for the PostgreSQL server
+	Username     string       `optiontype:"required"`                      // Username for the database
+	Password     string       `optiontype:"required"`                      // Password for the user
+	Database     string       `optiontype:"required"`                      // Name of the database to access
+	Table        string       `optiontype:"required"`                      // Name of the table to access
+	Column       string       `optiontype:"required"`                      // Name of the column to access
+	MatchContent string       `optiontype:"optional"`                      // Whether to perform a regex content match on the results of the query
+	ContentRegex string       `optiontype:"optional" optiondefault:".*"`   // Regex to match on
+	Port         string       `optiontype:"optional" optiondefault:"5432"` // Port for the server
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := schema.CheckResult{}
+	result := check.Result{}
 
 	// Create DB handle
 	db, err := pgx.Connect(ctx, fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", d.Username, d.Password, d.Host, d.Port, d.Database))
@@ -97,11 +97,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with
-func (d *Definition) GetConfig() schema.CheckConfig {
+func (d *Definition) GetConfig() check.Config {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct
-func (d *Definition) SetConfig(config schema.CheckConfig) {
-	d.Config = config
+func (d *Definition) SetConfig(c check.Config) {
+	d.Config = c
 }

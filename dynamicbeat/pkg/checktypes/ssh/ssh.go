@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/ssh"
 )
@@ -15,20 +15,20 @@ import (
 // The Definition configures the behavior of the SSH check
 // it implements the "check" interface
 type Definition struct {
-	Config       schema.CheckConfig // generic metadata about the check
-	Host         string             `optiontype:"required"`                    // IP or hostname of the host to run the SSH check against
-	Username     string             `optiontype:"required"`                    // The user to login with over ssh
-	Password     string             `optiontype:"required"`                    // The password for the user that you wish to login with
-	Cmd          string             `optiontype:"required"`                    // The command to execute once ssh connection established
-	MatchContent string             `optiontype:"optional"`                    // Whether or not to match content like checking files
-	ContentRegex string             `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
-	Port         string             `optiontype:"optional" optiondefault:"22"` // The port to attempt an ssh connection on
+	Config       check.Config // generic metadata about the check
+	Host         string       `optiontype:"required"`                    // IP or hostname of the host to run the SSH check against
+	Username     string       `optiontype:"required"`                    // The user to login with over ssh
+	Password     string       `optiontype:"required"`                    // The password for the user that you wish to login with
+	Cmd          string       `optiontype:"required"`                    // The command to execute once ssh connection established
+	MatchContent string       `optiontype:"optional"`                    // Whether or not to match content like checking files
+	ContentRegex string       `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
+	Port         string       `optiontype:"optional" optiondefault:"22"` // The port to attempt an ssh connection on
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := schema.CheckResult{}
+	result := check.Result{}
 
 	// Config SSH client
 	// TODO: change timeout to be relative to the parent context's timeout
@@ -102,11 +102,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() schema.CheckConfig {
+func (d *Definition) GetConfig() check.Config {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(config schema.CheckConfig) {
-	d.Config = config
+func (d *Definition) SetConfig(c check.Config) {
+	d.Config = c
 }

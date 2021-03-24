@@ -8,23 +8,23 @@ import (
 
 	"github.com/go-ping/ping"
 
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 )
 
 // The Definition configures the behavior of the ICMP check
 // it implements the "Check" interface
 type Definition struct {
-	Config          schema.CheckConfig // generic metadata about the check
-	Host            string             `optiontype:"required"`                      // IP or hostname of the host to run the ICMP check against
-	Count           int                `optiontype:"optional" optiondefault:"1"`    // The number of ICMP requests to send per check
-	AllowPacketLoss string             `optiontype:"optional" optiondefault:"true"` // Pass check based on received pings matching Count; if false, will use percent packet loss
-	Percent         int                `optiontype:"optional" optiondefault:"100"`  // Percent of packets needed to come back to pass the check
+	Config          check.Config // generic metadata about the check
+	Host            string       `optiontype:"required"`                      // IP or hostname of the host to run the ICMP check against
+	Count           int          `optiontype:"optional" optiondefault:"1"`    // The number of ICMP requests to send per check
+	AllowPacketLoss string       `optiontype:"optional" optiondefault:"true"` // Pass check based on received pings matching Count; if false, will use percent packet loss
+	Percent         int          `optiontype:"optional" optiondefault:"100"`  // Percent of packets needed to come back to pass the check
 }
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := schema.CheckResult{}
+	result := check.Result{}
 
 	// Create pinger
 	pinger, err := ping.NewPinger(d.Host)
@@ -79,11 +79,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() schema.CheckConfig {
+func (d *Definition) GetConfig() check.Config {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(config schema.CheckConfig) {
-	d.Config = config
+func (d *Definition) SetConfig(c check.Config) {
+	d.Config = c
 }

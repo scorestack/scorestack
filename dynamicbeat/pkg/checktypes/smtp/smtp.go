@@ -9,22 +9,22 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"go.uber.org/zap"
 )
 
 // The Definition configures the behavior of the SMTP check
 // it implements the "check" interface
 type Definition struct {
-	Config    schema.CheckConfig // generic metadata about the check
-	Host      string             `optiontype:"required"`                                       // IP or hostname of the smtp server
-	Username  string             `optiontype:"required"`                                       // Username for the smtp server
-	Password  string             `optiontype:"required"`                                       // Password for the smtp server
-	Sender    string             `optiontype:"required"`                                       // Who is sending the email
-	Reciever  string             `optiontype:"required"`                                       // Who is receiving the email
-	Body      string             `optiontype:"optional" optiondefault:"Hello from Scorestack"` // Body of the email
-	Encrypted string             `optiontype:"optional" optiondefault:"false"`                 // Whether or not to use TLS
-	Port      string             `optiontype:"optional" optiondefault:"25"`                    // Port of the smtp server
+	Config    check.Config // generic metadata about the check
+	Host      string       `optiontype:"required"`                                       // IP or hostname of the smtp server
+	Username  string       `optiontype:"required"`                                       // Username for the smtp server
+	Password  string       `optiontype:"required"`                                       // Password for the smtp server
+	Sender    string       `optiontype:"required"`                                       // Who is sending the email
+	Reciever  string       `optiontype:"required"`                                       // Who is receiving the email
+	Body      string       `optiontype:"optional" optiondefault:"Hello from Scorestack"` // Body of the email
+	Encrypted string       `optiontype:"optional" optiondefault:"false"`                 // Whether or not to use TLS
+	Port      string       `optiontype:"optional" optiondefault:"25"`                    // Port of the smtp server
 }
 
 // **************************************************
@@ -41,9 +41,9 @@ func (a unencryptedAuth) Start(server *smtp.ServerInfo) (string, []byte, error) 
 // **************************************************
 
 // Run a single instance of the check
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := schema.CheckResult{}
+	result := check.Result{}
 
 	// Create a dialer
 	// TODO: change this to be relative to the parent context's timeout
@@ -138,11 +138,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() schema.CheckConfig {
+func (d *Definition) GetConfig() check.Config {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(config schema.CheckConfig) {
-	d.Config = config
+func (d *Definition) SetConfig(c check.Config) {
+	d.Config = c
 }

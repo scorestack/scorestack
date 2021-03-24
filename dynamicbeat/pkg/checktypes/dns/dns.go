@@ -6,24 +6,24 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checks/schema"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 )
 
 // The Definition configures the behavior of the DNS check
 // it implements the "check" interface
 type Definition struct {
-	Config     schema.CheckConfig // generic metadata about the check
-	Server     string             `optiontype:"required"`                    // The IP of the DNS server to query
-	Fqdn       string             `optiontype:"required"`                    // The FQDN of the host you are looking up
-	ExpectedIP string             `optiontype:"required"`                    // The expected IP of the host you are looking up
-	Port       string             `optiontype:"optional" optiondefault:"53"` // The port of the DNS server
+	Config     check.Config // generic metadata about the check
+	Server     string       `optiontype:"required"`                    // The IP of the DNS server to query
+	Fqdn       string       `optiontype:"required"`                    // The FQDN of the host you are looking up
+	ExpectedIP string       `optiontype:"required"`                    // The expected IP of the host you are looking up
+	Port       string       `optiontype:"optional" optiondefault:"53"` // The port of the DNS server
 }
 
 // Run a single instance of the check
 // For now we only support A record querries
-func (d *Definition) Run(ctx context.Context) schema.CheckResult {
+func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := schema.CheckResult{}
+	result := check.Result{}
 
 	// Setup for dns query
 	var msg dns.Msg
@@ -65,11 +65,11 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() schema.CheckConfig {
+func (d *Definition) GetConfig() check.Config {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(config schema.CheckConfig) {
-	d.Config = config
+func (d *Definition) SetConfig(c check.Config) {
+	d.Config = c
 }
