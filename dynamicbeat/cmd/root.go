@@ -46,12 +46,12 @@ func init() {
 
 func addFlag(name string, short string, value string, help string) {
 	rootCmd.PersistentFlags().StringP(name, short, value, help)
-	viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
+	_ = viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
 }
 
 func addBoolFlag(name string, short string, value bool, help string) {
 	rootCmd.PersistentFlags().BoolP(name, short, value, help)
-	viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
+	_ = viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
 }
 
 // initConfig reads in config file and ENV variables if set.

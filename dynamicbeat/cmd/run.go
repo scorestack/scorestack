@@ -18,7 +18,7 @@ var runCmd = &cobra.Command{
 	Short: runShort,
 	Long:  runLong,
 	Run: func(cmd *cobra.Command, args []string) {
-		run.Run()
+		cobra.CheckErr(run.Run())
 	},
 }
 

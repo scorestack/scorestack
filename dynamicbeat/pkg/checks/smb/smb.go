@@ -106,7 +106,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Check if content matches regex
 	if !regex.Match(content) {
-		result.Message = fmt.Sprintf("Matching content not found")
+		result.Message = "Matching content not found"
 		return result
 	}
 

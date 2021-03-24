@@ -98,7 +98,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 		// Check if the digest of the file matches the defined hash
 		if digestString := hex.EncodeToString(digest[:]); digestString != d.Hash {
-			result.Message = fmt.Sprintf("Incorrect hash")
+			result.Message = "Incorrect hash"
 			return result
 		}
 
@@ -116,7 +116,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 
 	// Check if content matches regex
 	if !regex.Match(content) {
-		result.Message = fmt.Sprintf("Matching content not found")
+		result.Message = "Matching content not found"
 		return result
 	}
 

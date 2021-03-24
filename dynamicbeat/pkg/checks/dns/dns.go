@@ -59,7 +59,7 @@ func (d *Definition) Run(ctx context.Context) schema.CheckResult {
 	}
 
 	// If we reach here no records matched expected IP and check fails
-	result.Message = fmt.Sprintf("Incorrect Records Returned")
+	result.Message = "Incorrect Records Returned"
 	return result
 }
 

@@ -13,6 +13,6 @@ func main() {
 		log.Fatalf("can't initialize zap logger: %v", err)
 	}
 	zap.ReplaceGlobals(logger)
-	defer logger.Sync()
+	defer logger.Sync() //nolint:errcheck
 	cmd.Execute()
 }

@@ -108,8 +108,9 @@ func Run() error {
 			// Give it the check definitions
 			defPass <- defs
 
-			// Wait until we get the definitions back before we start the next course of checks
-			defs = <-defPass
+			// Wait until all the checks have been started before we start the
+			// next course of checks
+			<-defPass
 			close(defPass)
 			zap.S().Infof("Started series of checks")
 
