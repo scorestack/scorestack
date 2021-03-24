@@ -3,6 +3,7 @@ package check
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 type Check interface {
@@ -26,10 +27,11 @@ type Config struct {
 }
 
 type Result struct {
-	Meta    Metadata
-	Passed  bool
-	Message string
-	Details map[string]string
+	Timestamp time.Time
+	Meta      Metadata
+	Passed    bool
+	Message   string
+	Details   map[string]string
 }
 
 // A ValidationError represents an issue with a check definition.

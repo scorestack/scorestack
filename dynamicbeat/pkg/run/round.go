@@ -6,52 +6,35 @@ import (
 	"time"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
 	"go.uber.org/zap"
 )
 
 // Round : Run a course of checks based on the currently-loaded configuration.
-func Round(defs []check.Config, results chan<- event.Event, started chan<- bool) {
+func Round(defs []check.Config, results chan<- check.Result, started chan<- bool) {
 	start := time.Now()
 
 	// Make an event queue separate from the publisher queue so we can track
 	// which checks are still running
-	eventQueue := make(chan event.Event, len(defs))
+	finished := make(chan check.Result, len(defs))
 
 	// Iterate over each check
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
 	names := make(map[string]bool)
 	var wg sync.WaitGroup
-	for _, def := range defs {
-		names[def.Meta.ID] = false
-		chk, err := unpackDef(def)
-		if err != nil {
-			// Something was wrong with templating the check. Return a failed event with the error.
-			errorDetail := make(map[string]string)
-			errorDetail["error_message"] = err.Error()
-			eventQueue <- event.Event{
-				Timestamp:   time.Now(),
-				Id:          chk.GetConfig().Meta.ID,
-				Name:        chk.GetConfig().Meta.Name,
-				CheckType:   chk.GetConfig().Meta.Type,
-				Group:       chk.GetConfig().Meta.Group,
-				ScoreWeight: chk.GetConfig().Meta.ScoreWeight,
-				Passed:      false,
-				Message:     "Encountered an error when unpacking check definition.",
-				Details:     errorDetail,
-			}
-		}
-
+	for _, d := range defs {
 		// Start check goroutine
+		names[d.Meta.ID] = false
 		wg.Add(1)
+
+		def := d
 		go func() {
 			defer wg.Done()
 
 			checkStart := time.Now()
-			checkName := chk.GetConfig().Meta.Name
-			eventQueue <- runCheck(ctx, chk)
-			zap.S().Infof("[%s] Finished after %.2f seconds", checkName, time.Since(checkStart).Seconds())
+			result := Check(ctx, def)
+			zap.S().Infof("[%s] Finished after %.2f seconds", result.Meta.ID, time.Since(checkStart).Seconds())
+			finished <- result
 		}()
 	}
 
@@ -73,13 +56,13 @@ func Round(defs []check.Config, results chan<- event.Event, started chan<- bool)
 			}
 		}
 		zap.S().Infof("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())
-		close(eventQueue)
+		close(finished)
 	}()
-	for evt := range eventQueue {
+	for result := range finished {
 		// Record that the check has finished
-		delete(names, evt.Id)
+		delete(names, result.Meta.ID)
 
 		// Publish the event to the publisher queue
-		results <- evt
+		results <- result
 	}
 }

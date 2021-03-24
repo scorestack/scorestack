@@ -12,9 +12,49 @@ import (
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/event"
 	"go.uber.org/zap"
 )
+
+func Check(ctx context.Context, def check.Config) check.Result {
+	// Create a check from the definition
+	chk, err := unpackDef(def)
+	if err != nil {
+		return check.Result{
+			Timestamp: time.Now(),
+			Meta:      def.Meta,
+			Passed:    false,
+			Message:   fmt.Sprintf("encountered an error when unpacking check definition: %s", err),
+			Details:   nil,
+		}
+	}
+
+	// Set up the channel to recieve the CheckResult from the Check
+	result := make(chan check.Result, 1)
+
+	// Run the check
+	go func() {
+		result <- chk.Run(ctx)
+	}()
+
+	// Wait for either the timeout or for the check to finish
+	for {
+		select {
+		case <-ctx.Done():
+			// We already initialized the event with the correct values for a
+			// context timeout, so just return that.
+			return check.Result{
+				Timestamp: time.Now(),
+				Meta:      def.Meta,
+				Passed:    false,
+				Message:   "check timed out",
+				Details:   nil,
+			}
+		case r := <-result:
+			close(result)
+			return r
+		}
+	}
+}
 
 func unpackDef(config check.Config) (check.Check, error) {
 	// Render any template strings in the definition
@@ -41,46 +81,6 @@ func unpackDef(config check.Config) (check.Check, error) {
 	}
 
 	return def, nil
-}
-
-func runCheck(ctx context.Context, chk check.Check) event.Event {
-	// Initialize the event to be published
-	evt := event.Event{
-		Timestamp:   time.Now(),
-		Id:          chk.GetConfig().Meta.ID,
-		Name:        chk.GetConfig().Meta.Name,
-		CheckType:   chk.GetConfig().Meta.Type,
-		Group:       chk.GetConfig().Meta.Group,
-		ScoreWeight: chk.GetConfig().Meta.ScoreWeight,
-		Passed:      false,
-		Message:     "Check timed out",
-		Details:     nil,
-	}
-
-	// Set up the channel to recieve the CheckResult from the Check
-	recieveResult := make(chan check.Result, 1)
-
-	// Run the check
-	go func() {
-		recieveResult <- chk.Run(ctx)
-	}()
-
-	// Wait for either the timeout or for the check to finish
-	for {
-		select {
-		case <-ctx.Done():
-			// We already initialized the event with the correct values for a
-			// context timeout, so just return that.
-			return evt
-		case result := <-recieveResult:
-			close(recieveResult)
-			// Set the passed, message, and details fields with the CheckResult
-			evt.Passed = result.Passed
-			evt.Message = result.Message
-			evt.Details = result.Details
-			return evt
-		}
-	}
 }
 
 func initCheck(config check.Config, def []byte, chk check.Check) error {
