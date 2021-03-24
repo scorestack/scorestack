@@ -1,7 +1,7 @@
 Elastic Stack Architectural Overview
 ====================================
 
-Scorestack is based around a customized deployment of the Elastic Stack that includes Elasticsearch, Kibana, Logstash, a Kibana plugin, and a custom Beat named Dynamicbeat. All of these components are configured with X-Pack security enabled, and TLS mutual authentication is used for all inter-cluster communications.
+Scorestack is based around a customized deployment of the Elastic Stack that includes Elasticsearch, Kibana, Logstash, a Kibana plugin, and a service-checking program named Dynamicbeat. All of these components are configured with X-Pack security enabled, and TLS mutual authentication is used for all inter-cluster communications.
 
 This document provides an overview of each of the Elastic Stack components used in Scorestack, what they are used for, and what they do. It has mostly the same information as the [Life of a Check](check.md) document, but presented as an explanation of components rather than a timeline.
 
