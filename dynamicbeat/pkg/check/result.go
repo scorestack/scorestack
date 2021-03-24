@@ -8,10 +8,6 @@ import (
 	"time"
 )
 
-// INDEX_DATE is a layout string for time.Time.Format that is compatible with
-// the Elastic Stack convention of indexes named "index-YYYY.MM.DD".
-const INDEX_DATE = "2006.01.02"
-
 type Result struct {
 	Metadata
 	Timestamp time.Time
@@ -62,8 +58,8 @@ func marshalError(err error) (string, io.Reader, error) {
 	return "", nil, fmt.Errorf("failed to marshal event to JSON: %s", err)
 }
 
-func ok(prefix string, timestamp time.Time, body []byte) (string, io.Reader, error) {
-	return fmt.Sprintf("%s-%s", prefix, timestamp.Format(INDEX_DATE)), bytes.NewReader(body), nil
+func ok(index string, body []byte) (string, io.Reader, error) {
+	return index, bytes.NewReader(body), nil
 }
 
 // Generic creates a JSON blob containing a check result without an error
@@ -76,7 +72,7 @@ func (r *Result) Generic() (string, io.Reader, error) {
 		return marshalError(err)
 	}
 
-	return ok("results-all", r.Timestamp, body)
+	return ok("results-all", body)
 }
 
 // Team creates a JSON blob containing a check result and the destination index
@@ -90,7 +86,7 @@ func (r *Result) Team() (string, io.Reader, error) {
 		return marshalError(err)
 	}
 
-	return ok(fmt.Sprintf("results-%s", r.Group), r.Timestamp, body)
+	return ok(fmt.Sprintf("results-%s", r.Group), body)
 }
 
 // Admin creates a JSON blob containing a check result and the destination
@@ -106,5 +102,5 @@ func (r *Result) Admin() (string, io.Reader, error) {
 		return marshalError(err)
 	}
 
-	return ok("results-admin", r.Timestamp, body)
+	return ok("results-admin", body)
 }

@@ -30,6 +30,9 @@ curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_template
 # Loop through all teams passed as arguments
 for TEAM in "${@}"
 do
+  # Add index for the team results
+  curl -k -XPUT -u ${USERNAME}:${PASSWORD} ${ELASTICSEARCH_HOST}/results-${TEAM} -H "Content-Type: application/json" -d "@results-team.json"
+
   TEAM_NUM=$(echo $TEAM | sed "s/[a-zA-Z_]//g" | sed "s/^0//g")
   # Add example checks for the team
   for check in $(find ${CHECK_FOLDER} -maxdepth 1 -mindepth 1 -type d -printf "%f\n")
