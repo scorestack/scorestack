@@ -27,6 +27,10 @@ curl -kX POST -u ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/spaces/_copy
 # Add default index template
 curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_template/default -H 'Content-Type: application/json' -d '{"index_patterns":["check*","attrib_*","results*"],"settings":{"number_of_replicas":"0"}}'
 
+# Create results indices
+curl -k -XPUT -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/results-admin -H "Content-Type: application/json" -d "@results-admin.json"
+curl -k -XPUT -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/results-all -H "Content-Type: application/json" -d "@results-all.json"
+
 # Loop through all teams passed as arguments
 for TEAM in "${@}"
 do
