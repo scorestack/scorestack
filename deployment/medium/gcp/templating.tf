@@ -13,11 +13,6 @@ resource "random_password" "kibana" {
     special = false
 }
 
-resource "random_password" "logstash" {
-    length = 32
-    special = false
-}
-
 resource "random_password" "remote_monitoring_user" {
     length = 32
     special = false
@@ -29,7 +24,6 @@ data "template_file" "inventory" {
     vars = {
         nginx_ip = google_compute_address.nginx.address
         nginx_internal_ip = google_compute_instance.nginx.network_interface.0.network_ip
-        logstash_ip = google_compute_instance.logstash.network_interface.0.network_ip
         kibana_ip = google_compute_instance.kibana.network_interface.0.network_ip
         elasticsearch1_ip = google_compute_instance.elasticsearch1.network_interface.0.network_ip
         elasticsearch2_ip = google_compute_instance.elasticsearch2.network_interface.0.network_ip
@@ -40,7 +34,6 @@ data "template_file" "inventory" {
         bootstrap_password = random_password.bootstrap.result
         elastic_password = random_password.elastic.result
         kibana_password = random_password.kibana.result
-        logstash_password = random_password.logstash.result
         remote_monitoring_user_password = random_password.remote_monitoring_user.result
         fqdn = var.fqdn
     }

@@ -11,7 +11,7 @@ services:
       GOPATH: /home/scorestack/go
     image: dynamicbeat-ci:latest
     volumes:
-      - "../:/home/scorestack/go/src/github.com/scorestack/scorestack"
+      - "../:/home/scorestack/scorestack"
       - "./scripts/dynamicbeat:/scripts"
       - "/var/run/docker.sock:/var/run/docker.sock"
     user: scorestack
@@ -27,7 +27,7 @@ services:
     image: dynamicbeat-devcontainer:latest
     network_mode: host
     volumes:
-      - "../:/home/scorestack/go/src/github.com/scorestack/scorestack"
+      - "../:/home/scorestack/scorestack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     user: scorestack
 

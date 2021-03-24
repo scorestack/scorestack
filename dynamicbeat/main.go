@@ -1,15 +1,18 @@
 package main
 
 import (
-	"os"
+	"log"
 
 	"github.com/scorestack/scorestack/dynamicbeat/cmd"
-
-	_ "github.com/scorestack/scorestack/dynamicbeat/include"
+	"go.uber.org/zap"
 )
 
 func main() {
-	if err := cmd.RootCmd.Execute(); err != nil {
-		os.Exit(1)
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		log.Fatalf("can't initialize zap logger: %v", err)
 	}
+	zap.ReplaceGlobals(logger)
+	defer logger.Sync() //nolint:errcheck
+	cmd.Execute()
 }

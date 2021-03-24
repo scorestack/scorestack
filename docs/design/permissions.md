@@ -8,11 +8,6 @@ Several roles are added to Scorestack during creation. These roles can be assign
 
 This role provides read-only access to the `checkdef*` and `attrib_*` indices. This role is intended to be used by the Dynamicbeat user, and provides Dynamicbeat with the least privilege required for proper operation.
 
-`logstash_writer`
------------------
-
-This role provides access to the `results-*` indices and some cluster permissions that are required by Logstash to connect properly to Elasticsearch. This role provides the least privilege required for Logstash, and should only be used by the Logstash user.
-
 `common`
 --------
 

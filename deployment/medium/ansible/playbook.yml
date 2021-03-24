@@ -10,7 +10,7 @@
         dest: /etc/hosts
 
 - name: Install Java
-  hosts: elasticsearch:logstash
+  hosts: elasticsearch
   become: yes
   tasks:
 
@@ -238,19 +238,7 @@
     - name: Create Dynamicbeat role
       uri:
         url: "https://elasticsearch4:9200/_security/role/dynamicbeat_reader"
-        body: '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}]}'
-        body_format: json
-        force_basic_auth: yes
-        method: PUT
-        url_username: elastic
-        url_password: "{{ elastic_password }}"
-        validate_certs: no
-      changed_when: no
-
-    - name: Create Logstash role
-      uri:
-        url: "https://elasticsearch4:9200/_security/role/logstash_writer"
-        body: '{"cluster":["manage_index_templates","monitor","manage_ilm"],"indices":[{"names":["results-*"],"privileges":["write","create","delete","create_index","manage","manage_ilm"]}]}'
+        body: '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}, {"names":["results-*"],"privileges":["write","create","create_index"]}]}'
         body_format: json
         force_basic_auth: yes
         method: PUT
@@ -273,80 +261,6 @@
       loop:
         - { username: "root", password: "changeme", full_name: "Extra Superuser", email: "root@example.com", role: "superuser" }
         - { username: "dynamicbeat", password: "changeme", full_name: "Dynamicbeat Definition-Reading User", email: "dynamicbeat@example.com", role: "dynamicbeat_reader" }
-        - { username: "logstash", password: "{{ logstash_password }}", full_name: "Internal Logstash User", email: "logstash@example.com", role: "logstash_writer" }
-
-###############################################################################
-# LOGSTASH
-###############################################################################
-
-- name: Install Logstash
-  hosts: logstash
-  become: yes
-  tasks:
-
-    - name: Install Logstash package
-      apt:
-        deb: https://artifacts.elastic.co/downloads/logstash/logstash-7.9.2.deb
-
-    - name: Configure Logstash
-      copy:
-        src: configs/logstash.yml
-        dest: /etc/logstash/logstash.yml
-      notify:
-        - Restart Logstash
-
-    - name: Configure Dynamicbeat pipeline
-      template:
-        src: configs/dynamicbeat-pipeline.conf
-        dest: /etc/logstash/conf.d/dynamicbeat-pipeline.conf
-      notify:
-        - Restart Logstash
-
-    - name: Copy root CA certificate
-      copy:
-        src: certificates/ca/ca.crt
-        dest: /etc/logstash/ca.crt
-      notify:
-        - Restart Logstash
-
-    - name: Copy certificate
-      copy:
-        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.crt
-        dest: /etc/logstash/{{ inventory_hostname }}.crt
-      notify:
-        - Restart Logstash
-
-    - name: Copy key
-      copy:
-        src: certificates/{{ inventory_hostname }}/{{ inventory_hostname }}.key
-        dest: /etc/logstash/{{ inventory_hostname }}.key
-        mode: '0600'
-
-    - name: Convert key format
-      command: openssl pkcs8 -topk8 -nocrypt -in /etc/logstash/{{ inventory_hostname }}.key -out /etc/logstash/{{ inventory_hostname }}.key.pkcs8
-      args:
-        creates: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
-      notify:
-        - Restart Logstash
-
-    - name: Set permissions on key
-      file:
-        path: /etc/logstash/{{ inventory_hostname }}.key.pkcs8
-        owner: root
-        group: logstash
-        mode: 0660
-
-    - name: Enable Logstash service
-      systemd:
-        name: logstash
-        enabled: yes
-
-  handlers:
-
-    - name: Restart Logstash
-      systemd:
-        name: logstash
-        state: restarted
 
 ###############################################################################
 # KIBANA

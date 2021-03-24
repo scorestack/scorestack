@@ -81,21 +81,6 @@ resource "google_compute_firewall" "kibana" {
     target_tags = ["kibana"]
 }
 
-resource "google_compute_firewall" "logstash" {
-    name = "logstash"
-    description = "Allow traffic to the Dynamicbeat listener on the Logstash server from the Nginx server."
-
-    network = google_compute_network.internal_network.self_link
-
-    allow {
-        protocol = "tcp"
-        ports = ["5454"]
-    }
-
-    source_tags = ["proxy"]
-    target_tags = ["logstash"]
-}
-
 resource "google_compute_firewall" "ssh-jump" {
     name = "ssh-jump"
     description = "Allow SSH traffic to the SSH jump box from the public internet."

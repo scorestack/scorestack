@@ -4,10 +4,6 @@ instances:
     dns:
       - elasticsearch
       - localhost
-  - name: logstash
-    dns:
-      - logstash
-      - localhost
   - name: kibana
     dns:
       - kibana
