@@ -27,11 +27,12 @@ Each section organizes entries into the following subsections:
 
 #### Changed
 
-- Dynamicbeat is now a standalone program that doesn't use libbeat
+- Dynamicbeat is now a standalone program that doesn't use libbeat (#302)
 
 #### Removed
 
-- Remove `update_period` setting, update configurations after starting each round
+- Remove `update_period` setting, update configurations after starting each round (#302)
+- Drop Logstash from architecture (#302)
 
 [0.7.0] - 2020-02-21
 --------------------
