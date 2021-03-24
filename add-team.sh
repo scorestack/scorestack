@@ -31,7 +31,7 @@ curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_template
 for TEAM in "${@}"
 do
   # Add index for the team results
-  curl -k -XPUT -u ${USERNAME}:${PASSWORD} ${ELASTICSEARCH_HOST}/results-${TEAM} -H "Content-Type: application/json" -d "@results-team.json"
+  curl -k -XPUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/results-${TEAM} -H "Content-Type: application/json" -d "@results-team.json"
 
   TEAM_NUM=$(echo $TEAM | sed "s/[a-zA-Z_]//g" | sed "s/^0//g")
   # Add example checks for the team
