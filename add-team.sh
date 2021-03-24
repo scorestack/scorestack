@@ -72,7 +72,7 @@ do
   curl -kX PUT -u ${USERNAME}:${PASSWORD} https://${ELASTICSEARCH_HOST}/_security/user/${TEAM} -H 'Content-Type: application/json' -d '{"password":"changeme","roles":["common","'${TEAM}'"]}'
 
   # Add team overview dashboard
-  INDEX="results-${TEAM}*"
+  INDEX="results-${TEAM}"
   CHECKS=$(find examples -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | wc -l)
   cat dashboards/single-team-overview.json | sed -e "s/\${TEAM}/${TEAM}/g" | sed -e "s/\${INDEX}/${INDEX}/g" | sed -e "s/\${CHECKS}/${CHECKS}/g" > tmp-dashboard.json
   curl -ku ${USERNAME}:${PASSWORD} https://${KIBANA_HOST}/api/kibana/dashboards/import -H "Content-Type: application/json" -H "kbn-xsrf: true" -d @tmp-dashboard.json

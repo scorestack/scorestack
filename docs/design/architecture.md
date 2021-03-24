@@ -30,19 +30,17 @@ This index pattern contains attributes that can only be read and modified by att
 
 This index pattern is the same as `attrib_admin_*`, except these attributes can also be read and modified by the team's members. To clarify, only members of `team01` can view and modify the attributes in `attrib_user_team01`.
 
-### `results-admin-*`
+### `results-admin`
 
-This index pattern contains detailed check results for all checks that are running. It makes it easier for competition organizers to search for any check from any team within the Discover app in Kibana and see why a check may have failed.
+This index contains detailed check results for all checks that are running. It makes it easier for competition organizers to search for any check from any team within the Discover app in Kibana and see why a check may have failed.
 
-This index pattern, along with the rest of the `results-*` index patterns, appends a timestamp to the index with the current date in `YYYY.MM.dd` format.
+### `results-all`
 
-### `results-all-*`
+This index also contains the check results for all checks, but the `message` and `details` fields are removed. This lets anybody see what checks are passing for each team (which is required for some dashboards). However, nobody consulting this index would be able to see the details explaining why a check failed.
 
-This index pattern also contains the check results for all checks, but the `message` and `details` fields are removed. This lets anybody see what checks are passing for each team (which is required for some dashboards). However, nobody consulting this index pattern would be able to see the details explaining why a check failed.
+### `results-TEAM`
 
-### `results-TEAM-*`
-
-These index patterns contain detailed check results for a single team's checks, and gives teams a starting point for troubleshooting their failing checks. `TEAM` is just a placeholder for the team's name. For example, `team01`'s results index pattern would be `results-team01-*`.
+These indices contain detailed check results for a single team's checks, and gives teams a starting point for troubleshooting their failing checks. `TEAM` is just a placeholder for the team's name. For example, `team01`'s results index would be `results-team01`.
 
 Kibana
 ------
