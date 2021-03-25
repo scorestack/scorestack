@@ -167,33 +167,29 @@ func (c *Client) AddRole(name string, data io.Reader) error {
 }
 
 func (c *Client) AddSpace(name string, data func() io.Reader) error {
-	zap.S().Infof("adding Kibana space: %s", name)
-
 	// Try to update the space if it already exists
 	code, b, err := c.ReqKibana("PUT", fmt.Sprintf("/api/spaces/space/%s", name), data())
 	if code == 404 {
 		// If the space doesn't exist, create it
+		zap.S().Infof("adding Kibana space: %s", name)
 		return CloseAndCheck(c.ReqKibana("POST", "/api/spaces/space", data()))
 	}
 
+	zap.S().Infof("Kibana space '%s' already exists, skipping...", name)
 	return CloseAndCheck(code, b, err)
 }
 
 func (c *Client) AddUser(name string, data io.Reader) error {
-	url := fmt.Sprintf("/_securty/user/%s", name)
+	url := fmt.Sprintf("/_security/user/%s", name)
 
 	// Don't try to create the user if they exist already
 	code, b, err := c.ReqElasticsearch("GET", url, nil)
-	if err != nil {
-		return nil
-	}
-	b.Close()
 
 	if code == 404 {
-		zap.S().Infof("user '%s' already exists, skipping...", name)
-		return nil
-	}
-
 	zap.S().Infof("adding user: %s", name)
 	return CloseAndCheck(c.ReqElasticsearch("PUT", url, data))
+	}
+
+	zap.S().Infof("user '%s' already exists, skipping...", name)
+	return CloseAndCheck(code, b, err)
 }
