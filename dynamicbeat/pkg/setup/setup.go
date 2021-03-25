@@ -9,6 +9,7 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/indices"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/roles"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/spaces"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/users"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"go.uber.org/zap"
 )
@@ -51,7 +52,7 @@ func (c *Client) Initialize() error {
 	if err != nil {
 		return err
 	}
-	err = c.AddUser("dynamicbeat", roles.Dynamicbeat())
+	err = c.AddUser("dynamicbeat", users.Dynamicbeat())
 	if err != nil {
 		return err
 	}
