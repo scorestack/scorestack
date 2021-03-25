@@ -62,30 +62,23 @@ func (c *Client) ReqKibana(method string, path string, body io.Reader) (int, io.
 	return res.StatusCode, res.Body, nil
 }
 
-type clusterHealth struct {
-	Status string `json:"status"`
-}
-
-type kibanaStatus struct {
-	Status struct {
-		Overall struct {
-			State string `json:"state"`
-		} `json:"overall"`
-	} `json:"status"`
-}
-
 func (c *Client) Wait() error {
 	for {
 		_, body, err := c.ReqElasticsearch("GET", "/_cluster/health", nil)
 		if err != nil {
 			return err
 		}
-		defer body.Close()
 
 		// Check if response status is "green"
-		var health clusterHealth
+		health := struct {
+			Status string `json:"status"`
+		}{}
 		decoder := json.NewDecoder(body)
 		err = decoder.Decode(&health)
+		if err != nil {
+			return err
+		}
+		body.Close()
 		if health.Status == "green" {
 			break
 		}
@@ -99,12 +92,21 @@ func (c *Client) Wait() error {
 		if err != nil {
 			return err
 		}
-		defer body.Close()
 
 		// Check if response status is "green"
-		var health kibanaStatus
+		health := struct {
+			Status struct {
+				Overall struct {
+					State string `json:"state"`
+				} `json:"overall"`
+			} `json:"status"`
+		}{}
 		decoder := json.NewDecoder(body)
 		err = decoder.Decode(&health)
+		if err != nil {
+			return err
+		}
+		body.Close()
 		if health.Status.Overall.State == "green" {
 			break
 		}
