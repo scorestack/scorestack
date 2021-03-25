@@ -56,8 +56,7 @@ func (c *Client) Initialize() error {
 		return err
 	}
 
-	zap.S().Info("adding Scorestack space")
-	err = CloseAndCheck(c.ReqKibana("PUT", "/api/spaces/space/scorestack", spaces.Scorestack()))
+	err = c.AddSpace("scorestack", spaces.Scorestack)
 	if err != nil {
 		return err
 	}

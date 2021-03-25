@@ -156,6 +156,19 @@ func (c *Client) AddRole(name string, data io.Reader) error {
 	return CloseAndCheck(c.ReqKibana("PUT", fmt.Sprintf("/api/security/role/%s", name), data))
 }
 
+func (c *Client) AddSpace(name string, data func() io.Reader) error {
+	zap.S().Infof("adding Kibana space: %s", name)
+
+	// Try to update the space if it already exists
+	code, b, err := c.ReqKibana("PUT", fmt.Sprintf("/api/spaces/space/%s", name), data())
+	if code == 404 {
+		// If the space doesn't exist, create it
+		return CloseAndCheck(c.ReqKibana("POST", "/api/spaces/space", data()))
+	}
+
+	return CloseAndCheck(code, b, err)
+}
+
 func (c *Client) AddUser(name string, data io.Reader) error {
 	url := fmt.Sprintf("/_securty/user/%s", name)
 
