@@ -36,6 +36,6 @@ func init() {
 	// Config file contents
 	setupFlag("kibana", "k", "https://localhost:5601", "address of Kibana host to set up")
 	setupFlag("check_folder", "f", "./checks", "path to the folder that contains check files")
-	setupFlag("user", "U", "root", "username of Elasticsearch superuser to use for setup")
+	setupFlag("user", "U", "elastic", "username of Elasticsearch superuser to use for setup")
 	setupFlag("pass", "P", "changeme", "password of Elasticsearch superuser to use for setup")
 }
