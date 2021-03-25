@@ -64,10 +64,18 @@ func (c *Client) ReqKibana(method string, path string, body io.Reader) (int, io.
 }
 
 func (c *Client) Wait() error {
+	first := true
 	for {
+		// If we haven't been through this loop yet, sleep for 5 seconds
+		if !first {
+			zap.S().Info("waiting for Elasticsearch to be ready...")
+			time.Sleep(5 * time.Second)
+		}
+		first = false
+
 		_, body, err := c.ReqElasticsearch("GET", "/_cluster/health", nil)
 		if err != nil {
-			return err
+			continue
 		}
 
 		// Check if response status is "green"
@@ -77,21 +85,26 @@ func (c *Client) Wait() error {
 		decoder := json.NewDecoder(body)
 		err = decoder.Decode(&health)
 		if err != nil {
-			return err
+			continue
 		}
 		body.Close()
 		if health.Status == "green" {
 			break
 		}
-
-		zap.S().Info("waiting for Elasticsearch to be ready...")
-		time.Sleep(5 * time.Second)
 	}
 
+	first = true
 	for {
+		// If we haven't been through this loop yet, sleep for 5 seconds
+		if !first {
+			zap.S().Info("waiting for Kibana to be ready...")
+			time.Sleep(5 * time.Second)
+		}
+		first = false
+
 		_, body, err := c.ReqKibana("GET", "/api/status", nil)
 		if err != nil {
-			return err
+			continue
 		}
 
 		// Check if response status is "green"
@@ -105,15 +118,12 @@ func (c *Client) Wait() error {
 		decoder := json.NewDecoder(body)
 		err = decoder.Decode(&health)
 		if err != nil {
-			return err
+			continue
 		}
 		body.Close()
 		if health.Status.Overall.State == "green" {
 			break
 		}
-
-		zap.S().Info("waiting for Kibana to be ready...")
-		time.Sleep(5 * time.Second)
 	}
 
 	return nil
@@ -153,9 +163,9 @@ func (c *Client) AddIndex(name string, data func() io.Reader) error {
 	code, b, err := c.ReqElasticsearch("GET", url, data())
 
 	if code == 404 {
-	zap.S().Infof("adding index: %s", name)
+		zap.S().Infof("adding index: %s", name)
 		return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/%s", name), data()))
-}
+	}
 
 	zap.S().Infof("index '%s' already exists, skipping...", name)
 	return CloseAndCheck(code, b, err)
@@ -186,8 +196,8 @@ func (c *Client) AddUser(name string, data io.Reader) error {
 	code, b, err := c.ReqElasticsearch("GET", url, nil)
 
 	if code == 404 {
-	zap.S().Infof("adding user: %s", name)
-	return CloseAndCheck(c.ReqElasticsearch("PUT", url, data))
+		zap.S().Infof("adding user: %s", name)
+		return CloseAndCheck(c.ReqElasticsearch("PUT", url, data))
 	}
 
 	zap.S().Infof("user '%s' already exists, skipping...", name)

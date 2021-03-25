@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/dashboards"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/indices"
@@ -25,7 +26,7 @@ func Run() error {
 	}
 
 	client := Client{
-		Inner:         http.Client{Transport: tr},
+		Inner:         http.Client{Transport: tr, Timeout: 5 * time.Second},
 		Username:      c.Setup.Username,
 		Password:      c.Setup.Password,
 		Elasticsearch: c.Elasticsearch,
