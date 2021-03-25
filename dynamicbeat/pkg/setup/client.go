@@ -136,6 +136,15 @@ func CloseAndCheck(code int, body io.ReadCloser, err error) error {
 	return nil
 }
 
+func (c *Client) AddDashboard(data io.Reader) error {
+	err := CloseAndCheck(c.ReqKibana("POST", "/api/kibana/dashboards/import?force=true", data))
+	if err != nil {
+		return err
+	}
+
+	return CloseAndCheck(c.ReqKibana("POST", "/s/scorestack/api/kibana/dashboards/import?force=true", data))
+}
+
 func (c *Client) AddIndex(name string, data io.Reader) error {
 	return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/_security/role/%s", name), data))
 }
