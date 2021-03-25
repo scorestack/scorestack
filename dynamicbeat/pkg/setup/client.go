@@ -141,7 +141,7 @@ func (c *Client) AddIndex(name string, data io.Reader) error {
 }
 
 func (c *Client) AddRole(name string, data io.Reader) error {
-	return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/_security/role/%s", name), data))
+	return CloseAndCheck(c.ReqKibana("PUT", fmt.Sprintf("/api/security/role/%s", name), data))
 }
 
 func (c *Client) AddUser(name string, data io.Reader) error {
