@@ -136,19 +136,19 @@ func CloseAndCheck(code int, body io.ReadCloser, err error) error {
 	return nil
 }
 
-func (c *Client) AddDashboard(data io.Reader) error {
+func (c *Client) AddDashboard(data func() io.Reader) error {
 	zap.S().Info("adding dashboards")
-	err := CloseAndCheck(c.ReqKibana("POST", "/api/kibana/dashboards/import?force=true", data))
+	err := CloseAndCheck(c.ReqKibana("POST", "/api/kibana/dashboards/import?force=true", data()))
 	if err != nil {
 		return err
 	}
 
-	return CloseAndCheck(c.ReqKibana("POST", "/s/scorestack/api/kibana/dashboards/import?force=true", data))
+	return CloseAndCheck(c.ReqKibana("POST", "/s/scorestack/api/kibana/dashboards/import?force=true", data()))
 }
 
 func (c *Client) AddIndex(name string, data io.Reader) error {
 	zap.S().Infof("adding index: %s", name)
-	return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/_security/role/%s", name), data))
+	return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/%s", name), data))
 }
 
 func (c *Client) AddRole(name string, data io.Reader) error {

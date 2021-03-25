@@ -57,7 +57,7 @@ func (c *Client) Initialize() error {
 	}
 
 	zap.S().Info("adding Scorestack space")
-	err = CloseAndCheck(c.ReqKibana("POST", "/api/spaces/space", spaces.Scorestack()))
+	err = CloseAndCheck(c.ReqKibana("PUT", "/api/spaces/space/scorestack", spaces.Scorestack()))
 	if err != nil {
 		return err
 	}
@@ -68,6 +68,7 @@ func (c *Client) Initialize() error {
 	if err != nil {
 		return err
 	}
+	valTrue = strings.NewReader(`{"value":"true"}`)
 	err = CloseAndCheck(c.ReqKibana("POST", "/s/scorestack/api/kibana/settings/theme:darkMode", valTrue))
 	if err != nil {
 		return err
@@ -96,14 +97,15 @@ func (c *Client) Initialize() error {
 	}
 
 	// Add Scoreboard dashboard
-	err = c.AddDashboard(dashboards.Scoreboard())
+	err = c.AddDashboard(dashboards.Scoreboard)
 	if err != nil {
 		return err
 	}
 
 	// Add default index template
+	zap.S().Info("adding default index template")
 	idx := strings.NewReader(`{"index_patterns":["check*","attrib_*","results*"],"settings":{"number_of_replicas":"0"}}`)
-	err = CloseAndCheck(c.ReqElasticsearch("PUT", "/_template/_default", idx))
+	err = CloseAndCheck(c.ReqElasticsearch("PUT", "/_template/default", idx))
 	if err != nil {
 		return err
 	}
