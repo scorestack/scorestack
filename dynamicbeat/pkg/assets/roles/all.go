@@ -18,8 +18,8 @@ func Common() io.Reader {
 	return assets.Read("roles/common.json")
 }
 
-func DynamicbeatReader() io.Reader {
-	return assets.Read("roles/dynamicbeat-reader.json")
+func Dynamicbeat() io.Reader {
+	return assets.Read("roles/dynamicbeat.json")
 }
 
 func Spectator() io.Reader {
