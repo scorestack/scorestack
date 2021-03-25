@@ -10,6 +10,7 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/roles"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/spaces"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
+	"go.uber.org/zap"
 )
 
 func Run() error {
@@ -30,6 +31,7 @@ func Run() error {
 		Kibana:        c.Setup.Kibana,
 	}
 
+	zap.S().Info("checking if Elasticsearch and Kibana are up")
 	err := client.Wait()
 	if err != nil {
 		return err
@@ -54,13 +56,13 @@ func (c *Client) Initialize() error {
 		return err
 	}
 
-	// Add Scorestack space
+	zap.S().Info("adding Scorestack space")
 	err = CloseAndCheck(c.ReqKibana("POST", "/api/spaces/space", spaces.Scorestack()))
 	if err != nil {
 		return err
 	}
 
-	// Set dark theme on both spaces
+	zap.S().Info("enabling dark theme")
 	valTrue := strings.NewReader(`{"value":"true"}`)
 	err = CloseAndCheck(c.ReqKibana("POST", "/api/kibana/settings/theme:darkMode", valTrue))
 	if err != nil {
