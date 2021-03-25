@@ -124,7 +124,7 @@ func CloseAndCheck(code int, body io.ReadCloser, err error) error {
 		return err
 	}
 	defer body.Close()
-	if code != 200 {
+	if code != 200 && code != 204 {
 		buf := new(strings.Builder)
 		_, err := io.Copy(buf, body)
 		if err != nil {
