@@ -15,7 +15,7 @@ var f embed.FS
 func Read(filename string) io.Reader {
 	data, err := f.ReadFile(filename)
 	if err != nil {
-		zap.S().Panic("failed to read embedded asset %s: %s", filename, err)
+		zap.S().Panicf("failed to read embedded asset %s: %s", filename, err)
 	}
 
 	return bytes.NewReader(data)
@@ -24,7 +24,7 @@ func Read(filename string) io.Reader {
 func ReadTeam(filename string, name string) io.Reader {
 	data, err := f.ReadFile(filename)
 	if err != nil {
-		zap.S().Panic("failed to read embedded asset %s: %s", filename, err)
+		zap.S().Panicf("failed to read embedded asset %s: %s", filename, err)
 	}
 
 	// Template in the team name
@@ -33,14 +33,14 @@ func ReadTeam(filename string, name string) io.Reader {
 	}{name}
 	tmpl, err := template.New("").Parse(string(data))
 	if err != nil {
-		zap.S().Panic("failed to read asset %s as template: %s", filename, err)
+		zap.S().Panicf("failed to read asset %s as template: %s", filename, err)
 	}
 
 	// Apply the template and write to a byte buffer
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, vars)
 	if err != nil {
-		zap.S().Panic("failed to template team %s into asset %s: %s", name, filename, err)
+		zap.S().Panicf("failed to template team %s into asset %s: %s", name, filename, err)
 	}
 
 	return bytes.NewReader(buf.Bytes())

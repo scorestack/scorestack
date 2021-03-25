@@ -147,12 +147,12 @@ func (c *Client) AddDashboard(data io.Reader) error {
 }
 
 func (c *Client) AddIndex(name string, data io.Reader) error {
-	zap.S().Info("adding index: %s", name)
+	zap.S().Infof("adding index: %s", name)
 	return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/_security/role/%s", name), data))
 }
 
 func (c *Client) AddRole(name string, data io.Reader) error {
-	zap.S().Info("adding role: %s", name)
+	zap.S().Infof("adding role: %s", name)
 	return CloseAndCheck(c.ReqKibana("PUT", fmt.Sprintf("/api/security/role/%s", name), data))
 }
 
@@ -167,10 +167,10 @@ func (c *Client) AddUser(name string, data io.Reader) error {
 	b.Close()
 
 	if code == 404 {
-		zap.S().Info("user '%s' already exists, skipping...", name)
+		zap.S().Infof("user '%s' already exists, skipping...", name)
 		return nil
 	}
 
-	zap.S().Info("adding user: %s", name)
+	zap.S().Infof("adding user: %s", name)
 	return CloseAndCheck(c.ReqElasticsearch("PUT", url, data))
 }
