@@ -3,6 +3,7 @@ package setup
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -17,68 +18,52 @@ type Client struct {
 	Kibana        string
 }
 
-func (c *Client) Wait() error {
-	for {
-		ready, err := c.esIsReady()
-		if err != nil {
-			return err
-		}
-
-		if ready {
-			break
-		}
-
-		zap.S().Info("waiting for Elasticsearch to be ready...")
-		time.Sleep(5 * time.Second)
-	}
-
-	for {
-		ready, err := c.kibIsReady()
-		if err != nil {
-			return err
-		}
-
-		if ready {
-			break
-		}
-
-		zap.S().Info("waiting for Kibana to be ready...")
-		time.Sleep(5 * time.Second)
-	}
-
-	return nil
-}
-
-type clusterHealth struct {
-	Status string `json:"status"`
-}
-
-func (c *Client) esIsReady() (bool, error) {
-	url := fmt.Sprintf("%s/_cluster/health", c.Elasticsearch)
+func (c *Client) ReqElasticsearch(method string, path string, body io.Reader) (io.ReadCloser, error) {
+	url := fmt.Sprintf("%s%s", c.Elasticsearch, path)
 
 	// Build request
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		return false, fmt.Errorf("failed to build Elasticsearch health request: %s", err)
+		return nil, fmt.Errorf("failed to build Elasticsearch request to '%s': %s", path, err)
 	}
 	req.SetBasicAuth(c.Username, c.Password)
+	req.Header.Set("kbn-xsrf", "true")
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
 
 	// Send request
 	res, err := c.Inner.Do(req)
 	if err != nil {
-		return false, nil
+		return nil, fmt.Errorf("failed to send Elasticsearch request to '%s': %s", path, err)
 	}
-	defer res.Body.Close()
+	return res.Body, nil
+}
 
-	// Check if response status is "green"
-	var health clusterHealth
-	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&health)
-	if health.Status == "green" {
-		return true, nil
-	} else {
-		return false, nil
+func (c *Client) ReqKibana(method string, path string, body io.Reader) (io.ReadCloser, error) {
+	url := fmt.Sprintf("%s%s", c.Kibana, path)
+
+	// Build request
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build Kibana request to '%s': %s", path, err)
 	}
+	req.SetBasicAuth(c.Username, c.Password)
+	req.Header.Set("kbn-xsrf", "true")
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+
+	// Send request
+	res, err := c.Inner.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to send Kibana request to '%s': %s", path, err)
+	}
+	return res.Body, nil
+}
+
+type clusterHealth struct {
+	Status string `json:"status"`
 }
 
 type kibanaStatus struct {
@@ -89,30 +74,44 @@ type kibanaStatus struct {
 	} `json:"status"`
 }
 
-func (c *Client) kibIsReady() (bool, error) {
-	url := fmt.Sprintf("%s/api/status", c.Kibana)
+func (c *Client) Wait() error {
+	for {
+		body, err := c.ReqElasticsearch("GET", "/_cluster/health", nil)
+		if err != nil {
+			return err
+		}
+		defer body.Close()
 
-	// Build request
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return false, fmt.Errorf("failed to build Kibana status request: %s", err)
-	}
-	req.SetBasicAuth(c.Username, c.Password)
+		// Check if response status is "green"
+		var health clusterHealth
+		decoder := json.NewDecoder(body)
+		err = decoder.Decode(&health)
+		if health.Status == "green" {
+			break
+		}
 
-	// Send request
-	res, err := c.Inner.Do(req)
-	if err != nil {
-		return false, nil
+		zap.S().Info("waiting for Elasticsearch to be ready...")
+		time.Sleep(5 * time.Second)
 	}
-	defer res.Body.Close()
 
-	// Check if response status is "green"
-	var health kibanaStatus
-	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&health)
-	if health.Status.Overall.State == "green" {
-		return true, nil
-	} else {
-		return false, nil
+	for {
+		body, err := c.ReqKibana("GET", "/api/status", nil)
+		if err != nil {
+			return err
+		}
+		defer body.Close()
+
+		// Check if response status is "green"
+		var health kibanaStatus
+		decoder := json.NewDecoder(body)
+		err = decoder.Decode(&health)
+		if health.Status.Overall.State == "green" {
+			break
+		}
+
+		zap.S().Info("waiting for Kibana to be ready...")
+		time.Sleep(5 * time.Second)
 	}
+
+	return nil
 }
