@@ -41,17 +41,13 @@ beats_pass=$(cat /tmp/cluster-passwords.txt | grep beats_system | awk '{print $N
 docker exec ${KIBANA_CONTAINER} bin/kibana-keystore create
 docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-keystore add elasticsearch.password --stdin <<< '${kibana_pass}'"
 
+# Install kibana plugin
+docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.7.0/kibana-plugin-v0.7.0.zip"
+
 # Restart kibana to reload credentials from keystore
 cd config
 docker-compose -p docker restart kibana
 cd ..
-
-# Wait for kibana to be up
-while [[ "$(curl -sku root:changeme ${KIBANA_HOST}/api/status | jq -r .status.overall.state 2>/dev/null)" != "green" ]]
-do
-  echo "Waiting for Kibana to be ready..."
-  sleep 5
-done
 
 # Write passwords to docker-compose default environment file
 cat > config/.env << EOF
@@ -60,9 +56,6 @@ EOF
 
 # Delete the passwords file
 shred -uvz /tmp/cluster-passwords.txt
-
-# Install kibana plugin
-docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.7.0/kibana-plugin-v0.7.0.zip"
 
 # Set Elastic admin password
 curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/elastic/_password -H "Content-Type: application/json" -d '{"password":"changeme"}'
