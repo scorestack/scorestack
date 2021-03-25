@@ -111,11 +111,11 @@ func (c *Client) Initialize() error {
 	}
 
 	// Create results indices
-	err = c.AddIndex("results-admin", indices.ResultsAdmin())
+	err = c.AddIndex("results-admin", indices.ResultsAdmin)
 	if err != nil {
 		return err
 	}
-	err = c.AddIndex("results-all", indices.ResultsAll())
+	err = c.AddIndex("results-all", indices.ResultsAll)
 	if err != nil {
 		return err
 	}

@@ -146,9 +146,19 @@ func (c *Client) AddDashboard(data func() io.Reader) error {
 	return CloseAndCheck(c.ReqKibana("POST", "/s/scorestack/api/kibana/dashboards/import?force=true", data()))
 }
 
-func (c *Client) AddIndex(name string, data io.Reader) error {
+func (c *Client) AddIndex(name string, data func() io.Reader) error {
+	url := fmt.Sprintf("/%s", name)
+
+	// Don't create the index if it already exists
+	code, b, err := c.ReqElasticsearch("GET", url, data())
+
+	if code == 404 {
 	zap.S().Infof("adding index: %s", name)
-	return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/%s", name), data))
+		return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/%s", name), data()))
+}
+
+	zap.S().Infof("index '%s' already exists, skipping...", name)
+	return CloseAndCheck(code, b, err)
 }
 
 func (c *Client) AddRole(name string, data io.Reader) error {
