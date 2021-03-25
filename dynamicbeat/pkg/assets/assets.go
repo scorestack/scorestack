@@ -5,54 +5,26 @@ import (
 	"embed"
 	"io"
 	"text/template"
-)
 
-const scoreboard = "dashboards/scoreboard.json"
-const teamOverview = "dashboards/team-overview.json"
-const resultsAdmin = "indices/results-admin.json"
-const resultsAll = "indices/results-all.json"
-const resultsTeam = "indices/results-team.json"
+	"go.uber.org/zap"
+)
 
 //go:embed indices dashboards
 var f embed.FS
 
-func e(err error) (io.Reader, error) {
-	return nil, err
-}
-
-func ok(b []byte) (io.Reader, error) {
-	return bytes.NewReader(b), nil
-}
-
-func read(filename string) (io.Reader, error) {
+func Read(filename string) io.Reader {
 	data, err := f.ReadFile(filename)
 	if err != nil {
-		return e(err)
+		zap.S().Panic("failed to read embedded asset %s: %s", filename, err)
 	}
 
-	return ok(data)
+	return bytes.NewReader(data)
 }
 
-func Scoreboard() (io.Reader, error) {
-	return read(scoreboard)
-}
-
-func ResultsAdmin() (io.Reader, error) {
-	return read(resultsAdmin)
-}
-
-func ResultsAll() (io.Reader, error) {
-	return read(resultsAll)
-}
-
-func ResultsTeam() (io.Reader, error) {
-	return read(resultsTeam)
-}
-
-func TeamOverview(name string) (io.Reader, error) {
-	data, err := f.ReadFile(teamOverview)
+func ReadTeam(filename string, name string) io.Reader {
+	data, err := f.ReadFile(filename)
 	if err != nil {
-		return e(err)
+		zap.S().Panic("failed to read embedded asset %s: %s", filename, err)
 	}
 
 	// Template in the team name
@@ -61,15 +33,15 @@ func TeamOverview(name string) (io.Reader, error) {
 	}{name}
 	tmpl, err := template.New("").Parse(string(data))
 	if err != nil {
-		return e(err)
+		zap.S().Panic("failed to read asset %s as template: %s", filename, err)
 	}
 
 	// Apply the template and write to a byte buffer
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, vars)
 	if err != nil {
-		return e(err)
+		zap.S().Panic("failed to template team %s into asset %s: %s", name, filename, err)
 	}
 
-	return ok(buf.Bytes())
+	return bytes.NewReader(buf.Bytes())
 }
