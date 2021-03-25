@@ -41,24 +41,6 @@ beats_pass=$(cat /tmp/cluster-passwords.txt | grep beats_system | awk '{print $N
 docker exec ${KIBANA_CONTAINER} bin/kibana-keystore create
 docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-keystore add elasticsearch.password --stdin <<< '${kibana_pass}'"
 
-# Write passwords to docker-compose default environment file
-cat > config/.env << EOF
-BEATS_PASSWORD=${beats_pass}
-EOF
-
-# Delete the passwords file
-shred -uvz /tmp/cluster-passwords.txt
-
-# Install kibana plugin
-docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.7.0/kibana-plugin-v0.7.0.zip"
-
-# Create admin user
-curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/root -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"Extra Superuser","email":"root@example.com","roles":["superuser"]}'
-
-# Add dynamicbeat role and user
-curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/role/dynamicbeat_reader -H "Content-Type: application/json" -d '{"indices":[{"names":["checkdef*","attrib_*"],"privileges":["read"]}, {"names":["results-*"],"privileges":["create_doc"]}]}'
-curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/dynamicbeat -H "Content-Type: application/json" -d '{"password":"changeme","full_name":"Dynamicbeat Definition-Reading User","email":"dynamicbeat@example.com","roles":["dynamicbeat_reader"]}'
-
 # Restart kibana to reload credentials from keystore
 cd config
 docker-compose -p docker restart kibana
@@ -71,19 +53,16 @@ do
   sleep 5
 done
 
-# Add Scorestack space
-curl -kX POST -u root:changeme ${KIBANA_HOST}/api/spaces/space -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"id":"scorestack","name":"Scorestack","disabledFeatures":["visualize","dev_tools","indexPatterns","savedObjectsManagement","graph","monitoring","ml","apm","maps","canvas","infrastructure","logs","siem","uptime"]}'
+# Write passwords to docker-compose default environment file
+cat > config/.env << EOF
+BEATS_PASSWORD=${beats_pass}
+EOF
 
-# Set dark theme on both spaces
-curl -kX POST -u root:changeme ${KIBANA_HOST}/api/kibana/settings/theme:darkMode -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"value":"true"}'
-curl -kX POST -u root:changeme ${KIBANA_HOST}/s/scorestack/api/kibana/settings/theme:darkMode -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"value":"true"}'
+# Delete the passwords file
+shred -uvz /tmp/cluster-passwords.txt
 
-# Add base role for common permissions
-curl -kX PUT -u root:changeme ${KIBANA_HOST}/api/security/role/common -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results-all*","checks"],"privileges":["read"]}]},"kibana":[{"base":["read"],"spaces":["scorestack"]}]}'
+# Install kibana plugin
+docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.7.0/kibana-plugin-v0.7.0.zip"
 
-# Add spectator role
-curl -kX PUT -u root:changeme ${KIBANA_HOST}/api/security/role/spectator -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["results*"],"privileges":["read"]}]}}'
-
-# Add admin roles
-curl -kX PUT -u root:changeme ${KIBANA_HOST}/api/security/role/attribute-admin -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["attrib_*"],"privileges":["all"]}]}}'
-curl -kX PUT -u root:changeme ${KIBANA_HOST}/api/security/role/check-admin -H 'Content-Type: application/json' -H 'kbn-xsrf: true' -d '{"elasticsearch":{"indices":[{"names":["check*"],"privileges":["all"]}]}}'
+# Set Elastic admin password
+curl -k -XPOST -u elastic:${elastic_pass} ${ELASTICSEARCH_HOST}/_security/user/elastic/_password -H "Content-Type: application/json" -d '{"password":"changeme"}'
