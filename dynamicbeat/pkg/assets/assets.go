@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
-//go:embed indices dashboards
+//go:embed *
 var f embed.FS
 
 func Read(filename string) io.Reader {
