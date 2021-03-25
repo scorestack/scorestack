@@ -19,6 +19,8 @@ type Config struct {
 	Setup         struct {
 		Kibana      string `mapstructure:"kibana"`
 		CheckFolder string `mapstructure:"check_folder"`
+		Username    string `mapstructure:"username"`
+		Password    string `mapstructure:"password"`
 	} `mapstructure:"setup"`
 }
 
