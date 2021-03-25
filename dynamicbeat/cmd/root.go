@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -69,7 +70,11 @@ func initConfig() {
 		viper.SetConfigName("dynamicbeat")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	// Make sure dot separators are replaced by underscores
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	// Read in any matching environment variables
+	viper.AutomaticEnv()
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
