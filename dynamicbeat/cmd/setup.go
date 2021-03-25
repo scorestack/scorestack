@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/setup"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -21,7 +22,7 @@ var setupCmd = &cobra.Command{
 	Short: setupShort,
 	Long:  setupLong,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("setup called")
+		cobra.CheckErr(setup.Run())
 	},
 }
 
