@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -116,4 +117,46 @@ func (c *Client) Wait() error {
 	}
 
 	return nil
+}
+
+func CloseAndCheck(code int, body io.ReadCloser, err error) error {
+	if err != nil {
+		return err
+	}
+	defer body.Close()
+	if code != 200 {
+		buf := new(strings.Builder)
+		_, err := io.Copy(buf, body)
+		if err != nil {
+			return fmt.Errorf("got %v response code and couldn't read response body: %s", code, err)
+		}
+		return fmt.Errorf("response code was %v - response body: %s", code, buf)
+	}
+
+	return nil
+}
+
+func (c *Client) AddIndex(name string, data io.Reader) error {
+	return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/_security/role/%s", name), data))
+}
+
+func (c *Client) AddRole(name string, data io.Reader) error {
+	return CloseAndCheck(c.ReqElasticsearch("PUT", fmt.Sprintf("/_security/role/%s", name), data))
+}
+
+func (c *Client) AddUser(name string, data io.Reader) error {
+	url := fmt.Sprintf("/_securty/user/%s", name)
+
+	// Don't try to create the user if they exist already
+	code, b, err := c.ReqElasticsearch("GET", url, nil)
+	if err != nil {
+		return nil
+	}
+	b.Close()
+
+	if code != 404 {
+		return nil
+	}
+
+	return CloseAndCheck(c.ReqElasticsearch("PUT", url, data))
 }
