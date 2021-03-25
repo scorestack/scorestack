@@ -8,16 +8,6 @@ resource "random_password" "elastic" {
     special = false
 }
 
-resource "random_password" "kibana" {
-    length = 32
-    special = false
-}
-
-resource "random_password" "remote_monitoring_user" {
-    length = 32
-    special = false
-}
-
 data "template_file" "inventory" {
     template = file("${path.module}/inventory_template.ini")
 
@@ -33,8 +23,6 @@ data "template_file" "inventory" {
         ssh_priv_key_file = var.ssh_priv_key_file
         bootstrap_password = random_password.bootstrap.result
         elastic_password = random_password.elastic.result
-        kibana_password = random_password.kibana.result
-        remote_monitoring_user_password = random_password.remote_monitoring_user.result
         fqdn = var.fqdn
     }
 }
