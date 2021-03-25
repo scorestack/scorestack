@@ -16,6 +16,10 @@ type Config struct {
 	Username      string        `mapstructure:"username"`
 	Password      string        `mapstructure:"password"`
 	VerifyCerts   bool          `mapstructure:"verify_certs"`
+	Setup         struct {
+		Kibana      string `mapstructure:"kibana"`
+		CheckFolder string `mapstructure:"check_folder"`
+	} `mapstructure:"setup"`
 }
 
 func Get() Config {
