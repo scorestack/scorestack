@@ -1,0 +1,25 @@
+{
+  "name": "SMB Example Check",
+  "type": "smb",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Share": "{{.Share}}",
+    "Domain": "{{.Domain}}",
+    "File": "{{.File}}"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Username": "Administrator",
+      "Share": "myshare",
+      "Domain": "SMB",
+      "File": "file.txt"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

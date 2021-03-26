@@ -1,0 +1,23 @@
+{
+  "name": "Active Directory LDAP",
+  "type": "ldap",
+  "score_weight": 1,
+  "definition": {
+    "User": "{{.User}}",
+    "Password": "{{.Password}}",
+    "Fqdn": "{{.Fqdn}}",
+    "Port": "{{.Port}}",
+    "Ldaps": "{{.Ldaps}}"
+  },
+  "attributes": {
+    "admin": {
+      "User": "CN=Administrator,OU=Users,DC=contoso,DC=com",
+      "Fqdn": "localhost",
+      "Port": "389",
+      "Ldaps": "false"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

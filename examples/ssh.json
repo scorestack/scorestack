@@ -1,0 +1,27 @@
+{
+  "name": "SSH",
+  "type": "ssh",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Port": "{{.Port}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Cmd": "{{.Cmd}}",
+    "MatchContent": "{{.MatchContent}}",
+    "ContentRegex": "{{.ContentRegex}}"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Port": "22",
+      "Username": "root",
+      "Cmd": "id",
+      "ContentRegex": "root",
+      "MatchContent": "true"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

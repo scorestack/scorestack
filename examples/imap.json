@@ -1,0 +1,23 @@
+{
+  "name": "IMAP",
+  "type": "imap",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Port": "{{.Port}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Encrypted": "{{.Encrypted}}"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Port": "143",
+      "Username": "admin",
+      "Encrypted": "false"
+    },
+    "user": {
+      "Password": "changme"
+    }
+  }
+}

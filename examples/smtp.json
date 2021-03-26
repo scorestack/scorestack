@@ -1,0 +1,29 @@
+{
+  "name": "SMTP",
+  "type": "smtp",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Sender": "{{.Sender}}",
+    "Reciever": "{{.Reciever}}",
+    "Body": "{{.Body}}",
+    "Encrypted": "{{.Encrypted}}",
+    "Port": "{{.Port}}"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Username": "user@exmaple.com",
+      "Sender": "user@example.com",
+      "Reciever": "user@example.com",
+      "Body": "Hello from Scorestack",
+      "Port": "25",
+      "Encrypted": "false"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

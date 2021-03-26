@@ -1,0 +1,34 @@
+{
+  "name": "Kibana",
+  "type": "http",
+  "score_weight": 1,
+  "definition": {
+    "requests": [
+      {
+        "host": "{{.Host}}",
+        "path": "/api/status",
+        "https": true,
+        "port": 5601,
+        "method": "GET",
+        "matchcode": true,
+        "matchcontent": true,
+        "contentregex": "},\"status\":{\"overall\":{\"state\":\"green\","
+      },
+      {
+        "host": "{{.Host}}",
+        "path": "/app/kibana",
+        "https": true,
+        "port": 5601,
+        "method": "GET",
+        "matchcode": true,
+        "matchcontent": true,
+        "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+      }
+    ]
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost"
+    }
+  }
+}

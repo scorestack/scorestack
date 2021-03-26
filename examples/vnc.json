@@ -1,0 +1,19 @@
+{
+  "name": "VNC",
+  "type": "vnc",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Port": "{{.Port}}",
+    "Password": "{{.Password}}"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Port": "5901"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

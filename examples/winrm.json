@@ -1,0 +1,29 @@
+{
+  "name": "WinRM",
+  "type": "winrm",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Port": "{{.Port}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Cmd": "{{.Cmd}}",
+    "Encrypted": "{{.Encrypted}}",
+    "MatchContent": "{{.MatchContent}}",
+    "ContentRegex": "{{.ContentRegex}}"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Port": "5986",
+      "Username": "admin",
+      "Cmd": "whoami",
+      "ContentRegex": ".*",
+      "Encrypted": "true",
+      "MatchContent": "false"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

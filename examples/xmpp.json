@@ -1,0 +1,23 @@
+{
+  "name": "XMPP",
+  "type": "xmpp",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Port": "{{.Port}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Encrypted": "{{.Encrypted}}"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Port": "5222",
+      "Username": "admin",
+      "Encrypted": "true"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}
