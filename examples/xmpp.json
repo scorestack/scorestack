@@ -4,17 +4,15 @@
   "score_weight": 1,
   "definition": {
     "Host": "{{.Host}}",
-    "Port": "{{.Port}}",
+    "Port": "5222",
     "Username": "{{.Username}}",
     "Password": "{{.Password}}",
-    "Encrypted": "{{.Encrypted}}"
+    "Encrypted": "true"
   },
   "attributes": {
     "admin": {
       "Host": "localhost",
-      "Port": "5222",
-      "Username": "admin",
-      "Encrypted": "true"
+      "Username": "admin"
     },
     "user": {
       "Password": "changeme"

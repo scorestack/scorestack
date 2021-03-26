@@ -4,23 +4,18 @@
   "score_weight": 1,
   "definition": {
     "Host": "{{.Host}}",
+    "Port": "25",
     "Username": "{{.Username}}",
     "Password": "{{.Password}}",
-    "Sender": "{{.Sender}}",
-    "Reciever": "{{.Reciever}}",
-    "Body": "{{.Body}}",
-    "Encrypted": "{{.Encrypted}}",
-    "Port": "{{.Port}}"
+    "Sender": "{{.Username}}",
+    "Reciever": "otheruser@example.com",
+    "Body": "Hello from Scorestack",
+    "Encrypted": "false"
   },
   "attributes": {
     "admin": {
       "Host": "localhost",
-      "Username": "user@exmaple.com",
-      "Sender": "user@example.com",
-      "Reciever": "user@example.com",
-      "Body": "Hello from Scorestack",
-      "Port": "25",
-      "Encrypted": "false"
+      "Username": "user@exmaple.com"
     },
     "user": {
       "Password": "changeme"

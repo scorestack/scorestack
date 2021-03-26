@@ -4,23 +4,17 @@
   "score_weight": 1,
   "definition": {
     "Host": "{{.Host}}",
-    "Port": "{{.Port}}",
+    "Port": "5986",
     "Username": "{{.Username}}",
     "Password": "{{.Password}}",
-    "Cmd": "{{.Cmd}}",
-    "Encrypted": "{{.Encrypted}}",
-    "MatchContent": "{{.MatchContent}}",
-    "ContentRegex": "{{.ContentRegex}}"
+    "Cmd": "whoami",
+    "Encrypted": "true",
+    "MatchContent": "false"
   },
   "attributes": {
     "admin": {
       "Host": "localhost",
-      "Port": "5986",
-      "Username": "admin",
-      "Cmd": "whoami",
-      "ContentRegex": ".*",
-      "Encrypted": "true",
-      "MatchContent": "false"
+      "Username": "admin"
     },
     "user": {
       "Password": "changeme"

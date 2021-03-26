@@ -6,20 +6,16 @@
     "Host": "{{.Host}}",
     "Username": "{{.Username}}",
     "Password": "{{.Password}}",
-    "Database": "{{.Database}}",
-    "Table": "{{.Table}}",
-    "Column": "{{.Column}}",
-    "MatchContent": "{{.MatchContent}}",
+    "Database": "mysql",
+    "Table": "db",
+    "Column": "Db",
+    "MatchContent": "true",
     "ContentRegex": "performance_schema"
   },
   "attributes": {
     "admin": {
       "Host": "localhost",
-      "Username": "root",
-      "Database": "mysql",
-      "Table": "db",
-      "Column": "Db",
-      "MatchContent": "true"
+      "Username": "root"
     },
     "user": {
       "Password": "toor"

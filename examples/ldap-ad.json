@@ -6,15 +6,13 @@
     "User": "{{.User}}",
     "Password": "{{.Password}}",
     "Fqdn": "{{.Fqdn}}",
-    "Port": "{{.Port}}",
-    "Ldaps": "{{.Ldaps}}"
+    "Port": "389",
+    "Ldaps": "false"
   },
   "attributes": {
     "admin": {
       "User": "CN=Administrator,OU=Users,DC=contoso,DC=com",
-      "Fqdn": "localhost",
-      "Port": "389",
-      "Ldaps": "false"
+      "Fqdn": "localhost"
     },
     "user": {
       "Password": "changeme"

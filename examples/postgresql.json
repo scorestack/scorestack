@@ -6,20 +6,16 @@
     "Host": "{{.Host}}",
     "Username": "{{.Username}}",
     "Password": "{{.Password}}",
-    "Database": "{{.Database}}",
-    "Table": "{{.Table}}",
-    "Column": "{{.Column}}",
-    "MatchContent": "{{.MatchContent}}",
+    "Database": "postgres",
+    "Table": "testtable",
+    "Column": "Name",
+    "MatchContent": "true",
     "ContentRegex": "scorestack"
   },
   "attributes": {
     "admin": {
       "Host": "localhost",
-      "Username": "postgres",
-      "Database": "postgres",
-      "Table": "testtable",
-      "Column": "Name",
-      "MatchContent": "true"
+      "Username": "postgres"
     },
     "user": {
       "Password": "changeme"

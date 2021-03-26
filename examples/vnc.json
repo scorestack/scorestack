@@ -4,13 +4,12 @@
   "score_weight": 1,
   "definition": {
     "Host": "{{.Host}}",
-    "Port": "{{.Port}}",
+    "Port": "5901",
     "Password": "{{.Password}}"
   },
   "attributes": {
     "admin": {
-      "Host": "localhost",
-      "Port": "5901"
+      "Host": "localhost"
     },
     "user": {
       "Password": "changeme"

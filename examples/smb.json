@@ -6,17 +6,14 @@
     "Host": "{{.Host}}",
     "Username": "{{.Username}}",
     "Password": "{{.Password}}",
-    "Share": "{{.Share}}",
-    "Domain": "{{.Domain}}",
-    "File": "{{.File}}"
+    "Share": "myshare",
+    "Domain": "SMB",
+    "File": "file.txt"
   },
   "attributes": {
     "admin": {
       "Host": "localhost",
-      "Username": "Administrator",
-      "Share": "myshare",
-      "Domain": "SMB",
-      "File": "file.txt"
+      "Username": "Administrator"
     },
     "user": {
       "Password": "changeme"
