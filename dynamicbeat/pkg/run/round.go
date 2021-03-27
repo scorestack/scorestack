@@ -46,9 +46,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 	// zap.S().Infof("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
 	go func() {
 		for {
-			if names == nil {
-				break
-			} else if len(names) == 0 {
+			if len(names) == 0 {
 				break
 			} else {
 				time.Sleep(30 * time.Second)
