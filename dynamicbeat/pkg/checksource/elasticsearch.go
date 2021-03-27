@@ -210,7 +210,7 @@ func (e *Elasticsearch) LoadAll() ([]check.Config, error) {
 		results = append(results, *result)
 	}
 
-	zap.S().Infof("loaded check definitions in %.2f seconds", time.Since(start).Seconds())
+	zap.S().Infof("loaded %d check definitions in %.2f seconds", len(results), time.Since(start).Seconds())
 	return results, nil
 }
 
