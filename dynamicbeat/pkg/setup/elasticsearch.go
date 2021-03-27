@@ -46,6 +46,7 @@ func Elasticsearch(c *esclient.Client, teams []config.Team) error {
 	}
 
 	for _, team := range teams {
+		zap.S().Infof("adding user and results index for %s", team.Name)
 		err = c.AddUser(team.Name, users.Team(team.Name))
 		if err != nil {
 			zap.S().Errorf("failed to add user for %s: %s", team.Name, err)
