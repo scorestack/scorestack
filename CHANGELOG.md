@@ -23,12 +23,32 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+### General
+
+#### Changed
+
+- Each check is now defined using only one JSON file that includes all attributes (#312)
+- Example checks now only use attributes when necessary (#312)
+- Replaced `${TEAM}` and `${TEAM_NUM}` check definition variables with golang template blocks (#312)
+
+#### Removed
+
+- Delete `add-team.sh` and `update.sh` scripts (#312)
+- Deployments no longer configure users, indices, and dashboards (#312)
+- Check definition files no longer include `id` or `group` fields (#312)
+
 ### Dynamicbeat
+
+#### Added
+
+- `setup` command and subcommands for initializing Scorestack and adding checks (#312)
+- Support overriding attributes on a per-team basis (#312)
 
 #### Changed
 
 - Dynamicbeat is now a standalone program that doesn't use libbeat (#302)
 - Time-separated index patterns are no longer used for check results - each `results-*-*` pattern has been replaced by a single index (#310)
+- Upgrade to Golang 1.16.2 (#312)
 
 #### Removed
 
