@@ -29,7 +29,6 @@ func Kibana(host string, user string, pass string, verify bool, teams []config.T
 		Host:     host,
 	}
 
-	zap.S().Info("checking if Kibana is up")
 	err := c.Wait()
 	if err != nil {
 		return err

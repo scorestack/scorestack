@@ -72,7 +72,7 @@ func (c *Client) AddIndex(name string, body io.Reader) error {
 
 	// Don't create the index if it already exists
 	if res.StatusCode == 200 {
-		zap.S().Infof("index '%s' already exists, skipping...", name)
+		zap.S().Debugf("index '%s' already exists, skipping...", name)
 		return nil
 	}
 
@@ -93,7 +93,7 @@ func (c *Client) AddUser(name string, body io.Reader) error {
 
 	// Don't create the user if they already exist
 	if res.StatusCode == 200 {
-		zap.S().Infof("user '%s' already exists, skipping...", name)
+		zap.S().Debugf("user '%s' already exists, skipping...", name)
 		return nil
 	}
 

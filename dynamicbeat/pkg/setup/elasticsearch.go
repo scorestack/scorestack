@@ -12,7 +12,6 @@ import (
 )
 
 func Elasticsearch(c *esclient.Client, teams []config.Team) error {
-	zap.S().Info("checking if Elasticsearch is up")
 	err := c.Wait()
 	if err != nil {
 		return err

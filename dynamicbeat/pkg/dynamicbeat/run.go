@@ -96,7 +96,7 @@ func Run() error {
 			close(published)
 			return nil
 		case <-ticker.C:
-			zap.S().Infof("Number of go-routines: %d", runtime.NumGoroutine())
+			zap.S().Infof("Number of goroutines: %d", runtime.NumGoroutine())
 			zap.S().Infof("Starting a series of %d checks", len(defs))
 
 			// Start the goroutine
@@ -118,7 +118,7 @@ func Run() error {
 			// Update the check definitions for the next round
 			defs, err = es.LoadAll()
 			if err != nil {
-				zap.S().Infof("Failed to update check definitions : %s", err)
+				zap.S().Warnf("Failed to update check definitions : %s", err)
 			}
 		}
 	}

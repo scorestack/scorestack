@@ -59,7 +59,7 @@ func (d *Definition) Run(ctx context.Context) check.Result {
 	defer func() {
 		err := c.Logoff()
 		if err != nil {
-			zap.S().Infof("Error logging off from SMB server: %s", err)
+			zap.S().Warnf("Error logging off from SMB server: %s", err)
 		}
 	}()
 

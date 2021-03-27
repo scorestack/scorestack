@@ -122,6 +122,6 @@ func (c *Client) AddSpace(name string, data func() io.Reader) error {
 		return CloseAndCheck(c.Req("POST", "/api/spaces/space", data()))
 	}
 
-	zap.S().Infof("Kibana space '%s' already exists, skipping...", name)
+	zap.S().Debugf("Kibana space '%s' already exists, skipping...", name)
 	return CloseAndCheck(code, b, err)
 }
