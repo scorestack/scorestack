@@ -9,7 +9,7 @@ import (
 func Run() error {
 	c := config.Get()
 
-	err := Kibana(c.Setup.Kibana, c.Setup.Username, c.Setup.Password, c.VerifyCerts)
+	err := Kibana(c.Setup.Kibana, c.Setup.Username, c.Setup.Password, c.VerifyCerts, c.Teams)
 	if err != nil {
 		return err
 	}
@@ -19,7 +19,7 @@ func Run() error {
 		return err
 	}
 
-	err = Elasticsearch(es)
+	err = Elasticsearch(es, c.Teams)
 	if err != nil {
 		return err
 	}

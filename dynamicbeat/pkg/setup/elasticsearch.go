@@ -1,15 +1,17 @@
 package setup
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/indices"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/users"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/esclient"
 	"go.uber.org/zap"
 )
 
-func Elasticsearch(c *esclient.Client) error {
+func Elasticsearch(c *esclient.Client, teams []config.Team) error {
 	zap.S().Info("checking if Elasticsearch is up")
 	err := c.Wait()
 	if err != nil {
@@ -41,6 +43,18 @@ func Elasticsearch(c *esclient.Client) error {
 	err = c.AddIndex("results-all", indices.ResultsAll())
 	if err != nil {
 		return err
+	}
+
+	for _, team := range teams {
+		err = c.AddUser(team.Name, users.Team(team.Name))
+		if err != nil {
+			zap.S().Errorf("failed to add user for %s: %s", team.Name, err)
+		}
+
+		err = c.AddIndex(fmt.Sprintf("results-%s", team.Name), indices.ResultsTeam())
+		if err != nil {
+			zap.S().Errorf("failed to add results index for %s: %s", team.Name, err)
+		}
 	}
 
 	return nil

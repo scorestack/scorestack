@@ -9,11 +9,12 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/dashboards"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/roles"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/assets/spaces"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/kibclient"
 	"go.uber.org/zap"
 )
 
-func Kibana(host string, user string, pass string, verify bool) error {
+func Kibana(host string, user string, pass string, verify bool, teams []config.Team) error {
 	// Configure TLS verification based on the Dynamicbeat config setting
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{
@@ -84,6 +85,18 @@ func Kibana(host string, user string, pass string, verify bool) error {
 	err = c.AddDashboard(dashboards.Scoreboard)
 	if err != nil {
 		return err
+	}
+
+	for _, team := range teams {
+		err = c.AddRole(team.Name, roles.Team(team.Name))
+		if err != nil {
+			zap.S().Errorf("failed to add role for %s: %s", team.Name, err)
+		}
+
+		err = c.AddDashboard(dashboards.TeamOverview(team.Name))
+		if err != nil {
+			zap.S().Errorf("failed to add team overview dashboard for %s: %s", team.Name, err)
+		}
 	}
 
 	return nil
