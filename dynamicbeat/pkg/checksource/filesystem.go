@@ -131,19 +131,13 @@ func (f *Filesystem) LoadCheck(id string) (*check.Config, error) {
 	}
 	checkFile.Attributes.User = user
 
-	// Marge attributes
-	attr := make(map[string]string)
-	for k, v := range checkFile.Attributes.Admin {
-		attr[k] = v
-	}
-	for k, v := range checkFile.Attributes.User {
-		attr[k] = v
-	}
-
 	return &check.Config{
 		Metadata:   checkFile.Metadata,
 		Definition: def,
-		Attribs:    attr,
+		Attributes: check.Attributes{
+			Admin: admin,
+			User:  user,
+		},
 	}, nil
 }
 

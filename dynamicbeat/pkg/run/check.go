@@ -66,7 +66,7 @@ func unpackDef(config check.Config) (check.Check, error) {
 	}
 
 	var buf bytes.Buffer
-	err = templ.Execute(&buf, config.Attribs)
+	err = templ.Execute(&buf, config.Attributes.Merged())
 	if err != nil {
 		return nil, fmt.Errorf("Failed to execute template for check: %s", err.Error())
 	}

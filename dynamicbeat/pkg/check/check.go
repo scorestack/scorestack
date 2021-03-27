@@ -22,7 +22,25 @@ type Metadata struct {
 type Config struct {
 	Metadata
 	Definition []byte
-	Attribs    map[string]string
+	Attributes `json:"attributes"`
+}
+
+type Attributes struct {
+	Admin map[string]string `json:"admin"`
+	User  map[string]string `json:"user"`
+}
+
+func (a *Attributes) Merged() map[string]string {
+	m := make(map[string]string)
+
+	for k, v := range a.Admin {
+		m[k] = v
+	}
+	for k, v := range a.User {
+		m[k] = v
+	}
+
+	return m
 }
 
 // A ValidationError represents an issue with a check definition.

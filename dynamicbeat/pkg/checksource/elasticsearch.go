@@ -142,6 +142,43 @@ func (e *Elasticsearch) GetIndices(pattern string) ([]string, error) {
 	return index_names, nil
 }
 
+func (e *Elasticsearch) GetAllAttributes(pattern string) (map[string]map[string]string, error) {
+	docs, err := e.GetAllDocumentsFrom(pattern)
+	if err != nil {
+		return nil, err
+	}
+
+	// Organize attributes by check ID
+	attributes := make(map[string]map[string]string)
+	for _, doc := range docs {
+		// Decode each attribute in the document
+		attrs := make(map[string]string)
+		for k, v := range doc.Source {
+			// Decode the value of the attribute
+			attrs[k] = v.(string)
+		}
+		attributes[doc.ID] = attrs
+	}
+
+	return attributes, nil
+}
+
+func (e *Elasticsearch) GetAttributes(id string, index string) (map[string]string, error) {
+	doc, err := e.GetDocumentFrom(id, index)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decode each attribute in the document
+	attrs := make(map[string]string)
+	for k, v := range doc.Source {
+		// Decode the value of the attribute
+		attrs[k] = v.(string)
+	}
+
+	return attrs, nil
+}
+
 func (e *Elasticsearch) LoadAll() ([]check.Config, error) {
 	// Track how long it takes to update check definitions
 	start := time.Now()
@@ -154,24 +191,19 @@ func (e *Elasticsearch) LoadAll() ([]check.Config, error) {
 		return nil, err
 	}
 
-	// Get list of attributes
-	attribDocs, err := e.GetAllDocumentsFrom("attrib_*")
+	// Get admin and user attributes
+	admin, err := e.GetAllAttributes("attrib_admin_*")
+	if err != nil {
+		return nil, err
+	}
+	user, err := e.GetAllAttributes("attrib_user_*")
 	if err != nil {
 		return nil, err
 	}
 
-	// Organize attributes by check ID
-	attribs := make(map[string][]Document)
-	for _, doc := range attribDocs {
-		if _, ok := attribs[doc.ID]; !ok {
-			attribs[doc.ID] = make([]Document, 0)
-		}
-		attribs[doc.ID] = append(attribs[doc.ID], doc)
-	}
-
 	// Iterate over each check
 	for _, doc := range checks {
-		result, err := buildCheckConfig(&doc, attribs[doc.ID])
+		result, err := buildCheckConfig(&doc, admin[doc.ID], user[doc.ID])
 		if err != nil {
 			return nil, err
 		}
@@ -194,6 +226,14 @@ func (e *Elasticsearch) LoadCheck(id string) (*check.Config, error) {
 	team := s[len(s)-1]
 
 	// Get attribute documents
+	admin, err := e.GetAttributes(id, fmt.Sprintf("attrib_admin_%s", team))
+	if err != nil {
+		return nil, err
+	}
+	user, err := e.GetAttributes(id, fmt.Sprintf("admin_user_%s", team))
+	if err != nil {
+		return nil, err
+	}
 	indices, err := e.GetIndices(fmt.Sprintf("attrib_*_%s", team))
 	if err != nil {
 		return nil, err
@@ -207,10 +247,10 @@ func (e *Elasticsearch) LoadCheck(id string) (*check.Config, error) {
 		attributes[i] = *doc
 	}
 
-	return buildCheckConfig(check, attributes)
+	return buildCheckConfig(check, admin, user)
 }
 
-func buildCheckConfig(doc *Document, attributes []Document) (*check.Config, error) {
+func buildCheckConfig(doc *Document, admin map[string]string, user map[string]string) (*check.Config, error) {
 	// Encode the definition as a JSON string
 	def, err := json.Marshal(doc.Source["definition"])
 	if err != nil {
@@ -227,20 +267,11 @@ func buildCheckConfig(doc *Document, attributes []Document) (*check.Config, erro
 			ScoreWeight: int64(doc.Source["score_weight"].(float64)),
 		},
 		Definition: def,
-		Attribs:    make(map[string]string),
+		Attributes: check.Attributes{
+			Admin: admin,
+			User:  user,
+		},
 	}
-
-	// Decode each attribute in each document. There may be multiple attribute
-	// documents for multiple permission levels.
-	for _, doc := range attributes {
-		for k, v := range doc.Source {
-			// Decode the value of the attribute
-			c.Attribs[k] = v.(string)
-		}
-	}
-
-	// Add the SavedValue attribute in case the check uses it
-	c.Attribs["SavedValue"] = "{{.SavedValue}}"
 
 	return c, nil
 }
