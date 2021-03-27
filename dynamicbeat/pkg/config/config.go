@@ -19,8 +19,8 @@ type Config struct {
 	Teams         []Team        `mapstructure:"teams"`
 	Setup         struct {
 		Kibana   string `mapstructure:"kibana"`
-		Username string `mapstructure:"user"`
-		Password string `mapstructure:"pass"`
+		Username string `mapstructure:"username"`
+		Password string `mapstructure:"password"`
 	} `mapstructure:"setup"`
 }
 
