@@ -1,7 +1,6 @@
 package setup
 
 import (
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checksource"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/esclient"
 )
@@ -19,15 +18,5 @@ func Run() error {
 		return err
 	}
 
-	err = Elasticsearch(es, c.Teams)
-	if err != nil {
-		return err
-	}
-
-	f := &checksource.Filesystem{
-		Path:  c.Setup.CheckFolder,
-		Teams: c.Teams,
-	}
-
-	return Checks(es, f)
+	return Elasticsearch(es, c.Teams)
 }

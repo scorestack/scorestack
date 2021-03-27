@@ -18,10 +18,9 @@ type Config struct {
 	VerifyCerts   bool          `mapstructure:"verify_certs"`
 	Teams         []Team        `mapstructure:"teams"`
 	Setup         struct {
-		Kibana      string `mapstructure:"kibana"`
-		CheckFolder string `mapstructure:"check_folder"`
-		Username    string `mapstructure:"user"`
-		Password    string `mapstructure:"pass"`
+		Kibana   string `mapstructure:"kibana"`
+		Username string `mapstructure:"user"`
+		Password string `mapstructure:"pass"`
 	} `mapstructure:"setup"`
 }
 
