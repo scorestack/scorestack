@@ -29,8 +29,8 @@ var setupCmd = &cobra.Command{
 
 func setupFlag(name string, short string, value string, help string) {
 	setupCmd.PersistentFlags().StringP(name, short, value, help)
-	settingName := strings.TrimPrefix(name, "setup-") // Remove the setup- part of the setup username and password
-	_ = viper.BindPFlag(fmt.Sprintf("setup.%s", settingName), setupCmd.Flags().Lookup(name))
+	settingName := fmt.Sprintf("setup.%s", strings.TrimPrefix(name, "setup-")) // Remove the setup- part of the setup username and password
+	_ = viper.BindPFlag(settingName, setupCmd.PersistentFlags().Lookup(name))
 }
 
 func init() {
