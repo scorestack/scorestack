@@ -22,6 +22,11 @@ type Config struct {
 		Username string `mapstructure:"username"`
 		Password string `mapstructure:"password"`
 	} `mapstructure:"setup"`
+	Log struct {
+		Verbose bool `mapstructure:"verbose"`
+		Level   int8 `mapstructure:"level"`
+		NoColor bool `mapstructure:"no_color"`
+	} `mapstructure:"log"`
 }
 
 type Team struct {
