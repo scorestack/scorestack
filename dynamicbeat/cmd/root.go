@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -43,6 +44,13 @@ func init() {
 	addFlag("username", "u", "dynamicbeat", "username for authentication with Elasticsearch")
 	addFlag("password", "p", "changeme", "password for authentication with Elasticsearch")
 	addBoolFlag("verify_certs", "v", false, "whether to verify the Elasticsearch TLS certificates")
+
+	// Configure five default teams
+	teams := make([]config.Team, 5)
+	for i := 0; i < len(teams); i++ {
+		teams[i] = config.Team{Name: fmt.Sprintf("team%02d", i+1)}
+	}
+	viper.SetDefault("teams", teams)
 }
 
 func addFlag(name string, short string, value string, help string) {

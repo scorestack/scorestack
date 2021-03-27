@@ -16,12 +16,18 @@ type Config struct {
 	Username      string        `mapstructure:"username"`
 	Password      string        `mapstructure:"password"`
 	VerifyCerts   bool          `mapstructure:"verify_certs"`
+	Teams         []Team        `mapstructure:"teams"`
 	Setup         struct {
 		Kibana      string `mapstructure:"kibana"`
 		CheckFolder string `mapstructure:"check_folder"`
 		Username    string `mapstructure:"user"`
 		Password    string `mapstructure:"pass"`
 	} `mapstructure:"setup"`
+}
+
+type Team struct {
+	Name       string            `mapstructure:"name"`
+	Attributes map[string]string `mapstructure:"attributes"`
 }
 
 func Get() Config {
