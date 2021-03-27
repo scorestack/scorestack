@@ -74,15 +74,28 @@ func (c *Config) Documents() (io.Reader, io.Reader, io.Reader, error) {
 		return nil, nil, nil, fmt.Errorf("failed to marshal definition for '%s': %s", c.ID, err)
 	}
 
-	adminDoc, err := json.Marshal(c.Attributes.Admin)
+	admin, err := attributeDoc(c.Attributes.Admin)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("failed to marshal admin attributes for '%s': %s", c.ID, err)
 	}
 
-	userDoc, err := json.Marshal(c.Attributes.User)
+	user, err := attributeDoc(c.Attributes.User)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("failed to marshal user attributes for '%s': %s", c.ID, err)
 	}
 
-	return bytes.NewReader(checkDoc), bytes.NewReader(adminDoc), bytes.NewReader(userDoc), nil
+	return bytes.NewReader(checkDoc), admin, user, nil
+}
+
+func attributeDoc(attributes map[string]string) (io.Reader, error) {
+	if attributes == nil {
+		return nil, nil
+	}
+
+	doc, err := json.Marshal(attributes)
+	if err != nil {
+		return nil, err
+	}
+
+	return bytes.NewReader(doc), nil
 }

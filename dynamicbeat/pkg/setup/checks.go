@@ -32,8 +32,12 @@ func Checks(c *esclient.Client, f *checksource.Filesystem) error {
 		}
 
 		queueItem(indexer, "checkdef", def.ID, chk)
-		queueItem(indexer, fmt.Sprintf("attrib_admin_%s", def.Group), def.ID, admin)
-		queueItem(indexer, fmt.Sprintf("attrib_user_%s", def.Group), def.ID, user)
+		if admin != nil {
+			queueItem(indexer, fmt.Sprintf("attrib_admin_%s", def.Group), def.ID, admin)
+		}
+		if user != nil {
+			queueItem(indexer, fmt.Sprintf("attrib_user_%s", def.Group), def.ID, user)
+		}
 	}
 
 	zap.S().Info("waiting for checks to finish indexing...")
