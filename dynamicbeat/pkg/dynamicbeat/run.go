@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checksource"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
@@ -125,10 +124,10 @@ func Run() error {
 	}
 }
 
-func publishEvents(es *elasticsearch.Client, results <-chan check.Result, out chan<- uint64) {
+func publishEvents(es *esclient.Client, results <-chan check.Result, out chan<- uint64) {
 	published := uint64(0)
 	for result := range results {
-		err := esclient.Index(es, result)
+		err := es.AddResult(result)
 		if err != nil {
 			zap.S().Error(err)
 			zap.S().Errorf("check that failed to index: %+v", result)

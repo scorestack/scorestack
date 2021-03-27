@@ -10,7 +10,11 @@ import (
 	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 )
 
-func New(host string, username string, password string, verify bool) (*elasticsearch.Client, error) {
+type Client struct {
+	*elasticsearch.Client
+}
+
+func New(host string, username string, password string, verify bool) (*Client, error) {
 	clientConfig := elasticsearch.Config{
 		Addresses: []string{host},
 		Username:  username,
@@ -28,5 +32,5 @@ func New(host string, username string, password string, verify bool) (*elasticse
 		return nil, fmt.Errorf("failed to create Elasticsearch client: %s", err)
 	}
 
-	return es, nil
+	return &Client{es}, nil
 }

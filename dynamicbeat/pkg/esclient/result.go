@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"io"
 
-	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 )
 
-func Index(c *elasticsearch.Client, result check.Result) error {
+func (c *Client) AddResult(result check.Result) error {
 	docs := make([]struct {
 		string
 		io.Reader
