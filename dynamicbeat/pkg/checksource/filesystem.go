@@ -10,6 +10,8 @@ import (
 	"strings"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/util"
 	"go.uber.org/zap"
 )
 
@@ -42,22 +44,13 @@ func (f *Filesystem) LoadAll() ([]check.Config, error) {
 
 		id := strings.TrimSuffix(filename, ".json")
 
-		c, err := f.LoadCheck(id)
-		if err != nil {
-			zap.S().Errorf("skipping check %s due to error when loading: %s", id, err)
-		}
-
 		// Build the check for each team
 		for _, team := range f.Teams {
-			teamCheck := c
-			teamCheck.ID = fmt.Sprintf("%s-%s", teamCheck.ID, team)
-			teamCheck.Group = team
-
-			// Add attribute for team number
-			re := regexp.MustCompile(`\S?0*(\d+)$`)
-			mat := re.FindStringSubmatch(team)
-			teamNum := mat[len(mat)-1]
-			teamCheck.Attribs["TeamNum"] = teamNum
+			fullId := fmt.Sprintf("%s-%s", id, team.Name)
+			c, err := f.LoadCheck(fullId)
+			if err != nil {
+				zap.S().Errorf("skipping check %s due to error when loading: %s", id, err)
+			}
 
 			checks = append(checks, *c)
 		}
@@ -127,6 +120,17 @@ func (f *Filesystem) LoadCheck(id string) (*check.Config, error) {
 		return nil, fmt.Errorf("failed to re-marshal check definition from '%s' to JSON string: %s", filepath, err)
 	}
 
+	admin, err := applyOverrides(overrides, checkFile.Attributes.Admin)
+	if err != nil {
+		return nil, fmt.Errorf("failed to apply overrides to '%s' admin attributes: %s", id, err)
+	}
+	checkFile.Attributes.Admin = admin
+	user, err := applyOverrides(overrides, checkFile.Attributes.User)
+	if err != nil {
+		return nil, fmt.Errorf("failed to apply overrides to '%s' user attributes: %s", id, err)
+	}
+	checkFile.Attributes.User = user
+
 	// Marge attributes
 	attr := make(map[string]string)
 	for k, v := range checkFile.Attributes.Admin {
@@ -141,4 +145,26 @@ func (f *Filesystem) LoadCheck(id string) (*check.Config, error) {
 		Definition: def,
 		Attribs:    attr,
 	}, nil
+}
+
+func applyOverrides(overrides map[string]string, attributes map[string]string) (map[string]string, error) {
+	for k, v := range attributes {
+		// If the attribute name exists in the overrides map, set its value to
+		// whatever's defined in the overrides
+		if override, exists := overrides[k]; exists {
+			attributes[k] = override
+			continue
+		}
+
+		// Otherwise, parse the attribute value as a template, using the
+		// overrides as keys for the template.
+		val, err := util.ApplyTemplating(v, attributes)
+		if err != nil {
+			return nil, err
+		}
+
+		attributes[k] = val
+	}
+
+	return attributes, nil
 }
