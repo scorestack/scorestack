@@ -15,7 +15,7 @@ import (
 
 type Filesystem struct {
 	Path  string
-	Teams []string
+	Teams []config.Team
 }
 
 func (f *Filesystem) LoadAll() ([]check.Config, error) {
@@ -67,11 +67,46 @@ func (f *Filesystem) LoadAll() ([]check.Config, error) {
 }
 
 func (f *Filesystem) LoadCheck(id string) (*check.Config, error) {
+	// The check ID is made up of the base ID, followed by a '-', then the team
+	// name. For example, http-kibana-team01 is a check with a base ID of
+	// http-kibana for team01. The base ID is the name of the file the
+	// definition is in. For http-kibana-team01, the file would be named
+	// http-kibana.json
+	s := strings.Split(id, "-")
+	teamName := s[len(s)-1]
+	baseId := strings.TrimSuffix(id, fmt.Sprintf("-%s", teamName))
 
-	filepath := fmt.Sprintf("%s/%s.json", f.Path, id)
+	// Find the team struct of the given name
+	var team *config.Team
+	for _, t := range f.Teams {
+		if t.Name == teamName {
+			team = &t
+			break
+		}
+	}
+	if team == nil {
+		return nil, fmt.Errorf("check ID '%s' implies team named '%s', but no team with that name has been configured", id, teamName)
+	}
+
+	filepath := fmt.Sprintf("%s/%s.json", f.Path, baseId)
 	body, err := os.ReadFile(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read check file '%s': %s", filepath, err)
+	}
+
+	// Grab team attribute overrides, if they exist
+	var overrides map[string]string
+	if team.Attributes != nil {
+		overrides = team.Attributes
+	} else {
+		overrides = make(map[string]string)
+	}
+
+	// Add attribute for team number if it doesn't exist
+	if _, exists := overrides["TeamNum"]; !exists {
+		re := regexp.MustCompile(`\S?0*(\d+)$`)
+		mat := re.FindStringSubmatch(team.Name)
+		overrides["TeamNum"] = mat[len(mat)-1]
 	}
 
 	checkFile := struct {
