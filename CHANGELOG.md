@@ -33,6 +33,7 @@ Each section organizes entries into the following subsections:
 
 #### Removed
 
+- Drop Logstash from architecture (#302)
 - Delete `add-team.sh` and `update.sh` scripts (#312)
 - Deployments no longer configure users, indices, and dashboards (#312)
 - Check definition files no longer include `id` or `group` fields (#312)
@@ -53,7 +54,6 @@ Each section organizes entries into the following subsections:
 #### Removed
 
 - Remove `update_period` setting, update configurations after starting each round (#302)
-- Drop Logstash from architecture (#302)
 
 [0.7.0] - 2020-02-21
 --------------------
