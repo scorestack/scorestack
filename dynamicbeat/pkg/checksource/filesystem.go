@@ -131,6 +131,10 @@ func (f *Filesystem) LoadCheck(id string) (*check.Config, error) {
 	}
 	checkFile.Attributes.User = user
 
+	// The ID and group fields are omitted from check definition files
+	checkFile.ID = id
+	checkFile.Group = teamName
+
 	return &check.Config{
 		Metadata:   checkFile.Metadata,
 		Definition: def,
