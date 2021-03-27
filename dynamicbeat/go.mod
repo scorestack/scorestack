@@ -4,7 +4,8 @@ go 1.16
 
 require (
 	github.com/denisenkom/go-mssqldb v0.9.0
-	github.com/elastic/go-elasticsearch/v7 v7.9.0
+	github.com/elastic/go-elasticsearch v0.0.0 // indirect
+	github.com/elastic/go-elasticsearch/v7 v7.12.0
 	github.com/emersion/go-imap v1.0.6
 	github.com/go-ldap/ldap/v3 v3.2.4
 	github.com/go-ping/ping v0.0.0-20210312085107-d90f3778a8a3
