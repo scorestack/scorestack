@@ -81,7 +81,7 @@ func (f *Filesystem) LoadCheck(id string) (*check.Config, error) {
 		return nil, fmt.Errorf("check ID '%s' implies team named '%s', but no team with that name has been configured", id, teamName)
 	}
 
-	filepath := fmt.Sprintf("%s/%s.json", f.Path, baseId)
+	filepath := fmt.Sprintf("%s%c%s.json", f.Path, os.PathSeparator, baseId)
 	body, err := os.ReadFile(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read check file '%s': %s", filepath, err)
