@@ -89,8 +89,8 @@ func (f *Filesystem) LoadCheck(id string) (*check.Config, error) {
 
 	// Grab team attribute overrides, if they exist
 	var overrides map[string]string
-	if team.Attributes != nil {
-		overrides = team.Attributes
+	if team.Overrides != nil {
+		overrides = team.Overrides
 	} else {
 		overrides = make(map[string]string)
 	}

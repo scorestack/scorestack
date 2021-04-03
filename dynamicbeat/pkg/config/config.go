@@ -30,8 +30,8 @@ type Config struct {
 }
 
 type Team struct {
-	Name       string            `mapstructure:"name"`
-	Attributes map[string]string `mapstructure:"attributes"`
+	Name      string            `mapstructure:"name"`
+	Overrides map[string]string `mapstructure:"overrides"`
 }
 
 func Get() Config {
