@@ -1,21 +1,35 @@
 Adding New Checks
 =================
 
-In order to configure and add checks to Scorestack, you will have to create a folder structure containing the JSON definitions for each check. The `add-team.sh` script, which is used to add new checks to Scorestack or update existing checks, expects the following folder structure.
+Once you've written all your checks, you can use Dynamicbeat to add them all to Scorestack with Dynamicbeat's [`setup checks` command](../gen/dynamicbeat_setup_checks.md). This command expects your check files to be organized in a specific way.
+
+To keep things simple, create a folder and place all your check files in it. Each file should be named `check-id.json`, where `check-id` is a unique identifier for each check that satisfies the requirements of the [`id` field](./metadata.md#id-omitted) in the check's metadata. Take a look at the directory structure of the repository's examples folder for an example:
 
 ```
-myChecks
-├── dns-host1
-│   ├── admin-attribs.json
-│   └── check.json
-└── http-host2
-    ├── admin-attribs.json
-    ├── check.json
-    └── user-attribs.json
+examples
+├── dns.json
+├── ftp.json
+├── http-gophish.json
+├── http-greenbone-security.json
+├── http-kibana-auth.json
+├── http-kibana.json
+├── http-kolide.json
+├── http-roundcube.json
+├── icmp.json
+├── imap.json
+├── ldap-ad.json
+├── mssql.json
+├── mysql.json
+├── noop.json
+├── postgresql.json
+├── smb.json
+├── smtp.json
+├── ssh.json
+├── vnc.json
+├── winrm.json
+└── xmpp.json
 ```
 
-The top level directory (`myChecks`) contains subfolders for all of the desired checks (`dns-host1`, `http-host2`, etc.). Each of these subfolders will contain up to three JSON files that will define the specific check. The three JSON files are as follows:
+If you wish, you can add other files to this folder (e.g. `.gitignore`, `README.md`, `topology.png`, etc.) as long as they don't end in `.json`. Dynamicbeat expects that any file ending in `.json` is a check file. All other files will be ignored.
 
-- `check.json`: The main JSON document that provides values for any of a check's required arguments, and optionally overrides the defaults for a some of a check's optional arguments.
-- `admin-attribs.json`: The attributes of a check that only an administrator (such as a competition volunteer) will be allowed to change during a competition through Kibana.
-- `user-attribs.json`: The attributes of a check that both users and administrators will be allowed to change during a competition through Kibana.
+Dynamicbeat's `setup checks` command is idempotent; if you have to make changes to any of your checks, all you have to do is rerun the command.
