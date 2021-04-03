@@ -51,6 +51,11 @@ var rootCmd = &cobra.Command{
 		zap.ReplaceGlobals(logger)
 		defer logger.Sync() //nolint:errcheck
 	},
+	DisableAutoGenTag: true,
+}
+
+func NewRootCommand() *cobra.Command {
+	return rootCmd
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

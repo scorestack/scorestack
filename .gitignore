@@ -5,5 +5,7 @@
 .env
 
 # Dynamicbeat test configurations
-/dynamicbeat.yml
 /dynamicbeat/dynamicbeat.yml
+
+# Generated docs files
+/docs/gen
