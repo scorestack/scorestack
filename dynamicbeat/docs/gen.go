@@ -9,7 +9,7 @@ import (
 
 func main() {
 	dynamicbeat := cmd.NewRootCommand()
-	err := doc.GenMarkdownTree(dynamicbeat, "../docs/gen")
+	err := doc.GenMarkdownTree(dynamicbeat, "../docs/dynamicbeat/reference")
 	if err != nil {
 		log.Fatal(err)
 	}
