@@ -1,7 +1,11 @@
 Adding New Checks
 =================
 
-Once you've written all your checks, you can use Dynamicbeat to add them all to Scorestack with Dynamicbeat's [`setup checks` command](../gen/dynamicbeat_setup_checks.md). This command expects your check files to be organized in a specific way.
+Once you've written all your checks, you can use Dynamicbeat to add them all to Scorestack. You can download a precompiled version of Dynamicbeat for your operating system from the [latest release on GitHub](https://github.com/scorestack/scorestack/releases/latest).
+
+Save the zipfile and extract Dynamicbeat to the system that you'll be writing check configurations on. Next, you'll need to [configure Dynamicbeat](../dynamicbeat/configuration.md) so it knows where to add checks. Once you have Dynamicbeat downloaded and configured, you're ready to add your checks using Dynamicbeat's [`setup checks`](../dynamicbeat/reference/dynamicbeat_setup_checks.md) command.
+
+> Dynamicbeat's `run` command is only supported on Linux right now, but the `setup` command and its subcommands should work fine on other operating systems.
 
 To keep things simple, create a folder and place all your check files in it. Each file should be named `check-id.json`, where `check-id` is a unique identifier for each check that satisfies the requirements of the [`id` field](./metadata.md#id-omitted) in the check's metadata. Take a look at the directory structure of the repository's examples folder for an example:
 
