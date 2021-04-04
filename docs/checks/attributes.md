@@ -5,13 +5,13 @@ Attributes are named variables references within a check definition that allow s
 
 Attributes work using [golang templates](https://golang.org/pkg/text/template/) to insert attribute values into the check definitions before they are executed.
 
-Here are the attributes of our example IMAP check:
+Here are the attributes of our example IMAP check, modified to remove the [team overrides](#team-overrides):
 
 ```json
 {
   "attributes": {
     "admin": {
-      "Host": "10.0.{{.TeamNum}}.50",
+      "Host": "10.0.0.50",
       "Username": "admin"
     },
     "user": {
@@ -20,6 +20,42 @@ Here are the attributes of our example IMAP check:
   }
 }
 ```
+
+Each attribute is a key-value mapping. To use an attribute in a definition, add the attribute's key with a dot before it between two pairs of curly braces.
+
+To reference our IMAP example, if we wanted to use the `Username` attribute somewhere within our definition, we would write `{{.Username}}`.
+
+When adding checks to Scorestack, Dynamicbeat will substitute the double curly braces with the value of the referenced attribute.
+
+Here's the definition of our example IMAP check, before attributes are applied:
+
+```json
+{
+  "definition": {
+    "Host": "{{.Host}}",
+    "Port": "143",
+    "Username": "{{.Username}}@example.com",
+    "Password": "{{.Password}}",
+  }
+}
+```
+
+Here's what the definition will look like after attributes are applied, based on the attributes defined at the top of the page:
+
+```json
+{
+  "definition": {
+    "Host": "10.0.0.50",
+    "Port": "143",
+    "Username": "admin@example.com",
+    "Password": "changeme",
+  }
+}
+```
+
+> If you reference an attribute that hasn't been defined, Dynamicbeat will replace the curly braces with an empty string.
+>
+> In our IMAP example, `"{{.DoesNotExist}} - test"` would become `" - test"`, since there's no attribute defined named `DoesNotExist`.
 
 Attribute Types
 ---------------
