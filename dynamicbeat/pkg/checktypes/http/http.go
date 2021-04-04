@@ -86,7 +86,7 @@ func (d *Definition) Run(ctx context.Context) check.Result {
 			// Re-encode definition to JSON string
 			def, err := json.Marshal(r)
 			if err != nil {
-				zap.S().Infof("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
+				zap.S().Warnf("Error encoding HTTP definition as JSON for StoredValue templating: %s", err)
 			} else {
 				attrs := storedValTempl{
 					SavedValue: *storedValue,
@@ -95,12 +95,12 @@ func (d *Definition) Run(ctx context.Context) check.Result {
 				var buf bytes.Buffer
 				err := templ.Execute(&buf, attrs)
 				if err != nil {
-					zap.S().Infof("Error templating HTTP definition for StoredValue templating: %s", err)
+					zap.S().Warnf("Error templating HTTP definition for StoredValue templating: %s", err)
 				} else {
 					newReq := &Request{}
 					err := json.Unmarshal(buf.Bytes(), &newReq)
 					if err != nil {
-						zap.S().Infof("Error decoding StoredValue-templated HTTP definition: %s", err)
+						zap.S().Warnf("Error decoding StoredValue-templated HTTP definition: %s", err)
 					} else {
 						r = newReq
 					}

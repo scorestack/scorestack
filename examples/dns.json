@@ -1,0 +1,16 @@
+{
+  "name": "DNS",
+  "type": "dns",
+  "score_weight": 1,
+  "definition": {
+    "Server": "{{.Server}}",
+    "Port": "53",
+    "Fqdn": "example.com",
+    "ExpectedIP": "93.184.216.34"
+  },
+  "attributes": {
+    "admin": {
+      "Server": "8.8.8.8"
+    }
+  }
+}

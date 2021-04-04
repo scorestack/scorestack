@@ -16,6 +16,22 @@ type Config struct {
 	Username      string        `mapstructure:"username"`
 	Password      string        `mapstructure:"password"`
 	VerifyCerts   bool          `mapstructure:"verify_certs"`
+	Teams         []Team        `mapstructure:"teams"`
+	Setup         struct {
+		Kibana   string `mapstructure:"kibana"`
+		Username string `mapstructure:"username"`
+		Password string `mapstructure:"password"`
+	} `mapstructure:"setup"`
+	Log struct {
+		Verbose bool `mapstructure:"verbose"`
+		Level   int8 `mapstructure:"level"`
+		NoColor bool `mapstructure:"no_color"`
+	} `mapstructure:"log"`
+}
+
+type Team struct {
+	Name      string            `mapstructure:"name"`
+	Overrides map[string]string `mapstructure:"overrides"`
 }
 
 func Get() Config {

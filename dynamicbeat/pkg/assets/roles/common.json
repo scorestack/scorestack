@@ -1,0 +1,25 @@
+{
+  "elasticsearch": {
+    "indices": [
+      {
+        "names": [
+          "results-all",
+          "checks"
+        ],
+        "privileges": [
+          "read"
+        ]
+      }
+    ]
+  },
+  "kibana": [
+    {
+      "base": [
+        "read"
+      ],
+      "spaces": [
+        "scorestack"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+### Dynamicbeat Example Configuration #########################################
+# This configuration file explains all available configuration settings. Each
+# setting is listed here with its default. If you would like to change one of
+# the defaults, uncomment the setting and change the value.
+#
+# Please note that the defaults listed here should work fine for a default
+# Scorestack small/docker instance deployed on the same host as Dynamicbeat.
+
+# The amount of time to wait after starting a round of checks before starting
+# another round. Must be a string parsable by Golang's time.ParseDuration. See
+# here for more information: https://golang.org/pkg/time/#ParseDuration
+#round_time: 30s
+
+# The address to the Elasticsearch endpoint of your Scorestack instance. Check
+# definitions will be loaded from here, and check results will be put here.
+#elasticsearch: https://localhost:9200
+
+# The credentials to use for authentication to Elasticsearch when running
+# checks with Dynamicbeat. This user must have the `dynamicbeat` role.
+#username: dynamicbeat
+#password: changeme
+
+# Whether to check the validity of TLS certificates used by your Scorestack
+# instance.
+#verify_certs: false
+
+### Logging ###################################################################
+
+log:
+  # Whether to include timestamps and code locations in each log line.
+  #verbose: false
+
+  # The lowest log level to print. -1 is DEBUG, 0 is INFO, 1 is WARN, etc.
+  #level: 0
+
+  # Whether to colorize the log output. By default, logs will be printed with
+  # color.
+  #no_color: false
+
+### Setup #####################################################################
+# The remaining settings are only used by Dynamicbeat's `setup` command and the
+# subcommands of `setup`. If this Dynamicbeat deployment will only use the
+# `run` command, then you can leave these settings as is.
+
+setup:
+  # The address to the Kibana endpoint of your Scorestack instance that will be
+  # configured by Dynamicbeat.
+  #kibana: https://localhost:9200
+
+  # The credentials to use for authentication to Elasticsearch and Kibana when
+  # running cluster setup. This user must have the `superuser` role.
+  #username: elastic
+  #password: changeme
+
+# The list of all the teams that will be used during the competition.
+#
+# At a minimum, each team must have a name defined:
+#
+#   - name: team01
+#
+# Teams can also define overrides as key-value pairs under the `overrides`
+# object:
+#
+#   - name: team01
+#     overrides:
+#       DefaultPassword: team01-Changeme
+#
+# If you do not wish to configure any overrides for a team, you may omit the
+# `overrides` object (see the first example) or you can explicitly set it to
+# an empty object:
+#
+#   - name: team01
+#     overrides: {}
+teams:
+  #- name: team01
+  #- name: team02
+  #- name: team03
+  #- name: team04
+  #- name: team05

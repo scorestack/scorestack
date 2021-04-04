@@ -1,0 +1,13 @@
+{
+  "name": "ICMP",
+  "type": "icmp",
+  "score_weight": 1,
+  "definition": {
+    "host": "{{.Host}}"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost"
+    }
+  }
+}

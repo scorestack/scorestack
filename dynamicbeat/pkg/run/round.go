@@ -33,7 +33,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 
 			checkStart := time.Now()
 			result := Check(ctx, def)
-			zap.S().Infof("[%s] Finished after %.2f seconds", result.ID, time.Since(checkStart).Seconds())
+			zap.S().Debugf("[%s] Finished after %.2f seconds", result.ID, time.Since(checkStart).Seconds())
 			finished <- result
 		}()
 	}
@@ -46,13 +46,13 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 	// zap.S().Infof("Checks started at %s have finished in %.2f seconds", start.Format("15:04:05.000"), time.Since(start).Seconds())
 	go func() {
 		for {
-			if names == nil {
-				break
-			} else if len(names) == 0 {
+			if len(names) == 0 {
 				break
 			} else {
 				time.Sleep(30 * time.Second)
-				zap.S().Infof("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
+				if len(names) > 0 {
+					zap.S().Warnf("Checks still running after %.2f seconds: %+v", time.Since(start).Seconds(), names)
+				}
 			}
 		}
 		zap.S().Infof("All checks started %.2f seconds ago have finished", time.Since(start).Seconds())

@@ -1,0 +1,11 @@
+[Unit]
+Description=Dynamicbeat
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/dynamicbeat
+ExecStart=/opt/dynamicbeat/dynamicbeat run
+
+[Install]
+WantedBy=multi-user.target

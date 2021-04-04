@@ -12,7 +12,6 @@ import (
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes"
-	"go.uber.org/zap"
 )
 
 func Check(ctx context.Context, def check.Config) check.Result {
@@ -66,7 +65,7 @@ func unpackDef(config check.Config) (check.Check, error) {
 	}
 
 	var buf bytes.Buffer
-	err = templ.Execute(&buf, config.Attribs)
+	err = templ.Execute(&buf, config.Attributes.Merged())
 	if err != nil {
 		return nil, fmt.Errorf("Failed to execute template for check: %s", err.Error())
 	}
@@ -77,7 +76,7 @@ func unpackDef(config check.Config) (check.Check, error) {
 	def := checktypes.GetCheckType(config)
 	err = initCheck(config, renderedJSON, def)
 	if err != nil {
-		zap.S().Infof("%s", err)
+		return nil, fmt.Errorf("failed to unpack definition and apply attributes to check: %s", err)
 	}
 
 	return def, nil

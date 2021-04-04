@@ -1,6 +1,10 @@
 # Dynamicbeat binary
 /dynamicbeat
 
+# Build artifacts
+/build/*
+!build/.gitkeep
+
 # --- Go.gitignore ------------------------------------------------------------
 
 # Binaries for programs and plugins

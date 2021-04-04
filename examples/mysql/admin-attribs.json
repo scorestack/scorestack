@@ -1,8 +1,0 @@
-{
-    "Host": "localhost",
-    "Username": "root",
-    "Database": "mysql",
-    "Table": "db",
-    "Column": "Db",
-    "MatchContent": "true"
-}

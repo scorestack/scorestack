@@ -1,0 +1,14 @@
+{
+  "elasticsearch": {
+    "indices": [
+      {
+        "names": [
+          "check*"
+        ],
+        "privileges": [
+          "all"
+        ]
+      }
+    ]
+  }
+}

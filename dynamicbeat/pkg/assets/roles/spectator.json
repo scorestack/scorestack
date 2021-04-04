@@ -1,0 +1,14 @@
+{
+  "elasticsearch": {
+    "indices": [
+      {
+        "names": [
+          "results-*"
+        ],
+        "privileges": [
+          "read"
+        ]
+      }
+    ]
+  }
+}

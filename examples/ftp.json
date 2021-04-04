@@ -1,0 +1,24 @@
+{
+  "name": "FTP",
+  "type": "ftp",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Port": "21",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "File": "/root/test.txt",
+    "ContentRegex": ".*",
+    "HashContentMatch": "false",
+    "Hash": "6667dd62e89f23a07798340fc06d1abbab29c84d683266438ad94731c91e2331"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Username": "root"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

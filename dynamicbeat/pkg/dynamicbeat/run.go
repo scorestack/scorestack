@@ -7,22 +7,27 @@ import (
 	"sync"
 	"time"
 
-	elasticsearch "github.com/elastic/go-elasticsearch/v7"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checksource"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/esclient"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/run"
 	"go.uber.org/zap"
 )
 
-const index = "checkdef"
+const CHECKDEF_INDEX = "checkdef"
 
 // Run starts dynamicbeat.
 func Run() error {
 	zap.S().Infof("dynamicbeat is running! Hit CTRL-C to stop it.")
 	c := config.Get()
 
-	es, err := esclient.New(c.Elasticsearch, c.Username, c.Password, c.VerifyCerts)
+	pub, err := esclient.New(c.Elasticsearch, c.Username, c.Password, c.VerifyCerts)
+	if err != nil {
+		return err
+	}
+
+	es, err := checksource.NewElasticsearch(c.Elasticsearch, c.Username, c.Password, c.VerifyCerts, CHECKDEF_INDEX)
 	if err != nil {
 		return err
 	}
@@ -51,7 +56,7 @@ func Run() error {
 			return nil
 		default:
 			// Continue looping and sleeping till we can hit Elasticsearch
-			defs, err = esclient.UpdateCheckDefs(es, index)
+			defs, err = es.LoadAll()
 			if err != nil {
 				zap.S().Infof("Failed to reach Elasticsearch. Waiting 5 seconds to try again...")
 				zap.S().Debugf("dynamicbeat", "Connection error was: %s", err)
@@ -71,7 +76,7 @@ func Run() error {
 	// Start publisher goroutine
 	results := make(chan check.Result)
 	published := make(chan uint64)
-	go publishEvents(es, results, published)
+	go publishEvents(pub, results, published)
 
 	// Start running checks
 	ticker := time.NewTicker(c.RoundTime)
@@ -91,7 +96,7 @@ func Run() error {
 			close(published)
 			return nil
 		case <-ticker.C:
-			zap.S().Infof("Number of go-routines: %d", runtime.NumGoroutine())
+			zap.S().Infof("Number of goroutines: %d", runtime.NumGoroutine())
 			zap.S().Infof("Starting a series of %d checks", len(defs))
 
 			// Start the goroutine
@@ -111,18 +116,18 @@ func Run() error {
 			zap.S().Infof("Started series of checks")
 
 			// Update the check definitions for the next round
-			defs, err = esclient.UpdateCheckDefs(es, index)
+			defs, err = es.LoadAll()
 			if err != nil {
-				zap.S().Infof("Failed to update check definitions : %s", err)
+				zap.S().Warnf("Failed to update check definitions : %s", err)
 			}
 		}
 	}
 }
 
-func publishEvents(es *elasticsearch.Client, results <-chan check.Result, out chan<- uint64) {
+func publishEvents(es *esclient.Client, results <-chan check.Result, out chan<- uint64) {
 	published := uint64(0)
 	for result := range results {
-		err := esclient.Index(es, result)
+		err := es.AddResult(result)
 		if err != nil {
 			zap.S().Error(err)
 			zap.S().Errorf("check that failed to index: %+v", result)

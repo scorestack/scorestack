@@ -1,0 +1,24 @@
+{
+  "name": "MySQL",
+  "type": "mysql",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Database": "mysql",
+    "Table": "db",
+    "Column": "Db",
+    "MatchContent": "true",
+    "ContentRegex": "performance_schema"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Username": "root"
+    },
+    "user": {
+      "Password": "toor"
+    }
+  }
+}
