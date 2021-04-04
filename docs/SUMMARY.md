@@ -49,7 +49,7 @@ User Guides
   - [Cloning the Repository](./deployment/cloning.md)
   - [Small Architecture](./deployment/small.md)
   - [Medium Architecture](./deployment/medium.md)
-  - [Dynamicbeat](./deployment/dynamicbeat.md)
+  - [Setup](./deployment/setup.md)
 
 Development Documentation
 -------------------------
