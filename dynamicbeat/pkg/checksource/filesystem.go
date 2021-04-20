@@ -50,9 +50,10 @@ func (f *Filesystem) LoadAll() ([]check.Config, error) {
 			c, err := f.LoadCheck(fullId)
 			if err != nil {
 				zap.S().Errorf("skipping check %s due to error when loading: %s", id, err)
+			} else {
+				checks = append(checks, *c)
 			}
 
-			checks = append(checks, *c)
 		}
 	}
 
