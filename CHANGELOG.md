@@ -44,6 +44,7 @@ Each section organizes entries into the following subsections:
 
 - `setup` command and subcommands for initializing Scorestack and adding checks (#312)
 - Support overriding attributes on a per-team basis (#312)
+- Support Public Key Authentication for SSH (#317)
 
 #### Changed
 
