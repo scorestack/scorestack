@@ -7,6 +7,7 @@
     "Port": "22",
     "Username": "{{.Username}}",
     "Password": "{{.Password}}",
+    "PrivateKey": "{{.PrivateKey}}",
     "Cmd": "id",
     "MatchContent": "true",
     "ContentRegex": "root"
@@ -17,7 +18,8 @@
       "Username": "root"
     },
     "user": {
-      "Password": "changeme"
+      "Password": "changeme",
+      "PrivateKey": "/root/.ssh/id_rsa"
     }
   }
 }

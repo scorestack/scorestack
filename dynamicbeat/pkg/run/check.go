@@ -58,7 +58,7 @@ func Check(ctx context.Context, def check.Config) check.Result {
 func unpackDef(config check.Config) (check.Check, error) {
 	// Render any template strings in the definition
 	var renderedJSON []byte
-	templ := template.New("definition")
+	templ := template.New("definition").Option("missingkey=zero")
 	templ, err := templ.Parse(string(config.Definition))
 	if err != nil {
 		return nil, fmt.Errorf("Failed to parse template for check: %s", err.Error())

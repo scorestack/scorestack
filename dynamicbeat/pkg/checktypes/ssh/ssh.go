@@ -3,6 +3,7 @@ package ssh
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"regexp"
 	"strconv"
 	"time"
@@ -18,7 +19,8 @@ type Definition struct {
 	Config       check.Config // generic metadata about the check
 	Host         string       `optiontype:"required"`                    // IP or hostname of the host to run the SSH check against
 	Username     string       `optiontype:"required"`                    // The user to login with over ssh
-	Password     string       `optiontype:"required"`                    // The password for the user that you wish to login with
+	Password     string       `optiontype:"optional"`                    // The password for the user that you wish to login with
+	PrivateKey   string       `optiontype:"optional"`                    // The private key for the user you wish to log in with
 	Cmd          string       `optiontype:"required"`                    // The command to execute once ssh connection established
 	MatchContent string       `optiontype:"optional"`                    // Whether or not to match content like checking files
 	ContentRegex string       `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
@@ -27,16 +29,61 @@ type Definition struct {
 
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
+
+	// SSH Authenticaton Method, either password or key based
+	var auth []ssh.AuthMethod
+	// Used for key based auth, as the key can optionally require a passphrase
+	var signer ssh.Signer
+
 	// Initialize empty result
 	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
+
+	// We need at least one of these to authenticate
+	if len(d.PrivateKey) == 0 && len(d.Password) == 0 {
+		result.Message = "Error: must set Password, PrivateKey, or both."
+		return result
+	}
+
+	// Determine authentication method
+	// If PrivateKey is set, use and optionally decrypt it with the password
+	if len(d.PrivateKey) > 0 {
+		key, err := ioutil.ReadFile(d.PrivateKey)
+		if err != nil {
+			result.Message = fmt.Sprintf("Error reading ssh private key: %s", err)
+			return result
+		}
+
+		// If Password and PrivateKey are set, use Password to decrypt PrivateKey
+		signer, err = ssh.ParsePrivateKey(key)
+		if _, ok := err.(*ssh.PassphraseMissingError); ok {
+			// If we need a passphrase, decrypt the key with the set passphrase
+			signer, err = ssh.ParsePrivateKeyWithPassphrase(key, []byte(d.Password))
+			if err != nil {
+				result.Message = fmt.Sprintf("Error parsing ssh private key with password of length %d: %s", len(d.Password), err)
+				return result
+			}
+		} else if err != nil {
+			result.Message = fmt.Sprintf("Error parsing ssh private key: %s", err)
+			return result
+		}
+		// PrivateKey is set and optionally decrypted, use key-based authentication
+		auth = []ssh.AuthMethod{
+			ssh.PublicKeys(signer),
+		}
+
+	} else {
+		// If PrivateKey is not set, use password authentication
+		auth = []ssh.AuthMethod{
+			ssh.Password(d.Password),
+		}
+
+	}
 
 	// Config SSH client
 	// TODO: change timeout to be relative to the parent context's timeout
 	config := &ssh.ClientConfig{
-		User: d.Username,
-		Auth: []ssh.AuthMethod{
-			ssh.Password(d.Password),
-		},
+		User:            d.Username,
+		Auth:            auth,
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 		Timeout:         20 * time.Second,
 	}
