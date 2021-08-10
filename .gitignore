@@ -8,4 +8,5 @@
 /dynamicbeat/dynamicbeat.yml
 
 # Generated docs files
-/docs/dynamicbeat/reference
+/docs/dynamicbeat/reference/*
+!/docs/dynamicbeat/reference/.gitkeep
