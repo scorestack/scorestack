@@ -26,6 +26,8 @@ Each section organizes entries into the following subsections:
 [0.8.0] - 2021-08-10
 --------------------
 
+This release overhauls the structure of Dynamicbeat and improves the deployment and check-adding processes.
+
 ### General
 
 #### Changed
@@ -57,6 +59,10 @@ Each section organizes entries into the following subsections:
 #### Removed
 
 - Remove `update_period` setting, update configurations after starting each round (#302)
+
+#### Fixed
+
+- Ensure Dynamicbeat doesn't segfault if a check fails to parse properly (#316)
 
 [0.7.0] - 2021-02-21
 --------------------
