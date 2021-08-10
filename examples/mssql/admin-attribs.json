@@ -1,8 +1,0 @@
-{
-    "Host": "localhost",
-    "Username": "sa",
-    "Database": "scorestack",
-    "Table": "stacks",
-    "Column": "testVal",
-    "MatchContent": "true"
-}

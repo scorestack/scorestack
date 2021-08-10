@@ -3,7 +3,7 @@ Appendix A - FAQ
 
 ### How can I "reset" my Scorestack cluster without redeploying it?
 
-First, stop all running instances of Dynamicbeat. Once they have all exited, use the Discover app in Kibana to wait for all queued check results to finish processing in Logstash and indexing in Elasticsearch.
+First, stop all running instances of Dynamicbeat. Once they have all exited, use the Discover app in Kibana to wait for all queued check results to finish indexing in Elasticsearch.
 
 Once all check results have been indexed, deleted all the Scorestack indices. You can use the Dev Tools app in Kibana to simplify this process. You need execute the following `DELETE` queries:
 

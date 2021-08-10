@@ -1,0 +1,23 @@
+{
+  "name": "WinRM",
+  "type": "winrm",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Port": "5986",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Cmd": "whoami",
+    "Encrypted": "true",
+    "MatchContent": "false"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Username": "admin"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

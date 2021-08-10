@@ -23,7 +23,48 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
-[0.7.0] - 2020-02-21
+[0.8.0] - 2021-08-10
+--------------------
+
+This release overhauls the structure of Dynamicbeat and improves the deployment and check-adding processes.
+
+### General
+
+#### Changed
+
+- Each check is now defined using only one JSON file that includes all attributes (#312)
+- Example checks now only use attributes when necessary (#312)
+- Replaced `${TEAM}` and `${TEAM_NUM}` check definition variables with golang template blocks (#312)
+
+#### Removed
+
+- Drop Logstash from architecture (#302)
+- Delete `add-team.sh` and `update.sh` scripts (#312)
+- Deployments no longer configure users, indices, and dashboards (#312)
+- Check definition files no longer include `id` or `group` fields (#312)
+
+### Dynamicbeat
+
+#### Added
+
+- `setup` command and subcommands for initializing Scorestack and adding checks (#312)
+- Support overriding attributes on a per-team basis (#312)
+
+#### Changed
+
+- Dynamicbeat is now a standalone program that doesn't use libbeat (#302)
+- Time-separated index patterns are no longer used for check results - each `results-*-*` pattern has been replaced by a single index (#310)
+- Upgrade to Golang 1.16.2 (#312)
+
+#### Removed
+
+- Remove `update_period` setting, update configurations after starting each round (#302)
+
+#### Fixed
+
+- Ensure Dynamicbeat doesn't segfault if a check fails to parse properly (#316)
+
+[0.7.0] - 2021-02-21
 --------------------
 
 This release adds two new check types and fixes a logging bug with the SSH check.
@@ -39,7 +80,7 @@ This release adds two new check types and fixes a logging bug with the SSH check
 
 - Spurious EOF errors when closing SSH connections are ignored (#292)
 
-[0.6.2] - 2020-02-16
+[0.6.2] - 2021-02-16
 --------------------
 
 This release fixes a bug with the SSH check in Dynamicbeat.
@@ -50,7 +91,7 @@ This release fixes a bug with the SSH check in Dynamicbeat.
 
 - SSH now matches content when MatchContent is true (#288)
 
-[0.6.1] - 2020-01-26
+[0.6.1] - 2021-01-26
 --------------------
 
 This release mainly fixes deployment issues and improves the documentation.
@@ -337,7 +378,8 @@ This release is in preparation for ISTS 2020.
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.7.0...dev
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.8.0...dev
+[0.8.0]: https://github.com/scorestack/scorestack/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/scorestack/scorestack/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/scorestack/scorestack/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/scorestack/scorestack/compare/v0.6.0...v0.6.1

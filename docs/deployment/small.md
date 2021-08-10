@@ -5,7 +5,6 @@ This architecture deploys three hosts:
 
 - `elasticsearch`: A single-node Elasticsearch cluster
 - `kibana`: The Kibana server
-- `logstash`: The Logstash server
 
 Docker Deployment
 -----------------
@@ -36,25 +35,7 @@ Now run `docker-compose` to deploy Scorestack. Make sure to include the `-d` par
 sudo docker-compose -f deployment/small/docker/docker-compose.yml up -d
 ```
 
-Once all the containers have started, you can check on the progress of the deployment by following the logs of the setup container. You can do so with another `docker-compose` command.
-
-```shell
-sudo docker-compose -f deployment/small/docker/docker-compose.yml logs -f setup
-```
-
-If it looks like the setup container is getting hung up on waiting for Elasticsearch or Kibana, give it two to three minutes before troubleshooting. Sometimes it can take a while for these components to get ready. If it's still trying to connect after a few minutes have passed, check the logs for the Elasticsearch and Kibana containers to see what's wrong.
-
-Once the setup container has exited, Scorestack is fully deployed and ready to use!
-
-### Dynamicbeat Certificates
-
-To deploy Dynamicbeat, you will need the Dynamicbeat client certificate and key and the Scorestack internal CA certificate. Once the deployment has finished, these files can be found at the following paths within the repository:
-
-- `deployment/small/docker/certificates/dynamicbeat/dynamicbeat.key`
-- `deployment/small/docker/certificates/dynamicbeat/dynamicbeat.crt`
-- `deployment/small/docker/certificates/ca/ca.crt`
-
-See the [Dynamicbeat deployment guide](dynamicbeat.md) for more information.
+Then, configure Scorestack settings in the Elastic Stack using [Dynamicbeat's `setup` command](./setup.md).
 
 ### Cleanup/Teardown
 

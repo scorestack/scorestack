@@ -1,0 +1,17 @@
+{
+  "name": "Noop",
+  "type": "noop",
+  "score_weight": 1,
+  "definition": {
+    "static": "unchanged",
+    "dynamic": "{{.Priv}}, {{.NonPriv}}"
+  },
+  "attributes": {
+    "admin": {
+      "Priv": "admin"
+    },
+    "user": {
+      "NonPriv": "user"
+    }
+  }
+}

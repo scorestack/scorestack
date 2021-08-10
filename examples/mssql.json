@@ -1,0 +1,24 @@
+{
+  "name": "MSSQL",
+  "type": "mssql",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Database": "scorestack",
+    "Table": "stacks",
+    "Column": "testVal",
+    "MatchContent": "true",
+    "ContentRegex": "hello"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Username": "sa"
+    },
+    "user": {
+      "Password": "StongPassword!"
+    }
+  }
+}

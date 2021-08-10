@@ -1,0 +1,24 @@
+{
+  "name": "PostgreSQL",
+  "type": "postgresql",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "Database": "postgres",
+    "Table": "testtable",
+    "Column": "Name",
+    "MatchContent": "true",
+    "ContentRegex": "scorestack"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Username": "postgres"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

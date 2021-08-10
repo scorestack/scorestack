@@ -3,3 +3,9 @@
 
 # Docker-compose environment file
 .env
+
+# Dynamicbeat test configurations
+/dynamicbeat/dynamicbeat.yml
+
+# Generated docs files
+/docs/dynamicbeat/reference

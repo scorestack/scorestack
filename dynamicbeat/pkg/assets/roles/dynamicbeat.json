@@ -1,0 +1,23 @@
+{
+  "elasticsearch": {
+    "indices": [
+      {
+        "names": [
+          "checkdef",
+          "attrib_*"
+        ],
+        "privileges": [
+          "read"
+        ]
+      },
+      {
+        "names": [
+          "results-*"
+        ],
+        "privileges": [
+          "create_doc"
+        ]
+      }
+    ]
+  }
+}

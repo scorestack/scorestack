@@ -1,20 +1,18 @@
-BEAT_NAME=dynamicbeat
-BEAT_PATH=github.com/scorestack/scorestack/dynamicbeat
-BEAT_GOPATH=$(firstword $(subst :, ,${GOPATH}))
-SYSTEM_TESTS=false
-TEST_ENVIRONMENT=false
-ES_BEATS_IMPORT_PATH=github.com/elastic/beats/v7
-ES_BEATS?=$(shell go list -m -f '{{.Dir}}' ${ES_BEATS_IMPORT_PATH})
-LIBBEAT_MAKEFILE=$(ES_BEATS)/libbeat/scripts/Makefile
-GOPACKAGES=$(shell go list ${BEAT_PATH}/... | grep -v /tools)
-GOBUILD_FLAGS=-i -ldflags "-X ${ES_BEATS_IMPORT_PATH}/libbeat/version.buildTime=$(NOW) -X ${ES_BEATS_IMPORT_PATH}/libbeat/version.commit=$(COMMIT_ID)"
-MAGE_IMPORT_PATH=github.com/magefile/mage
-NO_COLLECT=true
-CHECK_HEADERS_DISABLED=true
+.PHONY: dynamicbeat dist clean
 
-# Path to the libbeat Makefile
--include $(LIBBEAT_MAKEFILE)
+define build_dist
+	GOOS=$(1) GOARCH=$(2) CGO_ENABLED=0 go build -o build/dynamicbeat-$(1)-$(2) github.com/scorestack/scorestack/dynamicbeat
+	zip -j build/dynamicbeat-$(1)-$(2).zip build/dynamicbeat-$(1)-$(2)
+endef
 
-.PHONY: copy-vendor
-copy-vendor:
-	mage vendorUpdate
+dynamicbeat:
+	CGO_ENABLED=0 go build github.com/scorestack/scorestack/dynamicbeat
+
+dist:
+	$(call build_dist,linux,amd64)
+	$(call build_dist,windows,amd64)
+	$(call build_dist,darwin,amd64)
+	$(call build_dist,darwin,arm64)
+
+clean:
+	rm -rf dynamicbeat

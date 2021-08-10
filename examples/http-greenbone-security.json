@@ -1,0 +1,21 @@
+{
+  "name": "Greenbone Security Assistant",
+  "type": "http",
+  "score_weight": 1,
+  "definition": {
+    "requests": [
+      {
+        "host": "{{.Host}}",
+        "path": "/login",
+        "matchcode": true,
+        "matchcontent": true,
+        "contentregex": "<title>Greenbone Security Assistant</title>"
+      }
+    ]
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost"
+    }
+  }
+}

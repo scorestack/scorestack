@@ -1,0 +1,20 @@
+{
+  "id": "scorestack",
+  "name": "Scorestack",
+  "disabledFeatures": [
+    "visualize",
+    "dev_tools",
+    "indexPatterns",
+    "savedObjectsManagement",
+    "graph",
+    "monitoring",
+    "ml",
+    "apm",
+    "maps",
+    "canvas",
+    "infrastructure",
+    "logs",
+    "siem",
+    "uptime"
+  ]
+}
