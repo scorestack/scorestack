@@ -23,6 +23,13 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+### Dynamicbeat
+
+#### Fixed
+
+- Replace remaining `${VAR}` template strings with `{{.Var}}` templates in saved objects (#321)
+- Ensure generic check definitions are added by `dynamicbeat setup checks` (#321)
+
 [0.8.0] - 2021-08-10
 --------------------
 
