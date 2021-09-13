@@ -26,12 +26,13 @@ func Checks(c *esclient.Client, f *checksource.Filesystem) error {
 	}
 
 	for _, def := range defs {
-		chk, admin, user, err := def.Documents()
+		chk, generic, admin, user, err := def.Documents()
 		if err != nil {
 			zap.S().Errorf("skipping check due to error - %s", err)
 		}
 
 		queueItem(indexer, "checkdef", def.ID, chk)
+		queueItem(indexer, "checks", def.ID, generic)
 		if admin != nil {
 			queueItem(indexer, fmt.Sprintf("attrib_admin_%s", def.Group), def.ID, admin)
 		}

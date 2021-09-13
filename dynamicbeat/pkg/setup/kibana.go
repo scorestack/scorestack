@@ -92,7 +92,8 @@ func Kibana(host string, user string, pass string, verify bool, teams []config.T
 			zap.S().Errorf("failed to add role for %s: %s", team.Name, err)
 		}
 
-		err = c.AddDashboard(dashboards.TeamOverview(team.Name))
+		// TODO: don't hardcode the number of rows in the table
+		err = c.AddDashboard(dashboards.TeamOverview(team.Name, 20))
 		if err != nil {
 			zap.S().Errorf("failed to add team overview dashboard for %s: %s", team.Name, err)
 		}
