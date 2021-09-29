@@ -157,7 +157,7 @@ func applyOverrides(overrides map[string]string, attributes map[string]string) (
 
 		// Otherwise, parse the attribute value as a template, using the
 		// overrides as keys for the template.
-		val, err := util.ApplyTemplating(v, attributes)
+		val, err := util.ApplyTemplating(v, overrides)
 		if err != nil {
 			return nil, err
 		}
