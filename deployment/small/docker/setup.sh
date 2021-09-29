@@ -42,7 +42,7 @@ docker exec ${KIBANA_CONTAINER} bin/kibana-keystore create
 docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-keystore add elasticsearch.password --stdin <<< '${kibana_pass}'"
 
 # Install kibana plugin
-docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.8.1/kibana-plugin-v0.8.1.zip"
+docker exec ${KIBANA_CONTAINER} /bin/bash -c "bin/kibana-plugin install https://github.com/scorestack/scorestack/releases/download/v0.8.2/kibana-plugin-v0.8.2.zip"
 
 # Restart kibana to reload credentials from keystore
 cd config

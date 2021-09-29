@@ -23,6 +23,11 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+[0.8.2] - 2021-09-28
+--------------------
+
+THis release fixes a Dynamicbeat bug in the team overrides system.
+
 ### Dynamicbeat
 
 #### Fixed
@@ -396,7 +401,8 @@ This release is in preparation for ISTS 2020.
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.8.1...dev
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.8.2...dev
+[0.8.2]: https://github.com/scorestack/scorestack/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/scorestack/scorestack/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/scorestack/scorestack/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/scorestack/scorestack/compare/v0.6.2...v0.7.0
