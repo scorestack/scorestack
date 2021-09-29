@@ -89,11 +89,9 @@ func (f *Filesystem) LoadCheck(id string) (*check.Config, error) {
 	}
 
 	// Grab team attribute overrides, if they exist
-	var overrides map[string]string
-	if team.Overrides != nil {
-		overrides = team.Overrides
-	} else {
-		overrides = make(map[string]string)
+	overrides := make(map[string]string)
+	for k, v := range team.Overrides {
+		overrides[k] = v
 	}
 
 	// Add attribute for team number if it doesn't exist
@@ -157,7 +155,7 @@ func applyOverrides(overrides map[string]string, attributes map[string]string) (
 
 		// Otherwise, parse the attribute value as a template, using the
 		// overrides as keys for the template.
-		val, err := util.ApplyTemplating(v, attributes)
+		val, err := util.ApplyTemplating(v, overrides)
 		if err != nil {
 			return nil, err
 		}
