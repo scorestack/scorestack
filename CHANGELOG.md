@@ -23,6 +23,12 @@ Each section organizes entries into the following subsections:
 [Unreleased]
 ------------
 
+### Dynamicbeat
+
+#### Fixed
+
+- Ensure template overrides are properly templated into attribute values as expected (#324)
+
 [0.8.1] - 2021-09-12
 --------------------
 
