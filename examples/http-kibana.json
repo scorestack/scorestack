@@ -22,7 +22,7 @@
         "method": "GET",
         "matchcode": true,
         "matchcontent": true,
-        "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+        "contentregex": "<script src=\"/bundles/app/core/bootstrap\\.js\">"
       }
     ]
   },

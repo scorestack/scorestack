@@ -6,7 +6,7 @@
     "requests": [
       {
         "host": "{{.Host}}",
-        "path": "/api/security/v1/login",
+        "path": "/internal/security/login",
         "https": true,
         "port": 5601,
         "method": "POST",
@@ -30,7 +30,7 @@
         "matchcode": true,
         "code": 200,
         "matchcontent": true,
-        "contentregex": "<script src=\"/bundles/app/kibana/bootstrap\\.js\">"
+        "contentregex": "<script src=\"/bundles/app/core/bootstrap\\.js\">"
       }
     ]
   },
