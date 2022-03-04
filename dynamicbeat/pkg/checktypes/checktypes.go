@@ -11,6 +11,7 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/mssql"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/mysql"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/noop"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/ntp"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/postgresql"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/smb"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/smtp"
@@ -56,6 +57,8 @@ func GetCheckType(c check.Config) check.Check {
 		def = &postgresql.Definition{}
 	case "mssql":
 		def = &mssql.Definition{}
+	case "ntp":
+		def = &ntp.Definition{}
 	default:
 		zap.S().Warnf("check id %s had an invalid type: %s", c.ID, c.Type)
 		def = &noop.Definition{}
