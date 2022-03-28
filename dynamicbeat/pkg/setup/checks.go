@@ -3,7 +3,6 @@ package setup
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/elastic/go-elasticsearch/v7/esutil"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checksource"
@@ -17,6 +16,7 @@ func Checks(c *esclient.Client, f *checksource.Filesystem) error {
 	if err != nil {
 		return err
 	}
+	zap.S().Infof("loaded %d checks", len(defs))
 
 	indexer, err := esutil.NewBulkIndexer(esutil.BulkIndexerConfig{
 		Client: c.Client,
@@ -39,31 +39,4 @@ func Checks(c *esclient.Client, f *checksource.Filesystem) error {
 
 	zap.S().Info("waiting for checks to finish indexing...")
 	return indexer.Close(context.Background())
-}
-
-func queueItem(i esutil.BulkIndexer, index string, id string, body io.Reader) {
-	err := i.Add(
-		context.Background(),
-		esutil.BulkIndexerItem{
-			Index:      index,
-			Action:     "index",
-			DocumentID: id,
-			Body:       body,
-			OnFailure: func(
-				ctx context.Context,
-				item esutil.BulkIndexerItem,
-				res esutil.BulkIndexerResponseItem,
-				err error,
-			) {
-				if err != nil {
-					zap.S().Errorf("failed to add document of id '%s' to index '%s': %s", id, index, err)
-				} else {
-					zap.S().Errorf("failed to add document of id '%s' to index '%s' due to %s error: %s", id, index, res.Error.Type, res.Error.Reason)
-				}
-			},
-		},
-	)
-	if err != nil {
-		zap.S().Errorf("failed to add document of id '%s' and index '%s' to bulk index queue: %s", err)
-	}
 }

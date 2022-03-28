@@ -1,7 +1,9 @@
 package checksource
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -38,7 +40,19 @@ func (f *Filesystem) LoadAll() ([]models.CheckConfig, error) {
 		zap.S().Infof("searching for checks within directory %s", f.Path)
 		configs := make([]models.CheckConfig, 0)
 
-		matches, err := filepath.Glob(filepath.Join(f.Path, "**", "*.toml"))
+		matches := make([]string, 0)
+		err := filepath.WalkDir(f.Path, func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				zap.S().Errorf("skipping path '%s' due to error: %s", path, err)
+				return fs.SkipDir
+			}
+
+			if filepath.Ext(d.Name()) == ".toml" && !d.IsDir() {
+				matches = append(matches, path)
+			}
+
+			return nil
+		})
 		if err != nil {
 			return nil, f.Error("failed to glob for TOML files in", err)
 		}
@@ -71,8 +85,8 @@ func (f *Filesystem) LoadFile(path string) ([]models.CheckConfig, error) {
 	// TODO: validate Kind
 
 	// Default to 1 point if points are unspecified
-	if source.points == 0 {
-		source.points = 1
+	if source.Points == 0 {
+		source.Points = 1
 	}
 
 	baseName := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
@@ -93,18 +107,18 @@ func (f *Filesystem) LoadFile(path string) ([]models.CheckConfig, error) {
 }
 
 type TomlConfig struct {
-	display_name string
-	description  string
-	kind         string
-	points       uint64
-	definition   map[string]interface{}
-	attribute    []struct {
-		key          string
-		value        string
-		display_name string
-		permissions  models.Permission
-		display_as   models.ViewType
-		description  string
+	DisplayName string `toml:"display_name"`
+	Description string
+	Kind        string
+	Points      uint64
+	Definition  map[string]interface{}
+	Attribute   []struct {
+		Key         string
+		Value       string
+		DisplayName string `toml:"display_name"`
+		Permissions models.Permission
+		DisplayAs   models.ViewType `toml:"display_as"`
+		Description string
 	}
 }
 
@@ -113,10 +127,10 @@ func (t *TomlConfig) TeamConfig(filename string, team config.Team) (models.Check
 		CheckMetadata: models.CheckMetadata{
 			CheckId:     filename,
 			Group:       team.Name,
-			DisplayName: t.display_name,
-			Description: t.description,
-			Kind:        t.kind,
-			Points:      t.points,
+			DisplayName: t.DisplayName,
+			Description: t.Description,
+			Kind:        t.Kind,
+			Points:      t.Points,
 		},
 		Attributes: make([]models.Attribute, 0),
 	}
@@ -138,19 +152,19 @@ func (t *TomlConfig) TeamConfig(filename string, team config.Team) (models.Check
 	}
 
 	// Create each attribute
-	for _, a := range t.attribute {
+	for _, a := range t.Attribute {
 		meta := models.AttributeMetadata{
 			CheckId:     config.CheckId,
 			Group:       config.Group,
-			Key:         a.key,
-			Permissions: a.permissions,
+			Key:         a.Key,
+			Permissions: a.Permissions,
 		}
 
 		attribute := models.Attribute{
 			AttributeMetadata: meta,
-			DisplayName:       a.display_name,
-			Description:       a.description,
-			DisplayAs:         a.display_as,
+			DisplayName:       a.DisplayName,
+			Description:       a.Description,
+			DisplayAs:         a.DisplayAs,
 			Values:            make([]models.AttributeValue, 0),
 		}
 
@@ -160,18 +174,25 @@ func (t *TomlConfig) TeamConfig(filename string, team config.Team) (models.Check
 		}
 
 		// Apply overrides to the attribute value
-		value, err := util.ApplyTemplating(a.value, overrides)
+		value, err := util.ApplyTemplating(a.Value, overrides)
 		if err != nil {
 			zap.S().Error(attribute.Error("skipping overrides", err))
 
 			// Fall back to the original value
-			value = a.value
+			value = a.Value
 		}
 		v.Value = value
 
 		attribute.Values = append(attribute.Values, v)
 		config.Attributes = append(config.Attributes, attribute)
 	}
+
+	// Set the definition
+	buf, err := json.Marshal(t.Definition)
+	if err != nil {
+		zap.S().Errorf("ignoring check check_id=%s due to error marshalling definition: %s", config.CheckId, err)
+	}
+	config.Definition = buf
 
 	return config, nil
 }
