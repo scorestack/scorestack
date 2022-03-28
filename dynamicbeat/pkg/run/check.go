@@ -12,18 +12,19 @@ import (
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/models"
 )
 
-func Check(ctx context.Context, def check.Config) check.Result {
+func Check(ctx context.Context, def models.CheckConfig) check.Result {
 	// Create a check from the definition
 	chk, err := unpackDef(def)
 	if err != nil {
 		return check.Result{
-			Timestamp: time.Now(),
-			Metadata:  def.Metadata,
-			Passed:    false,
-			Message:   fmt.Sprintf("encountered an error when unpacking check definition: %s", err),
-			Details:   nil,
+			Timestamp:     time.Now(),
+			CheckMetadata: def.CheckMetadata,
+			Passed:        false,
+			Message:       fmt.Sprintf("encountered an error when unpacking check definition: %s", err),
+			Details:       nil,
 		}
 	}
 
@@ -42,11 +43,11 @@ func Check(ctx context.Context, def check.Config) check.Result {
 			// We already initialized the event with the correct values for a
 			// context timeout, so just return that.
 			return check.Result{
-				Timestamp: time.Now(),
-				Metadata:  def.Metadata,
-				Passed:    false,
-				Message:   "check timed out",
-				Details:   nil,
+				Timestamp:     time.Now(),
+				CheckMetadata: def.CheckMetadata,
+				Passed:        false,
+				Message:       "check timed out",
+				Details:       nil,
 			}
 		case r := <-result:
 			close(result)
@@ -55,7 +56,7 @@ func Check(ctx context.Context, def check.Config) check.Result {
 	}
 }
 
-func unpackDef(config check.Config) (check.Check, error) {
+func unpackDef(config models.CheckConfig) (check.Check, error) {
 	// Render any template strings in the definition
 	var renderedJSON []byte
 	templ := template.New("definition")
@@ -65,7 +66,7 @@ func unpackDef(config check.Config) (check.Check, error) {
 	}
 
 	var buf bytes.Buffer
-	err = templ.Execute(&buf, config.Attributes.Merged())
+	err = templ.Execute(&buf, config.MergedAttributes())
 	if err != nil {
 		return nil, fmt.Errorf("Failed to execute template for check: %s", err.Error())
 	}
@@ -82,7 +83,7 @@ func unpackDef(config check.Config) (check.Check, error) {
 	return def, nil
 }
 
-func initCheck(config check.Config, def []byte, chk check.Check) error {
+func initCheck(config models.CheckConfig, def []byte, chk check.Check) error {
 	// Unpack definition JSON
 	err := json.Unmarshal(def, &chk)
 	if err != nil {
@@ -93,7 +94,7 @@ func initCheck(config check.Config, def []byte, chk check.Check) error {
 	chk.SetConfig(config)
 
 	// Process the field options
-	return processFields(chk, chk.GetConfig().ID, chk.GetConfig().Type)
+	return processFields(chk, chk.GetConfig().CheckId, chk.GetConfig().Kind)
 }
 
 func processFields(s interface{}, id string, typ string) error {

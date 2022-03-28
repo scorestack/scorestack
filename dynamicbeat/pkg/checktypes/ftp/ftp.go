@@ -11,6 +11,7 @@ import (
 
 	"github.com/jlaffaye/ftp"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/models"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/sha3"
 )
@@ -18,22 +19,22 @@ import (
 // The Definition configures the behavior of the FTP check
 // it implements the "check" interface
 type Definition struct {
-	Config           check.Config // generic metadata about the check
-	Host             string       `optiontype:"required"`                    // IP or hostname of the host to run the FTP check against
-	Username         string       `optiontype:"required"`                    // The user to login with over FTP
-	Password         string       `optiontype:"required"`                    // The password for the user that you wish to login with
-	File             string       `optiontype:"required"`                    // The path to the file to access during the FTP check
-	ContentRegex     string       `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
-	HashContentMatch string       `optiontype:"optional"`                    // Whether or not to match a hash of the file contents
-	Hash             string       `optiontype:"optional"`                    // The hash digest from sha3-256 to compare the hashed file contents to
-	Port             string       `optiontype:"optional" optiondefault:"21"` // The port to attempt an ftp connection on
-	Simple           string       `optiontype:"optional"`                    // Very simple FTP check for older servers
+	Config           models.CheckConfig // generic metadata about the check
+	Host             string             `optiontype:"required"`                    // IP or hostname of the host to run the FTP check against
+	Username         string             `optiontype:"required"`                    // The user to login with over FTP
+	Password         string             `optiontype:"required"`                    // The password for the user that you wish to login with
+	File             string             `optiontype:"required"`                    // The path to the file to access during the FTP check
+	ContentRegex     string             `optiontype:"optional" optiondefault:".*"` // Regex to match if reading a file
+	HashContentMatch string             `optiontype:"optional"`                    // Whether or not to match a hash of the file contents
+	Hash             string             `optiontype:"optional"`                    // The hash digest from sha3-256 to compare the hashed file contents to
+	Port             string             `optiontype:"optional" optiondefault:"21"` // The port to attempt an ftp connection on
+	Simple           string             `optiontype:"optional"`                    // Very simple FTP check for older servers
 }
 
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
+	result := check.Result{Timestamp: time.Now(), CheckMetadata: d.Config.CheckMetadata}
 
 	// Connect to the ftp server
 	// TODO: create child context with deadline less than the parent context
@@ -128,11 +129,11 @@ func (d *Definition) Run(ctx context.Context) check.Result {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() check.Config {
+func (d *Definition) GetConfig() models.CheckConfig {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(c check.Config) {
+func (d *Definition) SetConfig(c models.CheckConfig) {
 	d.Config = c
 }

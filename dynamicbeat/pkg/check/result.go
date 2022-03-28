@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"io"
 	"time"
+
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/models"
 )
 
 type Result struct {
-	Metadata
+	models.CheckMetadata
 	Timestamp time.Time
 	Passed    bool
 	Message   string
@@ -17,7 +19,7 @@ type Result struct {
 }
 
 type generic struct {
-	Metadata
+	models.CheckMetadata
 	Timestamp string `json:"@timestamp"`
 	Passed    bool   `json:"passed"`
 	PassedInt uint8  `json:"passed_int"`
@@ -26,11 +28,11 @@ type generic struct {
 
 func newGeneric(r *Result) generic {
 	out := generic{
-		Metadata:  r.Metadata,
-		Timestamp: r.Timestamp.Format(time.RFC3339),
-		Passed:    r.Passed,
-		PassedInt: 0,
-		Epoch:     r.Timestamp.Unix(),
+		CheckMetadata: r.CheckMetadata,
+		Timestamp:     r.Timestamp.Format(time.RFC3339),
+		Passed:        r.Passed,
+		PassedInt:     0,
+		Epoch:         r.Timestamp.Unix(),
 	}
 
 	if r.Passed {

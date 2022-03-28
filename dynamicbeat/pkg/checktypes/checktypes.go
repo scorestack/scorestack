@@ -18,12 +18,13 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/vnc"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/winrm"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/xmpp"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/models"
 	"go.uber.org/zap"
 )
 
-func GetCheckType(c check.Config) check.Check {
+func GetCheckType(c models.CheckConfig) check.Check {
 	var def check.Check
-	switch c.Type {
+	switch c.Kind {
 	case "noop":
 		def = &noop.Definition{}
 	case "http":
@@ -57,7 +58,7 @@ func GetCheckType(c check.Config) check.Check {
 	case "mssql":
 		def = &mssql.Definition{}
 	default:
-		zap.S().Warnf("check id %s had an invalid type: %s", c.ID, c.Type)
+		zap.S().Warnf("check id %s had an invalid type: %s", c.CheckId, c.Kind)
 		def = &noop.Definition{}
 	}
 

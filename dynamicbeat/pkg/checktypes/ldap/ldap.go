@@ -9,23 +9,24 @@ import (
 
 	ldap "github.com/go-ldap/ldap/v3"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/models"
 )
 
 // The Definition configures the behavior of the LDAP check
 // it implements the "check" interface
 type Definition struct {
-	Config   check.Config // generic metadata about the check
-	User     string       `optiontype:"required"`                     // The user written in user@domain syntax
-	Password string       `optiontype:"required"`                     // the password for the user
-	Fqdn     string       `optiontype:"required"`                     // The Fqdn of the ldap server
-	Ldaps    string       `optiontype:"optional"`                     // Whether or not to use LDAP+TLS
-	Port     string       `optiontype:"optional" optiondefault:"389"` // Port for ldap
+	Config   models.CheckConfig // generic metadata about the check
+	User     string             `optiontype:"required"`                     // The user written in user@domain syntax
+	Password string             `optiontype:"required"`                     // the password for the user
+	Fqdn     string             `optiontype:"required"`                     // The Fqdn of the ldap server
+	Ldaps    string             `optiontype:"optional"`                     // Whether or not to use LDAP+TLS
+	Port     string             `optiontype:"optional" optiondefault:"389"` // Port for ldap
 }
 
 // Run a single instance of the check
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
+	result := check.Result{Timestamp: time.Now(), CheckMetadata: d.Config.CheckMetadata}
 
 	// Set timeout
 	// TODO: change this to be relative to the parent context's timeout
@@ -65,11 +66,11 @@ func (d *Definition) Run(ctx context.Context) check.Result {
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() check.Config {
+func (d *Definition) GetConfig() models.CheckConfig {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(c check.Config) {
+func (d *Definition) SetConfig(c models.CheckConfig) {
 	d.Config = c
 }

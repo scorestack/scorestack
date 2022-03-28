@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
-	"github.com/scorestack/scorestack/dynamicbeat/pkg/checksource"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/config"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/esclient"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/models"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/run"
 	"go.uber.org/zap"
 )
@@ -22,12 +22,7 @@ func Run() error {
 	zap.S().Infof("dynamicbeat is running! Hit CTRL-C to stop it.")
 	c := config.Get()
 
-	pub, err := esclient.New(c.Elasticsearch, c.Username, c.Password, c.VerifyCerts)
-	if err != nil {
-		return err
-	}
-
-	es, err := checksource.NewElasticsearch(c.Elasticsearch, c.Username, c.Password, c.VerifyCerts, CHECKDEF_INDEX)
+	es, err := esclient.New(c.Elasticsearch, c.Username, c.Password, c.VerifyCerts)
 	if err != nil {
 		return err
 	}
@@ -45,7 +40,7 @@ func Run() error {
 	signal.Notify(quit, os.Interrupt)
 
 	// Get initial check definitions
-	var defs []check.Config
+	var defs []models.CheckConfig
 	doubleBreak := false
 	// TODO: Find a better way for looping until we can hit Elasticsearch
 	zap.S().Infof("Getting initial check definitions...")
@@ -76,7 +71,7 @@ func Run() error {
 	// Start publisher goroutine
 	results := make(chan check.Result)
 	published := make(chan uint64)
-	go publishEvents(pub, results, published)
+	go publishEvents(es, results, published)
 
 	// Start running checks
 	ticker := time.NewTicker(c.RoundTime)

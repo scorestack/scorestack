@@ -6,11 +6,12 @@ import (
 	"time"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/models"
 	"go.uber.org/zap"
 )
 
 // Round : Run a course of checks based on the currently-loaded configuration.
-func Round(defs []check.Config, results chan<- check.Result, started chan<- bool) {
+func Round(defs []models.CheckConfig, results chan<- check.Result, started chan<- bool) {
 	start := time.Now()
 
 	// Make an event queue separate from the publisher queue so we can track
@@ -24,7 +25,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 	var wg sync.WaitGroup
 	for _, d := range defs {
 		// Start check goroutine
-		names[d.ID] = false
+		names[d.CheckId] = false
 		wg.Add(1)
 
 		def := d
@@ -33,7 +34,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 
 			checkStart := time.Now()
 			result := Check(ctx, def)
-			zap.S().Debugf("[%s] Finished after %.2f seconds", result.ID, time.Since(checkStart).Seconds())
+			zap.S().Debugf("[%s] Finished after %.2f seconds", result.CheckId, time.Since(checkStart).Seconds())
 			finished <- result
 		}()
 	}
@@ -60,7 +61,7 @@ func Round(defs []check.Config, results chan<- check.Result, started chan<- bool
 	}()
 	for result := range finished {
 		// Record that the check has finished
-		delete(names, result.ID)
+		delete(names, result.CheckId)
 
 		// Publish the event to the publisher queue
 		results <- result

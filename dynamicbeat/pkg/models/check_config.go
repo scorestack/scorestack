@@ -22,6 +22,16 @@ func (c *CheckConfig) Error(msg string, err error) string {
 	return fmt.Sprintf("%s for check config check_id='%s' check_kind='%s'", msg, c.CheckId, c.Kind)
 }
 
+func (c *CheckConfig) MergedAttributes() map[string]string {
+	attributes := make(map[string]string)
+
+	for _, attribute := range c.Attributes {
+		attributes[attribute.Key] = attribute.Value()
+	}
+
+	return attributes
+}
+
 // ---[esclient.Indexable]-----------------------------------------------------
 
 func (c *CheckConfig) GetIndex() string {

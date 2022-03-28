@@ -16,15 +16,16 @@ import (
 	"time"
 
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/models"
 	"go.uber.org/zap"
 )
 
 // The Definition configures the behavior of an HTTP check.
 type Definition struct {
-	Config               check.Config // generic metadata about the check
-	Verify               string       `optiontype:"optional"` // whether HTTPS certs should be validated
-	ReportMatchedContent string       `optiontype:"optional"` // whether the matched content should be returned in the CheckResult
-	Requests             []*Request   `optiontype:"list"`     // a list of requests to make
+	Config               models.CheckConfig // generic metadata about the check
+	Verify               string             `optiontype:"optional"` // whether HTTPS certs should be validated
+	ReportMatchedContent string             `optiontype:"optional"` // whether the matched content should be returned in the CheckResult
+	Requests             []*Request         `optiontype:"list"`     // a list of requests to make
 }
 
 // A Request represents a single HTTP request to make.
@@ -46,7 +47,7 @@ type Request struct {
 // Run a single instance of the check.
 func (d *Definition) Run(ctx context.Context) check.Result {
 	// Initialize empty result
-	result := check.Result{Timestamp: time.Now(), Metadata: d.Config.Metadata}
+	result := check.Result{Timestamp: time.Now(), CheckMetadata: d.Config.CheckMetadata}
 
 	// Convert strings to booleans to allow templating
 	verify, _ := strconv.ParseBool(d.Verify)
@@ -198,11 +199,11 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 
 // GetConfig returns the current CheckConfig struct this check has been
 // configured with.
-func (d *Definition) GetConfig() check.Config {
+func (d *Definition) GetConfig() models.CheckConfig {
 	return d.Config
 }
 
 // SetConfig reconfigures this check with a new CheckConfig struct.
-func (d *Definition) SetConfig(c check.Config) {
+func (d *Definition) SetConfig(c models.CheckConfig) {
 	d.Config = c
 }
