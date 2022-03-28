@@ -34,10 +34,10 @@ func Checks(c *esclient.Client, f *checksource.Filesystem) error {
 		queueItem(indexer, "checkdef", def.ID, chk)
 		queueItem(indexer, "checks", def.ID, generic)
 		if admin != nil {
-			queueItem(indexer, fmt.Sprintf("attrib_admin_%s", def.Group), def.ID, admin)
+			queueItem(indexer, "attributes", def.ID, admin)
 		}
 		if user != nil {
-			queueItem(indexer, fmt.Sprintf("attrib_user_%s", def.Group), def.ID, user)
+			queueItem(indexer, fmt.Sprintf("attributes-%s", def.Group), def.ID, user)
 		}
 	}
 

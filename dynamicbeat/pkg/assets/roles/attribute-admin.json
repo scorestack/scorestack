@@ -3,7 +3,7 @@
     "indices": [
       {
         "names": [
-          "attrib_*"
+          "attribute*"
         ],
         "privileges": [
           "all"

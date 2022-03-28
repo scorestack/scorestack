@@ -3,6 +3,7 @@ module github.com/scorestack/scorestack/dynamicbeat
 go 1.16
 
 require (
+	github.com/BurntSushi/toml v1.0.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.9.0
 	github.com/elastic/go-elasticsearch/v7 v7.12.0
 	github.com/emersion/go-imap v1.0.6
