@@ -11,12 +11,11 @@ import (
 )
 
 func Checks(c *esclient.Client, f *checksource.Filesystem) error {
-	zap.S().Infof("loading checks from %s", f.Path)
 	defs, err := f.LoadAll()
 	if err != nil {
 		return err
 	}
-	zap.S().Infof("loaded %d checks", len(defs))
+	zap.S().Infof("loaded %d check(s)", len(defs))
 
 	indexer, err := esutil.NewBulkIndexer(esutil.BulkIndexerConfig{
 		Client: c.Client,
