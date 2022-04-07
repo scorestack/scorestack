@@ -31,6 +31,8 @@ func Checks(c *esclient.Client, f *checksource.Filesystem) error {
 			esclient.Queue(indexer, &attribute)
 
 			for _, value := range attribute.Values {
+				// TODO: check if the attribute already has a value before
+				// indexing
 				esclient.Queue(indexer, &value)
 			}
 		}

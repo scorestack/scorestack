@@ -1,0 +1,40 @@
+display_name = "FTP"
+description = "Log in to an FTP server and verify the contents of a file with a regex."
+kind = "ftp"
+points = 1
+
+[definition]
+host = "{{.Host}}"
+port = 22
+username = "{{.Username}}"
+password = "{{.Password}}"
+file = "/root/test.txt"
+content_match_string = '^Hello\s+World!$'
+content_match_type = "regex"
+
+# Simplest possible attribute with the default permissions (teams cannot read
+# or modify the attribute or its value)
+[[attribute]]
+key = "Host"
+value = "localhost"
+
+# Read-only attribute with a description. Teams can view the attribute and its
+# current value, but not update it. The description will be displayed in UIs to
+# give teams more context on what the attribute means.
+[[attribute]]
+key = "Username"
+value = "root"
+permissions = "view"
+description = "The username to log into the FTP server with."
+
+# Read-write attribute displayed as a password field. Teams can view the
+# attribute and update its current value. Since the `display_as` field has been
+# set to "password", the attribute's value will be displayed in the UI as a
+# standard password input field with a "view" button. By default, attributes
+# are displayed as a plain text field.
+[[attribute]]
+key = "Password"
+value = "changeme"
+permissions = "update"
+display_as = "password"
+description = "The password for the FTP user."
