@@ -13,7 +13,7 @@ Once all check results have been indexed, deleted all the Scorestack indices. Yo
 
 Alternatively, you can use this bash one liner to clear the indices: 
 
-`for i in "/check*" "/attrib*" "/result*"; do curl -kXDELETE -u admin:changeme https://localhost:9200$i && echo $i; done`
+`for i in "/check*" "/attrib*" "/result*"; do curl -kXDELETE -u elastic:changeme https://localhost:9200$i && echo $i; done`
 
 Finally, setup Kibana and Elastic again using the `dynamicbeat setup` command and you're good to go!
 
@@ -26,7 +26,7 @@ Username: elastic
 Password: changeme
 ```
 
-These credentials will give you the same access as the [`elastic` built-in user](https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html), so be careful, and make sure to change the password after your first log-in!
+Be careful as this user has `superuser` privileges, and make sure to change the password after your first log-in!
 
 ### What are the default Dynamicbeat credentials?
 
