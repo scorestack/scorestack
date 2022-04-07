@@ -1,0 +1,81 @@
+---
+version: "3"
+
+services:
+
+  setup:
+    container_name: setup
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
+    user: "0"
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
+      KIBANA_PASSWORD: ${KIBANA_PASSWORD:-changeme}
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - ./docker/configs/instances.yml:/usr/share/elasticsearch/config/certs/instances.yml
+      - ./docker/scripts/setup-entrypoint.sh:/opt/entrypoint.sh
+      - ./docker/scripts/setup-healthcheck.sh:/opt/healthcheck.sh
+    command: /opt/entrypoint.sh
+    healthcheck:
+      test: /opt/healthcheck.sh
+      interval: 1s
+      timeout: 5s
+      retries: 120
+
+  elasticsearch:
+    container_name: elasticsearch
+    depends_on:
+      setup:
+        condition: service_healthy
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - elastic-data:/usr/share/elasticsearch/data
+      - ./docker/configs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./docker/scripts/elasticsearch-healthcheck.sh:/opt/healthcheck.sh
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: /opt/healthcheck.sh
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  kibana:
+    container_name: kibana
+    working_dir: /usr/share/kibana
+    command: /opt/entrypoint.sh
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: node:16.14.2
+    volumes:
+      - certs:/usr/share/kibana/config/certs
+      - kibana-data:/usr/share/kibana/data
+      - ./kibana-plugin:/usr/share/kibana/plugins/scorestack
+      - ./docker/configs/kibana.yml:/usr/share/kibana/config/kibana.dev.yml
+      - ./docker/scripts/kibana-entrypoint.sh:/opt/entrypoint.sh
+      - ./docker/scripts/kibana-healthcheck.sh:/opt/healthcheck.sh
+    environment:
+      ELASTICSEARCH_PASSWORD: ${KIBANA_PASSWORD:-changeme}
+    ports:
+      - 5601:5601
+    healthcheck:
+      test: /opt/healthcheck.sh
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+volumes:
+  certs:
+    driver: local
+  elastic-data:
+    driver: local
+  kibana-data:
+    driver: local
+  kibana-plugins:
+    driver: local

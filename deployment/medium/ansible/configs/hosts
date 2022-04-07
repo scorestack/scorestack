@@ -1,8 +1,0 @@
-127.0.0.1 localhost
-
-{{ nginx_internal_ip }} nginx
-{{ kibana_ip }} kibana
-{{ elasticsearch1_ip }} elasticsearch1
-{{ elasticsearch2_ip }} elasticsearch2
-{{ elasticsearch3_ip }} elasticsearch3
-{{ elasticsearch4_ip }} elasticsearch4
