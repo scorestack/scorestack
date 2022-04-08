@@ -140,7 +140,7 @@
 <img src="https://github.com/scorestack/scorestack/workflows/Kibana%20Plugin/badge.svg" alt="Kibana Plugin" /></p>
 <p>A security competition scoring system built on the Elastic stack.</p>
 <h2 id="quickstart"><a class="header" href="#quickstart">Quickstart</a></h2>
-<p>To get up and running checking your services with Scorestack as fast as possible, follow the deployment guide for the <a href="./deployment/small.html#docker-deployment">small deployment with Docker</a>. After that, read up on <a href="./checks/adding_checks.html">adding checks</a>, and then take a look at the example checks in the <a href="https://github.com/scorestack/scorestack/tree/stable/examples"><code>examples</code> folder in the repository</a> - you should be able to find examples to get you started for several of your services! After you've added some checks, check out the <a href="./deployment/dynamicbeat.html">Dynamicbeat deployment guide</a> to get Dynamicbeat up and running.</p>
+<p>To get up and running checking your services with Scorestack as fast as possible, follow the deployment guide for the <a href="./deployment/small.html#docker-deployment">small deployment with Docker</a>. After that, read up on <a href="./checks/adding_checks.html">adding checks</a>, and then take a look at the example checks in the <a href="https://github.com/scorestack/scorestack/tree/main/examples"><code>examples</code> folder in the repository</a> - you should be able to find examples to get you started for several of your services! After you've added some checks, check out the <a href="./deployment/dynamicbeat.html">Dynamicbeat deployment guide</a> to get Dynamicbeat up and running.</p>
 <h2 id="documentation-overview"><a class="header" href="#documentation-overview">Documentation Overview</a></h2>
 <p>This documentation is split into sections based on overall topics and audiences. Each section starts with a brief introduction that explains in more detail its intended audience and what it covers.</p>
 <h3 id="checks"><a class="header" href="#checks">Checks</a></h3>
@@ -157,7 +157,7 @@
 <p>Each check is configured by - you guessed it - a check <strong>configuration</strong>. This configuration contains three major parts: the <strong>metadata</strong>, the <strong>definition</strong>, and the <strong>attributes</strong>. All check configurations <em>must</em> include the required metadata and a definition, and may optionally include some attributes as necessary.</p>
 <p>A check's metadata uniquely identifies it and tells Scorestack how it should be handled. Check definitions set parameters that define the check's execution, and are specific to the type of check being configured. Check attributes are values that are substituted into the check at runtime, and can be viewed or modified by administrators and team members in Kibana.</p>
 <p>The rest of this section explains the parts of a check in greater detail, as well as how to write a check configuration file, how to add your checks to Kibana, and how to use the team override system to write check configurations that can be generic across all of your teams.</p>
-<p>As you read the documentation and write your check files, it may be useful to consult the example check definitions in the <a href="https://github.com/scorestack/scorestack/tree/stable/examples"><code>examples/</code> folder of the repository</a>.</p>
+<p>As you read the documentation and write your check files, it may be useful to consult the example check definitions in the <a href="https://github.com/scorestack/scorestack/tree/main/examples"><code>examples/</code> folder of the repository</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="the-check-file"><a class="header" href="#the-check-file">The Check File</a></h1>
 <p>Each Scorestack check is configured via a single JSON file, called a &quot;check file&quot;. Each check file contains the check's metadata, the check definitions, and any attributes defined for the check.</p>
 <p>The next few pages will go through an example check file section-by-section to explain the content of a check file and how to write your own. We will be using a modified version of the example IMAP check found in the repository's examples folder.</p>
@@ -347,7 +347,7 @@
 <p>If you wish, you can add other files to this folder (e.g. <code>.gitignore</code>, <code>README.md</code>, <code>topology.png</code>, etc.) as long as they don't end in <code>.json</code>. Dynamicbeat expects that any file ending in <code>.json</code> is a check file. All other files will be ignored.</p>
 <p>Dynamicbeat's <code>setup checks</code> command is idempotent; if you have to make changes to any of your checks, all you have to do is rerun the command.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="check-reference"><a class="header" href="#check-reference">Check Reference</a></h1>
-<p>This section of the documentation contains a reference to each of the check types available in Dynamicbeat. Each page within this section covers the available parameters for a specific check type. Example check definitions for all check types can be found under <a href="https://github.com/scorestack/scorestack/tree/stable/examples">the <code>examples</code> folder in the Scorestack repository</a>.</p>
+<p>This section of the documentation contains a reference to each of the check types available in Dynamicbeat. Each page within this section covers the available parameters for a specific check type. Example check definitions for all check types can be found under <a href="https://github.com/scorestack/scorestack/tree/main/examples">the <code>examples</code> folder in the Scorestack repository</a>.</p>
 <p>Please note that the <em>Type</em> listed in the tables on these pages refers to the type that must be used in the JSON document. For example, if the <em>type</em> is <em>string</em>, then value for that parameter in the JSON document must be a <code>&quot;string&quot;</code>.</p>
 <h2 id="required-vs-optional"><a class="header" href="#required-vs-optional">Required vs. Optional</a></h2>
 <p>Some parameters are required for a check type. These <em>must</em> be defined, otherwise the check definition is invalid and will not run.</p>
@@ -1056,12 +1056,13 @@ team.</p>
 <h2 id="building-your-own-binaries"><a class="header" href="#building-your-own-binaries">Building Your Own Binaries</a></h2>
 <p>If you really want to, you can build these binaries yourself. Please see the <a href="deployment/../building.html">documentation on building</a> for more information on how to do this.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cloning-the-repository"><a class="header" href="#cloning-the-repository">Cloning the Repository</a></h1>
-<p>Whenever you need to deploy Scorestack, you need to make sure you're cloning the right branch. In most cases, cloning directly from the <code>stable</code> branch (which is the default) is fine.</p>
-<pre><code class="language-shell">git clone --branch stable https://github.com/scorestack/scorestack.git
+<p>If you're just testing out Scorestack, cloning the default branch (<code>main</code>) should be fine in almost all cases:</p>
+<pre><code class="language-shell">git clone https://github.com/scorestack/scorestack.git
 </code></pre>
-<p>However, if you would like to deploy a specific version of Scorestack, just pass the tag of the version you want to deploy to the <code>--branch</code> argument of <code>git clone</code>. For example, to deploy Scorestack version 0.5.0, you would run <code>git clone --branch v0.5.0 https://github.com/scorestack/scorestack.git</code>.</p>
-<p>If you just want to use the latest release, the <code>stable</code> branch is fine - it always points at the latest stable release.</p>
-<p>If you want to live life on the edge and try out an unstable release or unreleased changes, try cloning the <code>dev</code> branch instead! Just note that it <code>dev</code> is the unstable development branch, so there's no guarantees that things will work for you.</p>
+<p>However, the <code>main</code> branch is the primary branch used for development. While we do our best to never merge broken code into <code>main</code>, there's no guarantees that what's on <code>main</code> will always work as expected.</p>
+<p>Therefore, whenever you deploy Scorestack in a production environment (such as for active competitions) you should always use the <code>--branch</code> argument of <code>git clone</code> to specify the exact version you want to clone. For example, this command will clone <a href="https://github.com/scorestack/scorestack/releases/tag/v0.8.2">Scorestack 0.8.2</a>:</p>
+<pre><code class="language-shell">git clone --branch v0.8.2 https://github.com/scorestack/scorestack.git
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="small-architecture"><a class="header" href="#small-architecture">Small Architecture</a></h1>
 <p>This architecture deploys three hosts:</p>
 <ul>

@@ -135,12 +135,13 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="cloning-the-repository"><a class="header" href="#cloning-the-repository">Cloning the Repository</a></h1>
-<p>Whenever you need to deploy Scorestack, you need to make sure you're cloning the right branch. In most cases, cloning directly from the <code>stable</code> branch (which is the default) is fine.</p>
-<pre><code class="language-shell">git clone --branch stable https://github.com/scorestack/scorestack.git
+<p>If you're just testing out Scorestack, cloning the default branch (<code>main</code>) should be fine in almost all cases:</p>
+<pre><code class="language-shell">git clone https://github.com/scorestack/scorestack.git
 </code></pre>
-<p>However, if you would like to deploy a specific version of Scorestack, just pass the tag of the version you want to deploy to the <code>--branch</code> argument of <code>git clone</code>. For example, to deploy Scorestack version 0.5.0, you would run <code>git clone --branch v0.5.0 https://github.com/scorestack/scorestack.git</code>.</p>
-<p>If you just want to use the latest release, the <code>stable</code> branch is fine - it always points at the latest stable release.</p>
-<p>If you want to live life on the edge and try out an unstable release or unreleased changes, try cloning the <code>dev</code> branch instead! Just note that it <code>dev</code> is the unstable development branch, so there's no guarantees that things will work for you.</p>
+<p>However, the <code>main</code> branch is the primary branch used for development. While we do our best to never merge broken code into <code>main</code>, there's no guarantees that what's on <code>main</code> will always work as expected.</p>
+<p>Therefore, whenever you deploy Scorestack in a production environment (such as for active competitions) you should always use the <code>--branch</code> argument of <code>git clone</code> to specify the exact version you want to clone. For example, this command will clone <a href="https://github.com/scorestack/scorestack/releases/tag/v0.8.2">Scorestack 0.8.2</a>:</p>
+<pre><code class="language-shell">git clone --branch v0.8.2 https://github.com/scorestack/scorestack.git
+</code></pre>
 
                     </main>
 
