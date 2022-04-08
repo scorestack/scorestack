@@ -143,13 +143,15 @@
 <li><code>DELETE /attrib*</code></li>
 <li><code>DELETE /result*</code></li>
 </ul>
-<p>Finally, rerun the <code>add-team.sh</code> script with all the teams you want Scorestack to have. Once the script is finished, you can restart Dynamicbeat.</p>
+<p>Alternatively, you can use this bash one liner to clear the indices: </p>
+<p><code>for i in &quot;/check*&quot; &quot;/attrib*&quot; &quot;/result*&quot;; do curl -kXDELETE -u elastic:changeme https://localhost:9200$i &amp;&amp; echo $i; done</code></p>
+<p>Finally, setup Kibana and Elastic again using the <code>dynamicbeat setup</code> command and you're good to go!</p>
 <h3 id="what-are-the-default-admin-credentials"><a class="header" href="#what-are-the-default-admin-credentials">What are the default admin credentials?</a></h3>
 <p>The following credentials are the default <code>superuser</code> credentials for all Scorestack deployments:</p>
-<pre><code>Username: root
+<pre><code>Username: elastic
 Password: changeme
 </code></pre>
-<p>These credentials will give you the same access as the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html"><code>elastic</code> built-in user</a>, so be careful, and make sure to change the password after your first log-in!</p>
+<p>Be careful as this user has <code>superuser</code> privileges, and make sure to change the password after your first log-in!</p>
 <h3 id="what-are-the-default-dynamicbeat-credentials"><a class="header" href="#what-are-the-default-dynamicbeat-credentials">What are the default Dynamicbeat credentials?</a></h3>
 <p>Dynamicbeat needs a username and password to connect to Elasticsearch and read the current check definitions and attributes. A user is created for you during all Scorestack deployments with the following default credentials:</p>
 <pre><code>Username: dynamicbeat
