@@ -6,12 +6,10 @@ Scorestack
 
 A security competition scoring system built on the Elastic stack.
 
-The Scorestack documentation is [hosted online](https://docs.scorestack.io). The documentation is written in markdown and built with [mdBook](https://github.com/rust-lang/mdBook). If the online documentation is unavailable or you simply prefer reading the raw markdown files, take a look in [the docs folder](https://github.com/scorestack/scorestack/tree/stable/docs) of the repository.
+The Scorestack documentation is [hosted online](https://docs.scorestack.io). The documentation is written in markdown and built with [mdBook](https://github.com/rust-lang/mdBook). If the online documentation is unavailable or you simply prefer reading the raw markdown files, take a look in [the docs folder](https://github.com/scorestack/scorestack/tree/main/docs) of the repository.
 
 Questions, Comments, and Concerns
 ---------------------------------
-
-If you have any questions about Scorestack, feel free to send us an email at `devs [at] scorestack [dot] io`. We'll be happy to help resolve any issues you may have.
 
 If you think you've found a bug in Scorestack, please [submit a new issue](https://github.com/scorestack/scorestack/issues) so we can take a look and resolve it. If you need something resolved ASAP, please send us an email at `devs [at] scorestack [dot] io` after submitting a bug report. We will take a look at the issue as soon as we can and/or help you find a suitable workaround.
 

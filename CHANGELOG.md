@@ -401,7 +401,7 @@ This release is in preparation for ISTS 2020.
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.8.2...dev
+[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.8.2...main
 [0.8.2]: https://github.com/scorestack/scorestack/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/scorestack/scorestack/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/scorestack/scorestack/compare/v0.7.0...v0.8.0

@@ -1,14 +1,14 @@
 Cloning the Repository
 ======================
 
-Whenever you need to deploy Scorestack, you need to make sure you're cloning the right branch. In most cases, cloning directly from the `stable` branch (which is the default) is fine.
-
+If you're just testing out Scorestack, cloning the default branch (`main`) should be fine in almost all cases:
 ```shell
-git clone --branch stable https://github.com/scorestack/scorestack.git
+git clone https://github.com/scorestack/scorestack.git
 ```
 
-However, if you would like to deploy a specific version of Scorestack, just pass the tag of the version you want to deploy to the `--branch` argument of `git clone`. For example, to deploy Scorestack version 0.5.0, you would run `git clone --branch v0.5.0 https://github.com/scorestack/scorestack.git`.
+However, the `main` branch is the primary branch used for development. While we do our best to never merge broken code into `main`, there's no guarantees that what's on `main` will always work as expected.
 
-If you just want to use the latest release, the `stable` branch is fine - it always points at the latest stable release.
-
-If you want to live life on the edge and try out an unstable release or unreleased changes, try cloning the `dev` branch instead! Just note that it `dev` is the unstable development branch, so there's no guarantees that things will work for you.
+Therefore, whenever you deploy Scorestack in a production environment (such as for active competitions) you should always use the `--branch` argument of `git clone` to specify the exact version you want to clone. For example, this command will clone [Scorestack 0.8.2](https://github.com/scorestack/scorestack/releases/tag/v0.8.2):
+```shell
+git clone --branch v0.8.2 https://github.com/scorestack/scorestack.git
+```

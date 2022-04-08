@@ -9,7 +9,7 @@ A security competition scoring system built on the Elastic stack.
 Quickstart
 ----------
 
-To get up and running checking your services with Scorestack as fast as possible, follow the deployment guide for the [small deployment with Docker](./deployment/small.md#docker-deployment). After that, read up on [adding checks](./checks/adding_checks.md), and then take a look at the example checks in the [`examples` folder in the repository](https://github.com/scorestack/scorestack/tree/stable/examples) - you should be able to find examples to get you started for several of your services! After you've added some checks, check out the [Dynamicbeat deployment guide](./deployment/dynamicbeat.md) to get Dynamicbeat up and running.
+To get up and running checking your services with Scorestack as fast as possible, follow the deployment guide for the [small deployment with Docker](./deployment/small.md#docker-deployment). After that, read up on [adding checks](./checks/adding_checks.md), and then take a look at the example checks in the [`examples` folder in the repository](https://github.com/scorestack/scorestack/tree/main/examples) - you should be able to find examples to get you started for several of your services! After you've added some checks, check out the [Dynamicbeat deployment guide](./deployment/dynamicbeat.md) to get Dynamicbeat up and running.
 
 Documentation Overview
 ----------------------

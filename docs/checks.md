@@ -11,4 +11,4 @@ A check's metadata uniquely identifies it and tells Scorestack how it should be 
 
 The rest of this section explains the parts of a check in greater detail, as well as how to write a check configuration file, how to add your checks to Kibana, and how to use the team override system to write check configurations that can be generic across all of your teams.
 
-As you read the documentation and write your check files, it may be useful to consult the example check definitions in the [`examples/` folder of the repository](https://github.com/scorestack/scorestack/tree/stable/examples).
+As you read the documentation and write your check files, it may be useful to consult the example check definitions in the [`examples/` folder of the repository](https://github.com/scorestack/scorestack/tree/main/examples).
