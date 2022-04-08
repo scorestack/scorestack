@@ -11,18 +11,22 @@ Once all check results have been indexed, deleted all the Scorestack indices. Yo
 - `DELETE /attrib*`
 - `DELETE /result*`
 
-Finally, rerun the `add-team.sh` script with all the teams you want Scorestack to have. Once the script is finished, you can restart Dynamicbeat.
+Alternatively, you can use this bash one liner to clear the indices: 
+
+`for i in "/check*" "/attrib*" "/result*"; do curl -kXDELETE -u elastic:changeme https://localhost:9200$i && echo $i; done`
+
+Finally, setup Kibana and Elastic again using the `dynamicbeat setup` command and you're good to go!
 
 ### What are the default admin credentials?
 
 The following credentials are the default `superuser` credentials for all Scorestack deployments:
 
 ```
-Username: root
+Username: elastic
 Password: changeme
 ```
 
-These credentials will give you the same access as the [`elastic` built-in user](https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html), so be careful, and make sure to change the password after your first log-in!
+Be careful as this user has `superuser` privileges, and make sure to change the password after your first log-in!
 
 ### What are the default Dynamicbeat credentials?
 
