@@ -5,6 +5,7 @@ services:
 
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
+    command: /opt/entrypoint.sh
     user: root
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
@@ -13,7 +14,6 @@ services:
       - certs:/usr/share/elasticsearch/config/certs
       - ./docker/configs/instances.yml:/usr/share/elasticsearch/config/certs/instances.yml
       - ./docker/scripts/setup-entrypoint.sh:/opt/entrypoint.sh
-    command: /opt/entrypoint.sh
 
   plugin-builder:
     image: node:16.14.2
@@ -25,19 +25,19 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
+    entrypoint: /opt/entrypoint.sh
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - elastic-data:/usr/share/elasticsearch/data
       - ./docker/configs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./docker/scripts/elasticsearch-entrypoint.sh:/opt/entrypoint.sh
       - ./docker/scripts/elasticsearch-healthcheck.sh:/opt/healthcheck.sh
-    entrypoint: /opt/entrypoint.sh
-    environment:
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     healthcheck:
       test: /opt/healthcheck.sh
       interval: 10s
@@ -45,11 +45,13 @@ services:
       retries: 120
 
   kibana:
+    image: docker.elastic.co/kibana/kibana:8.1.2
     command: /opt/entrypoint.sh
     depends_on:
       elasticsearch:
         condition: service_healthy
-    image: docker.elastic.co/kibana/kibana:8.1.2
+    environment:
+      ELASTICSEARCH_PASSWORD: ${KIBANA_PASSWORD:-changeme}
     volumes:
       - certs:/usr/share/kibana/config/certs
       - kibana-data:/usr/share/kibana/data
@@ -57,8 +59,6 @@ services:
       - ./docker/configs/kibana.yml:/usr/share/kibana/config/kibana.yml
       - ./docker/scripts/kibana-entrypoint.sh:/opt/entrypoint.sh
       - ./docker/scripts/kibana-healthcheck.sh:/opt/healthcheck.sh
-    environment:
-      ELASTICSEARCH_PASSWORD: ${KIBANA_PASSWORD:-changeme}
     healthcheck:
       test: /opt/healthcheck.sh
       interval: 10s
@@ -75,10 +75,16 @@ services:
     volumes:
       - certs:/etc/nginx/certs
       - ./docker/configs/proxy.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/scripts/nginx-healthcheck.sh:/opt/healthcheck.sh
     ports:
       - 80:80
       - 443:443
       - 9200:9200
+    healthcheck:
+      test: /opt/healthcheck.sh
+      interval: 10s
+      timeout: 10s
+      retries: 120
 
 volumes:
   certs:
@@ -86,6 +92,4 @@ volumes:
   elastic-data:
     driver: local
   kibana-data:
-    driver: local
-  kibana-plugin:
     driver: local
