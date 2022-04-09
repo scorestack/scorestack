@@ -37,7 +37,7 @@ func init() {
 	rootCmd.AddCommand(setupCmd)
 
 	// Config file contents
-	setupFlag("kibana", "k", "https://localhost:5601", "address of Kibana host to set up")
+	setupFlag("kibana", "k", "https://localhost", "address of Kibana host to set up")
 	setupFlag("setup-username", "U", "elastic", "username of Elasticsearch superuser to use for setup")
 	setupFlag("setup-password", "P", "changeme", "password of Elasticsearch superuser to use for setup")
 }
