@@ -1,9 +1,9 @@
 import { NavigationPublicPluginStart } from '../../../src/plugins/navigation/public';
 
-/* eslint-disable @typescript-eslint/no-empty-interface, prettier/prettier */
-export interface ScorestackPluginSetup { }
-export interface ScorestackPluginStart { }
-/* eslint-enable @typescript-eslint/no-empty-interface, prettier/prettier */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ScorestackPluginSetup {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ScorestackPluginStart {}
 
 export interface AppPluginStartDependencies {
   navigation: NavigationPublicPluginStart;

@@ -1,4 +1,4 @@
-import { AppMountParameters, CoreSetup, CoreStart, Plugin } from '../../../src/core/public';
+import { AppMountParameters, CoreSetup, CoreStart, Plugin } from 'kibana/public';
 import { ScorestackPluginSetup, ScorestackPluginStart, AppPluginStartDependencies } from './types';
 import { PLUGIN_NAME } from '../common';
 
@@ -26,6 +26,5 @@ export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, Scorestac
     return {};
   }
 
-  // eslint-disable-next-line prettier/prettier
-  public stop() { }
+  public stop() {}
 }

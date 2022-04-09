@@ -1,10 +1,4 @@
-import {
-  PluginInitializerContext,
-  CoreSetup,
-  CoreStart,
-  Plugin,
-  Logger,
-} from '../../../src/core/server';
+import { PluginInitializerContext, CoreSetup, CoreStart, Plugin, Logger } from 'kibana/server';
 
 import { ScorestackPluginSetup, ScorestackPluginStart } from './types';
 import { defineRoutes } from './routes';
@@ -21,7 +15,7 @@ export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, Scorestac
     const router = core.http.createRouter();
 
     // Register server side APIs
-    defineRoutes(router, core.elasticsearch.legacy.client);
+    defineRoutes(router);
 
     return {};
   }
@@ -31,7 +25,5 @@ export class ScorestackPlugin implements Plugin<ScorestackPluginSetup, Scorestac
     return {};
   }
 
-  public stop() {
-    this.logger.debug('scorestack: Stopped');
-  }
+  public stop() {}
 }
