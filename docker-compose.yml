@@ -5,7 +5,7 @@ services:
 
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
-    user: "0"
+    user: root
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
       KIBANA_PASSWORD: ${KIBANA_PASSWORD:-changeme}
@@ -13,24 +13,25 @@ services:
       - certs:/usr/share/elasticsearch/config/certs
       - ./docker/configs/instances.yml:/usr/share/elasticsearch/config/certs/instances.yml
       - ./docker/scripts/setup-entrypoint.sh:/opt/entrypoint.sh
-      - ./docker/scripts/setup-healthcheck.sh:/opt/healthcheck.sh
     command: /opt/entrypoint.sh
-    healthcheck:
-      test: /opt/healthcheck.sh
-      interval: 1s
-      timeout: 5s
-      retries: 120
+
+  plugin-builder:
+    image: node:16.14.2
+    working_dir: /usr/share/kibana
+    command: /opt/entrypoint.sh
+    volumes:
+      - ./kibana-plugin:/usr/share/kibana/plugins/scorestack
+      - ./docker/scripts/plugin-builder-entrypoint.sh:/opt/entrypoint.sh
 
   elasticsearch:
-    depends_on:
-      setup:
-        condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - elastic-data:/usr/share/elasticsearch/data
       - ./docker/configs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./docker/scripts/elasticsearch-entrypoint.sh:/opt/entrypoint.sh
       - ./docker/scripts/elasticsearch-healthcheck.sh:/opt/healthcheck.sh
+    entrypoint: /opt/entrypoint.sh
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
     ulimits:
@@ -44,17 +45,16 @@ services:
       retries: 120
 
   kibana:
-    working_dir: /usr/share/kibana
     command: /opt/entrypoint.sh
     depends_on:
       elasticsearch:
         condition: service_healthy
-    image: node:16.14.2
+    image: docker.elastic.co/kibana/kibana:8.1.2
     volumes:
       - certs:/usr/share/kibana/config/certs
       - kibana-data:/usr/share/kibana/data
-      - ./kibana-plugin:/usr/share/kibana/plugins/scorestack
-      - ./docker/configs/kibana.yml:/usr/share/kibana/config/kibana.dev.yml
+      - ./kibana-plugin:/opt/plugin
+      - ./docker/configs/kibana.yml:/usr/share/kibana/config/kibana.yml
       - ./docker/scripts/kibana-entrypoint.sh:/opt/entrypoint.sh
       - ./docker/scripts/kibana-healthcheck.sh:/opt/healthcheck.sh
     environment:
@@ -68,7 +68,9 @@ services:
   nginx:
     image: nginx
     depends_on:
-      setup:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
         condition: service_healthy
     volumes:
       - certs:/etc/nginx/certs
@@ -85,5 +87,5 @@ volumes:
     driver: local
   kibana-data:
     driver: local
-  kibana-plugins:
+  kibana-plugin:
     driver: local

@@ -1,7 +1,7 @@
 ---
-elasticsearch.hosts: ["https://localhost:9200"]
-elasticsearch.ssl.certificate: /usr/share/kibana/config/certificates/kibana/kibana.crt
-elasticsearch.ssl.key: /usr/share/kibana/config/certificates/kibana/kibana.key
+elasticsearch.hosts: ["https://elasticsearch:9200"]
+elasticsearch.ssl.certificate: config/certs/kibana/kibana.crt
+elasticsearch.ssl.key: config/certs/kibana/kibana.key
 elasticsearch.ssl.certificateAuthorities:
   - config/certs/ca/ca.crt
 elasticsearch.ssl.verificationMode: certificate

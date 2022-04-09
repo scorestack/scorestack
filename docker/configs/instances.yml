@@ -8,3 +8,7 @@ instances:
     dns:
       - kibana
       - localhost
+  - name: nginx
+    dns:
+      - nginx
+      - localhost
