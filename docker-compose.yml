@@ -67,6 +67,7 @@ services:
 
   nginx:
     image: nginx
+    entrypoint: "/opt/entrypoint.sh"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -75,6 +76,7 @@ services:
     volumes:
       - certs:/etc/nginx/certs
       - ./docker/configs/proxy.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/scripts/nginx-entrypoint.sh:/opt/entrypoint.sh
       - ./docker/scripts/nginx-healthcheck.sh:/opt/healthcheck.sh
     ports:
       - 80:80
