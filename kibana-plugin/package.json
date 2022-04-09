@@ -1,24 +1,18 @@
 {
   "name": "scorestack",
   "version": "0.8.2",
-  "description": "A Kibana plugin for viewing and modifying Scorestack checks and attributes.",
   "private": true,
   "scripts": {
-    "prebuild": "node ../../scripts/build_kibana_platform_plugins --verbose --dist --filter scorestack",
-    "build": "plugin-helpers build --build-version 0.8.2 --kibana-version 7.9.2",
+    "plugin-helpers": "node ../../scripts/plugin_helpers",
     "kbn": "node ../../scripts/kbn",
+    "start": "cd ../../ && node scripts/kibana --dev --no-base-path -c plugins/scorestack/kibana.dev.yml",
+    "build": "yarn plugin-helpers build --kibana-version 8.1.2",
     "lint": "eslint --ignore-path .gitignore --color .",
-    "plugin-helpers": "plugin-helpers",
-    "start": "cd ../../ && node scripts/kibana --dev --no-base-path -c plugins/kibana-plugin/kibana.dev.yml"
-  },
-  "dependencies": {
-    "@kbn/config-schema": "link:../../packages/kbn-config-schema"
+    "lint-fix": "eslint --ignore-path .gitignore --color --fix ."
   },
   "devDependencies": {
     "@elastic/eslint-config-kibana": "link:../../packages/elastic-eslint-config-kibana",
-    "@kbn/eslint-plugin-eslint": "link:../../packages/kbn-eslint-plugin-eslint",
-    "@kbn/plugin-helpers": "link:../../packages/kbn-plugin-helpers",
     "babel-eslint": "^10.1.0",
-    "typescript": "^4.0.3"
+    "eslint": "^8.12.0"
   }
 }
