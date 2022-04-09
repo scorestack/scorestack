@@ -7,4 +7,4 @@ while [ ! -f config/certs/elasticsearch/elasticsearch.crt ]; do
 done
 
 echo "Starting Elasticsearch"
-exec /usr/local/bin/docker-entrypoint.sh
+exec /usr/local/bin/docker-entrypoint.sh eswrapper

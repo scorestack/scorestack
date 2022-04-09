@@ -5,7 +5,8 @@ services:
 
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
-    command: /opt/entrypoint.sh
+    entrypoint: ["/bin/tini", "--"]
+    command: "/opt/entrypoint.sh"
     user: root
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
@@ -17,15 +18,17 @@ services:
 
   plugin-builder:
     image: node:16.14.2
+    entrypoint: ["/bin/tini", "--"]
+    command: "/opt/entrypoint.sh"
     working_dir: /usr/share/kibana
-    command: /opt/entrypoint.sh
     volumes:
       - ./kibana-plugin:/usr/share/kibana/plugins/scorestack
       - ./docker/scripts/plugin-builder-entrypoint.sh:/opt/entrypoint.sh
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
-    entrypoint: /opt/entrypoint.sh
+    entrypoint: ["/bin/tini", "--"]
+    command: "/opt/entrypoint.sh"
     ulimits:
       memlock:
         soft: -1
@@ -46,7 +49,8 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.1.2
-    command: /opt/entrypoint.sh
+    entrypoint: ["/bin/tini", "--"]
+    command: "/opt/entrypoint.sh"
     depends_on:
       elasticsearch:
         condition: service_healthy
