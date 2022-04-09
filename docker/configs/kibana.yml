@@ -5,14 +5,44 @@ elasticsearch.ssl.key: config/certs/kibana/kibana.key
 elasticsearch.ssl.certificateAuthorities:
   - config/certs/ca/ca.crt
 elasticsearch.ssl.verificationMode: certificate
-
 elasticsearch.username: kibana_system
 
+# Disable the newsfeed to reduce UI noise. Scorestack is only typically
+# deployed for short periods of time, so we don't really care about the latest
+# and greatest from Elastic.
+newsfeed.enabled: false
+
+# If you don't configure this, Kibana will show a warning toast telling you
+# that it needs to be configured. However, since we have no way of knowing what
+# IP or domain Scorestack is running behind, we have to comment this out. If
+# you want to silence the warning, set the SERVER_PUBLICBASEURL environment
+# variable for the container.
+#server.publicBaseUrl: https://scoreboard.example.com
 server.host: "0.0.0.0"
 server.name: kibana
-
 server.ssl.enabled: true
 server.ssl.certificate: config/certs/kibana/kibana.crt
 server.ssl.key: config/certs/kibana/kibana.key
 server.ssl.certificateAuthorities:
   - config/certs/ca/ca.crt
+
+# Security folks can get antsy about sending telemetry so we'll disable it to
+# make them more comfortable. Scorestack admins can opt-in to telemetry if they
+# wish through Advanced Settings in Kibana.
+telemetry.optIn: false
+
+# Silences a config.deprication warning log on Kibana startup in v8.1.2
+xpack.reporting.roles.enabled: false
+
+# Silences a warning about report generation on Kibana startup. Should be
+# reconfigured on production deployments (similar to server.publicBaseUrl) if
+# you need this feature.
+xpack.reporting.kibanaServer.hostname: localhost
+
+# Silences warning logs on Kibana startup and enables clustered deployments of
+# Kibana for Scorestack. Using known values is insecure, but that's acceptable
+# for development and testing use cases. For production Scorestack deployments,
+# these settings must be reconfigured.
+xpack.security.encryptionKey: "scorestack_dev_xpack.security.encryptionKey"
+xpack.reporting.encryptionKey: "scorestack_dev_xpack.reporting.encryptionKey"
+xpack.encryptedSavedObjects.encryptionKey: "scorestack_dev_xpack.encryptedSavedObjects.encryptionKey"
