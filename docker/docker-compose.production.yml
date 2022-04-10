@@ -1,0 +1,57 @@
+---
+version: "3"
+
+services:
+
+  setup:
+    image: scorestack-setup:0.8.2
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
+      KIBANA_PASSWORD: ${KIBANA_PASSWORD:-changeme}
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+
+  elasticsearch:
+    image: scorestack-elasticsearch:0.8.2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - elastic-data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: scorestack-kibana:0.8.2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_PASSWORD: ${KIBANA_PASSWORD:-changeme}
+    volumes:
+      - certs:/usr/share/kibana/config/certs
+      - kibana-data:/usr/share/kibana/data
+
+  nginx:
+    image: scorestack-nginx:0.8.2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    volumes:
+      - certs:/etc/nginx/certs
+    ports:
+      - 80:80
+      - 443:443
+      - 9200:9200
+
+volumes:
+  certs:
+    driver: local
+  elastic-data:
+    driver: local
+  kibana-data:
+    driver: local
