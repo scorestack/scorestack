@@ -35,7 +35,7 @@ jobs:
       - name: Build Dynamicbeat
         run: cd dynamicbeat && make dynamicbeat
       - name: Build production images
-        run: make build-image-release
+        run: make build-image
       - name: Start prod deployment
         run: docker-compose -f docker/docker-compose.production.yml up -d
       - name: Set up Scorestack
