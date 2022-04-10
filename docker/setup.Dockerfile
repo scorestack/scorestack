@@ -8,8 +8,8 @@ VOLUME /usr/share/elasticsearch/config/certs
 ENV ELASTIC_PASSWORD=changeme
 ENV KIBANA_PASSWORD=changeme
 
-COPY configs/instances.yml config/certs/instances.yml
-COPY scripts/setup-entrypoint.sh /opt/entrypoint.sh
+COPY docker/configs/instances.yml config/certs/instances.yml
+COPY docker/scripts/setup-entrypoint.sh /opt/entrypoint.sh
 
 ENTRYPOINT [ "/bin/tini", "--" ]
 CMD [ "/opt/entrypoint.sh" ]

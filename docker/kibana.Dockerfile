@@ -1,10 +1,6 @@
 FROM node:16.14.2 AS plugin-builder
 WORKDIR /usr/share/kibana
 
-# Note this container must be built from the root of the repository so the
-# kibana-plugin/ folder can be included in the build context. This differs from
-# the rest of the images, which are built from within the docker/ folder to
-# reduce the size of the build context.
 COPY kibana-plugin /usr/share/kibana/plugins/scorestack
 COPY docker/scripts/plugin-builder-entrypoint.sh /opt/entrypoint.sh
 

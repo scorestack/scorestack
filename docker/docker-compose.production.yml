@@ -4,7 +4,7 @@ version: "3"
 services:
 
   setup:
-    image: scorestack-setup:0.8.2
+    image: ghcr.io/scorestack/setup:latest
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-changeme}
       KIBANA_PASSWORD: ${KIBANA_PASSWORD:-changeme}
@@ -12,7 +12,7 @@ services:
       - certs:/usr/share/elasticsearch/config/certs
 
   elasticsearch:
-    image: scorestack-elasticsearch:0.8.2
+    image: ghcr.io/scorestack/elasticsearch:latest
     ulimits:
       memlock:
         soft: -1
@@ -24,7 +24,7 @@ services:
       - elastic-data:/usr/share/elasticsearch/data
 
   kibana:
-    image: scorestack-kibana:0.8.2
+    image: ghcr.io/scorestack/kibana:latest
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -35,7 +35,7 @@ services:
       - kibana-data:/usr/share/kibana/data
 
   nginx:
-    image: scorestack-nginx:0.8.2
+    image: ghcr.io/scorestack/nginx:latest
     depends_on:
       elasticsearch:
         condition: service_healthy

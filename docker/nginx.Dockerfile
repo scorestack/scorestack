@@ -4,9 +4,9 @@ FROM nginx
 # here if you want to use a custom HTTPS certificate.
 VOLUME /etc/nginx/certs
 
-COPY configs/proxy.conf /etc/nginx/conf.d/default.conf
-COPY scripts/nginx-entrypoint.sh /opt/entrypoint.sh
-COPY scripts/nginx-healthcheck.sh /opt/healthcheck.sh
+COPY docker/configs/proxy.conf /etc/nginx/conf.d/default.conf
+COPY docker/scripts/nginx-entrypoint.sh /opt/entrypoint.sh
+COPY docker/scripts/nginx-healthcheck.sh /opt/healthcheck.sh
 
 EXPOSE 80/tcp
 EXPOSE 443/tcp
