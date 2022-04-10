@@ -1,0 +1,43 @@
+---
+name: Linting
+
+on:
+  push:
+    branches-ignore:
+      - gh-pages
+
+jobs:
+
+  kibana-plugin:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16.14.2
+      options: --workdir /usr/share/kibana
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: elastic/kibana
+          ref: v8.1.2
+      - uses: actions/checkout@v3
+        with:
+          path: plugins
+      - name: Install dependencies, lint, and build
+        run: |
+          cd plugins/kibana-plugin
+          yarn kbn bootstrap
+          yarn lint
+          yarn build
+
+  dynamicbeat:
+    runs-on: ubuntu-latest
+    container:
+      image: golang:1.16.2
+      options: --workdir /usr/src/app
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies, lint, and build
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.25.1
+          cd dynamicbeat
+          golangci-lint run -v
+          make dynamicbeat
