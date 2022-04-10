@@ -18,7 +18,7 @@ import (
 const CHECKDEF_INDEX = "checkdef"
 
 // Run starts dynamicbeat.
-func Run() error {
+func Run(rounds uint) error {
 	zap.S().Infof("dynamicbeat is running! Hit CTRL-C to stop it.")
 	c := config.Get()
 
@@ -78,42 +78,30 @@ func Run() error {
 	published := make(chan uint64)
 	go publishEvents(pub, results, published)
 
-	// Start running checks
+	// Start round timer
 	ticker := time.NewTicker(c.RoundTime)
 
+	// Start first round
 	var wg sync.WaitGroup
+	runRound(defs, results, &wg)
+	roundsRun := uint(1)
+
+	if rounds == 1 {
+		return waitAndExit(&wg, results, published)
+	}
+
 	for {
 		select {
 		case <-quit:
-			// Wait for all checks.RunChecks goroutines to exit
-			wg.Wait()
-
-			// Close the event publishing queue so the publishEvents goroutine will exit
-			close(results)
-
-			// Wait for all events to be published
-			<-published
-			close(published)
-			return nil
+			return waitAndExit(&wg, results, published)
 		case <-ticker.C:
 			zap.S().Infof("Number of goroutines: %d", runtime.NumGoroutine())
-			zap.S().Infof("Starting a series of %d checks", len(defs))
+			runRound(defs, results, &wg)
+			roundsRun += 1
 
-			// Start the goroutine
-			started := make(chan bool)
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				run.Round(defs, results, started)
-			}()
-
-			// Wait until all the checks have been started before we refresh
-			// the checks from Elasticsearch to make sure that we don't
-			// overwrite the check definitions while they're in use.
-			// TODO: determine if it's possible to overwrite the defs while
-			// they're in use by the above function
-			<-started
-			zap.S().Infof("Started series of checks")
+			if rounds > 0 && roundsRun >= rounds {
+				return waitAndExit(&wg, results, published)
+			}
 
 			// Update the check definitions for the next round
 			defs, err = es.LoadAll()
@@ -122,6 +110,37 @@ func Run() error {
 			}
 		}
 	}
+}
+
+func runRound(defs []check.Config, results chan<- check.Result, wg *sync.WaitGroup) {
+	zap.S().Infof("Starting a series of %d checks", len(defs))
+
+	// Start the goroutine
+	started := make(chan bool)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		run.Round(defs, results, started)
+	}()
+
+	// Wait until all the checks have been started before we refresh
+	// the checks from Elasticsearch to make sure that we don't
+	// overwrite the check definitions while they're in use.
+	<-started
+	zap.S().Infof("Started series of checks")
+}
+
+func waitAndExit(wg *sync.WaitGroup, results chan check.Result, published chan uint64) error {
+	// Wait for all checks.RunChecks goroutines to exit
+	wg.Wait()
+
+	// Close the event publishing queue so the publishEvents goroutine will exit
+	close(results)
+
+	// Wait for all events to be published
+	<-published
+	close(published)
+	return nil
 }
 
 func publishEvents(es *esclient.Client, results <-chan check.Result, out chan<- uint64) {
