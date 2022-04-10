@@ -3,8 +3,7 @@ name: Linting
 
 on:
   push:
-    branches-ignore:
-      - gh-pages
+    branches-ignore: [gh-pages]
 
 jobs:
 
