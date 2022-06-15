@@ -27,6 +27,7 @@ func Run() error {
 		return err
 	}
 
+	// TODO, get error code for bad creds
 	es, err := checksource.NewElasticsearch(c.Elasticsearch, c.Username, c.Password, c.VerifyCerts, CHECKDEF_INDEX)
 	if err != nil {
 		return err
@@ -53,6 +54,7 @@ func Run() error {
 		select {
 		// Case for catching Ctrl+C and gracfully exiting
 		case <-quit:
+			zap.S().Infof("SIGTERM recieved, exiting gracefully")
 			return nil
 		default:
 			// Continue looping and sleeping till we can hit Elasticsearch
@@ -85,6 +87,7 @@ func Run() error {
 	for {
 		select {
 		case <-quit:
+			zap.S().Infof("SIGTERM recieved, exiting gracefully")
 			// Wait for all checks.RunChecks goroutines to exit
 			wg.Wait()
 
