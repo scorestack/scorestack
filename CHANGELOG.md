@@ -21,6 +21,8 @@ Each section organizes entries into the following subsections:
 
 ## [Unreleased]
 
+- Fix check logic in Kibana client to look for appropriate fields on newer versions of Kibana (#344)
+
 ## [0.8.2] - 2021-09-28
 
 THis release fixes a Dynamicbeat bug in the team overrides system.
