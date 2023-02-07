@@ -1,5 +1,4 @@
-Changelog
-=========
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -20,11 +19,9 @@ Each section organizes entries into the following subsections:
 - Fixed
 - Security
 
-[Unreleased]
-------------
+## [Unreleased]
 
-[0.8.2] - 2021-09-28
---------------------
+## [0.8.2] - 2021-09-28
 
 THis release fixes a Dynamicbeat bug in the team overrides system.
 
@@ -34,8 +31,7 @@ THis release fixes a Dynamicbeat bug in the team overrides system.
 
 - Ensure template overrides are properly templated into attribute values as expected (#324)
 
-[0.8.1] - 2021-09-12
---------------------
+## [0.8.1] - 2021-09-12
 
 This release fixes a few bugs in Dynamicbeat related to the new deployment and check-adding processes.
 
@@ -46,8 +42,7 @@ This release fixes a few bugs in Dynamicbeat related to the new deployment and c
 - Replace remaining `${VAR}` template strings with `{{.Var}}` templates in saved objects (#321)
 - Ensure generic check definitions are added by `dynamicbeat setup checks` (#321)
 
-[0.8.0] - 2021-08-10
---------------------
+## [0.8.0] - 2021-08-10
 
 This release overhauls the structure of Dynamicbeat and improves the deployment and check-adding processes.
 
@@ -87,8 +82,7 @@ This release overhauls the structure of Dynamicbeat and improves the deployment 
 
 - Ensure Dynamicbeat doesn't segfault if a check fails to parse properly (#316)
 
-[0.7.0] - 2021-02-21
---------------------
+## [0.7.0] - 2021-02-21
 
 This release adds two new check types and fixes a logging bug with the SSH check.
 
@@ -103,8 +97,7 @@ This release adds two new check types and fixes a logging bug with the SSH check
 
 - Spurious EOF errors when closing SSH connections are ignored (#292)
 
-[0.6.2] - 2021-02-16
---------------------
+## [0.6.2] - 2021-02-16
 
 This release fixes a bug with the SSH check in Dynamicbeat.
 
@@ -114,8 +107,7 @@ This release fixes a bug with the SSH check in Dynamicbeat.
 
 - SSH now matches content when MatchContent is true (#288)
 
-[0.6.1] - 2021-01-26
---------------------
+## [0.6.1] - 2021-01-26
 
 This release mainly fixes deployment issues and improves the documentation.
 
@@ -147,8 +139,7 @@ This release mainly fixes deployment issues and improves the documentation.
 
 - Replaced Golang `html/template` library with `text/template` (#251)
 
-[0.6.0] - 2020-10-17
---------------------
+## [0.6.0] - 2020-10-17
 
 This release upgrades Scorestack to use Elastic Stack 7.9.2, the latest released version as of this writing. It also fixes some bugs with Dynamicbeat's check template system.
 
@@ -203,8 +194,7 @@ This release upgrades Scorestack to use Elastic Stack 7.9.2, the latest released
 - Replace TinyURL plugin link with GitHub Releases link
 - Build plugin bundles and include them in the plugin zipfile
 
-[0.5.1] - 2020-10-01
---------------------
+## [0.5.1] - 2020-10-01
 
 An intermediate release to support the transition of Dynamicbeat to go mod.
 
@@ -214,8 +204,7 @@ An intermediate release to support the transition of Dynamicbeat to go mod.
 
 - Migrate to go mod
 
-[0.5.0] - 2020-09-29
---------------------
+## [0.5.0] - 2020-09-29
 
 This is the first public release of Scorestack.
 
@@ -251,8 +240,7 @@ This is the first public release of Scorestack.
 
 - GitHub import links
 
-[0.4.0] - 2020-04-25
---------------------
+## [0.4.0] - 2020-04-25
 
 This release implements features for IRSeC 2020.
 
@@ -270,8 +258,7 @@ This release implements features for IRSeC 2020.
 - SMB check
 - MySQL check
 
-[0.3.0] - 2020-04-07
---------------------
+## [0.3.0] - 2020-04-07
 
 This release focuses on some housekeeping tasks and Dynamicbeat bugfixes.
 
@@ -310,8 +297,7 @@ This release focuses on some housekeeping tasks and Dynamicbeat bugfixes.
 - Prevent Dynamicbeat from crashing if an invalid check type is used
 - Respond to the interupt signal properly
 
-[0.2.0] - 2020-02-28
---------------------
+## [0.2.0] - 2020-02-28
 
 This release is in preparation for ISTS 2020.
 
@@ -396,12 +382,11 @@ This release is in preparation for ISTS 2020.
 - Attribute modification page
 - Organize services by group on Check Attributes page
 
-[0.1.0] - 2020-02-13
---------------------
+## [0.1.0] - 2020-02-13
 
 The initial release of Scorestack.
 
-[Unreleased]: https://github.com/scorestack/scorestack/compare/v0.8.2...main
+[unreleased]: https://github.com/scorestack/scorestack/compare/v0.8.2...main
 [0.8.2]: https://github.com/scorestack/scorestack/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/scorestack/scorestack/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/scorestack/scorestack/compare/v0.7.0...v0.8.0
