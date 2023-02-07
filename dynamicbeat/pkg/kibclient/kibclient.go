@@ -64,6 +64,7 @@ func (c *Client) Wait() error {
 			Status struct {
 				Overall struct {
 					State string `json:"state"`
+					Level string `json:"level"`
 				} `json:"overall"`
 			} `json:"status"`
 		}{}
@@ -73,7 +74,7 @@ func (c *Client) Wait() error {
 			continue
 		}
 		body.Close()
-		if health.Status.Overall.State == "green" {
+		if health.Status.Overall.State == "green" || health.Status.Overall.Level == "available" {
 			break
 		}
 	}
