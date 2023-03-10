@@ -1,0 +1,31 @@
+{
+  "name": "Git",
+  "type": "git",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Repository": "{{.Repository}}",
+    "Branch": "{{.Branch}}",
+    "Port": 80,
+    "HTTPS": false,
+    "HTTPSValidate": false,
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "ContentMatch": true,
+    "ContentFile": "content.txt",
+    "ContentRegex": ".*",
+    "CommitHashMatch": false,
+    "CommitHash": "6667dd62e89f23a07798340fc06d1abbab29c84d683266438ad94731c91e2331"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "localhost",
+      "Repository": "example-repo",
+      "Branch": "main",
+      "Username": "git"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}
