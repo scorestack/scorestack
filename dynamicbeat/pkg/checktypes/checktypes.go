@@ -4,6 +4,7 @@ import (
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/check"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/dns"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/ftp"
+	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/git"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/http"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/icmp"
 	"github.com/scorestack/scorestack/dynamicbeat/pkg/checktypes/imap"
@@ -56,6 +57,8 @@ func GetCheckType(c check.Config) check.Check {
 		def = &postgresql.Definition{}
 	case "mssql":
 		def = &mssql.Definition{}
+	case "git":
+		def = &git.Definition{}
 	default:
 		zap.S().Warnf("check id %s had an invalid type: %s", c.ID, c.Type)
 		def = &noop.Definition{}
