@@ -18,19 +18,19 @@ import (
 // The Definition configures the behavior of the Git check and implements the "check" interface.
 type Definition struct {
 	Config          check.Config // Generic metadata about the check
-	Host            string       `optiontype:"required"`                       // IP or hostname of the host to run the Git check against
-	Repository      string       `optiontype:"required"`                       // The path to the remote repostitory
-	Branch          string       `optiontype:"required"`                       // The branch to clone from the repository
-	HTTPS           bool         `optiontype:"optional"`                       // Whether to use HTTP or HTTPS
-	HttpsValidate   bool         `optiontype:"optional" optiondefault:"false"` // Whether HTTPS certificates should be validated
-	Username        string       `optiontype:"optional"`                       // User used for git authentication
-	Password        string       `optiontype:"optional"`                       // Password for the user to login with
-	ContentMatch    bool         `optiontype:"optional" optiondefault:"false"` // Whether or not to match the contents of the checked file
-	ContentFile     string       `optiontype:"optional"`                       // The path to the file to check the contents of
-	ContentRegex    string       `optiontype:"optional" optiondefault:".*"`    // Regex to match against the checked file
-	CommitHashMatch bool         `optiontype:"optional" optiondefault:"false"` // Whether or not to match the hash of the latest commit
-	CommitHash      string       `optiontype:"optional"`                       // The hash to check against the latest commit
-	Port            int          `optiontype:"optional"`                       // Port to attempt a connection to when cloning the repository
+	Host            string       `optiontype:"required"`                    // IP or hostname of the host to run the Git check against
+	Repository      string       `optiontype:"required"`                    // The path to the remote repostitory
+	Branch          string       `optiontype:"required"`                    // The branch to clone from the repository
+	HTTPS           bool         `optiontype:"optional"`                    // Whether to use HTTP or HTTPS
+	HttpsValidate   bool         `optiontype:"optional"`                    // Whether HTTPS certificates should be validated
+	Username        string       `optiontype:"optional"`                    // User used for git authentication
+	Password        string       `optiontype:"optional"`                    // Password for the user to login with
+	ContentMatch    bool         `optiontype:"optional"`                    // Whether or not to match the contents of the checked file
+	ContentFile     string       `optiontype:"optional"`                    // The path to the file to check the contents of
+	ContentRegex    string       `optiontype:"optional" optiondefault:".*"` // Regex to match against the checked file
+	CommitHashMatch bool         `optiontype:"optional"`                    // Whether or not to match the hash of the latest commit
+	CommitHash      string       `optiontype:"optional"`                    // The hash to check against the latest commit
+	Port            int          `optiontype:"optional"`                    // Port to attempt a connection to when cloning the repository
 }
 
 // Run a single instance of the check.
@@ -63,7 +63,7 @@ func (d *Definition) Run(ctx context.Context) check.Result {
 	tree := memfs.New()
 
 	// Clone the Git repository into memory
-	// We only clone a single branch the latest commit to minimize memory usage
+	// We only clone the latest commit from a single branch to minimize memory usage
 	repo, err := git.Clone(store, tree, &git.CloneOptions{
 		URL:             repoUrl.String(),
 		ReferenceName:   plumbing.NewBranchReferenceName(d.Branch),
