@@ -18,19 +18,19 @@ import (
 // The Definition configures the behavior of the Git check and implements the "check" interface.
 type Definition struct {
 	Config          check.Config // Generic metadata about the check
-	Host            string       `optiontype:"required"`                    // IP or hostname of the host to run the Git check against
-	Repository      string       `optiontype:"required"`                    // The path to the remote repostitory
+	Host            string       `optiontype:"required"`                    // IIP or FQDN the remote repository is located
+	Repository      string       `optiontype:"required"`                    // The path to the remote repository
 	Branch          string       `optiontype:"required"`                    // The branch to clone from the repository
+	Port            int          `optiontype:"optional"`                    // The port to connect to for cloning the repository
 	HTTPS           bool         `optiontype:"optional"`                    // Whether to use HTTP or HTTPS
 	HttpsValidate   bool         `optiontype:"optional"`                    // Whether HTTPS certificates should be validated
-	Username        string       `optiontype:"optional"`                    // User used for git authentication
-	Password        string       `optiontype:"optional"`                    // Password for the user to login with
-	ContentMatch    bool         `optiontype:"optional"`                    // Whether or not to match the contents of the checked file
-	ContentFile     string       `optiontype:"optional"`                    // The path to the file to check the contents of
-	ContentRegex    string       `optiontype:"optional" optiondefault:".*"` // Regex to match against the checked file
+	Username        string       `optiontype:"optional"`                    // Username to use for private repositories
+	Password        string       `optiontype:"optional"`                    // Password for the user
+	ContentMatch    bool         `optiontype:"optional"`                    // Whether to check the contents of a file
+	ContentFile     string       `optiontype:"optional"`                    // The path of the file to check the contents of
+	ContentRegex    string       `optiontype:"optional" optiondefault:".*"` // The regex to match against the checked file
 	CommitHashMatch bool         `optiontype:"optional"`                    // Whether or not to match the hash of the latest commit
 	CommitHash      string       `optiontype:"optional"`                    // The hash to check against the latest commit
-	Port            int          `optiontype:"optional"`                    // Port to attempt a connection to when cloning the repository
 }
 
 // Run a single instance of the check.

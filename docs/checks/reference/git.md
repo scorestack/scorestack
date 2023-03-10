@@ -15,4 +15,4 @@ Git
 | ContentFile     | String  | N          | The path of the file to check the contents of         |
 | ContentRegex    | String  | N :: ".*"  | The regex to match against the checked file           |
 | CommitHashMatch | Boolean | N :: false | Whether or not to match the hash of the latest commit |
-| CommitHash      | String  | N :: ""    | The hash to check against the latest commit           |
+| CommitHash      | String  | N          | The hash to check against the latest commit           |
