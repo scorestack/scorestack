@@ -4,8 +4,10 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Introduction - Scorestack Documentation</title>
+
+
         <!-- Custom HTML head -->
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
@@ -16,25 +18,29 @@
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
         <link rel="stylesheet" href="css/print.css" media="print">
+
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link rel="stylesheet" href="fonts/fonts.css">
+
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+
     </head>
     <body>
+    <div id="body-container">
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -50,7 +56,7 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
@@ -62,12 +68,14 @@
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
+        <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -75,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item "><a href="checks.html"><strong aria-hidden="true">1.</strong> Checks</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="checks/file.html"><strong aria-hidden="true">1.1.</strong> The Check File</a></li><li class="chapter-item "><a href="checks/metadata.html"><strong aria-hidden="true">1.2.</strong> Check Metadata</a></li><li class="chapter-item "><a href="checks/definition.html"><strong aria-hidden="true">1.3.</strong> Check Definition</a></li><li class="chapter-item "><a href="checks/attributes.html"><strong aria-hidden="true">1.4.</strong> Check Attributes</a></li><li class="chapter-item "><a href="checks/adding_checks.html"><strong aria-hidden="true">1.5.</strong> Adding Checks</a></li><li class="chapter-item "><a href="checks/reference.html"><strong aria-hidden="true">1.6.</strong> Check Reference</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="checks/reference/dns.html"><strong aria-hidden="true">1.6.1.</strong> DNS</a></li><li class="chapter-item "><a href="checks/reference/ftp.html"><strong aria-hidden="true">1.6.2.</strong> FTP</a></li><li class="chapter-item "><a href="checks/reference/http.html"><strong aria-hidden="true">1.6.3.</strong> HTTP</a></li><li class="chapter-item "><a href="checks/reference/icmp.html"><strong aria-hidden="true">1.6.4.</strong> ICMP</a></li><li class="chapter-item "><a href="checks/reference/imap.html"><strong aria-hidden="true">1.6.5.</strong> IMAP</a></li><li class="chapter-item "><a href="checks/reference/ldap.html"><strong aria-hidden="true">1.6.6.</strong> LDAP</a></li><li class="chapter-item "><a href="checks/reference/mysql.html"><strong aria-hidden="true">1.6.7.</strong> MySQL</a></li><li class="chapter-item "><a href="checks/reference/noop.html"><strong aria-hidden="true">1.6.8.</strong> Noop</a></li><li class="chapter-item "><a href="checks/reference/smb.html"><strong aria-hidden="true">1.6.9.</strong> SMB</a></li><li class="chapter-item "><a href="checks/reference/smtp.html"><strong aria-hidden="true">1.6.10.</strong> SMTP</a></li><li class="chapter-item "><a href="checks/reference/ssh.html"><strong aria-hidden="true">1.6.11.</strong> SSH</a></li><li class="chapter-item "><a href="checks/reference/vnc.html"><strong aria-hidden="true">1.6.12.</strong> VNC</a></li><li class="chapter-item "><a href="checks/reference/winrm.html"><strong aria-hidden="true">1.6.13.</strong> WinRM</a></li><li class="chapter-item "><a href="checks/reference/xmpp.html"><strong aria-hidden="true">1.6.14.</strong> XMPP</a></li></ol></li></ol></li><li class="chapter-item "><a href="dynamicbeat.html"><strong aria-hidden="true">2.</strong> Dynamicbeat</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="dynamicbeat/configuration.html"><strong aria-hidden="true">2.1.</strong> Configuration</a></li><li class="chapter-item "><a href="dynamicbeat/deployment.html"><strong aria-hidden="true">2.2.</strong> Deployment</a></li><li class="chapter-item "><a href="dynamicbeat/overrides.html"><strong aria-hidden="true">2.3.</strong> Overrides</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat.html"><strong aria-hidden="true">2.4.</strong> Commands</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_config.html"><strong aria-hidden="true">2.4.1.</strong> config</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_config_save.html"><strong aria-hidden="true">2.4.1.1.</strong> save</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_config_view.html"><strong aria-hidden="true">2.4.1.2.</strong> view</a></li></ol></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_run.html"><strong aria-hidden="true">2.4.2.</strong> run</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_setup.html"><strong aria-hidden="true">2.4.3.</strong> setup</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_setup_checks.html"><strong aria-hidden="true">2.4.3.1.</strong> checks</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_setup_elasticsearch.html"><strong aria-hidden="true">2.4.3.2.</strong> elasticsearch</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_setup_kibana.html"><strong aria-hidden="true">2.4.3.3.</strong> kibana</a></li></ol></li></ol></li></ol></li><li class="chapter-item "><a href="deployment.html"><strong aria-hidden="true">3.</strong> Deployment</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="deployment/binaries.html"><strong aria-hidden="true">3.1.</strong> Obtaining Binaries</a></li><li class="chapter-item "><a href="deployment/cloning.html"><strong aria-hidden="true">3.2.</strong> Cloning the Repository</a></li><li class="chapter-item "><a href="deployment/small.html"><strong aria-hidden="true">3.3.</strong> Small Architecture</a></li><li class="chapter-item "><a href="deployment/medium.html"><strong aria-hidden="true">3.4.</strong> Medium Architecture</a></li><li class="chapter-item "><a href="deployment/setup.html"><strong aria-hidden="true">3.5.</strong> Setup</a></li></ol></li><li class="chapter-item "><a href="design.html"><strong aria-hidden="true">4.</strong> Design</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="design/architecture.html"><strong aria-hidden="true">4.1.</strong> Elastic Stack Architecture</a></li><li class="chapter-item "><a href="design/permissions.html"><strong aria-hidden="true">4.2.</strong> User Roles</a></li><li class="chapter-item "><a href="design/check.html"><strong aria-hidden="true">4.3.</strong> Life of a Check</a></li></ol></li><li class="chapter-item "><a href="building.html"><strong aria-hidden="true">5.</strong> Building Binaries</a></li><li class="chapter-item "><a href="appendix/faq.html"><strong aria-hidden="true">6.</strong> Appendix A - FAQ</a></li><li class="chapter-item "><div><strong aria-hidden="true">7.</strong> Appendix B - Glossary</div></li><li class="chapter-item "><div><strong aria-hidden="true">8.</strong> Appendix C - Developer Processes</div></li><li class="spacer"></li><li class="chapter-item affix "><a href="contributors.html">Contributors</a></li></ol>
+                <ol class="chapter"><li class="chapter-item affix "><a href="introduction.html" class="active">Introduction</a></li><li class="chapter-item "><a href="checks.html"><strong aria-hidden="true">1.</strong> Checks</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="checks/file.html"><strong aria-hidden="true">1.1.</strong> The Check File</a></li><li class="chapter-item "><a href="checks/metadata.html"><strong aria-hidden="true">1.2.</strong> Check Metadata</a></li><li class="chapter-item "><a href="checks/definition.html"><strong aria-hidden="true">1.3.</strong> Check Definition</a></li><li class="chapter-item "><a href="checks/attributes.html"><strong aria-hidden="true">1.4.</strong> Check Attributes</a></li><li class="chapter-item "><a href="checks/adding_checks.html"><strong aria-hidden="true">1.5.</strong> Adding Checks</a></li><li class="chapter-item "><a href="checks/reference.html"><strong aria-hidden="true">1.6.</strong> Check Reference</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="checks/reference/dns.html"><strong aria-hidden="true">1.6.1.</strong> DNS</a></li><li class="chapter-item "><a href="checks/reference/ftp.html"><strong aria-hidden="true">1.6.2.</strong> FTP</a></li><li class="chapter-item "><a href="checks/reference/http.html"><strong aria-hidden="true">1.6.3.</strong> HTTP</a></li><li class="chapter-item "><a href="checks/reference/icmp.html"><strong aria-hidden="true">1.6.4.</strong> ICMP</a></li><li class="chapter-item "><a href="checks/reference/imap.html"><strong aria-hidden="true">1.6.5.</strong> IMAP</a></li><li class="chapter-item "><a href="checks/reference/ldap.html"><strong aria-hidden="true">1.6.6.</strong> LDAP</a></li><li class="chapter-item "><a href="checks/reference/mysql.html"><strong aria-hidden="true">1.6.7.</strong> MySQL</a></li><li class="chapter-item "><a href="checks/reference/noop.html"><strong aria-hidden="true">1.6.8.</strong> Noop</a></li><li class="chapter-item "><a href="checks/reference/smb.html"><strong aria-hidden="true">1.6.9.</strong> SMB</a></li><li class="chapter-item "><a href="checks/reference/smtp.html"><strong aria-hidden="true">1.6.10.</strong> SMTP</a></li><li class="chapter-item "><a href="checks/reference/ssh.html"><strong aria-hidden="true">1.6.11.</strong> SSH</a></li><li class="chapter-item "><a href="checks/reference/vnc.html"><strong aria-hidden="true">1.6.12.</strong> VNC</a></li><li class="chapter-item "><a href="checks/reference/winrm.html"><strong aria-hidden="true">1.6.13.</strong> WinRM</a></li><li class="chapter-item "><a href="checks/reference/xmpp.html"><strong aria-hidden="true">1.6.14.</strong> XMPP</a></li></ol></li></ol></li><li class="chapter-item "><a href="dynamicbeat.html"><strong aria-hidden="true">2.</strong> Dynamicbeat</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="dynamicbeat/configuration.html"><strong aria-hidden="true">2.1.</strong> Configuration</a></li><li class="chapter-item "><a href="dynamicbeat/deployment.html"><strong aria-hidden="true">2.2.</strong> Deployment</a></li><li class="chapter-item "><a href="dynamicbeat/overrides.html"><strong aria-hidden="true">2.3.</strong> Overrides</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat.html"><strong aria-hidden="true">2.4.</strong> Commands</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_config.html"><strong aria-hidden="true">2.4.1.</strong> config</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_config_save.html"><strong aria-hidden="true">2.4.1.1.</strong> save</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_config_view.html"><strong aria-hidden="true">2.4.1.2.</strong> view</a></li></ol></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_run.html"><strong aria-hidden="true">2.4.2.</strong> run</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_setup.html"><strong aria-hidden="true">2.4.3.</strong> setup</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_setup_checks.html"><strong aria-hidden="true">2.4.3.1.</strong> checks</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_setup_elasticsearch.html"><strong aria-hidden="true">2.4.3.2.</strong> elasticsearch</a></li><li class="chapter-item "><a href="dynamicbeat/reference/dynamicbeat_setup_kibana.html"><strong aria-hidden="true">2.4.3.3.</strong> kibana</a></li></ol></li></ol></li></ol></li><li class="chapter-item "><a href="deployment.html"><strong aria-hidden="true">3.</strong> Deployment</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="deployment/binaries.html"><strong aria-hidden="true">3.1.</strong> Obtaining Binaries</a></li><li class="chapter-item "><a href="deployment/cloning.html"><strong aria-hidden="true">3.2.</strong> Cloning the Repository</a></li><li class="chapter-item "><a href="deployment/small.html"><strong aria-hidden="true">3.3.</strong> Small Architecture</a></li><li class="chapter-item "><a href="deployment/medium.html"><strong aria-hidden="true">3.4.</strong> Medium Architecture</a></li><li class="chapter-item "><a href="deployment/setup.html"><strong aria-hidden="true">3.5.</strong> Setup</a></li></ol></li><li class="chapter-item "><a href="design.html"><strong aria-hidden="true">4.</strong> Design</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="design/architecture.html"><strong aria-hidden="true">4.1.</strong> Elastic Stack Architecture</a></li><li class="chapter-item "><a href="design/permissions.html"><strong aria-hidden="true">4.2.</strong> User Roles</a></li><li class="chapter-item "><a href="design/check.html"><strong aria-hidden="true">4.3.</strong> Life of a Check</a></li></ol></li><li class="chapter-item "><a href="building.html"><strong aria-hidden="true">5.</strong> Building Binaries</a></li><li class="chapter-item "><a href="appendix/faq.html"><strong aria-hidden="true">6.</strong> Appendix A - FAQ</a></li><li class="chapter-item "><div><strong aria-hidden="true">7.</strong> Appendix B - Glossary</div></li><li class="chapter-item "><div><strong aria-hidden="true">8.</strong> Appendix C - Developer Processes</div></li><li class="spacer"></li><li class="chapter-item affix "><a href="contributors.html">Contributors</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -83,7 +91,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -93,7 +101,7 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -110,6 +118,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+
                     </div>
                 </div>
 
@@ -123,8 +132,9 @@
                         </ul>
                     </div>
                 </div>
+
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -155,15 +165,18 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+
                             <a rel="next" href="checks.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+
                         <div style="clear: both"></div>
                     </nav>
                 </div>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
                     <a rel="next" href="checks.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -171,16 +184,25 @@
 
         </div>
 
-        <script type="text/javascript">
+
+
+
+        <script>
             window.playground_copyable = true;
         </script>
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
+
+
+    </div>
     </body>
 </html>
