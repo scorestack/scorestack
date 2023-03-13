@@ -20,3 +20,7 @@ Git
 Default Behavior
 ----------------
 By default, this check will attempt to clone the configured repository and  pass or fail the check depending on whether the clone was successful or not.
+
+`ContentFile` Parameter
+---------
+The file path is in respect to the *root* of the repository will accept absolute or relative file paths. The check while correspond "`/content.txt`", "`./content.txt`", or "`content.txt`" to a file named "`content.txt`" at the root of the repository.
