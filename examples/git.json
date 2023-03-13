@@ -6,21 +6,21 @@
     "Host": "{{.Host}}",
     "Repository": "{{.Repository}}",
     "Branch": "{{.Branch}}",
-    "Port": 80,
-    "HTTPS": false,
-    "HTTPSValidate": false,
+    "Port": 443,
+    "HTTPS": true,
+    "HTTPSValidate": true,
     "Username": "{{.Username}}",
     "Password": "{{.Password}}",
     "ContentMatch": true,
-    "ContentFile": "content.txt",
-    "ContentRegex": ".*",
-    "CommitHashMatch": false,
-    "CommitHash": "6667dd62e89f23a07798340fc06d1abbab29c84d683266438ad94731c91e2331"
+    "ContentFile": "README.md",
+    "ContentRegex": "Scorestack",
+    "CommitHashMatch": true,
+    "CommitHash": "2cbc95c56ba1a972807be61cbea7942aab73178e"
   },
   "attributes": {
     "admin": {
-      "Host": "localhost",
-      "Repository": "example-repo",
+      "Host": "github.com",
+      "Repository": "scorestack/scorestack",
       "Branch": "main",
       "Username": "git"
     },
