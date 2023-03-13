@@ -16,3 +16,7 @@ Git
 | ContentRegex    | String  | N :: ".*"  | The regex to match against the checked file           |
 | CommitHashMatch | Boolean | N :: false | Whether or not to match the hash of the latest commit |
 | CommitHash      | String  | N          | The hash to check against the latest commit           |
+
+Default Behavior
+----------------
+By default, this check will attempt to clone the configured repository and  pass or fail the check depending on whether the clone was successful or not.
