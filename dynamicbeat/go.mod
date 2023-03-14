@@ -6,6 +6,8 @@ require (
 	github.com/denisenkom/go-mssqldb v0.9.0
 	github.com/elastic/go-elasticsearch/v7 v7.12.0
 	github.com/emersion/go-imap v1.0.6
+	github.com/go-git/go-billy/v5 v5.4.1
+	github.com/go-git/go-git/v5 v5.6.0
 	github.com/go-ldap/ldap/v3 v3.2.4
 	github.com/go-ping/ping v0.0.0-20210312085107-d90f3778a8a3
 	github.com/go-sql-driver/mysql v1.5.0
@@ -18,7 +20,7 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
 	go.uber.org/zap v1.16.0
-	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
+	golang.org/x/crypto v0.3.0
 	gopkg.in/yaml.v2 v2.4.0
 	gosrc.io/xmpp v0.5.1
 )

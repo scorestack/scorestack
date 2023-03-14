@@ -1,0 +1,31 @@
+{
+  "name": "Git",
+  "type": "git",
+  "score_weight": 1,
+  "definition": {
+    "Host": "{{.Host}}",
+    "Repository": "{{.Repository}}",
+    "Branch": "{{.Branch}}",
+    "Port": 443,
+    "HTTPS": true,
+    "HTTPSValidate": true,
+    "Username": "{{.Username}}",
+    "Password": "{{.Password}}",
+    "ContentMatch": true,
+    "ContentFile": "README.md",
+    "ContentRegex": "Scorestack",
+    "CommitHashMatch": true,
+    "CommitHash": "2cbc95c56ba1a972807be61cbea7942aab73178e"
+  },
+  "attributes": {
+    "admin": {
+      "Host": "github.com",
+      "Repository": "scorestack/scorestack",
+      "Branch": "main",
+      "Username": "git"
+    },
+    "user": {
+      "Password": "changeme"
+    }
+  }
+}

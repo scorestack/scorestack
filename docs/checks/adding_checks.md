@@ -13,6 +13,7 @@ To keep things simple, create a folder and place all your check files in it. Eac
 examples
 ├── dns.json
 ├── ftp.json
+├── git.json
 ├── http-gophish.json
 ├── http-greenbone-security.json
 ├── http-kibana-auth.json
