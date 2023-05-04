@@ -56,7 +56,7 @@ FROM ci as devcontainer
 RUN go get -v golang.org/x/tools/...
 
 # Install golangci-lint
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.25.1
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
 
 # Install a bunch of packages that vscode wants. I don't really know what all
 # of these are, but they make the go extension work properly.
