@@ -3,7 +3,6 @@ package checksource
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -21,7 +20,7 @@ type Filesystem struct {
 }
 
 func (f *Filesystem) LoadAll() ([]check.Config, error) {
-	files, err := ioutil.ReadDir(f.Path)
+	files, err := os.ReadDir(f.Path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read contents of directory '%s': %s", f.Path, err)
 	}

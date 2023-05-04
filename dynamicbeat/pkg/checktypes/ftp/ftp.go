@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"regexp"
 	"strconv"
 	"time"
@@ -86,7 +86,7 @@ func (d *Definition) Run(ctx context.Context) check.Result {
 	}
 	defer resp.Close()
 
-	content, err := ioutil.ReadAll(resp)
+	content, err := io.ReadAll(resp)
 	if err != nil {
 		result.Message = fmt.Sprintf("Could not read file %s contents : %s", d.File, err)
 		return result

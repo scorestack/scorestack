@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"regexp"
 	"time"
@@ -92,7 +91,7 @@ func (d *Definition) Run(ctx context.Context) check.Result {
 	}
 
 	// Read from the file
-	content, err := ioutil.ReadAll(f)
+	content, err := io.ReadAll(f)
 	if err != nil {
 		result.Message = fmt.Sprintf("Error reading the file contents : %s", err)
 		return result
