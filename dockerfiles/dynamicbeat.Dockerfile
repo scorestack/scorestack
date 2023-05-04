@@ -1,5 +1,5 @@
 ###############################################################################
-FROM golang:1.16.2 as ci
+FROM golang:1.20 as ci
 ###############################################################################
 
 RUN apt-get update
@@ -31,7 +31,7 @@ RUN chown -R $USER_UID:$USER_GID /home/$USERNAME/scorestack
 
 # Install build dependencies
 RUN apt-get install -y \
-    python-pip \
+    python3-pip \
     virtualenv \
     git
 
