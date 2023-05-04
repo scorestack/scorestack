@@ -189,7 +189,7 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 			return false, nil, fmt.Errorf("recieved bad response body")
 		}
 		matches := regex.FindSubmatch(body)
-		matchStr = fmt.Sprintf("%s", matches[len(matches)-1])
+		matchStr = string(matches[len(matches)-1])
 	}
 
 	// If we've reached this point, then the check succeeded
