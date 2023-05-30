@@ -27,6 +27,7 @@ Each section organizes entries into the following subsections:
 
 #### Added
 - Git check type (#346)
+- Added threadding to document indexing (#347)
 
 #### Changed
 - Bumped Go to 1.20 (#384)
@@ -34,7 +35,7 @@ Each section organizes entries into the following subsections:
 
 ## [0.8.2] - 2021-09-28
 
-THis release fixes a Dynamicbeat bug in the team overrides system.
+This release fixes a Dynamicbeat bug in the team overrides system.
 
 ### Dynamicbeat
 
