@@ -6,7 +6,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"regexp"
@@ -175,7 +175,7 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 	var matchStr string
 	if r.MatchContent {
 		// Read response body
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return false, nil, fmt.Errorf("Recieved error when reading response body: %s", err)
 		}
@@ -189,7 +189,7 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 			return false, nil, fmt.Errorf("recieved bad response body")
 		}
 		matches := regex.FindSubmatch(body)
-		matchStr = fmt.Sprintf("%s", matches[len(matches)-1])
+		matchStr = string(matches[len(matches)-1])
 	}
 
 	// If we've reached this point, then the check succeeded
