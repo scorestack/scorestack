@@ -148,12 +148,24 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 	}
 	url := fmt.Sprintf("%s://%s:%d%s", schema, r.Host, r.Port, r.Path)
 
+	targetHost := ""
+	if h, exists := r.Headers["Host"]; exists {
+		targetHost = h
+		// Remove Host from the headers as it will be directly on the request
+		delete(r.Headers, "Host")
+	}
+
 	// Construct request
 	req, err := http.NewRequestWithContext(ctx, r.Method, url, strings.NewReader(r.Body))
 	if err != nil {
 		return false, nil, fmt.Errorf("Error constructing request: %s", err)
 	}
 
+	// Set the Host header directly on the request if specified
+	if targetHost != "" {
+		req.Host = targetHost
+	}
+	
 	// Add headers
 	for k, v := range r.Headers {
 		req.Header[k] = []string{v}
