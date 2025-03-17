@@ -36,3 +36,7 @@ One example of using the `StoreValue` attribute is the `http-kolide` example che
 The saved value is made available through the same method as attributes - just insert `{{.SavedValue}}` into your check wherever you would like it to be used.
 
 Please note that only one value can be stored using `StoreValue`. If you already have a value saved, and attempt to save another one, then the original value will be overwritten.
+
+`Headers` Parameter
+----------------------
+When the host header is present it gets added to the Go request instead.

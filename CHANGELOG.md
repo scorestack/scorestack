@@ -26,6 +26,7 @@ Each section organizes entries into the following subsections:
 ### Dynamicbeat
 
 #### Added
+- HTTP check host support
 - Git check type (#346)
 - Added threadding to document indexing (#347)
 
