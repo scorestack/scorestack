@@ -154,6 +154,12 @@ func request(ctx context.Context, client *http.Client, r Request) (bool, *string
 		return false, nil, fmt.Errorf("Error constructing request: %s", err)
 	}
 
+	// Handle Host header specially if present
+	if h, exists := r.Headers["Host"]; exists {
+		req.Host = h
+		delete(r.Headers, "Host")
+	}
+
 	// Add headers
 	for k, v := range r.Headers {
 		req.Header[k] = []string{v}
